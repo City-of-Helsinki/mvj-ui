@@ -12,9 +12,10 @@ import FormText from "@/components/form/FormText";
 import FormTextTitle from "@/components/form/FormTextTitle";
 import ListItem from "@/components/content/ListItem";
 import ListItems from "@/components/content/ListItems";
-import SummaryLeaseInfo from "./SummaryLeaseInfo";
+import SummaryLeaseInfo from "@/leases/components/leaseSections/summary/SummaryLeaseInfo";
 import Title from "@/components/content/Title";
 import WarningContainer from "@/components/content/WarningContainer";
+import LeaseHistoryEdit from "@/leaseHistory/components/LeaseHistoryEdit";
 import { receiveCollapseStates as receiveCollapseStatesAction } from "@/leases/slice";
 import { FieldTypes, FormNames, ViewModes } from "@/enums";
 import {
@@ -47,7 +48,6 @@ import { getUsersPermissions } from "@/usersPermissions/selectors";
 import { internalOrder, referenceNumber } from "@/components/form/validations";
 import type { Attributes } from "types";
 import type { FormApi } from "final-form";
-import LeaseHistoryEdit from "./LeaseHistoryEdit";
 
 type Props = {
   formApi: FormApi;

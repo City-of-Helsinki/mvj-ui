@@ -7,7 +7,7 @@ import Authorization from "@/components/authorization/Authorization";
 import CreateLeaseModal from "@/leases/components/createLease/CreateLeaseModal";
 import FormFieldLabel from "@/components/form/FormFieldLabel";
 import LeaseSelectInput from "@/components/inputs/LeaseSelectInput";
-import LeaseHistoryNode from "./LeaseHistoryNode";
+import LeaseHistoryNode from "@/leaseHistory/components/LeaseHistoryNode";
 import TitleH3 from "@/components/content/TitleH3";
 import { createLease, hideCreateModal, showCreateModal } from "@/leases/slice";
 import {

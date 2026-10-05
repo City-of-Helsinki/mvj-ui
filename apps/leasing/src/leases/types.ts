@@ -263,10 +263,3 @@ export type DueDate = {
   day: number;
   month: number;
 };
-
-export type RelatedLeaseWrapper = {
-  id: number;
-  lease: Lease;
-  head?: number;
-  to_lease?: number;
-};
