@@ -308,9 +308,9 @@ const formatCalculationLabel = (
   const days = periodDays !== null ? `${periodDays}` : "-";
   const base = rate || "-";
   if (kind === "korko") {
-    return `Laskettu korko (${base}% + ${margin || "-"}%) * ${days} pv`;
+    return `Laskettu korko (${base}% + ${margin || "-"}%) x ${days} pv`;
   }
-  return `Laskettu korotus (${base}%) * ${days} pv`;
+  return `Laskettu korotus (${base}%) x ${days} pv`;
 };
 
 /** English annual interest calculation: amount × (rate + margin)/100 × days / daysInYear. */
@@ -421,6 +421,7 @@ const InvoiceItemRow: React.FC<InvoiceItemRowProps> = ({
             options={landUseInvoiceItemTypeSelectOptions}
             value={itemTypeInput.value}
             invalid={Boolean(itemTypeMeta.error)}
+            required
             onChange={(selected) => {
               if (selected.length > 0) {
                 itemTypeInput.onChange(selected[0].value);
@@ -434,6 +435,7 @@ const InvoiceItemRow: React.FC<InvoiceItemRowProps> = ({
             value={readOnlyTextValue(itemTypeInput.value)}
             invalid={Boolean(itemTypeMeta.error)}
             errorText={itemTypeMeta.error}
+            required
             readOnly
           />
         )}
@@ -449,6 +451,7 @@ const InvoiceItemRow: React.FC<InvoiceItemRowProps> = ({
           isEditMode={canEdit}
           invalid={Boolean(amountMeta.error)}
           errorText={amountMeta.error}
+          required
         />
       </div>
 
@@ -830,6 +833,7 @@ const InstallmentStep: React.FC<InstallmentStepProps> = ({
                   disableConfirmation
                   invalid={Boolean(meta.error)}
                   errorText={meta.error}
+                  required
                 />
               ) : (
                 <TextInput
@@ -838,6 +842,7 @@ const InstallmentStep: React.FC<InstallmentStepProps> = ({
                   value={readOnlyTextValue(input.value)}
                   invalid={Boolean(meta.error)}
                   errorText={meta.error}
+                  required
                   readOnly
                 />
               )
@@ -872,6 +877,7 @@ const InstallmentStep: React.FC<InstallmentStepProps> = ({
                           disableConfirmation
                           invalid={Boolean(meta.error)}
                           errorText={meta.error}
+                          required
                         />
                       ) : (
                         <TextInput
@@ -880,6 +886,7 @@ const InstallmentStep: React.FC<InstallmentStepProps> = ({
                           value={readOnlyTextValue(input.value)}
                           invalid={Boolean(meta.error)}
                           errorText={meta.error}
+                          required
                           readOnly
                         />
                       )
@@ -907,6 +914,7 @@ const InstallmentStep: React.FC<InstallmentStepProps> = ({
                           disableConfirmation
                           invalid={Boolean(meta.error)}
                           errorText={meta.error}
+                          required
                         />
                       ) : (
                         <TextInput
@@ -915,6 +923,7 @@ const InstallmentStep: React.FC<InstallmentStepProps> = ({
                           value={readOnlyTextValue(input.value)}
                           invalid={Boolean(meta.error)}
                           errorText={meta.error}
+                          required
                           readOnly
                         />
                       )
@@ -1095,6 +1104,7 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
               label="Nimi"
               value={readOnlyTextValue(selectedPartyData.name)}
               errorText={selectedPartyData.name ? undefined : "Puuttuu"}
+              required
               readOnly
             />
           </div>
@@ -1105,6 +1115,7 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
                 label="Y-tunnus"
                 value={readOnlyTextValue(selectedPartyData.businessId)}
                 errorText={selectedPartyData.businessId ? undefined : "Puuttuu"}
+                required
                 readOnly
               />
             </div>
@@ -1117,6 +1128,7 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
               errorText={
                 selectedPartyData.streetAddress ? undefined : "Puuttuu"
               }
+              required
               readOnly
             />
           </div>
@@ -1127,6 +1139,7 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
               label="Postinumero"
               value={readOnlyTextValue(selectedPartyData.postalCode)}
               errorText={selectedPartyData.postalCode ? undefined : "Puuttuu"}
+              required
               readOnly
             />
           </div>
@@ -1137,6 +1150,7 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
               label="Postitoimipaikka"
               value={readOnlyTextValue(selectedPartyData.city)}
               errorText={selectedPartyData.city ? undefined : "Puuttuu"}
+              required
               readOnly
             />
           </div>
@@ -1149,6 +1163,7 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
               errorText={
                 selectedPartyData.sapCustomerNumber ? undefined : "Puuttuu"
               }
+              required
               readOnly
             />
           </div>
@@ -1312,6 +1327,7 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
                                         unit="%"
                                         invalid={Boolean(meta.error)}
                                         errorText={meta.error}
+                                        required
                                         isEditMode={
                                           isEditMode &&
                                           isScheduleEditable(schedule.status)
@@ -1338,6 +1354,7 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
                                         unit="%"
                                         invalid={Boolean(meta.error)}
                                         errorText={meta.error}
+                                        required
                                         isEditMode={
                                           isEditMode &&
                                           isScheduleEditable(schedule.status)
@@ -1364,6 +1381,7 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
                                         unit="%"
                                         invalid={Boolean(meta.error)}
                                         errorText={meta.error}
+                                        required
                                         isEditMode={
                                           isEditMode &&
                                           isScheduleEditable(schedule.status)
