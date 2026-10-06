@@ -1,8 +1,6 @@
 import { ConfirmDeleteButton } from "@/landUse/components/ConfirmDeleteButton";
-import { OwnershipShareCollateralTable } from "@/landUse/components/OwnershipShareCollateralTable";
 import type { FormKey } from "@/landUse/components/LandUseDetailPage";
 import type { LandUseSite } from "@/landUse/components/tabs/LandUseCompensations";
-import type { PartyEntry } from "@/landUse/components/tabs/LandUseParties";
 import { INITIAL_SAKKOKERROIN } from "@/landUse/constants";
 import { useTocEntries } from "@/landUse/hooks/useTableOfContents";
 import { landUseHallintamuotoOptions } from "@/landUse/options";
@@ -108,7 +106,6 @@ interface LandUseMonitoringProps {
   compensationsRowsBySiteId: Record<string, PerustietotaulukkoRowValues>;
   korotuskerroin?: number;
   maankayttokorvausYhteensa?: number;
-  parties: PartyEntry[];
   onSetTabDirty?: (formKey: FormKey) => void;
 }
 
@@ -213,7 +210,6 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
   compensationsRowsBySiteId,
   korotuskerroin,
   maankayttokorvausYhteensa,
-  parties,
   onSetTabDirty,
 }) => {
   const tocEntries = useMemo(
@@ -707,10 +703,6 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
             : saantelynMukainenValue > sopimuksenMukainenValue
               ? "right"
               : "equal";
-        const remainingTotalCollateral = Math.max(
-          sopimuksenMukainenValue,
-          saantelynMukainenValue,
-        );
 
         const monitoringSakkoCols = [
           { key: "kohteenTunnus", headerName: "Kohteen tunnus" },
@@ -991,10 +983,6 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
                                 }
                               />
                             </div>
-                            <OwnershipShareCollateralTable
-                              parties={parties}
-                              totalCollateral={remainingTotalCollateral}
-                            />
                           </Fieldset>
                         </div>
                       ),
