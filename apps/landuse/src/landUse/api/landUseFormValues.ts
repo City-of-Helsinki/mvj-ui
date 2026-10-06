@@ -31,7 +31,6 @@ export const createEmptyPartyEntry = (): PartyEntry => ({
   party: {
     details: {
       partyRole: undefined,
-      ownershipShare: undefined,
       partyType: undefined,
       name: "",
       businessId: "",
