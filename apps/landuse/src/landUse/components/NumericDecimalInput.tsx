@@ -20,6 +20,7 @@ type NumericDecimalInputProps = {
   onBlur?: (event: FocusEvent<HTMLInputElement>) => void;
   errorText?: string;
   invalid?: boolean;
+  required?: boolean;
   unit?: string;
   style?: React.CSSProperties;
 };
@@ -33,6 +34,7 @@ export const NumericDecimalInput = ({
   onBlur,
   errorText,
   invalid,
+  required,
   unit,
   style,
 }: NumericDecimalInputProps) => {
@@ -86,6 +88,7 @@ export const NumericDecimalInput = ({
         readOnly
         errorText={errorText}
         invalid={invalid}
+        required={required}
         style={style}
       />
     );
@@ -101,6 +104,7 @@ export const NumericDecimalInput = ({
       onBlur={handleBlur}
       errorText={errorText}
       invalid={invalid}
+      required={required}
       style={style}
     />
   );
