@@ -40,6 +40,7 @@ interface ContractChange {
   kolmasKutsuLahetetty: string;
   paatos?: string;
   huomautus: string;
+  toimeenpanija: string;
 }
 
 interface ContractItem {
@@ -55,6 +56,7 @@ interface ContractItem {
   paatos?: string;
   muutokset: ContractChange[];
   vakuudet: Guarantee[];
+  toimeenpanija: string;
 }
 
 export interface LandUseContractsFormValues {
@@ -87,6 +89,7 @@ const createNewContractChange = (): ContractChange => ({
   kolmasKutsuLahetetty: "",
   paatos: "",
   huomautus: "",
+  toimeenpanija: "",
 });
 
 const createNewGuarantee = (): Guarantee => ({
@@ -104,6 +107,7 @@ const createNewContract = (): ContractItem => ({
   toinenKutsuLahetetty: "",
   kolmasKutsuLahetetty: "",
   paatos: undefined,
+  toimeenpanija: "",
   muutokset: [],
   vakuudet: [],
 });
@@ -433,6 +437,22 @@ export const LandUseContracts: React.FC<LandUseContractsProps> = ({
                                     }
                                   </Field>
                                 </div>
+                                <div className="landuse-grid__column-6">
+                                  <Field name={`${contractName}.toimeenpanija`}>
+                                    {({ input }) => (
+                                      <TextInput
+                                        id={`contract-toimeenpanija-${contractIndex}`}
+                                        label="Toimeenpanija"
+                                        value={getFieldTextValue(
+                                          isEditMode,
+                                          input.value,
+                                        )}
+                                        onChange={input.onChange}
+                                        readOnly={!isEditMode}
+                                      />
+                                    )}
+                                  </Field>
+                                </div>
 
                                 <div className="landuse-grid__column-6">
                                   <Field name={`${contractName}.huomautus`}>
@@ -475,7 +495,7 @@ export const LandUseContracts: React.FC<LandUseContractsProps> = ({
                                           {({ input }) => (
                                             <TextInput
                                               inputMode="text"
-                                              id={`contract-muutos-sopimusnumero-${contractIndex}-${changeIndex}`}
+                                              id={`contract-change-sopimusnumero-${contractIndex}-${changeIndex}`}
                                               label="Sopimusmuutoksen numero"
                                               value={getFieldTextValue(
                                                 isEditMode,
@@ -494,7 +514,7 @@ export const LandUseContracts: React.FC<LandUseContractsProps> = ({
                                           {({ input }) =>
                                             isEditMode ? (
                                               <DateInput
-                                                id={`contract-muutos-allekirjoituspvm-${contractIndex}-${changeIndex}`}
+                                                id={`contract-change-allekirjoituspvm-${contractIndex}-${changeIndex}`}
                                                 label="Allekirjoituspvm"
                                                 value={input.value}
                                                 onChange={input.onChange}
@@ -504,7 +524,7 @@ export const LandUseContracts: React.FC<LandUseContractsProps> = ({
                                               />
                                             ) : (
                                               <TextInput
-                                                id={`contract-muutos-allekirjoituspvm-${contractIndex}-${changeIndex}`}
+                                                id={`contract-change-allekirjoituspvm-${contractIndex}-${changeIndex}`}
                                                 label="Allekirjoituspvm"
                                                 value={readOnlyTextValue(
                                                   input.value,
@@ -522,7 +542,7 @@ export const LandUseContracts: React.FC<LandUseContractsProps> = ({
                                           {({ input }) =>
                                             isEditMode ? (
                                               <DateInput
-                                                id={`contract-muutos-allekirjoitettava-mennessa-${contractIndex}-${changeIndex}`}
+                                                id={`contract-change-allekirjoitettava-mennessa-${contractIndex}-${changeIndex}`}
                                                 label="Allekirjoitettava mennessä"
                                                 value={input.value}
                                                 onChange={input.onChange}
@@ -532,7 +552,7 @@ export const LandUseContracts: React.FC<LandUseContractsProps> = ({
                                               />
                                             ) : (
                                               <TextInput
-                                                id={`contract-muutos-allekirjoitettava-mennessa-${contractIndex}-${changeIndex}`}
+                                                id={`contract-change-allekirjoitettava-mennessa-${contractIndex}-${changeIndex}`}
                                                 label="Allekirjoitettava mennessä"
                                                 value={readOnlyTextValue(
                                                   input.value,
@@ -550,7 +570,7 @@ export const LandUseContracts: React.FC<LandUseContractsProps> = ({
                                           {({ input }) =>
                                             isEditMode ? (
                                               <DateInput
-                                                id={`contract-muutos-1-kutsu-${contractIndex}-${changeIndex}`}
+                                                id={`contract-change-1-kutsu-${contractIndex}-${changeIndex}`}
                                                 label="1. kutsu lähetetty"
                                                 value={input.value}
                                                 onChange={input.onChange}
@@ -560,7 +580,7 @@ export const LandUseContracts: React.FC<LandUseContractsProps> = ({
                                               />
                                             ) : (
                                               <TextInput
-                                                id={`contract-muutos-1-kutsu-${contractIndex}-${changeIndex}`}
+                                                id={`contract-change-1-kutsu-${contractIndex}-${changeIndex}`}
                                                 label="1. kutsu lähetetty"
                                                 value={readOnlyTextValue(
                                                   input.value,
@@ -578,7 +598,7 @@ export const LandUseContracts: React.FC<LandUseContractsProps> = ({
                                           {({ input }) =>
                                             isEditMode ? (
                                               <DateInput
-                                                id={`contract-muutos-2-kutsu-${contractIndex}-${changeIndex}`}
+                                                id={`contract-change-2-kutsu-${contractIndex}-${changeIndex}`}
                                                 label="2. kutsu lähetetty"
                                                 value={input.value}
                                                 onChange={input.onChange}
@@ -588,7 +608,7 @@ export const LandUseContracts: React.FC<LandUseContractsProps> = ({
                                               />
                                             ) : (
                                               <TextInput
-                                                id={`contract-muutos-2-kutsu-${contractIndex}-${changeIndex}`}
+                                                id={`contract-change-2-kutsu-${contractIndex}-${changeIndex}`}
                                                 label="2. kutsu lähetetty"
                                                 value={readOnlyTextValue(
                                                   input.value,
@@ -606,7 +626,7 @@ export const LandUseContracts: React.FC<LandUseContractsProps> = ({
                                           {({ input }) =>
                                             isEditMode ? (
                                               <DateInput
-                                                id={`contract-muutos-3-kutsu-${contractIndex}-${changeIndex}`}
+                                                id={`contract-change-3-kutsu-${contractIndex}-${changeIndex}`}
                                                 label="3. kutsu lähetetty"
                                                 value={input.value}
                                                 onChange={input.onChange}
@@ -616,7 +636,7 @@ export const LandUseContracts: React.FC<LandUseContractsProps> = ({
                                               />
                                             ) : (
                                               <TextInput
-                                                id={`contract-muutos-3-kutsu-${contractIndex}-${changeIndex}`}
+                                                id={`contract-change-3-kutsu-${contractIndex}-${changeIndex}`}
                                                 label="3. kutsu lähetetty"
                                                 value={readOnlyTextValue(
                                                   input.value,
@@ -632,7 +652,7 @@ export const LandUseContracts: React.FC<LandUseContractsProps> = ({
                                           {({ input }) =>
                                             isEditMode ? (
                                               <Select
-                                                id={`contract-muutos-paatos-${contractIndex}-${changeIndex}`}
+                                                id={`contract-change-paatos-${contractIndex}-${changeIndex}`}
                                                 texts={{
                                                   label: "Päätös",
                                                   placeholder: "Valitse",
@@ -652,7 +672,7 @@ export const LandUseContracts: React.FC<LandUseContractsProps> = ({
                                               />
                                             ) : (
                                               <TextInput
-                                                id={`contract-muutos-paatos-${contractIndex}-${changeIndex}`}
+                                                id={`contract-change-paatos-${contractIndex}-${changeIndex}`}
                                                 label="Päätös"
                                                 value={readOnlyTextValue(
                                                   input.value,
@@ -664,10 +684,28 @@ export const LandUseContracts: React.FC<LandUseContractsProps> = ({
                                         </Field>
                                       </div>
                                       <div className="landuse-grid__column-6">
+                                        <Field
+                                          name={`${changeName}.toimeenpanija`}
+                                        >
+                                          {({ input }) => (
+                                            <TextInput
+                                              id={`contract-change-toimeenpanija-${contractIndex}-${changeIndex}`}
+                                              label="Toimeenpanija"
+                                              value={getFieldTextValue(
+                                                isEditMode,
+                                                input.value,
+                                              )}
+                                              onChange={input.onChange}
+                                              readOnly={!isEditMode}
+                                            />
+                                          )}
+                                        </Field>
+                                      </div>
+                                      <div className="landuse-grid__column-6">
                                         <Field name={`${changeName}.huomautus`}>
                                           {({ input }) => (
                                             <TextArea
-                                              id={`contract-muutos-huomautus-${contractIndex}-${changeIndex}`}
+                                              id={`contract-change-huomautus-${contractIndex}-${changeIndex}`}
                                               label="Huomautus"
                                               value={getFieldTextValue(
                                                 isEditMode,
