@@ -186,6 +186,7 @@ const ma113Agreements: LandUseContractsFormValues = {
           kolmasKutsuLahetetty: "26.03.2026",
           paatos: "Maankäyttösopimuksen hyväksyntä",
           huomautus: "Muutoksella tarkennettu vakuuden ehtoja.",
+          toimeenpanija: "",
         },
       ],
       vakuudet: [
@@ -207,6 +208,7 @@ const ma113Agreements: LandUseContractsFormValues = {
           lisatiedot: "Vakuus voimassa koko rakentamisvaiheen ajan.",
         },
       ],
+      toimeenpanija: "",
     },
   ],
 };
