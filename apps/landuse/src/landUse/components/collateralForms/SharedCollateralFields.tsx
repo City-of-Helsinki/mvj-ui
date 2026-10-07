@@ -166,6 +166,15 @@ export const SharedCollateralFields: React.FC<CollateralFormProps> = ({
           isEditMode={isEditMode}
         />
       </div>
+      <div className="landuse-grid__column-6">
+        <CollateralTextField
+          namePrefix={namePrefix}
+          fieldName="merkitsijaPalautus"
+          label="Palautuksen merkitsijä"
+          idSuffix="merkitsija-palautus"
+          isEditMode={isEditMode}
+        />
+      </div>
 
       <div className="landuse-grid__column-6">
         <CollateralTextArea

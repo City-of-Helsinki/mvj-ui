@@ -29,6 +29,7 @@ export interface Guarantee {
   maara?: string;
   maksettuPvm?: string;
   palautettuPvm?: string;
+  merkitsijaPalautus?: string;
   lisatiedot?: string;
 }
 
