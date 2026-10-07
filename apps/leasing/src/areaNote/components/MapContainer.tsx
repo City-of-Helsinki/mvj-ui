@@ -34,8 +34,8 @@ type Props = {
   bounds?: L.LatLngBoundsExpression;
   center: L.LatLngExpression;
   isLoading?: boolean;
-  onMapDidMount?: (...args: Array<any>) => any;
-  onViewportChanged?: (...args: Array<any>) => any;
+  onMapDidMount?: (viewport: MapViewport) => void;
+  onViewportChanged?: (viewport: MapViewport) => void;
   overlayLayers?: Array<{
     checked: boolean;
     name: string;
@@ -45,6 +45,11 @@ type Props = {
   enableSearch?: boolean;
   onMapReady?: (map: L.Map) => void;
   children?: React.ReactNode;
+};
+
+export type MapViewport = {
+  bBox: string;
+  zoom: number;
 };
 
 const MapContainer: React.FC<Props> = ({
@@ -60,7 +65,6 @@ const MapContainer: React.FC<Props> = ({
   children,
 }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const mapRef = useRef<L.Map | null>(null);
   const [map, setMap] = useState<L.Map | null>(null);
   const onMapDidMountRef = useRef(onMapDidMount);
   const onViewportChangedRef = useRef(onViewportChanged);
@@ -69,7 +73,6 @@ const MapContainer: React.FC<Props> = ({
     bounds,
     center,
     enableSearch,
-    overlayLayers,
     zoom,
   });
 
@@ -80,7 +83,6 @@ const MapContainer: React.FC<Props> = ({
     bounds,
     center,
     enableSearch,
-    overlayLayers,
     zoom,
   };
 
@@ -153,13 +155,11 @@ const MapContainer: React.FC<Props> = ({
       })
       .addTo(map);
     map.on("moveend", handleViewportChanged);
-    mapRef.current = map;
     setMap(map);
     onMapReadyRef.current?.(map);
     onMapDidMountRef.current?.(getMapValues());
 
     return () => {
-      mapRef.current = null;
       setMap(null);
       map.remove();
     };
