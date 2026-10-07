@@ -1,6 +1,12 @@
 import React from "react";
-import { Button, ButtonVariant, IconPlusCircleFill } from "hds-react";
-import { Field, useField } from "react-final-form";
+import {
+  Button,
+  ButtonVariant,
+  IconPlusCircleFill,
+  TextInput,
+  ToggleButton,
+} from "hds-react";
+import { Field, useField, useForm } from "react-final-form";
 import { FieldArray } from "react-final-form-arrays";
 import {
   landUseGuaranteeCategoryOptions,
@@ -15,7 +21,6 @@ import {
 import { ConfirmDeleteButton } from "@/landUse/components/ConfirmDeleteButton";
 import { SharedCollateralFields } from "@/landUse/components/collateralForms/SharedCollateralFields";
 import { getFieldTextValue } from "@/landUse/utils/fieldUtils";
-import { TextInput } from "hds-react";
 import type { CollateralFormProps } from "@/landUse/components/collateralForms/types";
 
 /**
@@ -28,10 +33,28 @@ export const PanttikirjaForm: React.FC<CollateralFormProps> = ({
   isEditMode,
   partyOptions,
 }) => {
+  const form = useForm();
   const targetField = useField<string>(`${namePrefix}.kiinteistoVaiLaitos`, {
     subscription: { value: true },
   });
+  const subsequentPledgeField = useField<boolean>(
+    `${namePrefix}.jalkipanttaus`,
+    {
+      subscription: { value: true },
+    },
+  );
   const target = targetField.input.value;
+  const isSubsequentPledge = subsequentPledgeField.input.value;
+
+  const handleSubsequentPledgeChange = (enabled: boolean) => {
+    form.batch(() => {
+      form.change(`${namePrefix}.jalkipanttaus`, enabled);
+      if (!enabled) {
+        form.change(`${namePrefix}.jalkipantinSaajanNimi`, "");
+        form.change(`${namePrefix}.jalkipantinSaajanYTunnus`, "");
+      }
+    });
+  };
 
   return (
     <>
@@ -148,6 +171,50 @@ export const PanttikirjaForm: React.FC<CollateralFormProps> = ({
           />
         </div>
       </div>
+
+      <div className="landuse-grid landuse-grid__bottom-margin">
+        <div className="landuse-grid__column-6">
+          {isEditMode ? (
+            <ToggleButton
+              id={`${namePrefix.replace(/\./g, "-")}-jalkipanttaus`}
+              label="Jälkipanttaus"
+              checked={Boolean(isSubsequentPledge)}
+              onChange={() => handleSubsequentPledgeChange(!isSubsequentPledge)}
+            />
+          ) : (
+            <TextInput
+              id={`${namePrefix.replace(/\./g, "-")}-jalkipanttaus`}
+              label="Jälkipanttaus"
+              value={isSubsequentPledge ? "Kyllä" : "Ei"}
+              readOnly
+            />
+          )}
+        </div>
+      </div>
+
+      {isSubsequentPledge && (
+        <div className="landuse-grid landuse-grid__bottom-margin">
+          <div className="landuse-grid__column-6">
+            <CollateralTextField
+              namePrefix={namePrefix}
+              fieldName="jalkipantinSaajanNimi"
+              label="Jälkipantin saajan nimi"
+              idSuffix="jalkipantin-saajan-nimi"
+              isEditMode={isEditMode}
+            />
+          </div>
+
+          <div className="landuse-grid__column-6">
+            <CollateralTextField
+              namePrefix={namePrefix}
+              fieldName="jalkipantinSaajanYTunnus"
+              label="Jälkipantin saajan y-tunnus"
+              idSuffix="jalkipantin-saajan-y-tunnus"
+              isEditMode={isEditMode}
+            />
+          </div>
+        </div>
+      )}
 
       <div className="landuse-grid">
         <SharedCollateralFields
