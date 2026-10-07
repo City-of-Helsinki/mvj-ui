@@ -5,7 +5,7 @@ import "leaflet-draw";
 type Props = {
   map: L.Map | null;
   featureGroup: L.FeatureGroup | null;
-  draw: L.Control.DrawOptions["draw"];
+  draw: L.Control.DrawOptions;
   onCreated?: (event: L.DrawEvents.Created) => void;
   onDeleted?: () => void;
   onEdited?: () => void;
