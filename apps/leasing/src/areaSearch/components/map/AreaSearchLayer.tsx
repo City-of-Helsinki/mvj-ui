@@ -1,7 +1,7 @@
-import React from "react";
-import { FeatureGroup, GeoJSON, Popup } from "react-leaflet";
+import React, { useCallback } from "react";
+import L from "leaflet";
+import LeafletGeoJSONLayer from "@/components/map/LeafletGeoJSONLayer";
 import { flowRight } from "lodash-es";
-import { Link } from "react-router";
 import { getRouteById, Routes } from "@/root/routes";
 import type { Attributes, LeafletGeoJson } from "types";
 import { withAreaSearchAttributes } from "@/components/attributes/AreaSearchAttributes";
@@ -27,73 +27,38 @@ const AreaSearchLayer: React.FC<Props> = ({
   const stateOptions = getFieldOptions(areaSearchAttributes, "state");
   const lessorOptions = getFieldOptions(areaSearchAttributes, "lessor");
 
-  const onMouseOver = (e) => {
-    const layer = e.target;
-    layer.setStyle({
-      fillOpacity: 0.7,
-    });
-  };
-
-  const onMouseOut = (e) => {
-    const layer = e.target;
-    layer.setStyle({
-      fillOpacity: 0.2,
-    });
-  };
-
   const getSearchLink = (id: number) => {
     return `${getRouteById(Routes.AREA_SEARCH)}/${id}`;
   };
 
-  return (
-    <>
-      {areaSearchesGeoJson.features.map((feature) => {
-        const { search } = feature.properties;
-        return (
-          <FeatureGroup key={search.id}>
-            <GeoJSON
-              data={feature.geometry}
-              style={{
-                color: color,
-              }}
-              onMouseOver={onMouseOver}
-              onMouseOut={onMouseOut}
-            />
-            <Popup>
-              <p className="title">
-                <strong>
-                  <Link to={`${getSearchLink(search.id)}`}>
-                    {search.identifier}
-                  </Link>
-                </strong>
-              </p>
+  const getPopupContent = useCallback(
+    (
+      search: Record<string, any>,
+    ) => `<p class="title"><strong><a href="${getSearchLink(search.id)}">${search.identifier}</a></strong></p>
+      <p>${search.address ? search.address + ", " : ""}${search.district || ""}</p>
+      <p>${formatDate(search.start_date) || "??.??.????"}–${formatDate(search.end_date) || ""}</p>
+      <p><strong>Käyttötarkoitus: </strong>${getLabelOfOption(intendedUseOptions, search.intended_use) || "-"}</p>
+      <p><strong>Vuokranantaja: </strong>${getLabelOfOption(lessorOptions, search.lessor) || "-"}</p>
+      <p><strong>Tila: </strong>${getLabelOfOption(stateOptions, search.state) || "-"}</p>`,
+    [intendedUseOptions, lessorOptions, stateOptions],
+  );
 
-              <p>
-                {search.address ? search.address + ", " : ""}
-                {search.district ? search.district : ""}
-              </p>
-              <p>
-                {formatDate(search.start_date) || "??.??.????"}–
-                {formatDate(search.end_date) || ""}
-              </p>
-              <p>
-                <strong>Käyttötarkoitus: </strong>
-                {getLabelOfOption(intendedUseOptions, search.intended_use) ||
-                  "-"}
-              </p>
-              <p>
-                <strong>Vuokranantaja: </strong>
-                {getLabelOfOption(lessorOptions, search.lessor) || "-"}
-              </p>
-              <p>
-                <strong>Tila: </strong>
-                {getLabelOfOption(stateOptions, search.state) || "-"}
-              </p>
-            </Popup>
-          </FeatureGroup>
-        );
-      })}
-    </>
+  return (
+    <LeafletGeoJSONLayer
+      data={areaSearchesGeoJson}
+      style={{ color }}
+      onEachFeature={(feature, layer) => {
+        const search = feature.properties?.search;
+        if (!search) return;
+        layer.bindPopup(getPopupContent(search));
+        layer.on({
+          mouseover: () =>
+            layer instanceof L.Path && layer.setStyle({ fillOpacity: 0.7 }),
+          mouseout: () =>
+            layer instanceof L.Path && layer.setStyle({ fillOpacity: 0.2 }),
+        });
+      }}
+    />
   );
 };
 

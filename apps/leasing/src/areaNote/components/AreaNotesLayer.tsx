@@ -1,6 +1,7 @@
-import React, { useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import { useAppDispatch, useAppSelector } from "@/root/hooks";
-import { GeoJSON } from "react-leaflet";
+import L from "leaflet";
+import LeafletGeoJSONLayer from "@/components/map/LeafletGeoJSONLayer";
 import { initializeAreaNote, showEditMode } from "@/areaNote/slice";
 import { Methods } from "@/enums";
 import {
@@ -35,69 +36,65 @@ const AreaNotesLayer: React.FC<Props> = ({
     return convertAreaNoteListToGeoJson(areaNotes);
   }, [areaNotes]);
 
-  return (
-    <GeoJSON
-      key={JSON.stringify(areaNotesGeoJson)}
-      data={areaNotesGeoJson}
-      onEachFeature={(feature, layer) => {
-        if (feature.properties) {
-          const { id, modified_at, note, user } = feature.properties;
-          const popupContent = `<p>
-              <strong>${formatDate(modified_at)} ${getUserFullName(user)}</strong><br/>
-              ${note || "-"}
-            </p>`;
-          layer.bindPopup(popupContent);
+  const onEachFeature = useCallback(
+    (feature: GeoJSON.Feature, layer: L.Layer) => {
+      if (feature.properties) {
+        const { id, modified_at, note, user } = feature.properties;
+        layer.bindPopup(`<p>
+          <strong>${formatDate(modified_at)} ${getUserFullName(user)}</strong><br/>
+          ${note || "-"}
+        </p>`);
 
-          if (id === defaultAreaNote) {
-            layer.setStyle({
-              fillOpacity: 0.9,
-            });
-            setTimeout(() => {
-              layer.openPopup();
-            }, 100);
+        if (id === defaultAreaNote) {
+          if (layer instanceof L.Path) {
+            layer.setStyle({ fillOpacity: 0.9 });
           }
+          window.setTimeout(() => layer.openPopup(), 100);
         }
+      }
 
-        layer.on({
-          click: (e: any) => {
-            if (
-              !isMethodAllowed(areaNoteMethods, Methods.PATCH) ||
-              !allowToEdit
-            ) {
-              return;
-            }
+      layer.on({
+        click: (event: L.LeafletMouseEvent) => {
+          if (
+            !feature.properties ||
+            !isMethodAllowed(areaNoteMethods, Methods.PATCH) ||
+            !allowToEdit
+          ) {
+            return;
+          }
 
-            dispatch(
-              initializeAreaNote({
-                geoJSON: convertFeatureToFeatureCollection(feature),
-                id: feature.properties.id,
-                isNew: false,
-                note: feature.properties.note,
-              }),
-            );
-            dispatch(showEditMode());
-            e.target.setStyle({
-              fillOpacity: 0.2,
-            });
-          },
-          mouseover: (e: any) => {
-            if (!isEditMode) {
-              const hoverLayer = e.target;
-              hoverLayer.setStyle({
-                fillOpacity: 0.7,
-              });
-            }
-          },
-          mouseout: (e: any) => {
-            if (!isEditMode) {
-              const hoverLayer = e.target;
-              hoverLayer.setStyle({
-                fillOpacity: 0.2,
-              });
-            }
-          },
-        });
-      }}
+          dispatch(
+            initializeAreaNote({
+              geoJSON: convertFeatureToFeatureCollection(feature),
+              id: feature.properties.id,
+              isNew: false,
+              note: feature.properties.note,
+            }),
+          );
+          dispatch(showEditMode());
+          if (event.target instanceof L.Path) {
+            event.target.setStyle({ fillOpacity: 0.2 });
+          }
+        },
+        mouseover: (event: L.LeafletMouseEvent) => {
+          if (!isEditMode && event.target instanceof L.Path) {
+            event.target.setStyle({ fillOpacity: 0.7 });
+          }
+        },
+        mouseout: (event: L.LeafletMouseEvent) => {
+          if (!isEditMode && event.target instanceof L.Path) {
+            event.target.setStyle({ fillOpacity: 0.2 });
+          }
+        },
+      });
+    },
+    [allowToEdit, areaNoteMethods, defaultAreaNote, dispatch, isEditMode],
+  );
+
+  return (
+    <LeafletGeoJSONLayer
+      data={areaNotesGeoJson}
+      onEachFeature={onEachFeature}
       style={{
         color: "#2196f3",
       }}

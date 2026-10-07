@@ -1,5 +1,5 @@
 import React from "react";
-import { GeoJSON } from "react-leaflet";
+import LeafletGeoJSONLayer from "@/components/map/LeafletGeoJSONLayer";
 import { LeasePlanUnitsFieldTitles } from "@/leases/enums";
 import { formatDate, formatNumber, getLabelOfOption } from "@/util/helpers";
 import type { LeafletGeoJson } from "types";
@@ -37,7 +37,7 @@ const PlanUnitsLayer = ({
   };
 
   return (
-    <GeoJSON
+    <LeafletGeoJSONLayer
       data={planUnitsGeoJson}
       onEachFeature={(feature, layer) => {
         if (feature.properties) {
