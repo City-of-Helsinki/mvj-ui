@@ -1563,7 +1563,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.12.0, @babel/runtime@npm:^7.12.1, @babel/runtime@npm:^7.18.3, @babel/runtime@npm:^7.21.0, @babel/runtime@npm:^7.26.10, @babel/runtime@npm:^7.28.4, @babel/runtime@npm:^7.8.7":
+"@babel/runtime@npm:^7.12.0, @babel/runtime@npm:^7.18.3, @babel/runtime@npm:^7.21.0, @babel/runtime@npm:^7.26.10, @babel/runtime@npm:^7.28.4, @babel/runtime@npm:^7.8.7":
   version: 7.28.4
   resolution: "@babel/runtime@npm:7.28.4"
   checksum: 10c0/792ce7af9750fb9b93879cc9d1db175701c4689da890e6ced242ea0207c9da411ccf16dc04e689cc01158b28d7898c40d75598f4559109f761c12ce01e959bf7
@@ -2297,13 +2297,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@googlemaps/js-api-loader@npm:^1.16.6":
-  version: 1.16.10
-  resolution: "@googlemaps/js-api-loader@npm:1.16.10"
-  checksum: 10c0/0b8eb8de6aeb7473df3ca044638356486a711910518ee4439b8c703e8b6db4b273b464b08fa5a9255cc9e96df45fc74c4b4de94de427c92d3f5f59ab60b211cb
-  languageName: node
-  linkType: hard
-
 "@graphql-typed-document-node/core@npm:^3.1.1":
   version: 3.2.0
   resolution: "@graphql-typed-document-node/core@npm:3.2.0"
@@ -2505,17 +2498,11 @@ __metadata:
     history: "npm:4.10.1"
     leaflet: "npm:1.9.4"
     leaflet-draw: "npm:1.0.4"
-    leaflet-geosearch: "npm:4.2.2"
-    leaflet-measure-path: "npm:1.4.2"
-    leaflet-zoombox: "npm:0.5.2"
     lodash-es: "npm:4.18.1"
     proj4: "npm:2.21.0"
     proj4leaflet: "npm:1.0.2"
     react-datepicker: "npm:8.10.0"
     react-dual-listbox: "npm:6.1.0"
-    react-leaflet: "npm:2.8.0"
-    react-leaflet-draw: "npm:0.19.0"
-    react-leaflet-fullscreen: "npm:1.0.2"
     react-redux: "npm:7.2.9"
     react-select: "npm:5.10.2"
     redux: "npm:4.1.2"
@@ -7407,43 +7394,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"leaflet-geosearch@npm:4.2.2":
-  version: 4.2.2
-  resolution: "leaflet-geosearch@npm:4.2.2"
-  dependencies:
-    "@googlemaps/js-api-loader": "npm:^1.16.6"
-    leaflet: "npm:^1.6.0"
-  dependenciesMeta:
-    "@googlemaps/js-api-loader":
-      optional: true
-    leaflet:
-      optional: true
-  checksum: 10c0/fc46b9884e23116ce8d36d19fc58d862bb0620ef2f550e208790e10ed92d4a791839b36fc30444b68759066cf0a99f7090aeeec406a46a6d6861a9e73471bb59
-  languageName: node
-  linkType: hard
-
-"leaflet-measure-path@npm:1.4.2":
-  version: 1.4.2
-  resolution: "leaflet-measure-path@npm:1.4.2"
-  checksum: 10c0/3eb58c70382a40155daa3672d2b0dbabd1bff1b9a932ed61e5f004a2bd1b4681b4e79fafd960f6766f251223f999030bcec9746896a6666b70621e6b6ef62075
-  languageName: node
-  linkType: hard
-
-"leaflet-zoombox@npm:0.5.2":
-  version: 0.5.2
-  resolution: "leaflet-zoombox@npm:0.5.2"
-  checksum: 10c0/56b131ce165cfc06b092d26a5e190f31c974c25811a576abd3346688b289ff48fcc44520e57465db658834d60a9ddc0f3e83115af3927baaffb61e5e954f2a06
-  languageName: node
-  linkType: hard
-
-"leaflet.fullscreen@npm:1.6.0":
-  version: 1.6.0
-  resolution: "leaflet.fullscreen@npm:1.6.0"
-  checksum: 10c0/b4bd4e36e813ae72df65ac5d5ad9e4bdd4aa16e4cee05c996eee56e76021a2f2e87e9d7ff1de7f57d32435a06f133e094c14e1de3170b22ffeae91bd10f59c22
-  languageName: node
-  linkType: hard
-
-"leaflet@npm:1.9.4, leaflet@npm:^1.6.0":
+"leaflet@npm:1.9.4":
   version: 1.9.4
   resolution: "leaflet@npm:1.9.4"
   checksum: 10c0/f639441dbb7eb9ae3fcd29ffd7d3508f6c6106892441634b0232fafb9ffb1588b05a8244ec7085de2c98b5ed703894df246898477836cfd0ce5b96d4717b5ca1
@@ -7600,13 +7551,6 @@ __metadata:
   version: 4.18.1
   resolution: "lodash-es@npm:4.18.1"
   checksum: 10c0/35d4dcf87ef07f8d090f409447575800108057e360b445f590d0d25d09e3d1e33a163d2fc100d4d072b0f901d5e2fc533cd7c4bfd8eeb38a06abec693823c8b8
-  languageName: node
-  linkType: hard
-
-"lodash-es@npm:^4.17.10":
-  version: 4.17.21
-  resolution: "lodash-es@npm:4.17.21"
-  checksum: 10c0/fb407355f7e6cd523a9383e76e6b455321f0f153a6c9625e21a8827d10c54c2a2341bd2ae8d034358b60e07325e1330c14c224ff582d04612a46a4f0479ff2f2
   languageName: node
   linkType: hard
 
@@ -8437,7 +8381,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prop-types@npm:^15.5.8, prop-types@npm:^15.6.0, prop-types@npm:^15.6.1, prop-types@npm:^15.6.x, prop-types@npm:^15.7.2":
+"prop-types@npm:^15.5.8, prop-types@npm:^15.6.0, prop-types@npm:^15.6.1, prop-types@npm:^15.7.2":
   version: 15.7.2
   resolution: "prop-types@npm:15.7.2"
   dependencies:
@@ -8579,49 +8523,6 @@ __metadata:
   version: 17.0.2
   resolution: "react-is@npm:17.0.2"
   checksum: 10c0/2bdb6b93fbb1820b024b496042cce405c57e2f85e777c9aabd55f9b26d145408f9f74f5934676ffdc46f3dcff656d78413a6e43968e7b3f92eea35b3052e9053
-  languageName: node
-  linkType: hard
-
-"react-leaflet-draw@npm:0.19.0":
-  version: 0.19.0
-  resolution: "react-leaflet-draw@npm:0.19.0"
-  dependencies:
-    lodash-es: "npm:^4.17.10"
-  peerDependencies:
-    leaflet: ^1.3.0
-    leaflet-draw: ^1.0.3
-    prop-types: ^15.5.2
-    react: ^16.3.0
-    react-leaflet: ^2.0.0
-  checksum: 10c0/6f69de137ce3d0e52bf52973e8edd872c8df123db8efd6cc64d0d4dd8b83d680a39ec13e3b65cc37a644730b87abf2b51ceef2ecc2913a177d14a6c0a8362662
-  languageName: node
-  linkType: hard
-
-"react-leaflet-fullscreen@npm:1.0.2":
-  version: 1.0.2
-  resolution: "react-leaflet-fullscreen@npm:1.0.2"
-  dependencies:
-    leaflet.fullscreen: "npm:1.6.0"
-    prop-types: "npm:^15.6.x"
-  peerDependencies:
-    react-leaflet: ^2.x
-  checksum: 10c0/cf7008a34c52c2b78ed569d448826d78a98fd5928ebd91b314e7eb0e582a9aeb396dab0fc44c22f4d53e7c0a79326fde0eac49170b3fd03fd94ff3445485f324
-  languageName: node
-  linkType: hard
-
-"react-leaflet@npm:2.8.0":
-  version: 2.8.0
-  resolution: "react-leaflet@npm:2.8.0"
-  dependencies:
-    "@babel/runtime": "npm:^7.12.1"
-    fast-deep-equal: "npm:^3.1.3"
-    hoist-non-react-statics: "npm:^3.3.2"
-    warning: "npm:^4.0.3"
-  peerDependencies:
-    leaflet: ^1.6.0
-    react: ^16.8.0 || ^17.0.0
-    react-dom: ^16.8.0  || ^17.0.0
-  checksum: 10c0/9bfbbce78f7f88bbb66f2b574ca182db8e11b05e9ffee0582507352ee8ad9fc5dfd534d195e6cef57dec1f6e6f4df548c913d30f9372e9c77f10da6457ac1215
   languageName: node
   linkType: hard
 
@@ -10751,7 +10652,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"warning@npm:^4.0.2, warning@npm:^4.0.3":
+"warning@npm:^4.0.2":
   version: 4.0.3
   resolution: "warning@npm:4.0.3"
   dependencies:

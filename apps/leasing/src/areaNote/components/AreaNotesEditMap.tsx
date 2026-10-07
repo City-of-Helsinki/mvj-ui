@@ -7,11 +7,9 @@ import React, {
 } from "react";
 import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import L from "leaflet";
-import { FeatureGroup } from "react-leaflet";
-import { EditControl } from "react-leaflet-draw";
-import "leaflet-measure-path";
 import { isEmpty, throttle } from "lodash-es";
 import MapContainer from "./MapContainer";
+import LeafletDrawControl from "@/components/map/LeafletDrawControl";
 import SaveConditionPanel, {
   type SaveConditionPanelHandle,
 } from "./SaveConditionPanel";
@@ -26,6 +24,10 @@ import { DEFAULT_CENTER, DEFAULT_ZOOM } from "@/util/constants";
 import { convertFeatureCollectionToFeature } from "@/areaNote/helpers";
 import { localizeMap } from "@/util/map";
 import { getInitialAreaNote, getIsEditMode } from "@/areaNote/selectors";
+import {
+  showMeasurements,
+  updateMeasurements,
+} from "@/components/map/measurements";
 
 localizeMap();
 
@@ -35,12 +37,16 @@ const SHAPE_ERROR_COLOR = "#bd2719";
 
 type Props = {
   allowToEdit: boolean;
-  bounds?: Record<string, any>;
-  center?: Array<number>;
+  bounds?: L.LatLngBoundsExpression;
+  center?: L.LatLngExpression;
   isLoading?: boolean;
   onMapDidMount?: (...args: Array<any>) => any;
   onViewportChanged?: (...args: Array<any>) => any;
-  overlayLayers?: Array<Record<string, any>>;
+  overlayLayers?: Array<{
+    checked: boolean;
+    name: string;
+    component: React.ReactNode;
+  }>;
   showZoomLevelWarning?: boolean;
   zoom?: number;
   zoomLevelWarningText?: string;
@@ -62,10 +68,12 @@ const AreaNotesEditMap: React.FC<Props> = ({
   const initialValues = useAppSelector(getInitialAreaNote);
   const isEditMode = useAppSelector(getIsEditMode);
 
-  const featureGroupRef = useRef<Record<string, any> | null>(null);
+  const featureGroupRef = useRef<L.FeatureGroup | null>(null);
   const saveConditionPanelRef = useRef<SaveConditionPanelHandle | null>(null);
   const previousIsEditModeRef = useRef(isEditMode);
 
+  const [map, setMap] = useState<L.Map | null>(null);
+  const [featureGroup, setFeatureGroup] = useState<L.FeatureGroup | null>(null);
   const [id, setId] = useState<number>(-1);
   const [isNew, setIsNew] = useState(true);
   const [isValid, setIsValid] = useState(false);
@@ -75,7 +83,14 @@ const AreaNotesEditMap: React.FC<Props> = ({
       return 0;
     }
 
-    return Object.keys(featureGroupRef.current.leafletElement._layers).length;
+    return featureGroupRef.current.getLayers().length;
+  }, []);
+
+  const handleMapReady = useCallback((leafletMap: L.Map) => {
+    const group = L.featureGroup().addTo(leafletMap);
+    featureGroupRef.current = group;
+    setMap(leafletMap);
+    setFeatureGroup(group);
   }, []);
 
   useEffect(() => {
@@ -94,8 +109,8 @@ const AreaNotesEditMap: React.FC<Props> = ({
               color: SHAPE_COLOR,
               fillOpacity: SHAPE_FILL_OPACITY,
             });
-            featureGroupRef.current?.leafletElement.addLayer(layer);
-            layer.showMeasurements();
+            featureGroupRef.current?.addLayer(layer);
+            showMeasurements(layer);
           }
         });
         setIsValid(true);
@@ -109,8 +124,8 @@ const AreaNotesEditMap: React.FC<Props> = ({
     }
 
     if (!isEditMode && previousIsEditModeRef.current) {
-      featureGroupRef.current?.leafletElement.eachLayer((layer) => {
-        featureGroupRef.current?.leafletElement.removeLayer(layer);
+      featureGroupRef.current?.eachLayer((layer) => {
+        featureGroupRef.current?.removeLayer(layer);
       });
     }
 
@@ -121,9 +136,9 @@ const AreaNotesEditMap: React.FC<Props> = ({
     () =>
       throttle(
         () => {
-          featureGroupRef.current?.leafletElement?.eachLayer((layer) => {
-            layer.showMeasurements();
-            layer.updateMeasurements();
+          featureGroupRef.current?.eachLayer((layer: any) => {
+            showMeasurements(layer);
+            updateMeasurements(layer);
           });
         },
         1000 / 60,
@@ -148,7 +163,7 @@ const AreaNotesEditMap: React.FC<Props> = ({
   const handleCreated = useCallback(
     (e: Record<string, any>) => {
       const { layer } = e;
-      layer.showMeasurements();
+      showMeasurements(layer);
       setIsValid(getLayerCount() > 0);
     },
     [getLayerCount],
@@ -165,7 +180,7 @@ const AreaNotesEditMap: React.FC<Props> = ({
   const handleCreate = useCallback(
     (note: string) => {
       const features: Array<Record<string, any>> = [];
-      featureGroupRef.current?.leafletElement.eachLayer((layer) =>
+      featureGroupRef.current?.eachLayer((layer: any) =>
         features.push(layer.toGeoJSON()),
       );
 
@@ -179,7 +194,7 @@ const AreaNotesEditMap: React.FC<Props> = ({
   const handleEdit = useCallback(
     (note: string) => {
       const features: Array<Record<string, any>> = [];
-      featureGroupRef.current?.leafletElement.eachLayer((layer) =>
+      featureGroupRef.current?.eachLayer((layer: any) =>
         features.push(layer.toGeoJSON()),
       );
 
@@ -205,71 +220,58 @@ const AreaNotesEditMap: React.FC<Props> = ({
         onViewportChanged={onViewportChanged}
         overlayLayers={overlayLayers}
         zoom={zoom || DEFAULT_ZOOM}
-      >
-        <FeatureGroup
-          ref={(el) => {
-            featureGroupRef.current = el;
+        onMapReady={handleMapReady}
+      />
+      {allowToEdit && isEditMode && (
+        <LeafletDrawControl
+          map={map}
+          featureGroup={featureGroup}
+          onCreated={handleCreated}
+          onDeleted={handleAction}
+          onEdited={handleAction}
+          onNonCommittedChange={handleNonCommittedChange}
+          draw={{
+            circlemarker: false,
+            circle: false,
+            marker: false,
+            polyline: false,
+            polygon: {
+              allowIntersection: false,
+              showArea: true,
+              drawError: { color: SHAPE_ERROR_COLOR, timeout: 1000 },
+              shapeOptions: {
+                color: SHAPE_COLOR,
+                fillOpacity: SHAPE_FILL_OPACITY,
+              },
+            },
+            rectangle: {
+              shapeOptions: {
+                color: SHAPE_COLOR,
+                fillOpacity: SHAPE_FILL_OPACITY,
+              },
+            },
           }}
-        >
-          {allowToEdit && isEditMode && (
-            <EditControl
-              position="topright"
-              onCreated={handleCreated}
-              onDeleted={handleAction}
-              onEdited={handleAction}
-              onEditMove={handleNonCommittedChange}
-              onEditVertex={handleNonCommittedChange}
-              onEditStop={handleNonCommittedChange}
-              onDeleteStop={handleNonCommittedChange}
-              draw={{
-                circlemarker: false,
-                circle: false,
-                marker: false,
-                polyline: false,
-                polygon: {
-                  allowIntersection: false,
-                  showArea: true,
-                  drawError: {
-                    color: SHAPE_ERROR_COLOR,
-                    timeout: 1000,
-                  },
-                  shapeOptions: {
-                    color: SHAPE_COLOR,
-                    fillOpacity: SHAPE_FILL_OPACITY,
-                  },
-                },
-                rectangle: {
-                  shapeOptions: {
-                    color: SHAPE_COLOR,
-                    fillOpacity: SHAPE_FILL_OPACITY,
-                  },
-                },
-              }}
-            />
-          )}
-        </FeatureGroup>
-
-        {allowToEdit && (
-          <SaveConditionPanel
-            ref={saveConditionPanelRef}
-            disableDelete={isNew}
-            disableSave={!isValid}
-            isNew={isNew}
-            onCancel={cancelChanges}
-            onCreate={handleCreate}
-            onDelete={handleDelete}
-            onEdit={handleEdit}
-            show={isEditMode}
-          />
-        )}
-
-        {zoomLevelWarningText && (
-          <ZoomLevelWarning
-            isOpen={showZoomLevelWarning || false}
-            text={zoomLevelWarningText}
-          />
-        )}
-      </MapContainer>
+        />
+      )}
+      {allowToEdit && (
+        <SaveConditionPanel
+          ref={saveConditionPanelRef}
+          disableDelete={isNew}
+          disableSave={!isValid}
+          isNew={isNew}
+          onCancel={cancelChanges}
+          onCreate={handleCreate}
+          onDelete={handleDelete}
+          onEdit={handleEdit}
+          show={isEditMode}
+        />
+      )}
+      {zoomLevelWarningText && (
+        <ZoomLevelWarning
+          isOpen={showZoomLevelWarning || false}
+          text={zoomLevelWarningText}
+        />
+      )}
     </div>
   );
 };

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { FeatureGroup, GeoJSON } from "react-leaflet";
+import L from "leaflet";
 import classNames from "classnames";
 import { DEFAULT_CENTER, DEFAULT_ZOOM } from "@/util/constants";
 import MapContainer from "@/areaNote/components/MapContainer";
@@ -16,24 +16,9 @@ type Props = {
 };
 
 class SingleAreaSearchMap extends Component<Props> {
-  featureGroup: any = null;
-  mapInstance: any = null;
-  initialize: (arg0?: any) => void = () => {
-    if (!this.mapInstance || !this.featureGroup) {
-      return;
-    }
+  map: L.Map | null = null;
+  geoJsonLayer: L.GeoJSON | null = null;
 
-    this.mapInstance.leafletElement.fitBounds(this.getMapBounds());
-    /* TODO: This doesn't work as expected, but should be pretty close to what we need.
-        It appears the function actually only exists on the polygon level, yet nothing
-        happens when it is called.
-    this.featureGroup.leafletElement.eachLayer((feature) => {
-      feature.showMeasurements?.();
-      feature.eachLayer((polygon) => {
-        polygon.showMeasurements?.();
-      });
-    }); */
-  };
   getMapBounds: () => Record<string, any> = () => {
     const { geometry } = this.props;
     return getBoundsFromFeatures({
@@ -48,14 +33,21 @@ class SingleAreaSearchMap extends Component<Props> {
     const { geometry } = this.props;
     return getCenterFromCoordinates(getCoordinatesOfGeometry(geometry));
   };
-  setMapInstanceRef: (arg0: any) => void = (mapInstance) => {
-    this.mapInstance = mapInstance;
-    this.initialize();
+  handleMapReady = (map: L.Map) => {
+    this.map = map;
+    this.geoJsonLayer = L.geoJSON(
+      this.props.geometry as GeoJSON.GeoJsonObject,
+    ).addTo(map);
+    map.fitBounds(this.getMapBounds() as L.LatLngBoundsExpression);
   };
-  setFeatureGroupRef: (arg0: any) => void = (group) => {
-    this.featureGroup = group;
-    this.initialize();
-  };
+
+  componentDidUpdate(previousProps: Props) {
+    if (previousProps.geometry !== this.props.geometry && this.geoJsonLayer) {
+      this.geoJsonLayer.clearLayers();
+      this.geoJsonLayer.addData(this.props.geometry as GeoJSON.GeoJsonObject);
+      this.map?.fitBounds(this.getMapBounds() as L.LatLngBoundsExpression);
+    }
+  }
 
   render(): JSX.Element {
     const { geometry, minimap = false } = this.props;
@@ -64,8 +56,8 @@ class SingleAreaSearchMap extends Component<Props> {
       return <p>{"Ei geometriaa."}</p>;
     }
 
-    const center = this.getMapCenter();
-    const bounds = this.getMapBounds();
+    const center = this.getMapCenter() as L.LatLngExpression;
+    const bounds = this.getMapBounds() as L.LatLngBoundsExpression;
     return (
       <div
         className={classNames("SingleAreaSearchMap", {
@@ -76,15 +68,10 @@ class SingleAreaSearchMap extends Component<Props> {
         <MapContainer
           bounds={bounds}
           center={center ?? DEFAULT_CENTER}
-          overlayLayers={[]}
           zoom={DEFAULT_ZOOM}
           enableSearch={false}
-          onMapRefAvailable={this.setMapInstanceRef}
-        >
-          <FeatureGroup ref={this.setFeatureGroupRef}>
-            <GeoJSON data={geometry} />
-          </FeatureGroup>
-        </MapContainer>
+          onMapReady={this.handleMapReady}
+        />
       </div>
     );
   }

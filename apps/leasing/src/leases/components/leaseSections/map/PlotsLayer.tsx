@@ -1,5 +1,5 @@
 import React from "react";
-import { GeoJSON } from "react-leaflet";
+import LeafletGeoJSONLayer from "@/components/map/LeafletGeoJSONLayer";
 import { formatDate, formatNumber, getLabelOfOption } from "@/util/helpers";
 import type { LeafletGeoJson } from "types";
 type Props = {
@@ -30,7 +30,7 @@ const PlotsLayer = ({
   };
 
   return (
-    <GeoJSON
+    <LeafletGeoJSONLayer
       data={plotsGeoJson}
       onEachFeature={(feature, layer) => {
         if (feature.properties) {
