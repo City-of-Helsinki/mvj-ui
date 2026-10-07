@@ -32,6 +32,7 @@ import {
 import type { PartyEntry } from "@/landUse/components/tabs/LandUseParties";
 
 interface ContractChange {
+  sopimusnumero: string;
   allekirjoituspvm: string;
   allekirjoitettavaMennessa: string;
   ensimmainenKutsuLahetetty: string;
@@ -78,6 +79,7 @@ const handleSelectChange = (
 };
 
 const createNewContractChange = (): ContractChange => ({
+  sopimusnumero: "",
   allekirjoituspvm: "",
   allekirjoitettavaMennessa: "",
   ensimmainenKutsuLahetetty: "",
@@ -465,6 +467,26 @@ export const LandUseContracts: React.FC<LandUseContractsProps> = ({
                                       className="landuse-grid landuse-grid__bottom-separator"
                                       key={`${changeName}-${changeIndex}`}
                                     >
+                                      {" "}
+                                      <div className="landuse-grid__column-6">
+                                        <Field
+                                          name={`${changeName}.sopimusnumero`}
+                                        >
+                                          {({ input }) => (
+                                            <TextInput
+                                              inputMode="text"
+                                              id={`contract-muutos-sopimusnumero-${contractIndex}-${changeIndex}`}
+                                              label="Sopimusmuutoksen numero"
+                                              value={getFieldTextValue(
+                                                isEditMode,
+                                                input.value,
+                                              )}
+                                              onChange={input.onChange}
+                                              readOnly={!isEditMode}
+                                            />
+                                          )}
+                                        </Field>
+                                      </div>
                                       <div className="landuse-grid__column-6">
                                         <Field
                                           name={`${changeName}.allekirjoituspvm`}
@@ -493,7 +515,6 @@ export const LandUseContracts: React.FC<LandUseContractsProps> = ({
                                           }
                                         </Field>
                                       </div>
-
                                       <div className="landuse-grid__column-6">
                                         <Field
                                           name={`${changeName}.allekirjoitettavaMennessa`}
@@ -522,7 +543,6 @@ export const LandUseContracts: React.FC<LandUseContractsProps> = ({
                                           }
                                         </Field>
                                       </div>
-
                                       <div className="landuse-grid__column-6">
                                         <Field
                                           name={`${changeName}.ensimmainenKutsuLahetetty`}
@@ -551,7 +571,6 @@ export const LandUseContracts: React.FC<LandUseContractsProps> = ({
                                           }
                                         </Field>
                                       </div>
-
                                       <div className="landuse-grid__column-6">
                                         <Field
                                           name={`${changeName}.toinenKutsuLahetetty`}
@@ -580,7 +599,6 @@ export const LandUseContracts: React.FC<LandUseContractsProps> = ({
                                           }
                                         </Field>
                                       </div>
-
                                       <div className="landuse-grid__column-6">
                                         <Field
                                           name={`${changeName}.kolmasKutsuLahetetty`}
@@ -609,7 +627,6 @@ export const LandUseContracts: React.FC<LandUseContractsProps> = ({
                                           }
                                         </Field>
                                       </div>
-
                                       <div className="landuse-grid__column-6">
                                         <Field name={`${changeName}.paatos`}>
                                           {({ input }) =>
@@ -646,7 +663,6 @@ export const LandUseContracts: React.FC<LandUseContractsProps> = ({
                                           }
                                         </Field>
                                       </div>
-
                                       <div className="landuse-grid__column-6">
                                         <Field name={`${changeName}.huomautus`}>
                                           {({ input }) => (
