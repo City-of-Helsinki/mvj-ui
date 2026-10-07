@@ -1,6 +1,6 @@
 import React from "react";
 import { useLocation } from "react-router";
-import { GeoJSON } from "react-leaflet";
+import LeafletGeoJSONLayer from "@/components/map/LeafletGeoJSONLayer";
 import { LeaseFieldTitles } from "@/leases/enums";
 import { formatDate, getLabelOfOption } from "@/util/helpers";
 import { getRouteById, Routes } from "@/root/routes";
@@ -36,7 +36,7 @@ const LeaseListLayer: React.FC<Props> = ({
   };
 
   return (
-    <GeoJSON
+    <LeafletGeoJSONLayer
       key={JSON.stringify(leasesGeoJson)}
       data={leasesGeoJson}
       onEachFeature={(feature, layer) => {

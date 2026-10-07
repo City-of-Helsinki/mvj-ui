@@ -1,6 +1,5 @@
 import React from "react";
-import { FeatureGroup, GeoJSON, Popup } from "react-leaflet";
-import { Link } from "react-router";
+import LeafletGeoJSONLayer from "@/components/map/LeafletGeoJSONLayer";
 import { getRouteById, Routes } from "@/root/routes";
 import type { LeafletGeoJson } from "types";
 
@@ -30,30 +29,21 @@ const TargetListLayer: React.FC<Props> = ({ color, targetsGeoJson }) => {
   };
 
   return (
-    <>
-      {targetsGeoJson.features.map((feature) => {
-        const { target } = feature.properties;
-        return (
-          <FeatureGroup key={target.identifier}>
-            <GeoJSON
-              data={target.geometry}
-              style={{
-                color: color,
-              }}
-              onMouseOver={onMouseOver}
-              onMouseOut={onMouseOut}
-            />
-            <Popup>
-              <Link to={`${getApplicationsLink(target.identifier)}`}>
-                {target.identifier}
-              </Link>
-              <br />
-              <strong>Osoite:</strong> {target.address.address}
-            </Popup>
-          </FeatureGroup>
+    <LeafletGeoJSONLayer
+      data={targetsGeoJson}
+      style={{ color }}
+      onEachFeature={(feature, layer) => {
+        const target = feature.properties?.target;
+        if (!target) return;
+        layer.bindPopup(
+          `<a href="${getApplicationsLink(target.identifier)}">${target.identifier}</a><br/><strong>Osoite:</strong> ${target.address.address}`,
         );
-      })}
-    </>
+        layer.on({
+          mouseover: onMouseOver,
+          mouseout: onMouseOut,
+        });
+      }}
+    />
   );
 };
 

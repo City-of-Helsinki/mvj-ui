@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef } from "react";
-import { GeoJSON } from "react-leaflet";
+import LeafletGeoJSONLayer from "@/components/map/LeafletGeoJSONLayer";
 import { MAP_COLORS } from "@/util/constants";
 import {
   LeaseAreasFieldTitles,
@@ -75,7 +75,7 @@ const InfillDevelopmentLeaseLayer = ({
   }, []);
 
   return (
-    <GeoJSON
+    <LeafletGeoJSONLayer
       key={JSON.stringify(geoJSONData)}
       ref={layerRef}
       data={geoJSONData}

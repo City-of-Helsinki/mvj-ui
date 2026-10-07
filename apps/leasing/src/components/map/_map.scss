@@ -1,6 +1,7 @@
 @use "../../styles/variables";
 
 .map {
+  position: relative;
   flex: 1;
   height: 70vh;
   .leaflet-container {
