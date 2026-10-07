@@ -178,6 +178,7 @@ const ma113Agreements: LandUseContractsFormValues = {
       paatos: "Maankäyttösopimuksen hyväksyntä",
       muutokset: [
         {
+          sopimusnumero: "123412341234",
           allekirjoituspvm: "10.03.2026",
           allekirjoitettavaMennessa: "31.03.2026",
           ensimmainenKutsuLahetetty: "12.03.2026",
