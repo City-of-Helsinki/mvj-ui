@@ -48,41 +48,10 @@ export const SharedCollateralFields: React.FC<CollateralFormProps> = ({
 
   return (
     <>
-      <div className="landuse-grid__column-6">
-        <Field name={`${namePrefix}.osapuolet`}>
-          {({ input }) =>
-            isEditMode ? (
-              <Select
-                id={`${namePrefix.replace(/\./g, "-")}-osapuolet`}
-                texts={{ label: "Osapuolet", placeholder: "Valitse" }}
-                options={partyOptions}
-                value={normalizeMultiSelectValue(input.value)}
-                onChange={(selected) =>
-                  handleMultiSelectChange(selected, input.onChange)
-                }
-                multiSelect
-                required
-              />
-            ) : (
-              <TextInput
-                id={`${namePrefix.replace(/\./g, "-")}-osapuolet`}
-                label="Osapuolet"
-                value={
-                  Array.isArray(input.value) && input.value.length > 0
-                    ? input.value.join(", ")
-                    : "-"
-                }
-                readOnly
-              />
-            )
-          }
-        </Field>
-      </div>
-
       <Field<boolean> name={`${namePrefix}.vierasvelkapanttaus`}>
         {({ input }) => (
           <>
-            <div className="landuse-grid__column-6">
+            <div className="landuse-grid__column-12">
               {isEditMode ? (
                 <ToggleButton
                   id={`${namePrefix.replace(/\./g, "-")}-vierasvelkapanttaus`}
@@ -126,6 +95,37 @@ export const SharedCollateralFields: React.FC<CollateralFormProps> = ({
           </>
         )}
       </Field>
+
+      <div className="landuse-grid__column-6">
+        <Field name={`${namePrefix}.osapuolet`}>
+          {({ input }) =>
+            isEditMode ? (
+              <Select
+                id={`${namePrefix.replace(/\./g, "-")}-osapuolet`}
+                texts={{ label: "Osapuolet", placeholder: "Valitse" }}
+                options={partyOptions}
+                value={normalizeMultiSelectValue(input.value)}
+                onChange={(selected) =>
+                  handleMultiSelectChange(selected, input.onChange)
+                }
+                multiSelect
+                required
+              />
+            ) : (
+              <TextInput
+                id={`${namePrefix.replace(/\./g, "-")}-osapuolet`}
+                label="Osapuolet"
+                value={
+                  Array.isArray(input.value) && input.value.length > 0
+                    ? input.value.join(", ")
+                    : "-"
+                }
+                readOnly
+              />
+            )
+          }
+        </Field>
+      </div>
 
       <div className="landuse-grid__column-6">
         <CollateralDateField

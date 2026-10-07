@@ -14,6 +14,9 @@ export interface Guarantee {
   vierasvelkapanttaus?: boolean;
   vierasvelkapanttauksenAntajanNimi?: string;
   vierasvelkapanttauksenAntajanYTunnus?: string;
+  jalkipanttaus?: boolean;
+  jalkipantinSaajanNimi?: string;
+  jalkipantinSaajanYTunnus?: string;
   antajanNimi?: string;
   antajanYTunnus?: string;
   antajanHenkilotunnus?: string;
