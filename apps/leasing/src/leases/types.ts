@@ -241,6 +241,29 @@ export type BasisOfRent = {
   management_subventions: Array<Record<string, any>>;
   children: Array<BasisOfRent>;
 };
+export type Collateral = {
+  id: number;
+  type: number;
+  other_type: string | null;
+  number: string | null;
+  deed_date: string | null;
+  start_date: string | null;
+  end_date: string | null;
+  total_amount: string | null;
+  paid_date: string | null;
+  returned_date: string | null;
+  note: string | null;
+  third_party_pledge: boolean | null;
+  contract_party: Record<string, any> | null;
+  contract_party_national_identification_number: string | null;
+  contract_party_business_id: string | null;
+  pledgor_name: string | null;
+  pledgor_national_identification_number: string | null;
+  pledgor_business_id: string | null;
+  account_number: string | null;
+  document_type: "mail" | "electronic" | null;
+  returned_by: User | null;
+};
 
 export type PeriodicRentAdjustmentType =
   "TASOTARKISTUS_20_20" | "TASOTARKISTUS_20_10";

@@ -741,6 +741,18 @@ export const getContentContractCollaterals = (
       paid_date: collateral.paid_date,
       returned_date: collateral.returned_date,
       note: collateral.note,
+      third_party_pledge: collateral.third_party_pledge,
+      contract_party: collateral.contract_party,
+      contract_party_national_identification_number:
+        collateral.contract_party_national_identification_number,
+      contract_party_business_id: collateral.contract_party_business_id,
+      pledgor_name: collateral.pledgor_name,
+      pledgor_national_identification_number:
+        collateral.pledgor_national_identification_number,
+      pledgor_business_id: collateral.pledgor_business_id,
+      account_number: collateral.account_number,
+      document_type: collateral.document_type,
+      returned_by: collateral.returned_by,
     };
   });
 
@@ -2955,42 +2967,55 @@ const getPayloadCollaterals = (
   contract: Record<string, any>,
 ): Array<Record<string, any>> => {
   return get(contract, "collaterals", []).map((collateral) => {
+    //TODO: Ensure each field is correct for each of the types.
+    const payload: Record<string, any> = {
+      id: collateral.id,
+      type: collateral.type,
+      total_amount: convertStrToDecimalNumber(collateral.total_amount),
+      note: collateral.note,
+      start_date: collateral.start_date,
+      end_date: collateral.end_date,
+      third_party_pledge: collateral.third_party_pledge,
+      contract_party: collateral.contract_party,
+      contract_party_national_identification_number:
+        collateral.contract_party_national_identification_number,
+      contract_party_business_id: collateral.contract_party_business_id,
+      returned_by: collateral.returned_by?.id,
+    };
     switch (collateral.type) {
       case CollateralTypes.FINANCIAL_GUARANTEE:
         return {
-          id: collateral.id,
-          type: collateral.type,
-          total_amount: convertStrToDecimalNumber(collateral.total_amount),
+          ...payload,
           paid_date: collateral.paid_date,
           returned_date: collateral.returned_date,
-          note: collateral.note,
+          pledgor_name: collateral.pledgor_name,
+          pledgor_national_identification_number:
+            collateral.pledgor_national_identification_number,
+          pledgor_business_id: collateral.pledgor_business_id,
+          account_number: collateral.account_number,
         };
 
       case CollateralTypes.MORTGAGE_DOCUMENT:
         return {
-          id: collateral.id,
-          type: collateral.type,
+          ...payload,
           number: collateral.number,
           deed_date: collateral.deed_date,
-          start_date: collateral.start_date,
-          end_date: collateral.end_date,
-          total_amount: convertStrToDecimalNumber(collateral.total_amount),
-          note: collateral.note,
+          document_type: collateral.document_type,
         };
 
       case CollateralTypes.OTHER:
       default:
         return {
-          id: collateral.id,
-          type: collateral.type,
+          ...payload,
           other_type: collateral.other_type,
           number: collateral.number,
-          start_date: collateral.start_date,
-          end_date: collateral.end_date,
-          total_amount: convertStrToDecimalNumber(collateral.total_amount),
           paid_date: collateral.paid_date,
           returned_date: collateral.returned_date,
-          note: collateral.note,
+          pledgor_name: collateral.pledgor_name,
+          pledgor_national_identification_number:
+            collateral.pledgor_national_identification_number,
+          pledgor_business_id: collateral.pledgor_business_id,
+          document_type: collateral.document_type,
         };
     }
   });

@@ -34,6 +34,8 @@ export const CollateralTypes = {
   FINANCIAL_GUARANTEE: 2,
   MORTGAGE_DOCUMENT: 1,
   OTHER: 3,
+  SELF_DEBTOR_GUARANTEE: 4,
+  PLEDGE_OF_FUNDS: 5,
 };
 
 /**
@@ -1582,6 +1584,32 @@ export const LeaseContractCollateralsFieldPaths = {
   TOTAL_AMOUNT:
     "contracts.child.children.collaterals.child.children.total_amount",
   TYPE: "contracts.child.children.collaterals.child.children.type",
+  THIRD_PARTY_PLEDGE:
+    "contracts.child.children.collaterals.child.children.third_party_pledge",
+  PLEDGOR_NAME:
+    "contracts.child.children.collaterals.child.children.pledgor_name",
+  PLEDGOR_NATIONAL_IDENTIFICATION_NUMBER:
+    "contracts.child.children.collaterals.child.children.pledgor_national_identification_number",
+  PLEDGOR_BUSINESS_ID:
+    "contracts.child.children.collaterals.child.children.pledgor_business_id",
+  CONTRACT_PARTY:
+    "contracts.child.children.collaterals.child.children.contract_party",
+  CONTRACT_PARTY_NATIONAL_IDENTIFICATION_NUMBER:
+    "contracts.child.children.collaterals.child.children.contract_party_national_identification_number",
+  CONTRACT_PARTY_BUSINESS_ID:
+    "contracts.child.children.collaterals.child.children.contract_party_business_id",
+  ACCOUNT_NUMBER:
+    "contracts.child.children.collaterals.child.children.account_number",
+  RETURNED_BY:
+    "contracts.child.children.collaterals.child.children.returned_by",
+  DOCUMENT_TYPE:
+    "contracts.child.children.collaterals.child.children.document_type",
+  SUBORDINATE_PLEDGE:
+    "contracts.child.children.collaterals.child.children.subordinate_pledge",
+  SUBORDINATE_PLEDGEE_NAME:
+    "contracts.child.children.collaterals.child.children.subordinate_pledgee_name",
+  SUBORDINATE_PLEDGEE_BUSINESS_ID:
+    "contracts.child.children.collaterals.child.children.subordinate_pledgee_business_id",
 };
 
 /**
@@ -1602,6 +1630,20 @@ export const LeaseContractCollateralsFieldTitles = {
   START_DATE: "Vakuuden alkupvm",
   TOTAL_AMOUNT: "Vakuuden määrä",
   TYPE: "Vakuuden tyyppi",
+  THIRD_PARTY_PLEDGE: "Vierasvelkapanttaus",
+  PLEDGOR_NAME: "Vakuuden antajan nimi",
+  PLEDGOR_NATIONAL_IDENTIFICATION_NUMBER: "Vakuuden antajan henkilötunnus",
+  PLEDGOR_BUSINESS_ID: "Vakuuden antajan Y-tunnus",
+  CONTRACT_PARTY: "Sopimusosapuoli",
+  CONTRACT_PARTY_NATIONAL_IDENTIFICATION_NUMBER:
+    "Sopimusosapuolen henkilötunnus",
+  CONTRACT_PARTY_BUSINESS_ID: "Sopimusosapuolen Y-tunnus",
+  ACCOUNT_NUMBER: "Tilinumero",
+  RETURNED_BY: "Palautuksen merkitsijä",
+  DOCUMENT_TYPE: "Vakuusasiakirjan laji",
+  SUBORDINATE_PLEDGE: "Jälkipanttaus",
+  SUBORDINATE_PLEDGEE_NAME: "Jälkipantin saajan nimi",
+  SUBORDINATE_PLEDGEE_BUSINESS_ID: "Jälkipantin saajan Y-tunnus",
 };
 
 /**

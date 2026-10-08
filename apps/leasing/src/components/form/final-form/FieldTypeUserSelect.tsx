@@ -48,7 +48,6 @@ const FieldTypeUserSelect = ({
 
   const handleChange = (newValue) => {
     singleUserLoadCancelled.current = true;
-
     if (onChange) {
       onChange(newValue);
     }

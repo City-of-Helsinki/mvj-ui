@@ -23,223 +23,51 @@ import { getAttributes, getIsSaveClicked } from "@/leases/selectors";
 import { getUsersPermissions } from "@/usersPermissions/selectors";
 import type { Attributes } from "types";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
-type CollateralFieldProps = {
+import {
+  CollateralTypeField,
+  TotalAmountField,
+  ReturnedDateField,
+  NoteField,
+  ThirdPartyPledgeField,
+  ContractPartyField,
+  ContractPartyIdentifierField,
+  AccountNumberField,
+  StartDateField,
+  EndDateField,
+  DocumentTypeField,
+} from "@/leases/components/leaseSections/contract/CollateralEditFields";
+
+export type CollateralEditFieldProps = {
   attributes: Attributes;
   field: string;
   isSaveClicked: boolean;
 };
 
-const CollateralTypeField = ({
-  attributes,
-  field,
-  isSaveClicked,
-}: CollateralFieldProps) => (
-  <Authorization
-    allow={isFieldAllowedToRead(
-      attributes,
-      LeaseContractCollateralsFieldPaths.TYPE,
-    )}
-  >
-    <FormField
-      disableTouched={isSaveClicked}
-      fieldAttributes={getFieldAttributes(
-        attributes,
-        LeaseContractCollateralsFieldPaths.TYPE,
-      )}
-      name={`${field}.type`}
-      overrideValues={{ label: LeaseContractCollateralsFieldTitles.TYPE }}
-      enableUiDataEdit
-      uiDataKey={getUiDataLeaseKey(LeaseContractCollateralsFieldPaths.TYPE)}
-    />
-  </Authorization>
-);
-
-const TotalAmountField = ({
-  attributes,
-  field,
-  isSaveClicked,
-}: CollateralFieldProps) => (
-  <Authorization
-    allow={isFieldAllowedToRead(
-      attributes,
-      LeaseContractCollateralsFieldPaths.TOTAL_AMOUNT,
-    )}
-  >
-    <FormField
-      disableTouched={isSaveClicked}
-      fieldAttributes={getFieldAttributes(
-        attributes,
-        LeaseContractCollateralsFieldPaths.TOTAL_AMOUNT,
-      )}
-      name={`${field}.total_amount`}
-      unit="€"
-      overrideValues={{
-        label: LeaseContractCollateralsFieldTitles.TOTAL_AMOUNT,
-      }}
-      enableUiDataEdit
-      tooltipStyle={{
-        right: 12,
-      }}
-      uiDataKey={getUiDataLeaseKey(
-        LeaseContractCollateralsFieldPaths.TOTAL_AMOUNT,
-      )}
-    />
-  </Authorization>
-);
-
-const StartDateField = ({
-  attributes,
-  field,
-  isSaveClicked,
-}: CollateralFieldProps) => (
-  <Authorization
-    allow={isFieldAllowedToRead(
-      attributes,
-      LeaseContractCollateralsFieldPaths.START_DATE,
-    )}
-  >
-    <FormField
-      disableTouched={isSaveClicked}
-      fieldAttributes={getFieldAttributes(
-        attributes,
-        LeaseContractCollateralsFieldPaths.START_DATE,
-      )}
-      name={`${field}.start_date`}
-      overrideValues={{
-        label: LeaseContractCollateralsFieldTitles.START_DATE,
-      }}
-      enableUiDataEdit
-      uiDataKey={getUiDataLeaseKey(
-        LeaseContractCollateralsFieldPaths.START_DATE,
-      )}
-    />
-  </Authorization>
-);
-
-const EndDateField = ({
-  attributes,
-  field,
-  isSaveClicked,
-}: CollateralFieldProps) => (
-  <Authorization
-    allow={isFieldAllowedToRead(
-      attributes,
-      LeaseContractCollateralsFieldPaths.END_DATE,
-    )}
-  >
-    <FormField
-      disableTouched={isSaveClicked}
-      fieldAttributes={getFieldAttributes(
-        attributes,
-        LeaseContractCollateralsFieldPaths.END_DATE,
-      )}
-      name={`${field}.end_date`}
-      overrideValues={{
-        label: LeaseContractCollateralsFieldTitles.END_DATE,
-      }}
-      enableUiDataEdit
-      uiDataKey={getUiDataLeaseKey(LeaseContractCollateralsFieldPaths.END_DATE)}
-    />
-  </Authorization>
-);
-
-const ReturnedDateField = ({
-  attributes,
-  field,
-  isSaveClicked,
-}: CollateralFieldProps) => (
-  <Authorization
-    allow={isFieldAllowedToRead(
-      attributes,
-      LeaseContractCollateralsFieldPaths.RETURNED_DATE,
-    )}
-  >
-    <FormField
-      disableTouched={isSaveClicked}
-      fieldAttributes={getFieldAttributes(
-        attributes,
-        LeaseContractCollateralsFieldPaths.RETURNED_DATE,
-      )}
-      name={`${field}.returned_date`}
-      overrideValues={{
-        label: LeaseContractCollateralsFieldTitles.RETURNED_DATE,
-      }}
-      enableUiDataEdit
-      uiDataKey={getUiDataLeaseKey(
-        LeaseContractCollateralsFieldPaths.RETURNED_DATE,
-      )}
-    />
-  </Authorization>
-);
-
-const NoteField = ({
-  attributes,
-  field,
-  isSaveClicked,
-}: CollateralFieldProps) => (
-  <Authorization
-    allow={isFieldAllowedToRead(
-      attributes,
-      LeaseContractCollateralsFieldPaths.NOTE,
-    )}
-  >
-    <FormField
-      disableTouched={isSaveClicked}
-      fieldAttributes={getFieldAttributes(
-        attributes,
-        LeaseContractCollateralsFieldPaths.NOTE,
-      )}
-      name={`${field}.note`}
-      overrideValues={{
-        label: LeaseContractCollateralsFieldTitles.NOTE,
-      }}
-      enableUiDataEdit
-      uiDataKey={getUiDataLeaseKey(LeaseContractCollateralsFieldPaths.NOTE)}
-    />
-  </Authorization>
-);
-
-const CollateralEmpty = ({
-  attributes,
-  field,
-  isSaveClicked,
-}: CollateralFieldProps) => {
+const CollateralEmpty = (collateralFieldProps: CollateralEditFieldProps) => {
   return (
     <>
       <Row>
         <Column small={6} medium={4} large={2}>
-          <CollateralTypeField
-            attributes={attributes}
-            field={field}
-            isSaveClicked={isSaveClicked}
-          />
+          <CollateralTypeField {...collateralFieldProps} />
         </Column>
       </Row>
     </>
   );
 };
 
-const CollateralFinancialGuarantee = ({
-  attributes,
-  field,
-  isSaveClicked,
-}: CollateralFieldProps) => {
+// Rahavakuus
+const CollateralFinancialGuarantee = (
+  collateralFieldProps: CollateralEditFieldProps,
+) => {
+  const { attributes, field, isSaveClicked } = collateralFieldProps;
   return (
     <>
       <Row>
         <Column small={6} medium={4} large={2}>
-          <CollateralTypeField
-            attributes={attributes}
-            field={field}
-            isSaveClicked={isSaveClicked}
-          />
+          <CollateralTypeField {...collateralFieldProps} />
         </Column>
         <Column small={6} medium={4} large={2}>
-          <TotalAmountField
-            attributes={attributes}
-            field={field}
-            isSaveClicked={isSaveClicked}
-          />
+          <TotalAmountField {...collateralFieldProps} />
         </Column>
         <Column small={6} medium={4} large={2}>
           <Authorization
@@ -266,40 +94,32 @@ const CollateralFinancialGuarantee = ({
           </Authorization>
         </Column>
         <Column small={6} medium={4} large={2}>
-          <ReturnedDateField
-            attributes={attributes}
-            field={field}
-            isSaveClicked={isSaveClicked}
-          />
+          <ReturnedDateField {...collateralFieldProps} />
         </Column>
       </Row>
       <Row>
         <Column small={12}>
-          <NoteField
-            attributes={attributes}
-            field={field}
-            isSaveClicked={isSaveClicked}
-          />
+          <NoteField {...collateralFieldProps} />
         </Column>
       </Row>
+      <ThirdPartyPledgeField {...collateralFieldProps} />
+      <ContractPartyField {...collateralFieldProps} />
+      <ContractPartyIdentifierField {...collateralFieldProps} />
+      <AccountNumberField {...collateralFieldProps} />
     </>
   );
 };
 
-const CollateralMortgageDocument = ({
-  attributes,
-  field,
-  isSaveClicked,
-}: CollateralFieldProps) => {
+//Panttikirja
+const CollateralMortgageDocument = (
+  collateralFieldProps: CollateralEditFieldProps,
+) => {
+  const { attributes, field, isSaveClicked } = collateralFieldProps;
   return (
     <>
       <Row>
         <Column small={6} medium={4} large={2}>
-          <CollateralTypeField
-            attributes={attributes}
-            field={field}
-            isSaveClicked={isSaveClicked}
-          />
+          <CollateralTypeField {...collateralFieldProps} />
         </Column>
         <Column small={6} medium={4} large={2}>
           <Authorization
@@ -318,6 +138,7 @@ const CollateralMortgageDocument = ({
               overrideValues={{
                 label:
                   LeaseContractCollateralsFieldTitles.NUMBER_MORTGAGE_DOCUMENT,
+                required: true, //TODO: Handle in API?
               }}
               enableUiDataEdit
               uiDataKey={getUiDataLeaseKey(
@@ -342,6 +163,7 @@ const CollateralMortgageDocument = ({
               name={`${field}.deed_date`}
               overrideValues={{
                 label: LeaseContractCollateralsFieldTitles.DEED_DATE,
+                required: true, //TODO: Handle in API?
               }}
               enableUiDataEdit
               uiDataKey={getUiDataLeaseKey(
@@ -351,54 +173,102 @@ const CollateralMortgageDocument = ({
           </Authorization>
         </Column>
         <Column small={6} medium={4} large={2}>
-          <StartDateField
-            attributes={attributes}
-            field={field}
-            isSaveClicked={isSaveClicked}
-          />
+          <StartDateField {...collateralFieldProps} />
         </Column>
         <Column small={6} medium={4} large={2}>
-          <EndDateField
-            attributes={attributes}
-            field={field}
-            isSaveClicked={isSaveClicked}
-          />
+          <EndDateField {...collateralFieldProps} />
         </Column>
         <Column small={6} medium={4} large={2}>
-          <TotalAmountField
-            attributes={attributes}
-            field={field}
-            isSaveClicked={isSaveClicked}
-          />
+          <TotalAmountField {...collateralFieldProps} />
         </Column>
       </Row>
       <Row>
         <Column small={12}>
-          <NoteField
-            attributes={attributes}
-            field={field}
-            isSaveClicked={isSaveClicked}
-          />
+          <NoteField {...collateralFieldProps} />
         </Column>
       </Row>
+      <ThirdPartyPledgeField {...collateralFieldProps} />
+      <ContractPartyField {...collateralFieldProps} />
+      <ContractPartyIdentifierField {...collateralFieldProps} />
+      <DocumentTypeField {...collateralFieldProps} />
+      <Authorization
+        allow={isFieldAllowedToRead(
+          attributes,
+          LeaseContractCollateralsFieldPaths.SUBORDINATE_PLEDGE,
+        )}
+      >
+        <FormField
+          disableTouched={isSaveClicked}
+          fieldAttributes={getFieldAttributes(
+            attributes,
+            LeaseContractCollateralsFieldPaths.SUBORDINATE_PLEDGE,
+          )}
+          name={`${field}.subordinate_pledge`}
+          overrideValues={{
+            label: LeaseContractCollateralsFieldTitles.SUBORDINATE_PLEDGE,
+          }}
+          enableUiDataEdit
+          uiDataKey={getUiDataLeaseKey(
+            LeaseContractCollateralsFieldPaths.SUBORDINATE_PLEDGE,
+          )}
+        />
+      </Authorization>
+      <Authorization
+        allow={isFieldAllowedToRead(
+          attributes,
+          LeaseContractCollateralsFieldPaths.SUBORDINATE_PLEDGEE_NAME,
+        )}
+      >
+        <FormField
+          disableTouched={isSaveClicked}
+          fieldAttributes={getFieldAttributes(
+            attributes,
+            LeaseContractCollateralsFieldPaths.SUBORDINATE_PLEDGEE_NAME,
+          )}
+          name={`${field}.subordinate_pledgee_name`}
+          overrideValues={{
+            label: LeaseContractCollateralsFieldTitles.SUBORDINATE_PLEDGEE_NAME,
+          }}
+          enableUiDataEdit
+          uiDataKey={getUiDataLeaseKey(
+            LeaseContractCollateralsFieldPaths.SUBORDINATE_PLEDGEE_NAME,
+          )}
+        />
+      </Authorization>
+      <Authorization
+        allow={isFieldAllowedToRead(
+          attributes,
+          LeaseContractCollateralsFieldPaths.SUBORDINATE_PLEDGEE_BUSINESS_ID,
+        )}
+      >
+        <FormField
+          disableTouched={isSaveClicked}
+          fieldAttributes={getFieldAttributes(
+            attributes,
+            LeaseContractCollateralsFieldPaths.SUBORDINATE_PLEDGEE_BUSINESS_ID,
+          )}
+          name={`${field}.subordinate_pledgee_business_id`}
+          overrideValues={{
+            label:
+              LeaseContractCollateralsFieldTitles.SUBORDINATE_PLEDGEE_BUSINESS_ID,
+          }}
+          enableUiDataEdit
+          uiDataKey={getUiDataLeaseKey(
+            LeaseContractCollateralsFieldPaths.SUBORDINATE_PLEDGEE_BUSINESS_ID,
+          )}
+        />
+      </Authorization>
     </>
   );
 };
 
-const CollateralOther = ({
-  attributes,
-  field,
-  isSaveClicked,
-}: CollateralFieldProps) => {
+const CollateralOther = (collateralFieldProps: CollateralEditFieldProps) => {
+  const { attributes, field, isSaveClicked } = collateralFieldProps;
   return (
     <>
       <Row>
         <Column small={6} medium={4} large={2}>
-          <CollateralTypeField
-            attributes={attributes}
-            field={field}
-            isSaveClicked={isSaveClicked}
-          />
+          <CollateralTypeField {...collateralFieldProps} />
         </Column>
         <Column small={6} medium={4} large={2}>
           <Authorization
@@ -449,43 +319,27 @@ const CollateralOther = ({
           </Authorization>
         </Column>
         <Column small={6} medium={4} large={2}>
-          <StartDateField
-            attributes={attributes}
-            field={field}
-            isSaveClicked={isSaveClicked}
-          />
+          <StartDateField {...collateralFieldProps} />
         </Column>
         <Column small={6} medium={4} large={2}>
-          <EndDateField
-            attributes={attributes}
-            field={field}
-            isSaveClicked={isSaveClicked}
-          />
+          <EndDateField {...collateralFieldProps} />
         </Column>
         <Column small={6} medium={4} large={2}>
-          <TotalAmountField
-            attributes={attributes}
-            field={field}
-            isSaveClicked={isSaveClicked}
-          />
+          <TotalAmountField {...collateralFieldProps} />
         </Column>
       </Row>
       <Row>
         <Column small={6} medium={4} large={2}>
-          <ReturnedDateField
-            attributes={attributes}
-            field={field}
-            isSaveClicked={isSaveClicked}
-          />
+          <ReturnedDateField {...collateralFieldProps} />
         </Column>
         <Column small={6} medium={8} large={10}>
-          <NoteField
-            attributes={attributes}
-            field={field}
-            isSaveClicked={isSaveClicked}
-          />
+          <NoteField {...collateralFieldProps} />
         </Column>
       </Row>
+      <ThirdPartyPledgeField {...collateralFieldProps} />
+      <ContractPartyField {...collateralFieldProps} />
+      <ContractPartyIdentifierField {...collateralFieldProps} />
+      <DocumentTypeField {...collateralFieldProps} />
     </>
   );
 };
@@ -505,6 +359,11 @@ const CollateralEdit: React.FC<Props> = ({
   const isSaveClicked: boolean = useAppSelector(getIsSaveClicked);
   const usersPermissions: UsersPermissionsType =
     useAppSelector(getUsersPermissions);
+  const collateralFieldProps: CollateralEditFieldProps = {
+    attributes,
+    field,
+    isSaveClicked,
+  };
   return (
     <BoxItem>
       <BoxContentWrapper>
@@ -519,34 +378,30 @@ const CollateralEdit: React.FC<Props> = ({
           </Authorization>
         </ActionButtonWrapper>
 
-        {!collateralType && (
-          <CollateralEmpty
-            attributes={attributes}
-            field={field}
-            isSaveClicked={isSaveClicked}
-          />
-        )}
+        {!collateralType && <CollateralEmpty {...collateralFieldProps} />}
         {collateralType === CollateralTypes.FINANCIAL_GUARANTEE && (
-          <CollateralFinancialGuarantee
-            attributes={attributes}
-            field={field}
-            isSaveClicked={isSaveClicked}
-          />
+          <CollateralFinancialGuarantee {...collateralFieldProps} />
         )}
         {collateralType === CollateralTypes.MORTGAGE_DOCUMENT && (
-          <CollateralMortgageDocument
+          <CollateralMortgageDocument {...collateralFieldProps} />
+        )}
+        {/* {collateralType === CollateralTypes.SELF_DEBTOR_GUARANTEE && (
+          <CollateralSelfDebtorGuarantee
             attributes={attributes}
             field={field}
             isSaveClicked={isSaveClicked}
           />
         )}
+        {collateralType === CollateralTypes.PLEDGE_OF_FUNDS && (
+          <CollateralPledgeOfFunds
+            attributes={attributes}
+            field={field}
+            isSaveClicked={isSaveClicked}
+          />
+        )} */}
         {Boolean(collateralType) &&
           (collateralType === CollateralTypes.OTHER || collateralType > 3) && (
-            <CollateralOther
-              attributes={attributes}
-              field={field}
-              isSaveClicked={isSaveClicked}
-            />
+            <CollateralOther {...collateralFieldProps} />
           )}
       </BoxContentWrapper>
     </BoxItem>

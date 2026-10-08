@@ -11,155 +11,28 @@ import {
   LeaseContractCollateralsFieldTitles,
 } from "@/leases/enums";
 import { getUiDataLeaseKey } from "@/uiData/helpers";
-import {
-  formatDate,
-  formatNumber,
-  getLabelOfOption,
-  isEmptyValue,
-  isFieldAllowedToRead,
-} from "@/util/helpers";
+import { formatDate, isFieldAllowedToRead } from "@/util/helpers";
 import { getAttributes } from "@/leases/selectors";
 import type { Attributes } from "types";
-type CollateralFieldProps = {
+import {
+  CollateralTypeField,
+  TotalAmountField,
+  StartDateField,
+  EndDateField,
+  ReturnedDateField,
+  NoteField,
+  ThirdPartyPledgeField,
+  ContractPartyField,
+  ContractPartyIdentifierField,
+  AccountNumberField,
+  DocumentTypeField,
+} from "@/leases/components/leaseSections/contract/CollateralFields";
+export type CollateralFieldProps = {
   attributes: Attributes;
   collateral: Record<string, any>;
-  typeOptions?: Array<Record<string, any>>;
 };
 
-const CollateralTypeField = ({
-  attributes,
-  collateral,
-  typeOptions,
-}: CollateralFieldProps) => (
-  <Authorization
-    allow={isFieldAllowedToRead(
-      attributes,
-      LeaseContractCollateralsFieldPaths.TYPE,
-    )}
-  >
-    <>
-      <FormTextTitle
-        uiDataKey={getUiDataLeaseKey(LeaseContractCollateralsFieldPaths.TYPE)}
-      >
-        {LeaseContractCollateralsFieldTitles.TYPE}
-      </FormTextTitle>
-      <FormText>
-        {getLabelOfOption(typeOptions, collateral.type) || "-"}
-      </FormText>
-    </>
-  </Authorization>
-);
-
-const TotalAmountField = ({ attributes, collateral }: CollateralFieldProps) => (
-  <Authorization
-    allow={isFieldAllowedToRead(
-      attributes,
-      LeaseContractCollateralsFieldPaths.TOTAL_AMOUNT,
-    )}
-  >
-    <>
-      <FormTextTitle
-        uiDataKey={getUiDataLeaseKey(
-          LeaseContractCollateralsFieldPaths.TOTAL_AMOUNT,
-        )}
-      >
-        {LeaseContractCollateralsFieldTitles.TOTAL_AMOUNT}
-      </FormTextTitle>
-      <FormText>
-        {!isEmptyValue(collateral.total_amount)
-          ? `${formatNumber(collateral.total_amount)} €`
-          : "-"}
-      </FormText>
-    </>
-  </Authorization>
-);
-
-const StartDateField = ({ attributes, collateral }: CollateralFieldProps) => (
-  <Authorization
-    allow={isFieldAllowedToRead(
-      attributes,
-      LeaseContractCollateralsFieldPaths.START_DATE,
-    )}
-  >
-    <>
-      <FormTextTitle
-        uiDataKey={getUiDataLeaseKey(
-          LeaseContractCollateralsFieldPaths.START_DATE,
-        )}
-      >
-        {LeaseContractCollateralsFieldTitles.START_DATE}
-      </FormTextTitle>
-      <FormText>{formatDate(collateral.start_date) || "-"}</FormText>
-    </>
-  </Authorization>
-);
-
-const EndDateField = ({ attributes, collateral }: CollateralFieldProps) => (
-  <Authorization
-    allow={isFieldAllowedToRead(
-      attributes,
-      LeaseContractCollateralsFieldPaths.END_DATE,
-    )}
-  >
-    <>
-      <FormTextTitle
-        uiDataKey={getUiDataLeaseKey(
-          LeaseContractCollateralsFieldPaths.END_DATE,
-        )}
-      >
-        {LeaseContractCollateralsFieldTitles.END_DATE}
-      </FormTextTitle>
-      <FormText>{formatDate(collateral.end_date) || "-"}</FormText>
-    </>
-  </Authorization>
-);
-
-const ReturnedDateField = ({
-  attributes,
-  collateral,
-}: CollateralFieldProps) => (
-  <Authorization
-    allow={isFieldAllowedToRead(
-      attributes,
-      LeaseContractCollateralsFieldPaths.RETURNED_DATE,
-    )}
-  >
-    <>
-      <FormTextTitle
-        uiDataKey={getUiDataLeaseKey(
-          LeaseContractCollateralsFieldPaths.RETURNED_DATE,
-        )}
-      >
-        {LeaseContractCollateralsFieldTitles.RETURNED_DATE}
-      </FormTextTitle>
-      <FormText>{formatDate(collateral.returned_date) || "-"}</FormText>
-    </>
-  </Authorization>
-);
-
-const NoteField = ({ attributes, collateral }: CollateralFieldProps) => (
-  <Authorization
-    allow={isFieldAllowedToRead(
-      attributes,
-      LeaseContractCollateralsFieldPaths.NOTE,
-    )}
-  >
-    <>
-      <FormTextTitle
-        uiDataKey={getUiDataLeaseKey(LeaseContractCollateralsFieldPaths.NOTE)}
-      >
-        {LeaseContractCollateralsFieldTitles.NOTE}
-      </FormTextTitle>
-      <FormText>{collateral.note || "-"}</FormText>
-    </>
-  </Authorization>
-);
-
-const CollateralEmpty = ({
-  attributes,
-  collateral,
-  typeOptions,
-}: CollateralFieldProps) => {
+const CollateralEmpty = ({ attributes, collateral }: CollateralFieldProps) => {
   return (
     <>
       <Row>
@@ -167,18 +40,16 @@ const CollateralEmpty = ({
           <CollateralTypeField
             attributes={attributes}
             collateral={collateral}
-            typeOptions={typeOptions}
           />
         </Column>
       </Row>
     </>
   );
 };
-
+// Rahavakuus
 const CollateralFinancialGuarantee = ({
   attributes,
   collateral,
-  typeOptions,
 }: CollateralFieldProps) => {
   return (
     <>
@@ -187,7 +58,6 @@ const CollateralFinancialGuarantee = ({
           <CollateralTypeField
             attributes={attributes}
             collateral={collateral}
-            typeOptions={typeOptions}
           />
         </Column>
         <Column small={6} medium={4} large={2}>
@@ -215,20 +85,34 @@ const CollateralFinancialGuarantee = ({
         <Column small={6} medium={4} large={2}>
           <ReturnedDateField attributes={attributes} collateral={collateral} />
         </Column>
+        {/* {collateral.returned_date && (
+          <Column small={6} medium={4} large={2}>
+            <ReturnerOfCollateralDateField
+              attributes={attributes}
+              collateral={collateral}
+            />
+          </Column>
+        )} */}
       </Row>
       <Row>
         <Column small={12}>
           <NoteField attributes={attributes} collateral={collateral} />
         </Column>
       </Row>
+      <ThirdPartyPledgeField attributes={attributes} collateral={collateral} />
+      <ContractPartyField attributes={attributes} collateral={collateral} />
+      <ContractPartyIdentifierField
+        attributes={attributes}
+        collateral={collateral}
+      />
+      <AccountNumberField attributes={attributes} collateral={collateral} />
     </>
   );
 };
-
+//Panttikirja
 const CollateralMortgageDocument = ({
   attributes,
   collateral,
-  typeOptions,
 }: CollateralFieldProps) => {
   return (
     <>
@@ -237,7 +121,6 @@ const CollateralMortgageDocument = ({
           <CollateralTypeField
             attributes={attributes}
             collateral={collateral}
-            typeOptions={typeOptions}
           />
         </Column>
         <Column small={6} medium={4} large={2}>
@@ -293,15 +176,73 @@ const CollateralMortgageDocument = ({
           <NoteField attributes={attributes} collateral={collateral} />
         </Column>
       </Row>
+      <ThirdPartyPledgeField attributes={attributes} collateral={collateral} />
+      <ContractPartyField attributes={attributes} collateral={collateral} />
+      <ContractPartyIdentifierField
+        attributes={attributes}
+        collateral={collateral}
+      />
+      <DocumentTypeField attributes={attributes} collateral={collateral} />
+      <Authorization
+        allow={isFieldAllowedToRead(
+          attributes,
+          LeaseContractCollateralsFieldPaths.SUBORDINATE_PLEDGE,
+        )}
+      >
+        <>
+          <FormTextTitle
+            uiDataKey={getUiDataLeaseKey(
+              LeaseContractCollateralsFieldPaths.SUBORDINATE_PLEDGE,
+            )}
+          >
+            {LeaseContractCollateralsFieldTitles.SUBORDINATE_PLEDGE}
+          </FormTextTitle>
+          <FormText>{collateral.subordinate_pledge || "-"}</FormText>
+        </>
+      </Authorization>
+      <Authorization
+        allow={isFieldAllowedToRead(
+          attributes,
+          LeaseContractCollateralsFieldPaths.SUBORDINATE_PLEDGEE_NAME,
+        )}
+      >
+        <>
+          <FormTextTitle
+            uiDataKey={getUiDataLeaseKey(
+              LeaseContractCollateralsFieldPaths.SUBORDINATE_PLEDGEE_NAME,
+            )}
+          >
+            {LeaseContractCollateralsFieldTitles.SUBORDINATE_PLEDGEE_NAME}
+          </FormTextTitle>
+          <FormText>{collateral.subordinate_pledgee_name || "-"}</FormText>
+        </>
+      </Authorization>
+      <Authorization
+        allow={isFieldAllowedToRead(
+          attributes,
+          LeaseContractCollateralsFieldPaths.SUBORDINATE_PLEDGEE_BUSINESS_ID,
+        )}
+      >
+        <>
+          <FormTextTitle
+            uiDataKey={getUiDataLeaseKey(
+              LeaseContractCollateralsFieldPaths.SUBORDINATE_PLEDGEE_BUSINESS_ID,
+            )}
+          >
+            {
+              LeaseContractCollateralsFieldTitles.SUBORDINATE_PLEDGEE_BUSINESS_ID
+            }
+          </FormTextTitle>
+          <FormText>
+            {collateral.subordinate_pledgee_business_id || "-"}
+          </FormText>
+        </>
+      </Authorization>
     </>
   );
 };
 
-const CollateralOther = ({
-  attributes,
-  collateral,
-  typeOptions,
-}: CollateralFieldProps) => {
+const CollateralOther = ({ attributes, collateral }: CollateralFieldProps) => {
   return (
     <>
       <Row>
@@ -309,7 +250,6 @@ const CollateralOther = ({
           <CollateralTypeField
             attributes={attributes}
             collateral={collateral}
-            typeOptions={typeOptions}
           />
         </Column>
         <Column small={6} medium={4} large={2}>
@@ -368,49 +308,44 @@ const CollateralOther = ({
           <NoteField attributes={attributes} collateral={collateral} />
         </Column>
       </Row>
+      <ThirdPartyPledgeField attributes={attributes} collateral={collateral} />
+      <ContractPartyField attributes={attributes} collateral={collateral} />
+      <ContractPartyIdentifierField
+        attributes={attributes}
+        collateral={collateral}
+      />
+      <DocumentTypeField attributes={attributes} collateral={collateral} />
     </>
   );
 };
 
 type Props = {
   collateral: Record<string, any>;
-  otherTypeOptions: Array<Record<string, any>>;
-  typeOptions: Array<Record<string, any>>;
 };
 
-const Collateral = ({ collateral, typeOptions }: Props) => {
+const Collateral = ({ collateral }: Props) => {
   const collateralType = collateral.type;
   const attributes: Attributes = useAppSelector(getAttributes);
   return (
     <BoxItem className="no-border-on-first-child no-border-on-last-child">
       {!collateralType && (
-        <CollateralEmpty
-          attributes={attributes}
-          collateral={collateral}
-          typeOptions={typeOptions}
-        />
+        <CollateralEmpty attributes={attributes} collateral={collateral} />
       )}
       {collateralType === CollateralTypes.FINANCIAL_GUARANTEE && (
         <CollateralFinancialGuarantee
           attributes={attributes}
           collateral={collateral}
-          typeOptions={typeOptions}
         />
       )}
       {collateralType === CollateralTypes.MORTGAGE_DOCUMENT && (
         <CollateralMortgageDocument
           attributes={attributes}
           collateral={collateral}
-          typeOptions={typeOptions}
         />
       )}
       {collateralType &&
         (collateralType === CollateralTypes.OTHER || collateralType > 3) && (
-          <CollateralOther
-            attributes={attributes}
-            collateral={collateral}
-            typeOptions={typeOptions}
-          />
+          <CollateralOther attributes={attributes} collateral={collateral} />
         )}
     </BoxItem>
   );
