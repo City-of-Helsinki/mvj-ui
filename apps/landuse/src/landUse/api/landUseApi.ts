@@ -22,6 +22,8 @@ import {
   setAgreementTab,
 } from "@/landUse/api/landUseDb";
 import type { LandUseListItem } from "@/landUse/api/landUseListTypes";
+import { callApiGet } from "@/landUse/api/fetchClient";
+import type { District } from "@/landUse/api/landUseTypes";
 
 export const getAsemakaavat = async (): Promise<AsemakaavaListItem[]> =>
   landUseAsemakaavaListItems;
@@ -113,6 +115,9 @@ export const updateParties = async (
   await setAgreementTab(agreementId, "parties", values);
   return values;
 };
+
+export const getDistricts = async (): Promise<District[]> =>
+  callApiGet<District[]>("districts/");
 
 export const getCompensations = async (
   agreementId: string,
