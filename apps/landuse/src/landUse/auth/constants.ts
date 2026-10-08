@@ -1,4 +1,16 @@
-import type { LoginProviderProps } from "hds-react";
+import { createTokenizedFetchModule, type LoginProviderProps } from "hds-react";
+
+const tunnistusApiTokenKeyName: string =
+  import.meta.env.VITE_TUNNISTUS_OIDC_API_AUDIENCE || "mvj-api";
+export const apiTokenKeyName = tunnistusApiTokenKeyName;
+
+export const landUseTokenizedFetchModule = createTokenizedFetchModule({
+  tokenSetter: (_headers, apiTokens) => {
+    const apiToken = apiTokens[apiTokenKeyName];
+
+    return apiToken ? { Authorization: `Bearer ${apiToken}` } : {};
+  },
+});
 
 // Tunnistus SSO
 const loginProviderTunnistusProperties: LoginProviderProps = {
@@ -21,9 +33,7 @@ const loginProviderTunnistusProperties: LoginProviderProps = {
     audiences: [import.meta.env.VITE_TUNNISTUS_OIDC_API_AUDIENCE],
   },
   sessionPollerSettings: { pollIntervalInMs: 300000 }, // 300000ms = 5min
+  modules: [landUseTokenizedFetchModule],
 };
 
 export const loginProviderProperties = loginProviderTunnistusProperties;
-const tunnistusApiTokenKeyName: string =
-  import.meta.env.VITE_TUNNISTUS_OIDC_API_AUDIENCE || "mvj-api";
-export const apiTokenKeyName = tunnistusApiTokenKeyName;

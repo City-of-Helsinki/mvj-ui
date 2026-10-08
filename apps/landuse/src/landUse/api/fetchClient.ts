@@ -1,3 +1,5 @@
+import { landUseTokenizedFetchModule } from "@/landUse/auth/constants";
+
 export type LanduseApiErrorBody = {
   detail?: string;
   [key: string]: unknown;
@@ -67,11 +69,14 @@ const requestLanduseApi = async <T>(
     headers.set("Content-Type", "application/json");
   }
 
-  const response = await fetch(getLanduseApiUrl(path, options.query), {
-    method,
-    headers,
-    body: body === undefined ? undefined : JSON.stringify(body),
-  });
+  const response = await landUseTokenizedFetchModule.tokenizedFetch(
+    getLanduseApiUrl(path, options.query),
+    {
+      method,
+      headers,
+      body: body === undefined ? undefined : JSON.stringify(body),
+    },
+  );
 
   if (!response.ok) {
     throw new LanduseApiError(response.status, await getErrorBody(response));
