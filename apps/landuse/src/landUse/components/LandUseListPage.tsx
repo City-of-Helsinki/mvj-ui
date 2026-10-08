@@ -24,9 +24,9 @@ import {
   createLandUseAgreement,
   getAgreementIdentifiers,
   getLandUseList,
+  getDistricts,
 } from "@/landUse/api/landUseApi";
 import {
-  DISTRICT_OPTIONS,
   MUNICIPALITY_OPTIONS,
   LAND_USE_NEGOTIATION_PHASES,
   type LandUseNegotiationPhase,
@@ -174,6 +174,12 @@ const LandUseListPage: React.FC = () => {
     });
   };
 
+  const districtsQuery = useQuery({
+    queryKey: ["land-use", "districts"],
+    queryFn: getDistricts,
+    staleTime: Infinity,
+    refetchOnWindowFocus: false,
+  });
   const searchQuery = currentFilters.search;
   const selectedPhases = currentFilters.phases;
   const normalizedSearch = searchQuery.trim().toLowerCase();
@@ -227,12 +233,21 @@ const LandUseListPage: React.FC = () => {
         )
       : "";
 
+  const districtOptions = useMemo(
+    () =>
+      (districtsQuery.data ?? []).map(({ name, identifier }) => ({
+        value: identifier,
+        label: `${name} (${identifier})`,
+      })),
+    [districtsQuery.data],
+  );
+
   const handleCreate = () => {
     if (!selectedMunicipality || !selectedDistrict) {
       return;
     }
 
-    const selectedDistrictOption = DISTRICT_OPTIONS.find(
+    const selectedDistrictOption = districtOptions.find(
       (option) => option.value === selectedDistrict,
     );
 
@@ -400,16 +415,19 @@ const LandUseListPage: React.FC = () => {
             />
             <Select
               id="landuse-district"
-              options={DISTRICT_OPTIONS}
+              options={districtOptions}
               value={selectedDistrict}
               onChange={(selected) =>
                 handleSelectChange(selected, setSelectedDistrict)
               }
               texts={{
                 label: "Kaupunginosa",
-                placeholder: "Valitse",
+                placeholder: districtsQuery.isLoading
+                  ? "Ladataan..."
+                  : "Valitse",
               }}
               filter={selectLabelIncludesFilter}
+              disabled={districtsQuery.isLoading || districtsQuery.isError}
               required
             />
           </div>
