@@ -57,6 +57,8 @@ import type {
   PeriodicRentAdjustmentType,
   CreateLeaseFormValues,
   BasisOfRent,
+  Collateral,
+  CollateralPayload,
 } from "./types";
 import type { CommentList } from "@/comments/types";
 import type {
@@ -727,7 +729,7 @@ export const getContentContractChanges = (
  */
 export const getContentContractCollaterals = (
   contract: Record<string, any>,
-): Array<Record<string, any>> =>
+): Array<Collateral> =>
   get(contract, "collaterals", []).map((collateral) => {
     return {
       id: collateral.id,
@@ -741,6 +743,25 @@ export const getContentContractCollaterals = (
       paid_date: collateral.paid_date,
       returned_date: collateral.returned_date,
       note: collateral.note,
+      third_party_pledge: collateral.third_party_pledge,
+      third_party_pledgor_name: collateral.third_party_pledgor_name,
+      third_party_pledgor_business_id:
+        collateral.third_party_pledgor_business_id,
+      contract_party: collateral.contract_party,
+      pledgor_name: collateral.pledgor_name,
+      pledgor_national_identification_number:
+        collateral.pledgor_national_identification_number,
+      pledgor_business_id: collateral.pledgor_business_id,
+      account_number: collateral.account_number,
+      document_type: collateral.document_type,
+      returned_by: getContentUser(collateral.returned_by),
+      subordinate_pledge: collateral.subordinate_pledge,
+      subordinate_pledgee_name: collateral.subordinate_pledgee_name,
+      subordinate_pledgee_business_id:
+        collateral.subordinate_pledgee_business_id,
+      number_mortgage_document: collateral.number_mortgage_document,
+      guarantee_number: collateral.guarantee_number,
+      property_identifiers: collateral.property_identifiers,
     };
   });
 
@@ -2953,47 +2974,43 @@ const getPayloadContractChanges = (
  */
 const getPayloadCollaterals = (
   contract: Record<string, any>,
-): Array<Record<string, any>> => {
-  return get(contract, "collaterals", []).map((collateral) => {
-    switch (collateral.type) {
-      case CollateralTypes.FINANCIAL_GUARANTEE:
-        return {
-          id: collateral.id,
-          type: collateral.type,
-          total_amount: convertStrToDecimalNumber(collateral.total_amount),
-          paid_date: collateral.paid_date,
-          returned_date: collateral.returned_date,
-          note: collateral.note,
-        };
-
-      case CollateralTypes.MORTGAGE_DOCUMENT:
-        return {
-          id: collateral.id,
-          type: collateral.type,
-          number: collateral.number,
-          deed_date: collateral.deed_date,
-          start_date: collateral.start_date,
-          end_date: collateral.end_date,
-          total_amount: convertStrToDecimalNumber(collateral.total_amount),
-          note: collateral.note,
-        };
-
-      case CollateralTypes.OTHER:
-      default:
-        return {
-          id: collateral.id,
-          type: collateral.type,
-          other_type: collateral.other_type,
-          number: collateral.number,
-          start_date: collateral.start_date,
-          end_date: collateral.end_date,
-          total_amount: convertStrToDecimalNumber(collateral.total_amount),
-          paid_date: collateral.paid_date,
-          returned_date: collateral.returned_date,
-          note: collateral.note,
-        };
-    }
-  });
+): Array<CollateralPayload> => {
+  return get(contract, "collaterals", []).map(
+    (collateral): CollateralPayload => ({
+      id: collateral.id,
+      type: collateral.type,
+      other_type: collateral.other_type,
+      total_amount: convertStrToDecimalNumber(collateral.total_amount),
+      note: collateral.note,
+      start_date: collateral.start_date,
+      end_date: collateral.end_date,
+      third_party_pledge: collateral.third_party_pledge,
+      third_party_pledgor_name: collateral.third_party_pledgor_name,
+      third_party_pledgor_business_id:
+        collateral.third_party_pledgor_business_id,
+      contract_party: collateral.contract_party,
+      returned_date: collateral.returned_date,
+      returned_by: collateral.returned_by?.id,
+      paid_date: collateral.paid_date,
+      pledgor_name: collateral.pledgor_name,
+      pledgor_national_identification_number:
+        collateral.pledgor_national_identification_number,
+      pledgor_business_id: collateral.pledgor_business_id,
+      account_number: collateral.account_number,
+      number: collateral.number,
+      deed_date: collateral.deed_date,
+      document_type: collateral.document_type,
+      subordinate_pledge: collateral.subordinate_pledge,
+      subordinate_pledgee_name: collateral.subordinate_pledgee_name,
+      subordinate_pledgee_business_id:
+        collateral.subordinate_pledgee_business_id,
+      number_mortgage_document: collateral.number_mortgage_document,
+      guarantee_number: collateral.guarantee_number,
+      property_identifiers: collateral.property_identifiers?.filter(
+        (identifiers) => Object.keys(identifiers).length > 0,
+      ),
+    }),
+  );
 };
 
 /**

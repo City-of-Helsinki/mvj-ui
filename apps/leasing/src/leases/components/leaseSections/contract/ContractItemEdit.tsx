@@ -433,7 +433,7 @@ const Collaterals: React.FC<CollateralsProps> = ({
   };
 
   const handleAdd = () => {
-    fields.push({});
+    fields.push({ property_identifiers: [{}] });
   };
 
   const collateralsErrors = get(errors, name);
