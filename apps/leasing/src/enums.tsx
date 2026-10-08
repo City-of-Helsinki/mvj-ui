@@ -290,7 +290,7 @@ export const ConfirmationModalTexts = {
   },
   DELETE_PROPERTY_IDENTIFIER: {
     BUTTON: DELETE_MODAL_BUTTON_TEXT,
-    LABEL: "Haluatko varmasti poistaa kiinteisötunnuksen?",
+    LABEL: "Haluatko varmasti poistaa kiinteistötunnuksen?",
     TITLE: "Poista kiinteistötunnus",
   },
   DELETE_RELATED_LEASE: {

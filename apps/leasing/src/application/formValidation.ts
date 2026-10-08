@@ -8,7 +8,7 @@ export const personalIdentifierValidator = (
   value: any,
   error?: string,
 ): string | null | undefined => {
-  if (value === "") {
+  if (!value || value === "") {
     return;
   }
 
@@ -80,7 +80,7 @@ export const companyIdentifierValidator = (
   value: any,
   error?: string,
 ): string | null | undefined => {
-  if (value === "") {
+  if (!value || value === "") {
     return;
   }
 

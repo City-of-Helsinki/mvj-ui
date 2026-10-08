@@ -42,7 +42,9 @@ export const required = (
 
   const actualValue = value?.value !== undefined ? value.value : value;
 
-  return !!actualValue || actualValue === 0 ? undefined : defaultError;
+  return !!actualValue || actualValue === 0 || actualValue === false
+    ? undefined
+    : defaultError;
 };
 
 export const integer = (
