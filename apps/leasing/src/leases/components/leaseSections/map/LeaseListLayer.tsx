@@ -1,5 +1,4 @@
 import React from "react";
-import { useLocation } from "react-router";
 import LeafletGeoJSONLayer from "@/components/map/LeafletGeoJSONLayer";
 import { LeaseFieldTitles } from "@/leases/enums";
 import { formatDate, getLabelOfOption } from "@/util/helpers";
@@ -10,6 +9,7 @@ type Props = {
   color: string;
   defaultPlot?: number;
   leasesGeoJson: LeafletGeoJson;
+  search: string;
   stateOptions: Array<Record<string, any>>;
 };
 
@@ -17,10 +17,9 @@ const LeaseListLayer: React.FC<Props> = ({
   color,
   defaultPlot,
   leasesGeoJson,
+  search,
   stateOptions,
 }) => {
-  const location = useLocation();
-  const { search } = location;
   const onMouseOver = (e) => {
     const layer = e.target;
     layer.setStyle({
