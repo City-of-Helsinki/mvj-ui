@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
-import L from "leaflet";
 import LeafletGeoJSONLayer from "@/components/map/LeafletGeoJSONLayer";
+import useGeoJsonFeatureInteractions from "@/components/map/useGeoJsonFeatureInteractions";
 import { formatNumber, getLabelOfOption } from "@/util/helpers";
 import type { LeafletGeoJson } from "types";
 type Props = {
@@ -18,39 +18,22 @@ const AreasLayer = ({
   locationOptions,
   typeOptions,
 }: Props) => {
-  const onEachFeature = useCallback(
-    (feature: GeoJSON.Feature, layer: L.Layer) => {
-      if (feature.properties) {
-        const { area, id, identifier, location, type } = feature.properties;
-        const popupContent = `<p class='title'><strong>Vuokrakohde</strong></p>
+  const getPopupContent = useCallback(
+    (feature: GeoJSON.Feature) => {
+      const { area, id, identifier, location, type } = feature.properties ?? {};
+      return `<p class='title'><strong>Vuokrakohde</strong></p>
           <p><strong>Id:</strong> ${id}</p>
           <p><strong>Tunnus:</strong> ${identifier}</p>
           <p><strong>Määritelmä:</strong> ${getLabelOfOption(typeOptions, type) || "-"}</p>
           <p><strong>Kokonaisala:</strong> ${area || area === 0 ? `${formatNumber(area)} m²` : ""}</p>
           <p><strong>Sijainti:</strong> ${getLabelOfOption(locationOptions, location) || "-"}</p>`;
-        layer.bindPopup(popupContent);
-
-        if (id === defaultArea && layer instanceof L.Path) {
-          layer.setStyle({ fillOpacity: 0.9 });
-          window.setTimeout(() => layer.openPopup(), 100);
-        }
-      }
-
-      layer.on({
-        mouseover: () => {
-          if (layer instanceof L.Path) {
-            layer.setStyle({ fillOpacity: 0.7 });
-          }
-        },
-        mouseout: () => {
-          if (layer instanceof L.Path) {
-            layer.setStyle({ fillOpacity: 0.2 });
-          }
-        },
-      });
     },
-    [defaultArea, locationOptions, typeOptions],
+    [locationOptions, typeOptions],
   );
+  const onEachFeature = useGeoJsonFeatureInteractions({
+    getPopupContent,
+    isHighlighted: (feature) => feature.properties?.id === defaultArea,
+  });
 
   return (
     <LeafletGeoJSONLayer

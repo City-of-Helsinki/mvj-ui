@@ -2,6 +2,7 @@ import React, { useCallback, useMemo } from "react";
 import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import L from "leaflet";
 import LeafletGeoJSONLayer from "@/components/map/LeafletGeoJSONLayer";
+import useGeoJsonFeatureInteractions from "@/components/map/useGeoJsonFeatureInteractions";
 import { initializeAreaNote, showEditMode } from "@/areaNote/slice";
 import { Methods } from "@/enums";
 import {
@@ -36,60 +37,44 @@ const AreaNotesLayer: React.FC<Props> = ({
     return convertAreaNoteListToGeoJson(areaNotes);
   }, [areaNotes]);
 
-  const onEachFeature = useCallback(
-    (feature: GeoJSON.Feature, layer: L.Layer) => {
-      if (feature.properties) {
-        const { id, modified_at, note, user } = feature.properties;
-        layer.bindPopup(`<p>
+  const getPopupContent = useCallback((feature: GeoJSON.Feature) => {
+    const { modified_at, note, user } = feature.properties ?? {};
+    return `<p>
           <strong>${formatDate(modified_at)} ${getUserFullName(user)}</strong><br/>
           ${note || "-"}
-        </p>`);
-
-        if (id === defaultAreaNote) {
-          if (layer instanceof L.Path) {
-            layer.setStyle({ fillOpacity: 0.9 });
-          }
-          window.setTimeout(() => layer.openPopup(), 100);
-        }
+        </p>`;
+  }, []);
+  const onClick = useCallback(
+    (feature: GeoJSON.Feature, event: L.LeafletMouseEvent) => {
+      if (
+        !feature.properties ||
+        !isMethodAllowed(areaNoteMethods, Methods.PATCH) ||
+        !allowToEdit
+      ) {
+        return;
       }
 
-      layer.on({
-        click: (event: L.LeafletMouseEvent) => {
-          if (
-            !feature.properties ||
-            !isMethodAllowed(areaNoteMethods, Methods.PATCH) ||
-            !allowToEdit
-          ) {
-            return;
-          }
-
-          dispatch(
-            initializeAreaNote({
-              geoJSON: convertFeatureToFeatureCollection(feature),
-              id: feature.properties.id,
-              isNew: false,
-              note: feature.properties.note,
-            }),
-          );
-          dispatch(showEditMode());
-          if (event.target instanceof L.Path) {
-            event.target.setStyle({ fillOpacity: 0.2 });
-          }
-        },
-        mouseover: (event: L.LeafletMouseEvent) => {
-          if (!isEditMode && event.target instanceof L.Path) {
-            event.target.setStyle({ fillOpacity: 0.7 });
-          }
-        },
-        mouseout: (event: L.LeafletMouseEvent) => {
-          if (!isEditMode && event.target instanceof L.Path) {
-            event.target.setStyle({ fillOpacity: 0.2 });
-          }
-        },
-      });
+      dispatch(
+        initializeAreaNote({
+          geoJSON: convertFeatureToFeatureCollection(feature),
+          id: feature.properties.id,
+          isNew: false,
+          note: feature.properties.note,
+        }),
+      );
+      dispatch(showEditMode());
+      if (event.target instanceof L.Path) {
+        event.target.setStyle({ fillOpacity: 0.2 });
+      }
     },
-    [allowToEdit, areaNoteMethods, defaultAreaNote, dispatch, isEditMode],
+    [allowToEdit, areaNoteMethods, dispatch],
   );
+  const onEachFeature = useGeoJsonFeatureInteractions({
+    getPopupContent,
+    isHighlighted: (feature) => feature.properties?.id === defaultAreaNote,
+    isHoverEnabled: () => !isEditMode,
+    onClick,
+  });
 
   return (
     <LeafletGeoJSONLayer
