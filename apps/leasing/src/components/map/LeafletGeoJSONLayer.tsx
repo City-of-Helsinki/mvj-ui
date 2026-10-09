@@ -1,28 +1,31 @@
 import { useEffect, useRef } from "react";
 import L from "leaflet";
-import { useLeafletMap } from "./LeafletMapContext";
+import { useLeafletMap, type LeafletLayerContainer } from "./LeafletMapContext";
 
 type Props = {
-  map?: L.Map | null;
+  layerContainer?: LeafletLayerContainer | null;
   data: GeoJSON.GeoJsonObject;
   style?: L.PathOptions;
   onEachFeature?: (feature: GeoJSON.Feature, layer: L.Layer) => void;
 };
 
 const LeafletGeoJSONLayer = ({
-  map: mapProp,
+  layerContainer: layerContainerProp,
   data,
   style,
   onEachFeature,
 }: Props) => {
-  const contextMap = useLeafletMap();
-  const map = mapProp === undefined ? contextMap : mapProp;
+  const contextLayerContainer = useLeafletMap();
+  const layerContainer =
+    layerContainerProp === undefined
+      ? contextLayerContainer
+      : layerContainerProp;
   const onEachFeatureRef = useRef(onEachFeature);
 
   onEachFeatureRef.current = onEachFeature;
 
   useEffect(() => {
-    if (!map) {
+    if (!layerContainer) {
       return;
     }
 
@@ -31,12 +34,14 @@ const LeafletGeoJSONLayer = ({
       onEachFeature: (feature, featureLayer) => {
         onEachFeatureRef.current?.(feature, featureLayer);
       },
-    }).addTo(map);
+    });
+
+    layerContainer.addLayer(layer);
 
     return () => {
-      layer.removeFrom(map);
+      layerContainer.removeLayer(layer);
     };
-  }, [data, map, style]);
+  }, [data, layerContainer, style]);
 
   return null;
 };

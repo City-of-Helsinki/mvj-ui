@@ -52,6 +52,50 @@ export type MapViewport = {
   zoom: number;
 };
 
+type OverlayLayerProps = Props["overlayLayers"][number] & {
+  layerControl: L.Control.Layers;
+  map: L.Map;
+};
+
+const OverlayLayer: React.FC<OverlayLayerProps> = ({
+  checked,
+  component,
+  layerControl,
+  map,
+  name,
+}) => {
+  const layerRef = useRef<L.LayerGroup | null>(null);
+
+  if (!layerRef.current) {
+    layerRef.current = L.layerGroup();
+  }
+
+  const layer = layerRef.current;
+
+  useEffect(() => {
+    layerControl.addOverlay(layer, name);
+
+    return () => {
+      layerControl.removeLayer(layer);
+      layer.removeFrom(map);
+    };
+  }, [layer, layerControl, map, name]);
+
+  useEffect(() => {
+    if (checked) {
+      layer.addTo(map);
+    } else {
+      layer.removeFrom(map);
+    }
+  }, [checked, layer, map]);
+
+  return (
+    <LeafletMapContext.Provider value={layer}>
+      {component}
+    </LeafletMapContext.Provider>
+  );
+};
+
 const MapContainer: React.FC<Props> = ({
   bounds,
   center,
@@ -69,6 +113,7 @@ const MapContainer: React.FC<Props> = ({
   const onMapDidMountRef = useRef(onMapDidMount);
   const onViewportChangedRef = useRef(onViewportChanged);
   const onMapReadyRef = useRef(onMapReady);
+  const layerControlRef = useRef<L.Control.Layers | null>(null);
   const mapConfigurationRef = useRef({
     bounds,
     center,
@@ -140,7 +185,7 @@ const MapContainer: React.FC<Props> = ({
       ),
     };
     baseLayers.Karttasarja.addTo(map);
-    L.control
+    layerControlRef.current = L.control
       .layers(baseLayers, undefined, { position: "topright" })
       .addTo(map);
     if (configuration.enableSearch) {
@@ -160,6 +205,7 @@ const MapContainer: React.FC<Props> = ({
     onMapDidMountRef.current?.(getMapValues());
 
     return () => {
+      layerControlRef.current = null;
       setMap(null);
       map.remove();
     };
@@ -174,9 +220,18 @@ const MapContainer: React.FC<Props> = ({
           </LoaderWrapper>
         )}
       </div>
-      {overlayLayers?.map(({ checked, component, name }) => (
-        <React.Fragment key={name}>{checked ? component : null}</React.Fragment>
-      ))}
+      {map &&
+        layerControlRef.current &&
+        overlayLayers?.map(({ checked, component, name }) => (
+          <OverlayLayer
+            key={name}
+            checked={checked}
+            component={component}
+            layerControl={layerControlRef.current}
+            map={map}
+            name={name}
+          />
+        ))}
       {children}
     </LeafletMapContext.Provider>
   );
