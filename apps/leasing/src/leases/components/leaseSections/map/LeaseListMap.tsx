@@ -103,7 +103,11 @@ class LeaseListMap extends PureComponent<Props & WithRouterProps, State> {
 
   getOverlayLayers = () => {
     const layers = [];
-    const { areaNotes, usersPermissions } = this.props;
+    const {
+      areaNotes,
+      location: { search },
+      usersPermissions,
+    } = this.props;
     const { leasesGeoJson, stateOptions } = this.state;
     {
       hasPermissions(usersPermissions, UsersPermissions.VIEW_AREANOTE) &&
@@ -126,6 +130,7 @@ class LeaseListMap extends PureComponent<Props & WithRouterProps, State> {
           key="leases"
           color={MAP_COLORS[0 % MAP_COLORS.length]}
           leasesGeoJson={leasesGeoJson}
+          search={search}
           stateOptions={stateOptions}
         />
       ),
