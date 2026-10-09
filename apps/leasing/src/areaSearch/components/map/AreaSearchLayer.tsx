@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
-import L from "leaflet";
 import LeafletGeoJSONLayer from "@/components/map/LeafletGeoJSONLayer";
+import useGeoJsonFeatureInteractions from "@/components/map/useGeoJsonFeatureInteractions";
 import { flowRight } from "lodash-es";
 import { getRouteById, Routes } from "@/root/routes";
 import type { Attributes, LeafletGeoJson } from "types";
@@ -32,32 +32,26 @@ const AreaSearchLayer: React.FC<Props> = ({
   };
 
   const getPopupContent = useCallback(
-    (
-      search: Record<string, any>,
-    ) => `<p class="title"><strong><a href="${getSearchLink(search.id)}">${search.identifier}</a></strong></p>
+    (feature: GeoJSON.Feature) => {
+      const search = feature.properties?.search;
+      if (!search) return;
+
+      return `<p class="title"><strong><a href="${getSearchLink(search.id)}">${search.identifier}</a></strong></p>
       <p>${search.address ? search.address + ", " : ""}${search.district || ""}</p>
       <p>${formatDate(search.start_date) || "??.??.????"}–${formatDate(search.end_date) || ""}</p>
       <p><strong>Käyttötarkoitus: </strong>${getLabelOfOption(intendedUseOptions, search.intended_use) || "-"}</p>
       <p><strong>Vuokranantaja: </strong>${getLabelOfOption(lessorOptions, search.lessor) || "-"}</p>
-      <p><strong>Tila: </strong>${getLabelOfOption(stateOptions, search.state) || "-"}</p>`,
+      <p><strong>Tila: </strong>${getLabelOfOption(stateOptions, search.state) || "-"}</p>`;
+    },
     [intendedUseOptions, lessorOptions, stateOptions],
   );
+  const onEachFeature = useGeoJsonFeatureInteractions({ getPopupContent });
 
   return (
     <LeafletGeoJSONLayer
       data={areaSearchesGeoJson}
       style={{ color }}
-      onEachFeature={(feature, layer) => {
-        const search = feature.properties?.search;
-        if (!search) return;
-        layer.bindPopup(getPopupContent(search));
-        layer.on({
-          mouseover: () =>
-            layer instanceof L.Path && layer.setStyle({ fillOpacity: 0.7 }),
-          mouseout: () =>
-            layer instanceof L.Path && layer.setStyle({ fillOpacity: 0.2 }),
-        });
-      }}
+      onEachFeature={onEachFeature}
     />
   );
 };

@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useCallback } from "react";
 import LeafletGeoJSONLayer from "@/components/map/LeafletGeoJSONLayer";
+import useGeoJsonFeatureInteractions from "@/components/map/useGeoJsonFeatureInteractions";
 import { getRouteById, Routes } from "@/root/routes";
 import type { LeafletGeoJson } from "types";
 
@@ -27,22 +28,19 @@ const TargetListLayer: React.FC<Props> = ({ color, targetsGeoJson }) => {
   const getApplicationsLink = (identifier: string) => {
     return `${getRouteById(Routes.PLOT_APPLICATIONS)}/?visualization=table&identifier=${identifier}`;
   };
+  const getPopupContent = useCallback((feature: GeoJSON.Feature) => {
+    const target = feature.properties?.target;
+    if (!target) return;
+
+    return `<a href="${getApplicationsLink(target.identifier)}">${target.identifier}</a><br/><strong>Osoite:</strong> ${target.address.address}`;
+  }, []);
+  const onEachFeature = useGeoJsonFeatureInteractions({ getPopupContent });
 
   return (
     <LeafletGeoJSONLayer
       data={targetsGeoJson}
       style={{ color }}
-      onEachFeature={(feature, layer) => {
-        const target = feature.properties?.target;
-        if (!target) return;
-        layer.bindPopup(
-          `<a href="${getApplicationsLink(target.identifier)}">${target.identifier}</a><br/><strong>Osoite:</strong> ${target.address.address}`,
-        );
-        layer.on({
-          mouseover: onMouseOver,
-          mouseout: onMouseOut,
-        });
-      }}
+      onEachFeature={onEachFeature}
     />
   );
 };
