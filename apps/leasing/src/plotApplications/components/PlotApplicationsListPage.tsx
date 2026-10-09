@@ -582,7 +582,6 @@ class PlotApplicationsListPage extends PureComponent<
           )}
           {isMap && (
             <ApplicationListMap
-              allowToEdit={false}
               isLoading={isFetching}
               onViewportChanged={this.handleMapViewportChanged}
             />
