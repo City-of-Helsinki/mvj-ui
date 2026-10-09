@@ -879,7 +879,6 @@ class AreaSearchApplicationListPage extends PureComponent<
           )}
           {visualizationType === "map" && (
             <AreaSearchListMap
-              allowToEdit={false}
               isLoading={isFetchingByBBox}
               onViewportChanged={this.handleMapViewportChanged}
             />

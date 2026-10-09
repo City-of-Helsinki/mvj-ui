@@ -1004,7 +1004,6 @@ const LeaseListPage: React.FC = () => {
               </Tabs.TabPanel>
               <Tabs.TabPanel>
                 <LeaseListMap
-                  allowToEdit={false}
                   isLoading={isFetchingByBBox}
                   onViewportChanged={handleMapViewportChanged}
                 />
