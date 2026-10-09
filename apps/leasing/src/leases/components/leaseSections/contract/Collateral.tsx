@@ -27,9 +27,10 @@ import {
   AccountNumberField,
   DocumentTypeField,
 } from "@/leases/components/leaseSections/contract/CollateralFields";
+import type { Collateral } from "@/leases/types";
 export type CollateralFieldProps = {
   attributes: Attributes;
-  collateral: Record<string, any>;
+  collateral: Collateral;
 };
 
 const CollateralEmpty = ({ attributes, collateral }: CollateralFieldProps) => {
@@ -320,7 +321,7 @@ const CollateralOther = ({ attributes, collateral }: CollateralFieldProps) => {
 };
 
 type Props = {
-  collateral: Record<string, any>;
+  collateral: Collateral;
 };
 
 const Collateral = ({ collateral }: Props) => {

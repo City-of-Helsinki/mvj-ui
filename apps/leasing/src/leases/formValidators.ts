@@ -16,6 +16,7 @@ import { getAttributes as getLeaseAttributes } from "@/leases/selectors";
 import { dateGreaterOrEqual } from "@/components/form/validations";
 import { isInvoiceBillingPeriodRequired } from "@/invoices/helpers";
 import { required } from "@/components/form/validations";
+import type { Collateral } from "@/leases/types";
 
 /**
  * Validate summary form
@@ -363,7 +364,7 @@ export const warnRentForm = (
  * @returns {Object[]}
  */
 const getContractCollateralErrors = (
-  collaterals: Array<Record<string, any>>,
+  collaterals: Array<Collateral>,
 ): Array<Record<string, any>> => {
   const errorArray = [];
   collaterals.forEach((collateral, collateralIndex) => {

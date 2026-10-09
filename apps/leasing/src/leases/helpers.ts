@@ -57,6 +57,8 @@ import type {
   PeriodicRentAdjustmentType,
   CreateLeaseFormValues,
   BasisOfRent,
+  Collateral,
+  CollateralPayload,
 } from "./types";
 import type { CommentList } from "@/comments/types";
 import type {
@@ -727,7 +729,7 @@ export const getContentContractChanges = (
  */
 export const getContentContractCollaterals = (
   contract: Record<string, any>,
-): Array<Record<string, any>> =>
+): Array<Collateral> =>
   get(contract, "collaterals", []).map((collateral) => {
     return {
       id: collateral.id,
@@ -752,7 +754,7 @@ export const getContentContractCollaterals = (
       pledgor_business_id: collateral.pledgor_business_id,
       account_number: collateral.account_number,
       document_type: collateral.document_type,
-      returned_by: collateral.returned_by,
+      returned_by: getContentUser(collateral.returned_by),
     };
   });
 
@@ -2965,12 +2967,13 @@ const getPayloadContractChanges = (
  */
 const getPayloadCollaterals = (
   contract: Record<string, any>,
-): Array<Record<string, any>> => {
+): Array<CollateralPayload> => {
   return get(contract, "collaterals", []).map((collateral) => {
     //TODO: Ensure each field is correct for each of the types.
-    const payload: Record<string, any> = {
+    const payload: CollateralPayload = {
       id: collateral.id,
       type: collateral.type,
+      other_type: collateral.other_type,
       total_amount: convertStrToDecimalNumber(collateral.total_amount),
       note: collateral.note,
       start_date: collateral.start_date,
@@ -2993,7 +2996,7 @@ const getPayloadCollaterals = (
             collateral.pledgor_national_identification_number,
           pledgor_business_id: collateral.pledgor_business_id,
           account_number: collateral.account_number,
-        };
+        } satisfies CollateralPayload;
 
       case CollateralTypes.MORTGAGE_DOCUMENT:
         return {
@@ -3001,13 +3004,16 @@ const getPayloadCollaterals = (
           number: collateral.number,
           deed_date: collateral.deed_date,
           document_type: collateral.document_type,
-        };
+          subordinate_pledge: collateral.subordinate_pledge,
+          subordinate_pledgee_name: collateral.subordinate_pledgee_name,
+          subordinate_pledgee_business_id:
+            collateral.subordinate_pledgee_business_id,
+        } satisfies CollateralPayload;
 
       case CollateralTypes.OTHER:
       default:
         return {
           ...payload,
-          other_type: collateral.other_type,
           number: collateral.number,
           paid_date: collateral.paid_date,
           returned_date: collateral.returned_date,
@@ -3016,7 +3022,7 @@ const getPayloadCollaterals = (
             collateral.pledgor_national_identification_number,
           pledgor_business_id: collateral.pledgor_business_id,
           document_type: collateral.document_type,
-        };
+        } satisfies CollateralPayload;
     }
   });
 };

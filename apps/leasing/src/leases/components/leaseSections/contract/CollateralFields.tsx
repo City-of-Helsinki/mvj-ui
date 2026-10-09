@@ -7,6 +7,7 @@ import {
   LeaseContractCollateralsFieldTitles,
 } from "@/leases/enums";
 import { getUiDataLeaseKey } from "@/uiData/helpers";
+import { getUserFullName } from "@/users/helpers";
 import {
   formatDate,
   formatNumber,
@@ -163,7 +164,7 @@ export const ReturnedByField = ({
       >
         {LeaseContractCollateralsFieldTitles.RETURNED_BY}
       </FormTextTitle>
-      <FormText>{collateral.returned_by?.name || "-"}</FormText>
+      <FormText>{getUserFullName(collateral.returned_by) || "-"}</FormText>
     </>
   </Authorization>
 );

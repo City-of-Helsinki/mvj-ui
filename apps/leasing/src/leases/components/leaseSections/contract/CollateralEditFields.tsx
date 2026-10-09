@@ -19,26 +19,31 @@ export const CollateralTypeField = ({
   attributes,
   field,
   isSaveClicked,
-}: CollateralEditFieldProps) => (
-  <Authorization
-    allow={isFieldAllowedToRead(
-      attributes,
-      LeaseContractCollateralsFieldPaths.TYPE,
-    )}
-  >
-    <FormField
-      disableTouched={isSaveClicked}
-      fieldAttributes={getFieldAttributes(
+}: CollateralEditFieldProps) => {
+  const type = useFieldValue(`${field}.type`);
+  return (
+    <Authorization
+      allow={isFieldAllowedToRead(
         attributes,
         LeaseContractCollateralsFieldPaths.TYPE,
       )}
-      name={`${field}.type`}
-      overrideValues={{ label: LeaseContractCollateralsFieldTitles.TYPE }}
-      enableUiDataEdit
-      uiDataKey={getUiDataLeaseKey(LeaseContractCollateralsFieldPaths.TYPE)}
-    />
-  </Authorization>
-);
+    >
+      <FormField
+        disableTouched={isSaveClicked}
+        fieldAttributes={getFieldAttributes(
+          attributes,
+          LeaseContractCollateralsFieldPaths.TYPE,
+        )}
+        name={`${field}.type`}
+        overrideValues={{ label: LeaseContractCollateralsFieldTitles.TYPE }}
+        //TODO: Uncomment
+        // disabled={!!type}
+        enableUiDataEdit
+        uiDataKey={getUiDataLeaseKey(LeaseContractCollateralsFieldPaths.TYPE)}
+      />
+    </Authorization>
+  );
+};
 
 export const TotalAmountField = ({
   attributes,
@@ -235,7 +240,6 @@ export const ThirdPartyPledgeField = ({
   field,
   isSaveClicked,
 }: CollateralEditFieldProps) => {
-  //TODO: MORTGAGE_DOCUMENT doesn't have sub fields
   const checked = useFieldValue(`${field}.third_party_pledge`);
   return (
     <>
@@ -255,7 +259,7 @@ export const ThirdPartyPledgeField = ({
           overrideValues={{
             label: LeaseContractCollateralsFieldTitles.THIRD_PARTY_PLEDGE,
             required: true,
-            // defaultValue: false,
+            defaultValue: false,
           }}
           enableUiDataEdit
           uiDataKey={getUiDataLeaseKey(
@@ -265,12 +269,12 @@ export const ThirdPartyPledgeField = ({
       </Authorization>
       {checked && (
         <>
-          <PledgorNameField
+          <ThirdPartyPledgorNameField
             attributes={attributes}
             field={field}
             isSaveClicked={isSaveClicked}
           />
-          <PledgorIdentifierField
+          <ThirdPartyPledgorBusinessIdField
             attributes={attributes}
             field={field}
             isSaveClicked={isSaveClicked}
@@ -281,7 +285,91 @@ export const ThirdPartyPledgeField = ({
   );
 };
 
-export const PledgorNameField = ({
+const ThirdPartyPledgorNameField = ({
+  attributes,
+  field,
+  isSaveClicked,
+}: CollateralEditFieldProps) => (
+  <Authorization
+    allow={isFieldAllowedToRead(
+      attributes,
+      LeaseContractCollateralsFieldPaths.THIRD_PARTY_PLEDGOR_NAME,
+    )}
+  >
+    <FormField
+      disableTouched={isSaveClicked}
+      fieldAttributes={getFieldAttributes(
+        attributes,
+        LeaseContractCollateralsFieldPaths.THIRD_PARTY_PLEDGOR_NAME,
+      )}
+      name={`${field}.third_party_pledgor_name`}
+      overrideValues={{
+        label: LeaseContractCollateralsFieldTitles.THIRD_PARTY_PLEDGOR_NAME,
+      }}
+      enableUiDataEdit
+      uiDataKey={getUiDataLeaseKey(
+        LeaseContractCollateralsFieldPaths.THIRD_PARTY_PLEDGOR_NAME,
+      )}
+    />
+  </Authorization>
+);
+
+const ThirdPartyPledgorBusinessIdField = ({
+  attributes,
+  field,
+  isSaveClicked,
+}: CollateralEditFieldProps) => (
+  <Authorization
+    allow={isFieldAllowedToRead(
+      attributes,
+      LeaseContractCollateralsFieldPaths.THIRD_PARTY_PLEDGOR_BUSINESS_ID,
+    )}
+  >
+    <FormField
+      disableTouched={isSaveClicked}
+      fieldAttributes={getFieldAttributes(
+        attributes,
+        LeaseContractCollateralsFieldPaths.THIRD_PARTY_PLEDGOR_BUSINESS_ID,
+      )}
+      validate={companyIdentifierValidator}
+      name={`${field}.third_party_pledgor_business_id`}
+      overrideValues={{
+        label:
+          LeaseContractCollateralsFieldTitles.THIRD_PARTY_PLEDGOR_BUSINESS_ID,
+      }}
+      enableUiDataEdit
+      uiDataKey={getUiDataLeaseKey(
+        LeaseContractCollateralsFieldPaths.THIRD_PARTY_PLEDGOR_BUSINESS_ID,
+      )}
+    />
+  </Authorization>
+);
+
+export const PledgorFields = ({
+  attributes,
+  field,
+  isSaveClicked,
+}: CollateralEditFieldProps) => (
+  <>
+    <PledgorNameField
+      attributes={attributes}
+      field={field}
+      isSaveClicked={isSaveClicked}
+    />
+    <PledgorIdentificationNumberField
+      attributes={attributes}
+      field={field}
+      isSaveClicked={isSaveClicked}
+    />
+    <PledgorBusinessIdField
+      attributes={attributes}
+      field={field}
+      isSaveClicked={isSaveClicked}
+    />
+  </>
+);
+
+const PledgorNameField = ({
   attributes,
   field,
   isSaveClicked,
@@ -310,63 +398,66 @@ export const PledgorNameField = ({
   </Authorization>
 );
 
-export const PledgorIdentifierField = ({
+const PledgorIdentificationNumberField = ({
   attributes,
   field,
   isSaveClicked,
-}: CollateralEditFieldProps) => {
-  return (
-    <>
-      <Authorization
-        allow={isFieldAllowedToRead(
-          attributes,
-          LeaseContractCollateralsFieldPaths.PLEDGOR_NATIONAL_IDENTIFICATION_NUMBER,
-        )}
-      >
-        <FormField
-          disableTouched={isSaveClicked}
-          fieldAttributes={getFieldAttributes(
-            attributes,
-            LeaseContractCollateralsFieldPaths.PLEDGOR_NATIONAL_IDENTIFICATION_NUMBER,
-          )}
-          validate={personalIdentifierValidator}
-          name={`${field}.pledgor_national_identification_number`}
-          overrideValues={{
-            label:
-              LeaseContractCollateralsFieldTitles.PLEDGOR_NATIONAL_IDENTIFICATION_NUMBER,
-          }}
-          enableUiDataEdit
-          uiDataKey={getUiDataLeaseKey(
-            LeaseContractCollateralsFieldPaths.PLEDGOR_NATIONAL_IDENTIFICATION_NUMBER,
-          )}
-        />
-      </Authorization>
-      <Authorization
-        allow={isFieldAllowedToRead(
-          attributes,
-          LeaseContractCollateralsFieldPaths.PLEDGOR_BUSINESS_ID,
-        )}
-      >
-        <FormField
-          disableTouched={isSaveClicked}
-          fieldAttributes={getFieldAttributes(
-            attributes,
-            LeaseContractCollateralsFieldPaths.PLEDGOR_BUSINESS_ID,
-          )}
-          validate={companyIdentifierValidator}
-          name={`${field}.pledgor_business_id`}
-          overrideValues={{
-            label: LeaseContractCollateralsFieldTitles.PLEDGOR_BUSINESS_ID,
-          }}
-          enableUiDataEdit
-          uiDataKey={getUiDataLeaseKey(
-            LeaseContractCollateralsFieldPaths.PLEDGOR_BUSINESS_ID,
-          )}
-        />
-      </Authorization>
-    </>
-  );
-};
+}: CollateralEditFieldProps) => (
+  <Authorization
+    allow={isFieldAllowedToRead(
+      attributes,
+      LeaseContractCollateralsFieldPaths.PLEDGOR_NATIONAL_IDENTIFICATION_NUMBER,
+    )}
+  >
+    <FormField
+      disableTouched={isSaveClicked}
+      fieldAttributes={getFieldAttributes(
+        attributes,
+        LeaseContractCollateralsFieldPaths.PLEDGOR_NATIONAL_IDENTIFICATION_NUMBER,
+      )}
+      validate={personalIdentifierValidator}
+      name={`${field}.pledgor_national_identification_number`}
+      overrideValues={{
+        label:
+          LeaseContractCollateralsFieldTitles.PLEDGOR_NATIONAL_IDENTIFICATION_NUMBER,
+      }}
+      enableUiDataEdit
+      uiDataKey={getUiDataLeaseKey(
+        LeaseContractCollateralsFieldPaths.PLEDGOR_NATIONAL_IDENTIFICATION_NUMBER,
+      )}
+    />
+  </Authorization>
+);
+
+const PledgorBusinessIdField = ({
+  attributes,
+  field,
+  isSaveClicked,
+}: CollateralEditFieldProps) => (
+  <Authorization
+    allow={isFieldAllowedToRead(
+      attributes,
+      LeaseContractCollateralsFieldPaths.PLEDGOR_BUSINESS_ID,
+    )}
+  >
+    <FormField
+      disableTouched={isSaveClicked}
+      fieldAttributes={getFieldAttributes(
+        attributes,
+        LeaseContractCollateralsFieldPaths.PLEDGOR_BUSINESS_ID,
+      )}
+      validate={companyIdentifierValidator}
+      name={`${field}.pledgor_business_id`}
+      overrideValues={{
+        label: LeaseContractCollateralsFieldTitles.PLEDGOR_BUSINESS_ID,
+      }}
+      enableUiDataEdit
+      uiDataKey={getUiDataLeaseKey(
+        LeaseContractCollateralsFieldPaths.PLEDGOR_BUSINESS_ID,
+      )}
+    />
+  </Authorization>
+);
 
 export const ContractPartyField = ({
   attributes,

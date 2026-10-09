@@ -35,6 +35,7 @@ import {
   StartDateField,
   EndDateField,
   DocumentTypeField,
+  PledgorFields,
 } from "@/leases/components/leaseSections/contract/CollateralEditFields";
 
 export type CollateralEditFieldProps = {
@@ -106,6 +107,7 @@ const CollateralFinancialGuarantee = (
       <ContractPartyField {...collateralFieldProps} />
       <ContractPartyIdentifierField {...collateralFieldProps} />
       <AccountNumberField {...collateralFieldProps} />
+      <PledgorFields {...collateralFieldProps} />
     </>
   );
 };
@@ -340,6 +342,42 @@ const CollateralOther = (collateralFieldProps: CollateralEditFieldProps) => {
       <ContractPartyField {...collateralFieldProps} />
       <ContractPartyIdentifierField {...collateralFieldProps} />
       <DocumentTypeField {...collateralFieldProps} />
+      <PledgorFields {...collateralFieldProps} />
+    </>
+  );
+};
+
+const CollateralSelfDebtorGuarantee = (
+  collateralFieldProps: CollateralEditFieldProps,
+) => {
+  const { attributes, field, isSaveClicked } = collateralFieldProps;
+  return (
+    <>
+      <Row>
+        <Column small={6} medium={4} large={2}>
+          <CollateralTypeField {...collateralFieldProps} />
+        </Column>
+      </Row>
+      <ContractPartyField {...collateralFieldProps} />
+      <ContractPartyIdentifierField {...collateralFieldProps} />
+      {/* TODO: Number field here? */}
+      <DocumentTypeField {...collateralFieldProps} />
+      <ThirdPartyPledgeField {...collateralFieldProps} />
+    </>
+  );
+};
+
+const CollateralPledgeOfFunds = (
+  collateralFieldProps: CollateralEditFieldProps,
+) => {
+  const { attributes, field, isSaveClicked } = collateralFieldProps;
+  return (
+    <>
+      <Row>
+        <Column small={6} medium={4} large={2}>
+          <CollateralTypeField {...collateralFieldProps} />
+        </Column>
+      </Row>
     </>
   );
 };
@@ -385,7 +423,7 @@ const CollateralEdit: React.FC<Props> = ({
         {collateralType === CollateralTypes.MORTGAGE_DOCUMENT && (
           <CollateralMortgageDocument {...collateralFieldProps} />
         )}
-        {/* {collateralType === CollateralTypes.SELF_DEBTOR_GUARANTEE && (
+        {collateralType === CollateralTypes.SELF_DEBTOR_GUARANTEE && (
           <CollateralSelfDebtorGuarantee
             attributes={attributes}
             field={field}
@@ -398,9 +436,9 @@ const CollateralEdit: React.FC<Props> = ({
             field={field}
             isSaveClicked={isSaveClicked}
           />
-        )} */}
+        )}
         {Boolean(collateralType) &&
-          (collateralType === CollateralTypes.OTHER || collateralType > 3) && (
+          (collateralType === CollateralTypes.OTHER || collateralType > 5) && (
             <CollateralOther {...collateralFieldProps} />
           )}
       </BoxContentWrapper>

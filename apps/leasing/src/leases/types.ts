@@ -253,7 +253,7 @@ export type Collateral = {
   paid_date: string | null;
   returned_date: string | null;
   note: string | null;
-  third_party_pledge: boolean | null;
+  third_party_pledge: boolean;
   contract_party: Record<string, any> | null;
   contract_party_national_identification_number: string | null;
   contract_party_business_id: string | null;
@@ -261,9 +261,39 @@ export type Collateral = {
   pledgor_national_identification_number: string | null;
   pledgor_business_id: string | null;
   account_number: string | null;
-  document_type: "mail" | "electronic" | null;
+  document_type: DocumentType | null;
   returned_by: User | null;
+  subordinate_pledge: boolean;
+  subordinate_pledgee_name: string | null;
+  subordinate_pledgee_business_id: string | null;
 };
+export type CollateralPayload = {
+  id?: number;
+  type: number;
+  other_type: string | null;
+  total_amount: number | null;
+  note: string | null;
+  start_date: string | null;
+  end_date: string | null;
+  third_party_pledge: boolean | null;
+  contract_party: Record<string, any> | null;
+  contract_party_national_identification_number: string | null;
+  contract_party_business_id: string | null;
+  returned_by: number | null;
+  paid_date?: string | null;
+  returned_date?: string | null;
+  pledgor_name?: string | null;
+  pledgor_national_identification_number?: string | null;
+  pledgor_business_id?: string | null;
+  account_number?: string | null;
+  number?: string | null;
+  deed_date?: string | null;
+  document_type?: DocumentType | null;
+  subordinate_pledge?: boolean | null;
+  subordinate_pledgee_name?: string | null;
+  subordinate_pledgee_business_id?: string | null;
+};
+type DocumentType = "mail" | "electronic";
 
 export type PeriodicRentAdjustmentType =
   "TASOTARKISTUS_20_20" | "TASOTARKISTUS_20_10";

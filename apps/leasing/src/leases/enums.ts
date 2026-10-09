@@ -1586,6 +1586,10 @@ export const LeaseContractCollateralsFieldPaths = {
   TYPE: "contracts.child.children.collaterals.child.children.type",
   THIRD_PARTY_PLEDGE:
     "contracts.child.children.collaterals.child.children.third_party_pledge",
+  THIRD_PARTY_PLEDGOR_NAME:
+    "contracts.child.children.collaterals.child.children.third_party_pledgor_name",
+  THIRD_PARTY_PLEDGOR_BUSINESS_ID:
+    "contracts.child.children.collaterals.child.children.third_party_pledgor_business_id",
   PLEDGOR_NAME:
     "contracts.child.children.collaterals.child.children.pledgor_name",
   PLEDGOR_NATIONAL_IDENTIFICATION_NUMBER:
@@ -1631,6 +1635,8 @@ export const LeaseContractCollateralsFieldTitles = {
   TOTAL_AMOUNT: "Vakuuden määrä",
   TYPE: "Vakuuden tyyppi",
   THIRD_PARTY_PLEDGE: "Vierasvelkapanttaus",
+  THIRD_PARTY_PLEDGOR_NAME: "Vierasvelkapanttauksen antajan nimi",
+  THIRD_PARTY_PLEDGOR_BUSINESS_ID: "Vierasvelkapanttauksen antajan Y-tunnus",
   PLEDGOR_NAME: "Vakuuden antajan nimi",
   PLEDGOR_NATIONAL_IDENTIFICATION_NUMBER: "Vakuuden antajan henkilötunnus",
   PLEDGOR_BUSINESS_ID: "Vakuuden antajan Y-tunnus",
