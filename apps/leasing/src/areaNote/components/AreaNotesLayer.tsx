@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import L from "leaflet";
 import LeafletGeoJSONLayer from "@/components/map/LeafletGeoJSONLayer";
@@ -24,6 +24,10 @@ type Props = {
   defaultAreaNote?: number | null | undefined;
 };
 
+const AREA_NOTE_STYLE: L.PathOptions = {
+  color: "#2196f3",
+};
+
 const AreaNotesLayer: React.FC<Props> = ({
   allowToEdit = false,
   areaNotes,
@@ -32,6 +36,8 @@ const AreaNotesLayer: React.FC<Props> = ({
   const dispatch = useAppDispatch();
   const areaNoteMethods: MethodsType = useAppSelector(getAreaNoteMethods);
   const isEditMode = useAppSelector(getIsEditMode);
+  const mapRef = useRef<L.Map | null>(null);
+  const previousIsEditModeRef = useRef(isEditMode);
 
   const areaNotesGeoJson = useMemo(() => {
     return convertAreaNoteListToGeoJson(areaNotes);
@@ -69,20 +75,35 @@ const AreaNotesLayer: React.FC<Props> = ({
     },
     [allowToEdit, areaNoteMethods, dispatch],
   );
-  const onEachFeature = useGeoJsonFeatureInteractions({
+  const onEachFeatureInteractions = useGeoJsonFeatureInteractions({
     getPopupContent,
     isHighlighted: (feature) => feature.properties?.id === defaultAreaNote,
     isHoverEnabled: () => !isEditMode,
     onClick,
   });
+  const onEachFeature = useCallback(
+    (feature: GeoJSON.Feature, layer: L.Layer) => {
+      onEachFeatureInteractions(feature, layer);
+      layer.on("add", () => {
+        mapRef.current = (layer as L.Layer & { _map?: L.Map })._map ?? null;
+      });
+    },
+    [onEachFeatureInteractions],
+  );
+
+  useEffect(() => {
+    if (previousIsEditModeRef.current && !isEditMode) {
+      mapRef.current?.closePopup();
+    }
+
+    previousIsEditModeRef.current = isEditMode;
+  }, [isEditMode]);
 
   return (
     <LeafletGeoJSONLayer
       data={areaNotesGeoJson}
       onEachFeature={onEachFeature}
-      style={{
-        color: "#2196f3",
-      }}
+      style={AREA_NOTE_STYLE}
     />
   );
 };
