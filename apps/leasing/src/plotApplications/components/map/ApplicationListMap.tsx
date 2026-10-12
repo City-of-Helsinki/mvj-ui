@@ -58,7 +58,8 @@ const ApplicationListMap = ({ isLoading, onViewportChanged }: OwnProps) => {
   const bounds = useMemo(() => {
     const searchQuery = getUrlParams(location.search);
     return searchQuery?.search
-      ? getBoundsFromFeatures(applicationsGeoJson)
+      ? (getBoundsFromFeatures(applicationsGeoJson) as unknown as
+          LatLngBounds | undefined)
       : getMapBounds(location.search);
   }, [applicationsGeoJson, location.search]);
   const handleViewportChanged = useCallback(

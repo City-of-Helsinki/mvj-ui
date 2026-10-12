@@ -1,6 +1,29 @@
-import { get } from "lodash-es";
+import { mergePolygonFeaturesToMultiPolygon } from "@/components/map/geojson";
 import { getCoordinatesOfGeometry } from "@/util/map";
 import type { AreaNote } from "./types";
+
+type AreaNoteProperties = {
+  id?: number;
+  modified_at?: string;
+  note?: string;
+  user?: Record<string, any>;
+};
+
+export type AreaNoteMultiPolygonFeature = GeoJSON.Feature<
+  GeoJSON.MultiPolygon,
+  AreaNoteProperties
+>;
+
+export type AreaNotePolygonFeatureCollection = GeoJSON.FeatureCollection<
+  GeoJSON.Polygon,
+  AreaNoteProperties
+>;
+
+export type AreaNotePayload = {
+  geometry: GeoJSON.MultiPolygon;
+  id?: number;
+  note?: string;
+};
 
 /**
  * Convert area note list to geojson
@@ -9,8 +32,8 @@ import type { AreaNote } from "./types";
  */
 export const convertAreaNoteListToGeoJson = (
   areaNotes: Array<Record<string, any>>,
-): Record<string, any> => {
-  const features: Array<Record<string, any>> = areaNotes.map((areaNote) => ({
+): GeoJSON.FeatureCollection => {
+  const features: Array<GeoJSON.Feature> = areaNotes.map((areaNote) => ({
     type: "Feature",
     geometry: areaNote.geometry,
     properties: {
@@ -27,14 +50,12 @@ export const convertAreaNoteListToGeoJson = (
 };
 
 /**
- * Convert single feature to feature collection
- * @param {Object} feature
- * @returns {Object}
+ * Split an area note multipolygon into editable polygon features.
  */
-export const convertFeatureToFeatureCollection = (
-  feature: Record<string, any>,
-): Record<string, any> => {
-  const polygons = get(feature, "geometry.coordinates", []);
+export const convertAreaNoteToPolygonFeatureCollection = (
+  feature: AreaNoteMultiPolygonFeature,
+): AreaNotePolygonFeatureCollection => {
+  const polygons = feature.geometry.coordinates;
   return {
     type: "FeatureCollection",
     features: polygons.map((polygon) => ({
@@ -43,27 +64,19 @@ export const convertFeatureToFeatureCollection = (
         type: "Polygon",
         coordinates: polygon,
       },
+      properties: feature.properties,
     })),
-    properties: feature.properties,
   };
 };
 
 /**
- * Convert feature collection to a single feature
- * @param {Object[]} polygons
- * @returns {Object}
+ * Create an area-note API payload from Leaflet-drawn polygon features.
  */
-export const convertFeatureCollectionToFeature = (
-  polygons: Array<Record<string, any>>,
-): Record<string, any> => {
-  const coordinates: Array<Record<string, any>> = polygons.map(
-    (polygon: Record<string, any>) => get(polygon.geometry, "coordinates"),
-  );
+export const convertDrawnFeaturesToAreaNotePayload = (
+  features: Parameters<typeof mergePolygonFeaturesToMultiPolygon>[0],
+): AreaNotePayload => {
   return {
-    geometry: {
-      coordinates: coordinates,
-      type: "MultiPolygon",
-    },
+    geometry: mergePolygonFeaturesToMultiPolygon(features),
   };
 };
 
