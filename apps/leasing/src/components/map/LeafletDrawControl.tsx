@@ -1,12 +1,15 @@
 import { useEffect } from "react";
 import L from "leaflet";
-import "leaflet-draw";
+import "@geoman-io/leaflet-geoman-free";
 
 type Props = {
   map: L.Map | null;
   featureGroup: L.FeatureGroup | null;
-  draw: L.Control.DrawOptions;
-  onCreated?: (event: L.DrawEvents.Created) => void;
+  draw: {
+    polygon?: L.PM.DrawModeOptions | false;
+    rectangle?: L.PM.DrawModeOptions | false;
+  };
+  onCreated?: (event: { layer: L.Layer }) => void;
   onDeleted?: () => void;
   onEdited?: () => void;
   onNonCommittedChange?: () => void;
@@ -26,38 +29,45 @@ const LeafletDrawControl = ({
       return;
     }
 
-    const control = new L.Control.Draw({
-      position: "topright",
-      draw,
-      edit: { featureGroup },
+    map.pm.setGlobalOptions({
+      layerGroup: featureGroup,
+      allowSelfIntersection: false,
     });
-    const handleCreated = (event: L.LeafletEvent) => {
-      const createdEvent = event as L.DrawEvents.Created;
-      featureGroup.addLayer(createdEvent.layer);
-      onCreated?.(createdEvent);
-    };
+    const polygonOptions = draw.polygon || undefined;
+    const rectangleOptions = draw.rectangle || undefined;
+    map.pm.setPathOptions(
+      polygonOptions?.pathOptions ?? rectangleOptions?.pathOptions ?? {},
+    );
+    map.pm.addControls({
+      position: "topright",
+      drawMarker: false,
+      drawCircleMarker: false,
+      drawCircle: false,
+      drawPolyline: false,
+      drawPolygon: Boolean(draw.polygon),
+      drawRectangle: Boolean(draw.rectangle),
+      editMode: true,
+      removalMode: true,
+      dragMode: false,
+      cutPolygon: false,
+      rotateMode: false,
+    });
+    const handleCreated = (event: { layer: L.Layer }) => onCreated?.(event);
     const handleDeleted = () => onDeleted?.();
     const handleEdited = () => onEdited?.();
     const handleNonCommittedChange = () => onNonCommittedChange?.();
 
-    map.addControl(control);
-    map.on(L.Draw.Event.CREATED, handleCreated);
-    map.on(L.Draw.Event.DELETED, handleDeleted);
-    map.on(L.Draw.Event.EDITED, handleEdited);
-    map.on(
-      "draw:editmove draw:editvertex draw:editstop draw:deletestop",
-      handleNonCommittedChange,
-    );
+    map.on("pm:create", handleCreated);
+    map.on("pm:remove", handleDeleted);
+    map.on("pm:edit", handleEdited);
+    map.on("pm:change", handleNonCommittedChange);
 
     return () => {
-      map.off(L.Draw.Event.CREATED, handleCreated);
-      map.off(L.Draw.Event.DELETED, handleDeleted);
-      map.off(L.Draw.Event.EDITED, handleEdited);
-      map.off(
-        "draw:editmove draw:editvertex draw:editstop draw:deletestop",
-        handleNonCommittedChange,
-      );
-      map.removeControl(control);
+      map.off("pm:create", handleCreated);
+      map.off("pm:remove", handleDeleted);
+      map.off("pm:edit", handleEdited);
+      map.off("pm:change", handleNonCommittedChange);
+      map.pm.removeControls();
     };
   }, [
     draw,
