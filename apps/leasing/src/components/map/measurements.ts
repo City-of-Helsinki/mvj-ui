@@ -1,26 +1,35 @@
 import L from "leaflet";
 
-const EARTH_RADIUS = 6371008.8;
+const EARTH_RADIUS_METERS = 6378137;
+const MIN_SEGMENT_PIXEL_DISTANCE = 30;
+
+type MeasurableLayer = L.Polyline | L.Circle;
+
+const measurementLayers = new WeakMap<MeasurableLayer, L.LayerGroup>();
+const zoomHandlers = new WeakMap<MeasurableLayer, () => void>();
+const removeHandlers = new WeakMap<MeasurableLayer, L.LeafletEventHandlerFn>();
 
 const formatDistance = (meters: number): string => {
-  if (meters < 1000) {
-    return `${Math.round(meters)} m`;
-  }
-  return `${(meters / 1000).toFixed(2)} km`;
+  const value = meters > 1000 ? meters / 1000 : meters;
+  const unit = meters > 1000 ? "km" : "m";
+
+  return value < 100
+    ? `${value.toFixed(1)} ${unit}`
+    : `${Math.round(value)} ${unit}`;
 };
 
 const formatArea = (squareMeters: number): string => {
-  if (squareMeters < 10000) {
-    return `${Math.round(squareMeters)} m²`;
-  }
-  return `${(squareMeters / 10000).toFixed(2)} ha`;
+  const value = squareMeters > 1000000 ? squareMeters / 1000000 : squareMeters;
+  const unit = squareMeters > 1000000 ? "km²" : "m²";
+
+  return value < 100
+    ? `${value.toFixed(1)} ${unit}`
+    : `${Math.round(value)} ${unit}`;
 };
 
-const getLatLngs = (layer: L.Polyline | L.Polygon): L.LatLng[] => {
+const getLatLngs = (layer: L.Polyline): L.LatLng[] => {
   const latLngs = layer.getLatLngs() as L.LatLng[] | L.LatLng[][];
-  const flatten = (items: L.LatLng[] | L.LatLng[][]): L.LatLng[] =>
-    items.flatMap((item) => (Array.isArray(item) ? flatten(item) : [item]));
-  return flatten(latLngs);
+  return (Array.isArray(latLngs[0]) ? latLngs[0] : latLngs) as L.LatLng[];
 };
 
 const getPolygonArea = (latLngs: L.LatLng[]): number => {
@@ -28,61 +37,149 @@ const getPolygonArea = (latLngs: L.LatLng[]): number => {
     return 0;
   }
 
-  const radians = latLngs.map((latLng) => ({
-    latitude: (latLng.lat * Math.PI) / 180,
-    longitude: (latLng.lng * Math.PI) / 180,
-  }));
   let area = 0;
-  for (let index = 0; index < radians.length; index += 1) {
-    const current = radians[index];
-    const next = radians[(index + 1) % radians.length];
+  for (let index = 0; index < latLngs.length; index += 1) {
+    const previous = latLngs[(index + latLngs.length - 1) % latLngs.length];
+    const current = latLngs[index];
+    const next = latLngs[(index + 1) % latLngs.length];
     area +=
-      (next.longitude - current.longitude) *
-      (2 + Math.sin(current.latitude) + Math.sin(next.latitude));
+      (((next.lng - previous.lng) * Math.PI) / 180) *
+      Math.sin((current.lat * Math.PI) / 180);
   }
-  return Math.abs((area * EARTH_RADIUS ** 2) / 2);
+  return Math.abs((area * EARTH_RADIUS_METERS ** 2) / 2);
 };
 
-const getMeasurement = (layer: L.Polyline | L.Polygon): string => {
-  const latLngs = getLatLngs(layer);
-  if (layer instanceof L.Polygon) {
-    return formatArea(getPolygonArea(latLngs));
+const createMeasurementMarker = (
+  latLng: L.LatLng,
+  measurement: string,
+  rotation = 0,
+): L.Marker =>
+  L.marker(latLng, {
+    icon: L.divIcon({
+      className: "map-measurement",
+      html: `<div style="transform: translate(-50%, -50%) rotate(${rotation}rad)">${measurement}</div>`,
+      iconSize: [0, 0],
+    }),
+    interactive: false,
+    keyboard: false,
+  });
+
+const getMap = (layer: MeasurableLayer): L.Map | undefined =>
+  (layer as MeasurableLayer & { _map?: L.Map })._map;
+
+const hideMeasurements = (layer: MeasurableLayer): void => {
+  const map = getMap(layer);
+  const layerGroup = measurementLayers.get(layer);
+  const handleZoom = zoomHandlers.get(layer);
+  const handleRemove = removeHandlers.get(layer);
+
+  if (map && handleZoom) {
+    map.off("zoomend", handleZoom);
+  }
+  if (map && layerGroup) {
+    map.removeLayer(layerGroup);
   }
 
-  let distance = 0;
-  for (let index = 1; index < latLngs.length; index += 1) {
-    distance += latLngs[index - 1].distanceTo(latLngs[index]);
+  measurementLayers.delete(layer);
+  zoomHandlers.delete(layer);
+  removeHandlers.delete(layer);
+  if (handleRemove) {
+    layer.off("remove", handleRemove);
   }
-  return formatDistance(distance);
 };
 
-const getCircleMeasurement = (circle: L.Circle): string =>
-  `${formatDistance(circle.getRadius())} radius, ${formatArea(
-    Math.PI * circle.getRadius() ** 2,
-  )}`;
+const addSegmentMeasurements = (
+  layerGroup: L.LayerGroup,
+  map: L.Map,
+  latLngs: L.LatLng[],
+  isPolygon: boolean,
+): void => {
+  const segmentCount = isPolygon ? latLngs.length : latLngs.length - 1;
+
+  for (let index = 0; index < segmentCount; index += 1) {
+    const start = latLngs[index];
+    const end = latLngs[(index + 1) % latLngs.length];
+    const startPoint = map.latLngToLayerPoint(start);
+    const endPoint = map.latLngToLayerPoint(end);
+
+    if (startPoint.distanceTo(endPoint) < MIN_SEGMENT_PIXEL_DISTANCE) {
+      continue;
+    }
+
+    const midpoint = map.layerPointToLatLng(
+      L.point((startPoint.x + endPoint.x) / 2, (startPoint.y + endPoint.y) / 2),
+    );
+    const rotation = Math.atan(
+      (endPoint.y - startPoint.y) / (endPoint.x - startPoint.x),
+    );
+    layerGroup.addLayer(
+      createMeasurementMarker(
+        midpoint,
+        formatDistance(start.distanceTo(end)),
+        rotation,
+      ),
+    );
+  }
+};
 
 export const showMeasurements = (layer: L.Layer): void => {
   if (!(layer instanceof L.Polyline) && !(layer instanceof L.Circle)) {
     return;
   }
 
-  const measurement =
-    layer instanceof L.Circle
-      ? getCircleMeasurement(layer)
-      : getMeasurement(layer);
-  layer.bindTooltip(measurement, {
-    permanent: true,
-    direction: "center",
-    className: "map-measurement",
-  });
-  layer.openTooltip();
+  const map = getMap(layer);
+  if (!map || measurementLayers.has(layer)) {
+    return;
+  }
+
+  const layerGroup = L.layerGroup().addTo(map);
+  const handleZoom = () => updateMeasurements(layer);
+  const handleRemove = () => hideMeasurements(layer);
+  measurementLayers.set(layer, layerGroup);
+  zoomHandlers.set(layer, handleZoom);
+  removeHandlers.set(layer, handleRemove);
+  map.on("zoomend", handleZoom);
+  layer.on("remove", handleRemove);
+  updateMeasurements(layer);
 };
 
 export const updateMeasurements = (layer: L.Layer): void => {
-  if (!(layer instanceof L.Polyline) && !(layer instanceof L.Circle)) return;
-  const measurement =
-    layer instanceof L.Circle
-      ? getCircleMeasurement(layer)
-      : getMeasurement(layer);
-  layer.setTooltipContent(measurement);
+  if (!(layer instanceof L.Polyline) && !(layer instanceof L.Circle)) {
+    return;
+  }
+
+  const map = getMap(layer);
+  const layerGroup = measurementLayers.get(layer);
+  if (!map || !layerGroup) {
+    return;
+  }
+
+  layerGroup.clearLayers();
+
+  if (layer instanceof L.Circle) {
+    layerGroup.addLayer(
+      createMeasurementMarker(
+        layer.getLatLng(),
+        formatArea(Math.PI * layer.getRadius() ** 2),
+      ),
+    );
+    return;
+  }
+
+  const latLngs = getLatLngs(layer);
+  if (latLngs.length < 2) {
+    return;
+  }
+
+  const isPolygon = layer instanceof L.Polygon;
+  addSegmentMeasurements(layerGroup, map, latLngs, isPolygon);
+
+  if (isPolygon && latLngs.length > 2) {
+    layerGroup.addLayer(
+      createMeasurementMarker(
+        layer.getBounds().getCenter(),
+        formatArea(getPolygonArea(latLngs)),
+      ),
+    );
+  }
 };
