@@ -695,6 +695,13 @@
   transform-origin: 0;
 }
 
+.map-measurement > div {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: center;
+}
+
 .leaflet-control-fullscreen {
   box-sizing: border-box;
   margin: 0;
