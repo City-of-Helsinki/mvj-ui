@@ -1,60 +1,30 @@
 import { isArray } from "lodash-es";
 import * as L from "leaflet";
-import "leaflet-draw";
 import type { LatLngBounds } from "leaflet";
 
 /**
- * Translate leaflet draw literals in Finnish
+ * Translate Geoman literals in Finnish.
  */
-export const localizeMap = (): void => {
-  L.drawLocal.draw.handlers.circle.tooltip.start =
-    "Klikkaa ja raahaa piirtääksesi ympyrän";
-  L.drawLocal.draw.handlers.circle.radius = "Säde";
-  L.drawLocal.draw.handlers.polygon.tooltip.start =
-    "Aloita alueen piirtäminen klikkaamalla.";
-  L.drawLocal.draw.handlers.polygon.tooltip.cont =
-    "Jatka alueen piirtämistä klikkaamalla";
-  L.drawLocal.draw.handlers.polygon.tooltip.end =
-    "Klikkaa ensimmäistä pistettä kuvion päättämiseksi";
-  L.drawLocal.draw.handlers.polyline.error =
-    "<strong>Virhe:</strong> kuvion reunat ei saa leikata toisiaan!";
-  L.drawLocal.draw.handlers.polyline.tooltip.start =
-    "Aloita viivan piirtäminen klikkaamalla.";
-  L.drawLocal.draw.handlers.polyline.tooltip.cont =
-    "Jatka viivan piirtämistä klikkaamalla";
-  L.drawLocal.draw.handlers.polyline.tooltip.end =
-    "Klikkaa viimeistä pistettä viivan päättämiseksi";
-  L.drawLocal.draw.handlers.rectangle.tooltip.start =
-    "Klikkaa ja raahaa piirtääksesi suorakulmion";
-  L.drawLocal.draw.handlers.simpleshape.tooltip.end =
-    "Vapauta hiiren painike päättääksesi piirtämisen.";
-  L.drawLocal.edit.handlers.edit.tooltip.text =
-    "Muokkaa ominaisuuksia vetämällä kahvoja";
-  L.drawLocal.edit.handlers.edit.tooltip.subtext =
-    "Klikkaa peruuta-painiketta kumotaksesi muutokset";
-  L.drawLocal.edit.handlers.remove.tooltip.text =
-    "Klikkaa aluetta poistaaksesi sen";
-  L.drawLocal.draw.toolbar.actions.title = "Peruuta piirtäminen";
-  L.drawLocal.draw.toolbar.actions.text = "Peruuta";
-  L.drawLocal.draw.toolbar.finish.title = "Lopeta piirtäminen";
-  L.drawLocal.draw.toolbar.finish.text = "Lopeta";
-  L.drawLocal.draw.toolbar.undo.title = "Poista viimeisin piirretty piste";
-  L.drawLocal.draw.toolbar.undo.text = "Poista viimeisin piste";
-  L.drawLocal.edit.toolbar.actions.save.title = "Tallenna muutokset";
-  L.drawLocal.edit.toolbar.actions.save.text = "Tallenna";
-  L.drawLocal.edit.toolbar.actions.cancel.title = "Peruuta muutokset";
-  L.drawLocal.edit.toolbar.actions.cancel.text = "Peruuta";
-  L.drawLocal.edit.toolbar.actions.clearAll.title = "Poista kaikki";
-  L.drawLocal.edit.toolbar.actions.clearAll.text = "Poista kaikki";
-  L.drawLocal.draw.toolbar.buttons.polyline = "Piirrä viiva";
-  L.drawLocal.draw.toolbar.buttons.polygon = "Piirrä monikulmio";
-  L.drawLocal.draw.toolbar.buttons.rectangle = "Piirrä suorakaide";
-  L.drawLocal.draw.toolbar.buttons.circle = "Piirrä ympyrä";
-  L.drawLocal.edit.toolbar.buttons.editDisabled = "Ei muokattavia alueita";
-  L.drawLocal.edit.toolbar.buttons.edit = "Muokkaa alueita";
-  L.drawLocal.edit.toolbar.buttons.editDisabled = "Ei muokattavia alueita";
-  L.drawLocal.edit.toolbar.buttons.remove = "Poista alueita";
-  L.drawLocal.edit.toolbar.buttons.removeDisabled = "Ei poistettavia alueita";
+export const localizeMap = (map: L.Map): void => {
+  map.pm.setLang("fi", {
+    tooltips: {
+      firstVertex: "Aloita alueen piirtäminen klikkaamalla.",
+      continueLine: "Jatka alueen piirtämistä klikkaamalla",
+      finishPoly: "Klikkaa ensimmäistä pistettä kuvion päättämiseksi",
+      finishRect: "Vapauta hiiren painike päättääksesi piirtämisen.",
+    },
+    actions: {
+      cancel: "Peruuta",
+      finish: "Lopeta",
+      removeLastVertex: "Poista viimeisin piste",
+    },
+    buttonTitles: {
+      drawPolyButton: "Piirrä monikulmio",
+      drawRectButton: "Piirrä suorakaide",
+      editButton: "Muokkaa alueita",
+      deleteButton: "Poista alueita",
+    },
+  });
 };
 
 /**
@@ -217,17 +187,12 @@ export const getAreaFromGeoJSON = (geometry: Record<string, any>): number => {
 
     case "MultiPolygon":
       L.GeoJSON.coordsToLatLngs(geometry.coordinates, 2).forEach((latLngs) => {
-        latLngs.forEach((latLng) => {
-          const polygonArea = L.GeometryUtil.geodesicArea(latLng);
-          area += polygonArea;
-        });
+        area += getPolygonArea(latLngs);
       });
       break;
 
     case "Polygon":
-      L.GeoJSON.coordsToLatLngs(geometry.coordinates, 1).forEach((latLng) => {
-        area = L.GeometryUtil.geodesicArea(latLng);
-      });
+      area = getPolygonArea(L.GeoJSON.coordsToLatLngs(geometry.coordinates, 1));
       break;
 
     default:
@@ -236,3 +201,28 @@ export const getAreaFromGeoJSON = (geometry: Record<string, any>): number => {
 
   return area;
 };
+
+const getGeodesicArea = (latLngs: Array<L.LatLng>): number => {
+  const earthRadius = 6378137;
+  const degreesToRadians = Math.PI / 180;
+  let area = 0;
+
+  for (let index = 0; index < latLngs.length; index += 1) {
+    const current = latLngs[index];
+    const previous = latLngs[(index + latLngs.length - 1) % latLngs.length];
+    area +=
+      (previous.lng - current.lng) *
+      degreesToRadians *
+      (2 + Math.sin(previous.lat * degreesToRadians) +
+        Math.sin(current.lat * degreesToRadians));
+  }
+
+  return Math.abs((area * earthRadius * earthRadius) / 2);
+};
+
+const getPolygonArea = (rings: Array<Array<L.LatLng>>): number =>
+  rings.reduce(
+    (area, ring, index) =>
+      area + (index === 0 ? getGeodesicArea(ring) : -getGeodesicArea(ring)),
+    0,
+  );

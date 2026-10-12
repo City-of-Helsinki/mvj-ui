@@ -10,37 +10,9 @@ import babel from '@rollup/plugin-babel';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const workspaceRoot = path.resolve(__dirname, '../..');
 
-function patchReactLeafletDrawImports() {
-  return {
-    name: 'patch-react-leaflet-draw-imports',
-    enforce: 'pre',
-    transform(code, id) {
-      if (
-        id.includes('node_modules/react-leaflet-draw/') &&
-        code.includes("import Draw from 'leaflet-draw';")
-      ) {
-        return code.replace(
-          /import Draw from ['\"]leaflet-draw['\"];?/g,
-          "import * as Draw from 'leaflet-draw';"
-        );
-      }
-      return code;
-    },
-  };
-}
-
 export default defineConfig({
   root: __dirname,
   plugins: [
-    patchReactLeafletDrawImports(),
-    viteStaticCopy({
-      targets: [
-        {
-          src: path.resolve(workspaceRoot, 'node_modules/leaflet-draw/dist/images/*'),
-          dest: 'assets/images',
-        },
-      ],
-    }),
     react({ jsxRuntime: 'classic' }),
     commonjs(),
     babel({

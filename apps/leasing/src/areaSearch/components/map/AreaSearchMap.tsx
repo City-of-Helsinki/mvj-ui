@@ -6,10 +6,6 @@ import React, {
   useState,
 } from "react";
 import L from "leaflet";
-// This is a hack for Leaflet Draw, the issue and solution described at:
-// https://github.com/Leaflet/Leaflet.draw/issues/1026#issuecomment-986702652
-// @ts-ignore
-window.type = true;
 import { throttle } from "lodash-es";
 import classNames from "classnames";
 import MapContainer from "@/areaNote/components/MapContainer";
@@ -24,9 +20,9 @@ import {
   type DrawnPolygonFeature,
   type GeoJsonPolygonLayer,
 } from "@/components/map/geojson";
+import { localizeMap } from "@/util/map";
 const SHAPE_COLOR = "#9c27b0";
 const SHAPE_FILL_OPACITY = 0.5;
-const SHAPE_ERROR_COLOR = "#bd2719";
 type Props = {
   change: (...args: Array<any>) => any;
   hasError: boolean;
@@ -42,6 +38,7 @@ const AreaSearchMap = ({ change, hasError }: Props) => {
 
   const handleMapReady = useCallback((map: L.Map) => {
     const featureGroup = L.featureGroup().addTo(map);
+    localizeMap(map);
     setMap(map);
     setFeatureGroup(featureGroup);
   }, []);
@@ -107,21 +104,15 @@ const AreaSearchMap = ({ change, hasError }: Props) => {
           onEdited={handleAction}
           onNonCommittedChange={handleNonCommittedChange}
           draw={{
-            circlemarker: false,
-            circle: false,
-            marker: false,
-            polyline: false,
             polygon: {
-              allowIntersection: false,
-              showArea: true,
-              drawError: { color: SHAPE_ERROR_COLOR, timeout: 1000 },
-              shapeOptions: {
+              allowSelfIntersection: false,
+              pathOptions: {
                 color: SHAPE_COLOR,
                 fillOpacity: SHAPE_FILL_OPACITY,
               },
             },
             rectangle: {
-              shapeOptions: {
+              pathOptions: {
                 color: SHAPE_COLOR,
                 fillOpacity: SHAPE_FILL_OPACITY,
               },
