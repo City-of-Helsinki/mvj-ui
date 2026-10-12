@@ -673,11 +673,6 @@
   margin-left: -12px;
   border-right-color: #fff;
 }
-.leaflet-draw-actions a {
-  background-color: variables.$dark-gray;
-  color: white;
-}
-
 .map-measurement {
   position: absolute;
   font-size: 10px;
@@ -711,13 +706,6 @@
   font-size: 18px;
   appearance: none;
   -webkit-appearance: none;
-}
-.leaflet-draw {
-  position: relative;
-  z-index: 1001;
-}
-.leaflet-draw-actions {
-  z-index: 1002;
 }
 .leaflet-control-geosearch {
   position: relative;

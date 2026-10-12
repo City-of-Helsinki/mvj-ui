@@ -33,11 +33,8 @@ import {
   updateMeasurements,
 } from "@/components/map/measurements";
 
-localizeMap();
-
 const SHAPE_COLOR = "#9c27b0";
 const SHAPE_FILL_OPACITY = 0.5;
-const SHAPE_ERROR_COLOR = "#bd2719";
 
 type Props = {
   allowToEdit: boolean;
@@ -92,6 +89,7 @@ const AreaNotesEditMap: React.FC<Props> = ({
 
   const handleMapReady = useCallback((leafletMap: L.Map) => {
     const group = L.featureGroup().addTo(leafletMap);
+    localizeMap(leafletMap);
     featureGroupRef.current = group;
     setMap(leafletMap);
     setFeatureGroup(group);
@@ -235,21 +233,15 @@ const AreaNotesEditMap: React.FC<Props> = ({
           onEdited={handleAction}
           onNonCommittedChange={handleNonCommittedChange}
           draw={{
-            circlemarker: false,
-            circle: false,
-            marker: false,
-            polyline: false,
             polygon: {
-              allowIntersection: false,
-              showArea: true,
-              drawError: { color: SHAPE_ERROR_COLOR, timeout: 1000 },
-              shapeOptions: {
+              allowSelfIntersection: false,
+              pathOptions: {
                 color: SHAPE_COLOR,
                 fillOpacity: SHAPE_FILL_OPACITY,
               },
             },
             rectangle: {
-              shapeOptions: {
+              pathOptions: {
                 color: SHAPE_COLOR,
                 fillOpacity: SHAPE_FILL_OPACITY,
               },
