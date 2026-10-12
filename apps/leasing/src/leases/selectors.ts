@@ -20,9 +20,9 @@ export const getIsFetchingByBBox: Selector<boolean, void> = (
 export const getIsSaving: Selector<boolean, void> = (
   state: RootState,
 ): boolean => state.lease.isSaving;
-export const getIsFetchingAllLeases: Selector<Record<string, any>, void> = (
+export const getIsFetchingAllLeases: Selector<Record<string, boolean>, void> = (
   state: RootState,
-): Record<string, any> => state.lease.isFetchingById;
+): Record<string, boolean> => state.lease.isFetchingById;
 export const getIsFetchingById: Selector<boolean, LeaseId> = (
   state: RootState,
   id: LeaseId,
@@ -54,9 +54,9 @@ export const getLeasesByBBox: Selector<LeaseList, void> = (
 export const getCurrentLease: Selector<Lease, void> = (
   state: RootState,
 ): Lease => state.lease.current;
-export const getAllLeases: Selector<Record<string, any>, void> = (
+export const getAllLeases: Selector<Record<string, Lease>, void> = (
   state: RootState,
-): Record<string, any> => state.lease.byId;
+): Record<string, Lease> => state.lease.byId;
 export const getLeaseById: Selector<Lease, LeaseId> = (
   state: RootState,
   id: LeaseId,

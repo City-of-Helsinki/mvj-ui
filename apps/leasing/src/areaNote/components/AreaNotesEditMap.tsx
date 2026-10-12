@@ -21,7 +21,11 @@ import {
   hideEditMode,
 } from "@/areaNote/slice";
 import { DEFAULT_CENTER, DEFAULT_ZOOM } from "@/util/constants";
-import { convertFeatureCollectionToFeature } from "@/areaNote/helpers";
+import { convertDrawnFeaturesToAreaNotePayload } from "@/areaNote/helpers";
+import type {
+  DrawnPolygonFeature,
+  GeoJsonPolygonLayer,
+} from "@/components/map/geojson";
 import { localizeMap } from "@/util/map";
 import { getInitialAreaNote, getIsEditMode } from "@/areaNote/selectors";
 import {
@@ -179,12 +183,12 @@ const AreaNotesEditMap: React.FC<Props> = ({
 
   const handleCreate = useCallback(
     (note: string) => {
-      const features: Array<Record<string, any>> = [];
-      featureGroupRef.current?.eachLayer((layer: any) =>
+      const features: Array<DrawnPolygonFeature> = [];
+      featureGroupRef.current?.eachLayer((layer: GeoJsonPolygonLayer) =>
         features.push(layer.toGeoJSON()),
       );
 
-      const payload = convertFeatureCollectionToFeature(features);
+      const payload = convertDrawnFeaturesToAreaNotePayload(features);
       payload.note = note;
       dispatch(createAreaNote(payload));
     },
@@ -193,12 +197,12 @@ const AreaNotesEditMap: React.FC<Props> = ({
 
   const handleEdit = useCallback(
     (note: string) => {
-      const features: Array<Record<string, any>> = [];
-      featureGroupRef.current?.eachLayer((layer: any) =>
+      const features: Array<DrawnPolygonFeature> = [];
+      featureGroupRef.current?.eachLayer((layer: GeoJsonPolygonLayer) =>
         features.push(layer.toGeoJSON()),
       );
 
-      const payload = convertFeatureCollectionToFeature(features);
+      const payload = convertDrawnFeaturesToAreaNotePayload(features);
       payload.note = note;
       payload.id = id;
       dispatch(editAreaNote(payload));
