@@ -13,11 +13,12 @@ import {
   getLabelOfOption,
   isEmptyValue,
 } from "@/util/helpers";
+import type { LeafletGeoJson } from "types";
 type Props = {
   areaLocationOptions: Array<Record<string, any>>;
   areaTypeOptions: Array<Record<string, any>>;
   color?: string;
-  geoJSONData: Record<string, any>;
+  geoJSONData: LeafletGeoJson;
   highlighted: boolean;
   leaseIdentifier: string;
   planUnitIntendedUseOptions: Array<Record<string, any>>;

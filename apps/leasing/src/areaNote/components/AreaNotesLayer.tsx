@@ -7,8 +7,9 @@ import { initializeAreaNote, showEditMode } from "@/areaNote/slice";
 import { Methods } from "@/enums";
 import {
   convertAreaNoteListToGeoJson,
-  convertFeatureToFeatureCollection,
+  convertAreaNoteToPolygonFeatureCollection,
 } from "@/areaNote/helpers";
+import type { AreaNoteMultiPolygonFeature } from "@/areaNote/helpers";
 import { getUserFullName } from "@/users/helpers";
 import { formatDate, isMethodAllowed } from "@/util/helpers";
 import {
@@ -62,7 +63,9 @@ const AreaNotesLayer: React.FC<Props> = ({
 
       dispatch(
         initializeAreaNote({
-          geoJSON: convertFeatureToFeatureCollection(feature),
+          geoJSON: convertAreaNoteToPolygonFeatureCollection(
+            feature as AreaNoteMultiPolygonFeature,
+          ),
           id: feature.properties.id,
           isNew: false,
           note: feature.properties.note,

@@ -19,7 +19,11 @@ import {
   updateMeasurements,
 } from "@/components/map/measurements";
 import { DEFAULT_CENTER, DEFAULT_ZOOM } from "@/util/constants";
-import { convertFeatureCollectionToFeature } from "@/areaNote/helpers";
+import {
+  mergePolygonFeaturesToMultiPolygon,
+  type DrawnPolygonFeature,
+  type GeoJsonPolygonLayer,
+} from "@/components/map/geojson";
 const SHAPE_COLOR = "#9c27b0";
 const SHAPE_FILL_OPACITY = 0.5;
 const SHAPE_ERROR_COLOR = "#bd2719";
@@ -64,17 +68,21 @@ const AreaSearchMap = ({ change, hasError }: Props) => {
     updateAllFeatures();
   }, [updateAllFeatures]);
   const handleAction = useCallback(() => {
-    const features = [];
-    featureGroup?.eachLayer((layer: any) => features.push(layer.toGeoJSON()));
-    change(convertFeatureCollectionToFeature(features).geometry);
+    const features: Array<DrawnPolygonFeature> = [];
+    featureGroup?.eachLayer((layer: GeoJsonPolygonLayer) =>
+      features.push(layer.toGeoJSON()),
+    );
+    change(mergePolygonFeaturesToMultiPolygon(features));
   }, [change, featureGroup]);
   const handleCreated = useCallback(
     (e: Record<string, any>) => {
       const { layer } = e;
       showMeasurements(layer);
-      const features = [];
-      featureGroup?.eachLayer((layer: any) => features.push(layer.toGeoJSON()));
-      change(convertFeatureCollectionToFeature(features).geometry);
+      const features: Array<DrawnPolygonFeature> = [];
+      featureGroup?.eachLayer((layer: GeoJsonPolygonLayer) =>
+        features.push(layer.toGeoJSON()),
+      );
+      change(mergePolygonFeaturesToMultiPolygon(features));
     },
     [change, featureGroup],
   );
