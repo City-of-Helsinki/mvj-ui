@@ -54,7 +54,10 @@ const LeafletDrawControl = ({
       rotateMode: false,
     });
     const handleCreated = (event: { layer: L.Layer }) => onCreated?.(event);
-    const handleDeleted = () => onDeleted?.();
+    const handleDeleted = () => {
+      map.pm.disableGlobalRemovalMode();
+      onDeleted?.();
+    };
     const handleEdited = () => onEdited?.();
     const handleNonCommittedChange = () => onNonCommittedChange?.();
 
