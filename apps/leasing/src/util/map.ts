@@ -202,7 +202,7 @@ export const getAreaFromGeoJSON = (geometry: Record<string, any>): number => {
   return area;
 };
 
-const getGeodesicArea = (latLngs: Array<L.LatLng>): number => {
+const getGeodesicRingArea = (latLngs: Array<L.LatLng>): number => {
   const earthRadius = 6378137;
   const degreesToRadians = Math.PI / 180;
   let area = 0;
@@ -213,16 +213,18 @@ const getGeodesicArea = (latLngs: Array<L.LatLng>): number => {
     area +=
       (previous.lng - current.lng) *
       degreesToRadians *
-      (2 + Math.sin(previous.lat * degreesToRadians) +
+      (2 +
+        Math.sin(previous.lat * degreesToRadians) +
         Math.sin(current.lat * degreesToRadians));
   }
 
   return Math.abs((area * earthRadius * earthRadius) / 2);
 };
 
-const getPolygonArea = (rings: Array<Array<L.LatLng>>): number =>
+export const getPolygonArea = (rings: Array<Array<L.LatLng>>): number =>
   rings.reduce(
     (area, ring, index) =>
-      area + (index === 0 ? getGeodesicArea(ring) : -getGeodesicArea(ring)),
+      area +
+      (index === 0 ? getGeodesicRingArea(ring) : -getGeodesicRingArea(ring)),
     0,
   );
