@@ -1,6 +1,6 @@
 import L from "leaflet";
+import { getPolygonArea } from "@/util/map";
 
-const EARTH_RADIUS_METERS = 6378137;
 const MIN_SEGMENT_PIXEL_DISTANCE = 30;
 
 type MeasurableLayer = L.Polyline | L.Circle;
@@ -27,26 +27,11 @@ const formatArea = (squareMeters: number): string => {
     : `${Math.round(value)} ${unit}`;
 };
 
-const getLatLngs = (layer: L.Polyline): L.LatLng[] => {
+const getLatLngRings = (layer: L.Polyline): L.LatLng[][] => {
   const latLngs = layer.getLatLngs() as L.LatLng[] | L.LatLng[][];
-  return (Array.isArray(latLngs[0]) ? latLngs[0] : latLngs) as L.LatLng[];
-};
-
-const getPolygonArea = (latLngs: L.LatLng[]): number => {
-  if (latLngs.length < 3) {
-    return 0;
-  }
-
-  let area = 0;
-  for (let index = 0; index < latLngs.length; index += 1) {
-    const previous = latLngs[(index + latLngs.length - 1) % latLngs.length];
-    const current = latLngs[index];
-    const next = latLngs[(index + 1) % latLngs.length];
-    area +=
-      (((next.lng - previous.lng) * Math.PI) / 180) *
-      Math.sin((current.lat * Math.PI) / 180);
-  }
-  return Math.abs((area * EARTH_RADIUS_METERS ** 2) / 2);
+  return Array.isArray(latLngs[0])
+    ? (latLngs as L.LatLng[][])
+    : [latLngs as L.LatLng[]];
 };
 
 const createMeasurementMarker = (
@@ -166,19 +151,20 @@ export const updateMeasurements = (layer: L.Layer): void => {
     return;
   }
 
-  const latLngs = getLatLngs(layer);
-  if (latLngs.length < 2) {
+  const latLngRings = getLatLngRings(layer);
+  const outerRing = latLngRings[0];
+  if (!outerRing || outerRing.length < 2) {
     return;
   }
 
   const isPolygon = layer instanceof L.Polygon;
-  addSegmentMeasurements(layerGroup, map, latLngs, isPolygon);
+  addSegmentMeasurements(layerGroup, map, outerRing, isPolygon);
 
-  if (isPolygon && latLngs.length > 2) {
+  if (isPolygon && outerRing.length > 2) {
     layerGroup.addLayer(
       createMeasurementMarker(
         layer.getBounds().getCenter(),
-        formatArea(getPolygonArea(latLngs)),
+        formatArea(getPolygonArea(latLngRings)),
       ),
     );
   }
