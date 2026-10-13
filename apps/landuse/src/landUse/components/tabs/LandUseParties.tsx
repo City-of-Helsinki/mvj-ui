@@ -62,6 +62,7 @@ export interface ContactPerson {
 }
 
 export interface PartyEntry {
+  id?: string;
   party: {
     details: PersonPartyDetails | CompanyPartyDetails;
   };

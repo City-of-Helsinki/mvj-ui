@@ -35,6 +35,7 @@ interface DecisionCondition {
 }
 
 interface DecisionItem {
+  id?: string;
   title: string;
   paattaja?: string;
   paatospvm: string;

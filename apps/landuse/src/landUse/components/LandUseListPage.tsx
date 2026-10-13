@@ -98,12 +98,10 @@ const LandUseListPage: React.FC = () => {
     mutationFn: ({
       municipalityId,
       districtId,
-      districtName,
     }: {
       municipalityId: string;
       districtId: string;
-      districtName: string;
-    }) => createLandUseAgreement(municipalityId, districtId, districtName),
+    }) => createLandUseAgreement(municipalityId, districtId),
     onSuccess: (identifier) => {
       queryClient.invalidateQueries({ queryKey: ["land-use", "identifiers"] });
       queryClient.invalidateQueries({ queryKey: ["land-use", "list"] });
@@ -247,14 +245,9 @@ const LandUseListPage: React.FC = () => {
       return;
     }
 
-    const selectedDistrictOption = districtOptions.find(
-      (option) => option.value === selectedDistrict,
-    );
-
     createAgreementMutation.mutate({
       municipalityId: selectedMunicipality,
       districtId: selectedDistrict,
-      districtName: selectedDistrictOption?.label ?? "",
     });
   };
 
@@ -368,7 +361,7 @@ const LandUseListPage: React.FC = () => {
             rows={landUseData.map((item) => ({
               ...item,
               identifier: (
-                <Link href={`/maankayttosopimukset/${item.identifier}`}>
+                <Link href={`/maankayttosopimukset/${item.id}`}>
                   {item.identifier}
                 </Link>
               ),

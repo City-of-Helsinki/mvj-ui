@@ -18,7 +18,7 @@ const mockNavigate = vi.fn();
 let mockLocationSearch = "";
 
 vi.mock("react-router", () => ({
-  useParams: () => ({ id: "LU-1" }),
+  useParams: () => ({ id: "1" }),
   useLocation: () => ({ search: mockLocationSearch }),
   useNavigate: () => mockNavigate,
 }));
@@ -419,7 +419,7 @@ describe("LandUseDetailPage", () => {
       summaryField: "initial-summary",
     } as any);
     vi.mocked(landUseApi.getLandUseList).mockResolvedValue([
-      { identifier: "LU-1" },
+      { id: 1, identifier: "LU-1" },
     ] as any);
     vi.mocked(landUseApi.getParties).mockResolvedValue({} as any);
     vi.mocked(landUseApi.getCompensations).mockResolvedValue({
@@ -519,12 +519,12 @@ describe("LandUseDetailPage", () => {
     });
 
     expect(landUseApi.updateSummary).toHaveBeenCalledWith(
-      "LU-1",
+      "1",
       expect.objectContaining({ summaryField: "summary-updated" }),
     );
 
     expect(landUseApi.updateCompensations).toHaveBeenCalledWith(
-      "LU-1",
+      "1",
       expect.objectContaining({ compensationsField: "compensations-updated" }),
     );
   });
