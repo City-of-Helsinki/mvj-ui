@@ -1,5 +1,5 @@
 export type LandUseListItem = {
-  id: string;
+  id: number;
   identifier: string;
   party: string;
   zoningPlanNumber: string;

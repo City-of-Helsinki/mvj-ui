@@ -102,6 +102,7 @@ export interface LandUseBillingInvoice extends Pick<
 interface LandUseBillingProps {
   form: FormApi<LandUseBillingFormValues>;
   isEditMode: boolean;
+  canReviewSchedules: boolean;
   parties: LandUseBillingParty[];
   paymentSchedules: LandUseBillingSchedule[];
   onAcceptSchedule: (schedule: LandUseBillingSchedule) => void;
@@ -891,6 +892,7 @@ interface InvoiceReviewTableProps {
   parties: LandUseBillingParty[];
   partyOptions: SelectOption[];
   isEditMode: boolean;
+  canReviewSchedules: boolean;
   onAccept: (schedule: LandUseBillingSchedule) => void;
   onDecline: (schedule: LandUseBillingSchedule, rejectedReason: string) => void;
 }
@@ -900,6 +902,7 @@ const InvoiceReviewTable: React.FC<InvoiceReviewTableProps> = ({
   parties,
   partyOptions,
   isEditMode,
+  canReviewSchedules,
   onAccept,
   onDecline,
 }) => {
@@ -1218,7 +1221,7 @@ const InvoiceReviewTable: React.FC<InvoiceReviewTableProps> = ({
                   </tbody>
                 </table>
               </div>
-              {isEditMode && (
+              {canReviewSchedules && (
                 <div className="landuse-compensations-table__detail-actions">
                   <Button
                     type="button"
@@ -1318,6 +1321,7 @@ const InvoiceReviewTable: React.FC<InvoiceReviewTableProps> = ({
 export const LandUseBilling: React.FC<LandUseBillingProps> = ({
   form,
   isEditMode,
+  canReviewSchedules,
   parties,
   paymentSchedules,
   onAcceptSchedule,
@@ -1389,6 +1393,7 @@ export const LandUseBilling: React.FC<LandUseBillingProps> = ({
               parties={parties}
               partyOptions={partyOptions}
               isEditMode={isEditMode}
+              canReviewSchedules={canReviewSchedules}
               onAccept={onAcceptSchedule}
               onDecline={onDeclineSchedule}
             />

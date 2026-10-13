@@ -12,13 +12,14 @@ import { Form, Field } from "react-final-form";
 import createDecorator from "final-form-calculate";
 import LandUseDetailPage from "@/landUse/components/LandUseDetailPage";
 import * as landUseApi from "@/landUse/api/landUseApi";
+import { LanduseApiError } from "@/landUse/api/fetchClient";
 import { LAND_USE_NEGOTIATION_PHASES } from "@/landUse/options";
 
 const mockNavigate = vi.fn();
 let mockLocationSearch = "";
 
 vi.mock("react-router", () => ({
-  useParams: () => ({ id: "LU-1" }),
+  useParams: () => ({ id: "1" }),
   useLocation: () => ({ search: mockLocationSearch }),
   useNavigate: () => mockNavigate,
 }));
@@ -419,7 +420,7 @@ describe("LandUseDetailPage", () => {
       summaryField: "initial-summary",
     } as any);
     vi.mocked(landUseApi.getLandUseList).mockResolvedValue([
-      { identifier: "LU-1" },
+      { id: 1, identifier: "LU-1" },
     ] as any);
     vi.mocked(landUseApi.getParties).mockResolvedValue({} as any);
     vi.mocked(landUseApi.getCompensations).mockResolvedValue({
@@ -462,6 +463,26 @@ describe("LandUseDetailPage", () => {
     vi.mocked(landUseApi.updateBilling).mockImplementation(
       async (_agreementId, values) => values as any,
     );
+  });
+
+  it("renders a loading state until the agreement overview resolves", () => {
+    vi.mocked(landUseApi.getSummary).mockReturnValue(new Promise(() => {}));
+
+    const queryClient = new QueryClient({
+      defaultOptions: {
+        queries: { retry: false },
+        mutations: { retry: false },
+      },
+    });
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <LandUseDetailPage />
+      </QueryClientProvider>,
+    );
+
+    expect(screen.getByText("Ladataan...")).toBeDefined();
+    expect(screen.queryByRole("button", { name: "Muokkaa" })).toBeNull();
   });
 
   it("saves changes made in multiple tabs when save is clicked from another tab", async () => {
@@ -519,12 +540,12 @@ describe("LandUseDetailPage", () => {
     });
 
     expect(landUseApi.updateSummary).toHaveBeenCalledWith(
-      "LU-1",
+      "1",
       expect.objectContaining({ summaryField: "summary-updated" }),
     );
 
     expect(landUseApi.updateCompensations).toHaveBeenCalledWith(
-      "LU-1",
+      "1",
       expect.objectContaining({ compensationsField: "compensations-updated" }),
     );
   });

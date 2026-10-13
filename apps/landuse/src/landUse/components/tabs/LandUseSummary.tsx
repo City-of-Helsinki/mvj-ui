@@ -46,6 +46,7 @@ interface KohdeEntry {
 }
 
 export interface LandUseSummaryFormValues {
+  identifier: string;
   maankayttosopimusType: string | undefined;
   kaupunginosa: string;
   edistamisalue: boolean;
