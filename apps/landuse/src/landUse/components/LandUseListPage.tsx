@@ -177,7 +177,7 @@ const LandUseListPage: React.FC = () => {
   const districtsQuery = useQuery({
     queryKey: ["land-use", "districts"],
     queryFn: getDistricts,
-    staleTime: 1_800_000, // 30 minutes
+    staleTime: 0,
     refetchOnWindowFocus: false,
   });
   const searchQuery = currentFilters.search;
