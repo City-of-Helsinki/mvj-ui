@@ -78,6 +78,7 @@ const AreaNotesEditMap: React.FC<Props> = ({
   const [id, setId] = useState<number>(-1);
   const [isNew, setIsNew] = useState(true);
   const [isValid, setIsValid] = useState(false);
+  const [isSavePanelOpen, setIsSavePanelOpen] = useState(false);
 
   const getLayerCount = useCallback(() => {
     if (!featureGroupRef.current) {
@@ -157,6 +158,21 @@ const AreaNotesEditMap: React.FC<Props> = ({
       updateAllFeatures.cancel();
     };
   }, [updateAllFeatures]);
+
+  useEffect(() => {
+    if (!isEditMode) {
+      setIsSavePanelOpen(false);
+      return;
+    }
+
+    const animationFrame = requestAnimationFrame(() => {
+      setIsSavePanelOpen(true);
+    });
+
+    return () => {
+      cancelAnimationFrame(animationFrame);
+    };
+  }, [isEditMode]);
 
   const handleAction = useCallback(() => {
     setIsValid(getLayerCount() > 0);
@@ -249,7 +265,7 @@ const AreaNotesEditMap: React.FC<Props> = ({
           }}
         />
       )}
-      {allowToEdit && (
+      {allowToEdit && isEditMode && (
         <SaveConditionPanel
           ref={saveConditionPanelRef}
           disableDelete={isNew}
@@ -259,7 +275,7 @@ const AreaNotesEditMap: React.FC<Props> = ({
           onCreate={handleCreate}
           onDelete={handleDelete}
           onEdit={handleEdit}
-          show={isEditMode}
+          show={isSavePanelOpen}
         />
       )}
       {zoomLevelWarningText && (
