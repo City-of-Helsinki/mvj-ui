@@ -74,7 +74,8 @@ const requestLanduseApi = async <T>(
     {
       method,
       headers,
-      body: body === undefined ? undefined : JSON.stringify(body),
+      body:
+        body === undefined ? undefined : JSON.stringify(body),
     },
   );
 

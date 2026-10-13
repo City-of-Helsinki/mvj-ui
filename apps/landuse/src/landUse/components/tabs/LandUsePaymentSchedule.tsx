@@ -88,6 +88,7 @@ export interface LandUsePaymentScheduleEntry {
 interface LandUsePaymentScheduleProps {
   form: FormApi<LandUsePaymentScheduleFormValues>;
   isEditMode: boolean;
+  canSubmitSchedules: boolean;
   parties: PartyEntry[];
   contracts: ContractItem[];
   asemakaavanNumero: AsemakaavaListItem["asemakaavanNumero"];
@@ -1026,6 +1027,7 @@ interface PartyGroupSectionProps {
     schedule: LandUsePaymentScheduleEntry;
   }>;
   isEditMode: boolean;
+  canSubmitSchedules: boolean;
   parties: PartyEntry[];
   contractOptions: ContractOption[];
   onRemoveSchedule: (index: number) => void;
@@ -1041,6 +1043,7 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
   partyHeadingId,
   partySchedules,
   isEditMode,
+  canSubmitSchedules,
   parties,
   contractOptions,
   onRemoveSchedule,
@@ -1218,7 +1221,7 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
                         >
                           {schedule.status ?? "-"}
                         </StatusLabel>
-                        {isEditMode && statusAction && (
+                        {canSubmitSchedules && statusAction && (
                           <Button
                             type="button"
                             variant={ButtonVariant.Primary}
@@ -1468,6 +1471,7 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
 export const LandUsePaymentSchedule: React.FC<LandUsePaymentScheduleProps> = ({
   form,
   isEditMode,
+  canSubmitSchedules,
   parties,
   contracts,
   asemakaavanNumero,
@@ -1639,6 +1643,7 @@ export const LandUsePaymentSchedule: React.FC<LandUsePaymentScheduleProps> = ({
                                 groupedByParty.get(partyOption.value) ?? []
                               }
                               isEditMode={isEditMode}
+                              canSubmitSchedules={canSubmitSchedules}
                               parties={parties}
                               contractOptions={contractOptions}
                               onRemoveSchedule={fields.remove}
