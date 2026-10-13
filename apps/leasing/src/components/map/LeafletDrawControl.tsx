@@ -46,6 +46,7 @@ const LeafletDrawControl = ({
       drawPolyline: false,
       drawPolygon: Boolean(draw.polygon),
       drawRectangle: Boolean(draw.rectangle),
+      drawText: false,
       editMode: true,
       removalMode: true,
       dragMode: false,
