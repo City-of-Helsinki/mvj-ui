@@ -12,6 +12,7 @@ import { Form, Field } from "react-final-form";
 import createDecorator from "final-form-calculate";
 import LandUseDetailPage from "@/landUse/components/LandUseDetailPage";
 import * as landUseApi from "@/landUse/api/landUseApi";
+import { LanduseApiError } from "@/landUse/api/fetchClient";
 import { LAND_USE_NEGOTIATION_PHASES } from "@/landUse/options";
 
 const mockNavigate = vi.fn();
@@ -462,6 +463,26 @@ describe("LandUseDetailPage", () => {
     vi.mocked(landUseApi.updateBilling).mockImplementation(
       async (_agreementId, values) => values as any,
     );
+  });
+
+  it("renders a loading state until the agreement overview resolves", () => {
+    vi.mocked(landUseApi.getSummary).mockReturnValue(new Promise(() => {}));
+
+    const queryClient = new QueryClient({
+      defaultOptions: {
+        queries: { retry: false },
+        mutations: { retry: false },
+      },
+    });
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <LandUseDetailPage />
+      </QueryClientProvider>,
+    );
+
+    expect(screen.getByText("Ladataan...")).toBeDefined();
+    expect(screen.queryByRole("button", { name: "Muokkaa" })).toBeNull();
   });
 
   it("saves changes made in multiple tabs when save is clicked from another tab", async () => {

@@ -18,7 +18,6 @@ import {
   getCompensations,
   getContracts,
   getDecisions,
-  getLandUseList,
   getMonitoring,
   getParties,
   getPaymentSchedule,
@@ -40,7 +39,6 @@ import {
 import {
   LAND_USE_INVOICE_ITEM_TYPES,
   LAND_USE_INVOICE_STATUSES,
-  LAND_USE_PAYMENT_SCHEDULE_STATUSES,
   type LandUseInvoice,
   type LandUseInvoiceItem,
 } from "@/landUse/options";
@@ -276,34 +274,18 @@ const LandUseDetailPage: React.FC = () => {
     });
   };
 
-  const landUseListQuery = useQuery({
-    queryKey: ["land-use", "list"],
-    queryFn: getLandUseList,
-    staleTime: 0,
-    gcTime: 0,
-    refetchOnMount: "always",
+  const summaryQuery = useQuery({
+    queryKey: ["land-use", agreementId, "summary"],
+    queryFn: () => getSummary(agreementId),
     enabled: Boolean(agreementId),
     refetchOnWindowFocus: false,
   });
 
-  const agreementExists =
-    Boolean(agreementId) &&
-    (landUseListQuery.data ?? []).some(
-      (item) => String(item.id) === agreementId,
-    );
+  const canLoadAgreementData = Boolean(agreementId) && summaryQuery.isSuccess;
 
   const isAgreementMissing =
-    Boolean(agreementId) && landUseListQuery.isSuccess && !agreementExists;
-
-  const canLoadAgreementData =
-    Boolean(agreementId) && (agreementExists || landUseListQuery.isError);
-
-  const summaryQuery = useQuery({
-    queryKey: ["land-use", agreementId, "summary"],
-    queryFn: () => getSummary(agreementId),
-    enabled: canLoadAgreementData,
-    refetchOnWindowFocus: false,
-  });
+    summaryQuery.isError &&
+    (summaryQuery.error as { status?: number }).status === 404;
 
   const partiesQuery = useQuery({
     queryKey: ["land-use", agreementId, "parties"],
@@ -823,6 +805,14 @@ const LandUseDetailPage: React.FC = () => {
         agreementId={agreementId}
         onBackToList={() => navigate("/")}
       />
+    );
+  }
+
+  if (summaryQuery.isPending) {
+    return (
+      <div className="landuse-detail">
+        <div className="landuse-detail__content">Ladataan...</div>
+      </div>
     );
   }
 
