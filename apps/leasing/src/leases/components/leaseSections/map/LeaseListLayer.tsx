@@ -3,6 +3,7 @@ import LeafletGeoJSONLayer from "@/components/map/LeafletGeoJSONLayer";
 import useGeoJsonFeatureInteractions from "@/components/map/useGeoJsonFeatureInteractions";
 import { LeaseFieldTitles } from "@/leases/enums";
 import { formatDate, getLabelOfOption } from "@/util/helpers";
+import { html } from "@/util/html";
 import { getRouteById, Routes } from "@/root/routes";
 import type { LeafletGeoJson } from "types";
 
@@ -29,11 +30,22 @@ const LeaseListLayer: React.FC<Props> = ({
         return `${getRouteById(Routes.LEASES)}/${id}/${search}`;
       };
 
-      return `<p class='title'><strong>${getLabelOfOption(stateOptions, state) || "-"}</strong></p>
+      return html`<p class="title">
+          <strong>${getLabelOfOption(stateOptions, state) || "-"}</strong>
+        </p>
         <p><strong>Id:</strong> ${id}</p>
-        <p><strong>${LeaseFieldTitles.IDENTIFIER}:</strong> <a href=${getLeaseLink()}>${identifier}</a></p>
-        <p><strong>${LeaseFieldTitles.START_DATE}:</strong> ${formatDate(start_date) || "-"}</p>
-        <p><strong>${LeaseFieldTitles.END_DATE}:</strong> ${formatDate(end_date) || "-"}</p>`;
+        <p>
+          <strong>${LeaseFieldTitles.IDENTIFIER}:</strong>
+          <a href="${getLeaseLink()}">${identifier}</a>
+        </p>
+        <p>
+          <strong>${LeaseFieldTitles.START_DATE}:</strong>
+          ${formatDate(start_date) || "-"}
+        </p>
+        <p>
+          <strong>${LeaseFieldTitles.END_DATE}:</strong>
+          ${formatDate(end_date) || "-"}
+        </p>`;
     },
     [search, stateOptions],
   );

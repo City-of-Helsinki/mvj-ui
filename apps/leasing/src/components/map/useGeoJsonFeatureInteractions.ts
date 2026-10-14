@@ -1,9 +1,10 @@
 import { useCallback } from "react";
 import L from "leaflet";
+import type { EscapedHtml } from "@/util/html";
 
 type Options = {
   isHoverEnabled?: (feature: GeoJSON.Feature) => boolean;
-  getPopupContent?: (feature: GeoJSON.Feature) => string | undefined;
+  getPopupContent?: (feature: GeoJSON.Feature) => EscapedHtml | undefined;
   isHighlighted?: (feature: GeoJSON.Feature) => boolean;
   onClick?: (feature: GeoJSON.Feature, event: L.LeafletMouseEvent) => void;
   openHighlightedPopup?: boolean;
