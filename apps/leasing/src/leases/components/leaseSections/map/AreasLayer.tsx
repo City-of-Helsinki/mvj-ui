@@ -2,6 +2,7 @@ import React, { useCallback } from "react";
 import LeafletGeoJSONLayer from "@/components/map/LeafletGeoJSONLayer";
 import useGeoJsonFeatureInteractions from "@/components/map/useGeoJsonFeatureInteractions";
 import { formatNumber, getLabelOfOption } from "@/util/helpers";
+import { html } from "@/util/html";
 import type { LeafletGeoJson } from "types";
 type Props = {
   areasGeoJson: LeafletGeoJson;
@@ -21,12 +22,21 @@ const AreasLayer = ({
   const getPopupContent = useCallback(
     (feature: GeoJSON.Feature) => {
       const { area, id, identifier, location, type } = feature.properties ?? {};
-      return `<p class='title'><strong>Vuokrakohde</strong></p>
-          <p><strong>Id:</strong> ${id}</p>
-          <p><strong>Tunnus:</strong> ${identifier}</p>
-          <p><strong>Määritelmä:</strong> ${getLabelOfOption(typeOptions, type) || "-"}</p>
-          <p><strong>Kokonaisala:</strong> ${area || area === 0 ? `${formatNumber(area)} m²` : ""}</p>
-          <p><strong>Sijainti:</strong> ${getLabelOfOption(locationOptions, location) || "-"}</p>`;
+      return html`<p class="title"><strong>Vuokrakohde</strong></p>
+        <p><strong>Id:</strong> ${id}</p>
+        <p><strong>Tunnus:</strong> ${identifier}</p>
+        <p>
+          <strong>Määritelmä:</strong>
+          ${getLabelOfOption(typeOptions, type) || "-"}
+        </p>
+        <p>
+          <strong>Kokonaisala:</strong>
+          ${area || area === 0 ? `${formatNumber(area)} m²` : ""}
+        </p>
+        <p>
+          <strong>Sijainti:</strong>
+          ${getLabelOfOption(locationOptions, location) || "-"}
+        </p>`;
     },
     [locationOptions, typeOptions],
   );

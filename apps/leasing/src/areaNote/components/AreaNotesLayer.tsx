@@ -13,6 +13,7 @@ import {
 import type { AreaNoteMultiPolygonFeature } from "@/areaNote/helpers";
 import { getUserFullName } from "@/users/helpers";
 import { formatDate, isMethodAllowed } from "@/util/helpers";
+import { html } from "@/util/html";
 import {
   getInitialAreaNote,
   getIsEditMode,
@@ -56,10 +57,10 @@ const AreaNotesLayer: React.FC<Props> = ({
 
   const getPopupContent = useCallback((feature: GeoJSON.Feature) => {
     const { modified_at, note, user } = feature.properties ?? {};
-    return `<p>
-          <strong>${formatDate(modified_at)} ${getUserFullName(user)}</strong><br/>
-          ${note || "-"}
-        </p>`;
+    return html`<p>
+      <strong>${formatDate(modified_at)} ${getUserFullName(user)}</strong><br />
+      ${note || "-"}
+    </p>`;
   }, []);
   const onClick = useCallback(
     (feature: GeoJSON.Feature, event: L.LeafletMouseEvent) => {
