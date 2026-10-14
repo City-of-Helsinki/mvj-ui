@@ -6,6 +6,7 @@ import { getRouteById, Routes } from "@/root/routes";
 import type { Attributes, LeafletGeoJson } from "types";
 import { withAreaSearchAttributes } from "@/components/attributes/AreaSearchAttributes";
 import { formatDate, getFieldOptions, getLabelOfOption } from "@/util/helpers";
+import { html } from "@/util/html";
 type OwnProps = {
   color: string;
   areaSearchesGeoJson: LeafletGeoJson;
@@ -36,12 +37,31 @@ const AreaSearchLayer: React.FC<Props> = ({
       const search = feature.properties?.search;
       if (!search) return;
 
-      return `<p class="title"><strong><a href="${getSearchLink(search.id)}">${search.identifier}</a></strong></p>
-      <p>${search.address ? search.address + ", " : ""}${search.district || ""}</p>
-      <p>${formatDate(search.start_date) || "??.??.????"}–${formatDate(search.end_date) || ""}</p>
-      <p><strong>Käyttötarkoitus: </strong>${getLabelOfOption(intendedUseOptions, search.intended_use) || "-"}</p>
-      <p><strong>Vuokranantaja: </strong>${getLabelOfOption(lessorOptions, search.lessor) || "-"}</p>
-      <p><strong>Tila: </strong>${getLabelOfOption(stateOptions, search.state) || "-"}</p>`;
+      return html` <p class="title">
+          <strong
+            ><a href="${getSearchLink(search.id)}"
+              >${search.identifier}</a
+            ></strong
+          >
+        </p>
+        <p>
+          ${search.address ? `${search.address}, ` : ""}${search.district || ""}
+        </p>
+        <p>
+          ${formatDate(search.start_date) || "??.??.????"}-${formatDate(search.end_date) || ""}
+        </p>
+        <p>
+          <strong>Käyttötarkoitus: </strong
+          >${getLabelOfOption(intendedUseOptions, search.intended_use) || "-"}
+        </p>
+        <p>
+          <strong>Vuokranantaja: </strong
+          >${getLabelOfOption(lessorOptions, search.lessor) || "-"}
+        </p>
+        <p>
+          <strong>Tila: </strong
+          >${getLabelOfOption(stateOptions, search.state) || "-"}
+        </p>`;
     },
     [intendedUseOptions, lessorOptions, stateOptions],
   );

@@ -2,6 +2,7 @@ import React, { useCallback } from "react";
 import LeafletGeoJSONLayer from "@/components/map/LeafletGeoJSONLayer";
 import useGeoJsonFeatureInteractions from "@/components/map/useGeoJsonFeatureInteractions";
 import { formatDate, getLabelOfOption } from "@/util/helpers";
+import { html } from "@/util/html";
 import type { LeafletGeoJson } from "types";
 type Props = {
   color: string;
@@ -40,17 +41,32 @@ const RentBasisLayer = ({
             .join(", ")
         : "-";
 
-      return `<p class='title'><strong>Vuokrausperiaatteet</strong></p>
+      return html`<p class="title"><strong>Vuokrausperiaatteet</strong></p>
         <p><strong>Id:</strong> ${id}</p>
-        <p><strong>Tonttityyppi:</strong> ${getLabelOfOption(plotTypeOptions, plot_type) || "-"}</p>
+        <p>
+          <strong>Tonttityyppi:</strong>
+          ${getLabelOfOption(plotTypeOptions, plot_type) || "-"}
+        </p>
         <p><strong>Alkupvm:</strong> ${formatDate(start_date) || "-"}</p>
         <p><strong>Loppupvm:</strong> ${formatDate(end_date) || "-"}</p>
         <p><strong>Kiinteistötunnukset:</strong> ${identifierText}</p>
         <p><strong>Asemakaava:</strong> ${detailed_plan_identifier || "-"}</p>
-        <p><strong>Hallintamuoto:</strong> ${getLabelOfOption(managementOptions, management) || "-"}</p>
-        <p><strong>Rahoitusmuoto:</strong> ${getLabelOfOption(financingOptions, financing) || "-"}</p>
-        <p><strong>Vuokraoikeuspäättyy:</strong> ${formatDate(lease_rights_end_date) || "-"}</p>
-        <p><strong>Indeksi:</strong> ${getLabelOfOption(indexOptions, index) || "-"}</p>`;
+        <p>
+          <strong>Hallintamuoto:</strong>
+          ${getLabelOfOption(managementOptions, management) || "-"}
+        </p>
+        <p>
+          <strong>Rahoitusmuoto:</strong>
+          ${getLabelOfOption(financingOptions, financing) || "-"}
+        </p>
+        <p>
+          <strong>Vuokraoikeuspäättyy:</strong>
+          ${formatDate(lease_rights_end_date) || "-"}
+        </p>
+        <p>
+          <strong>Indeksi:</strong>
+          ${getLabelOfOption(indexOptions, index) || "-"}
+        </p>`;
     },
     [financingOptions, indexOptions, managementOptions, plotTypeOptions],
   );
