@@ -10,6 +10,10 @@ import { LeafletMapContext } from "@/components/map/LeafletMapContext";
 import { MIN_ZOOM, MAX_ZOOM } from "@/util/constants";
 
 const projectionBounds = L.bounds([25440000, 6630000], [25571072, 6761072]);
+
+const toLatLngBounds = (bounds: L.LatLngBoundsExpression) =>
+  bounds instanceof L.LatLngBounds ? bounds : L.latLngBounds(bounds);
+
 const CRS = new L.Proj.CRS(
   "EPSG:3879",
   "+proj=tmerc +lat_0=0 +lon_0=25 +k=1 +x_0=25500000 +y_0=0 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs",
@@ -120,6 +124,7 @@ const MapContainer: React.FC<Props> = ({
     enableSearch,
     zoom,
   });
+  const viewportRef = useRef({ bounds, center });
 
   onMapDidMountRef.current = onMapDidMount;
   onViewportChangedRef.current = onViewportChanged;
@@ -210,6 +215,30 @@ const MapContainer: React.FC<Props> = ({
       map.remove();
     };
   }, []);
+
+  useEffect(() => {
+    if (!map) {
+      return;
+    }
+
+    const previousViewport = viewportRef.current;
+    const boundsChanged =
+      Boolean(previousViewport.bounds) !== Boolean(bounds) ||
+      (previousViewport.bounds &&
+        bounds &&
+        !toLatLngBounds(previousViewport.bounds).equals(
+          toLatLngBounds(bounds),
+        ));
+    const centerChanged = !L.latLng(previousViewport.center).equals(center);
+
+    if (boundsChanged && bounds) {
+      map.fitBounds(bounds);
+    } else if (boundsChanged || centerChanged) {
+      map.setView(center);
+    }
+
+    viewportRef.current = { bounds, center };
+  }, [bounds, center, map]);
 
   return (
     <LeafletMapContext.Provider value={map}>
