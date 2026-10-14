@@ -15,6 +15,13 @@ export type LanduseApiRequestOptions = {
   headers?: HeadersInit;
 };
 
+export type PaginatedResponse<T> = {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: T[];
+};
+
 export class LanduseApiError extends Error {
   constructor(
     public readonly status: number,
@@ -74,8 +81,7 @@ const requestLanduseApi = async <T>(
     {
       method,
       headers,
-      body:
-        body === undefined ? undefined : JSON.stringify(body),
+      body: body === undefined ? undefined : JSON.stringify(body),
     },
   );
 
@@ -92,6 +98,29 @@ export const callApiGet = <T>(
   path: string,
   options: LanduseApiRequestOptions = {},
 ): Promise<T> => requestLanduseApi<T>(path, "GET", options);
+
+export const callApiGetAllPages = async <T>(
+  path: string,
+  options: LanduseApiRequestOptions = {},
+): Promise<T[]> => {
+  const results: T[] = [];
+  const limit = 100;
+  let offset = 0;
+
+  while (true) {
+    const response = await callApiGet<PaginatedResponse<T>>(path, {
+      ...options,
+      query: { ...options.query, limit, offset },
+    });
+    results.push(...response.results);
+
+    if (!response.next) {
+      return results;
+    }
+
+    offset += response.results.length;
+  }
+};
 
 export const callApiPost = <TResponse, TBody>(
   path: string,
