@@ -231,14 +231,13 @@ const LandUseListPage: React.FC = () => {
         )
       : "";
 
-  const districtOptions = useMemo(
-    () =>
-      (districtsQuery.data ?? []).map(({ name, identifier }) => ({
-        value: identifier,
-        label: `${name} (${identifier})`,
-      })),
-    [districtsQuery.data],
-  );
+  const districtOptions = useMemo(() => {
+    return (districtsQuery.data ?? []).map(({ name, identifier, id }) => ({
+      value: id.toString(),
+      label: `${name} (${identifier})`,
+    }));
+  }, [districtsQuery.data]);
+  console.log(districtOptions);
 
   const handleCreate = () => {
     if (!selectedMunicipality || !selectedDistrict) {
