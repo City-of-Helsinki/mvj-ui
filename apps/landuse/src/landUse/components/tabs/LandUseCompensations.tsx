@@ -45,7 +45,9 @@ export interface LandUseSite {
   kohteenTunnus: string;
   pintaAlaM2?: string;
   kem2?: string;
+  kayttotarkoitusId?: number | null;
   kayttotarkoitus: string | undefined;
+  hallintamuotoIds?: number[];
   hallintamuoto: string[] | undefined;
   suojeltu: string | undefined;
   amVelvoite: boolean;
@@ -69,6 +71,7 @@ export interface LandUseCompensationsFormValues {
   perustietotaulukkoRowsBySiteId: Record<string, PerustietotaulukkoRowValues>;
   purkuTaiMuuVahennys: number;
   maankayttokorvaus: string;
+  maapoliittinenOhjelmaId?: number | null;
   maapoliittinenOhjelma: string | undefined;
   huojennusProsentti: string;
   yleisetAlueetNeliot: string;
@@ -78,6 +81,7 @@ export interface LandUseCompensationsFormValues {
 interface LandUseCompensationsProps {
   form: FormApi<LandUseCompensationsFormValues>;
   isEditMode: boolean;
+  onSetTabDirty?: (formKey: "compensations") => void;
 }
 
 const COMPENSATION_STEP_KEYS = {
@@ -179,6 +183,7 @@ interface SiteRowProps {
   siteIndex: number;
   rowValues: PerustietotaulukkoRowValues | undefined;
   isEditMode: boolean;
+  onSetTabDirty: () => void;
   onRemove: (siteId: string) => void;
   onToggle: (siteId: string) => void;
   isOpen: boolean;
@@ -190,6 +195,7 @@ const SiteRow: React.FC<SiteRowProps> = ({
   siteIndex,
   rowValues,
   isEditMode,
+  onSetTabDirty,
   onRemove,
   onToggle,
   isOpen,
@@ -278,9 +284,10 @@ const SiteRow: React.FC<SiteRowProps> = ({
                           id={`landuse-compensations-kayttotarkoitus-${site.id}`}
                           options={landUseKayttotarkoitusOptions}
                           value={normalizeSelectValue(input.value)}
-                          onChange={(selectedOptions) =>
-                            handleSelectChange(selectedOptions, input.onChange)
-                          }
+                          onChange={(selectedOptions) => {
+                            handleSelectChange(selectedOptions, input.onChange);
+                            onSetTabDirty();
+                          }}
                           texts={{
                             label: "Käyttötarkoitus",
                             placeholder: "Valitse",
@@ -310,12 +317,13 @@ const SiteRow: React.FC<SiteRowProps> = ({
                           id={`landuse-compensations-hallintamuoto-${site.id}`}
                           options={landUseHallintamuotoOptions}
                           value={normalizeMultiSelectValue(input.value)}
-                          onChange={(selectedOptions) =>
+                          onChange={(selectedOptions) => {
                             handleMultiSelectChange(
                               selectedOptions,
                               input.onChange,
-                            )
-                          }
+                            );
+                            onSetTabDirty();
+                          }}
                           multiSelect
                           texts={{
                             label: "Hallintamuoto",
@@ -444,6 +452,7 @@ const SiteRow: React.FC<SiteRowProps> = ({
 export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
   form,
   isEditMode,
+  onSetTabDirty,
 }) => {
   const [openSiteId, setOpenSiteId] = React.useState<string | null>(null);
 
@@ -480,12 +489,15 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
             kohteenTunnus: "",
             pintaAlaM2: "",
             kem2: "",
+            kayttotarkoitusId: null,
             kayttotarkoitus: undefined,
+            hallintamuotoIds: [],
             hallintamuoto: [],
             suojeltu: undefined,
             amVelvoite: false,
           };
           form.change("sites", [...sites, newSite]);
+          onSetTabDirty?.("compensations");
           setOpenSiteId(id);
         };
 
@@ -498,6 +510,7 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
             "sites",
             sites.filter((site) => site.id !== siteId),
           );
+          onSetTabDirty?.("compensations");
 
           if (openSiteId === siteId) {
             setOpenSiteId(null);
@@ -523,6 +536,7 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
             "huojennusProsentti",
             selectedOption?.defaultHuojennusProsentti ?? "",
           );
+          onSetTabDirty?.("compensations");
         };
 
         const totals = sites.reduce(
@@ -764,6 +778,7 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                       siteIndex={index}
                       rowValues={rowsBySiteId[site.id]}
                       isEditMode={isEditMode}
+                      onSetTabDirty={() => onSetTabDirty?.("compensations")}
                       onRemove={handleRemoveSite}
                       onToggle={handleToggleSite}
                       isOpen={site.id === openSiteId}

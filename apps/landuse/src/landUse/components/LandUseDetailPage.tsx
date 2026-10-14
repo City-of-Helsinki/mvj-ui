@@ -933,6 +933,7 @@ const LandUseDetailPage: React.FC = () => {
           <LandUseCompensations
             form={compensationsFormApi}
             isEditMode={isCurrentTabEditable}
+            onSetTabDirty={handleSetTabDirty}
           />
         );
       case "collaterals":
