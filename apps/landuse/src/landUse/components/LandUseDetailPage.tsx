@@ -227,10 +227,10 @@ const calculatePaidMaankayttokorvaus = (
 const initialFormState: FormState = { dirty: false, valid: true };
 
 const LandUseDetailPage: React.FC = () => {
-  const { id: identifier } = useParams<{ id: string }>();
+  const { id } = useParams<{ id: string }>();
   const location = useLocation();
   const navigate = useNavigate();
-  const agreementId = identifier ?? "";
+  const agreementId = id ?? "";
   const [activeTab, setActiveTab] = useState(() =>
     getActiveTabFromSearch(location.search),
   );
@@ -698,10 +698,7 @@ const LandUseDetailPage: React.FC = () => {
     mutationFn: (values: LandUseCollateralsFormValues) =>
       updateCollaterals(agreementId, values),
     onSuccess: (data) => {
-      queryClient.setQueryData(
-        ["land-use", agreementId, "collaterals"],
-        data,
-      );
+      queryClient.setQueryData(["land-use", agreementId, "collaterals"], data);
     },
   });
 
@@ -742,8 +739,7 @@ const LandUseDetailPage: React.FC = () => {
       }
       if (formStates.collaterals?.dirty) {
         await collateralsMutation.mutateAsync(
-          collateralsFormApi.getState()
-            .values as LandUseCollateralsFormValues,
+          collateralsFormApi.getState().values as LandUseCollateralsFormValues,
         );
       }
       setIsSaveClicked(false);
@@ -929,9 +925,19 @@ const LandUseDetailPage: React.FC = () => {
         activeTabKey === "collaterals");
     switch (activeTabKey) {
       case "summary":
-        return <LandUseSummary form={summaryFormApi} isEditMode={isCurrentTabEditable} />;
+        return (
+          <LandUseSummary
+            form={summaryFormApi}
+            isEditMode={isCurrentTabEditable}
+          />
+        );
       case "parties":
-        return <LandUseParties form={partiesFormApi} isEditMode={isCurrentTabEditable} />;
+        return (
+          <LandUseParties
+            form={partiesFormApi}
+            isEditMode={isCurrentTabEditable}
+          />
+        );
       case "compensations":
         return (
           <LandUseCompensations
@@ -1072,7 +1078,7 @@ const LandUseDetailPage: React.FC = () => {
     <div className="landuse-detail">
       <div className="landuse-detail__body">
         <SideNavigation
-          title={agreementId}
+          title={summaryQuery?.data?.identifier}
           tabs={sideNavigationTabs}
           activeTab={activeTab}
           onTabClick={handleTabClick}
@@ -1091,7 +1097,7 @@ const LandUseDetailPage: React.FC = () => {
             list={[
               { title: "Maanvuokrausjärjestelmä", path: "/" },
               { title: "Maankäyttösopimukset", path: "/maankayttosopimukset" },
-              { title: agreementId, path: "" },
+              { title: summaryQuery?.data?.identifier, path: "" },
             ]}
           />
           <TableOfContentsProvider setEntries={setSectionEntries}>

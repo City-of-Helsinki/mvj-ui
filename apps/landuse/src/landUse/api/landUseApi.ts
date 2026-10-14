@@ -8,9 +8,7 @@ import type { LandUseMonitoringFormValues } from "@/landUse/components/tabs/Land
 import type { LandUsePartiesFormValues } from "@/landUse/components/tabs/LandUseParties";
 import type { LandUseSummaryFormValues } from "@/landUse/components/tabs/LandUseSummary";
 import type { Guarantee } from "@/landUse/components/collateralForms";
-import {
-  type AsemakaavaListItem,
-} from "@/landUse/options";
+import { type AsemakaavaListItem } from "@/landUse/options";
 import {
   createLandUseIdentifier,
   getNextLandUseSequence,
@@ -105,7 +103,10 @@ type PartyResponse = {
     sap_customer_number: string;
     customer_reference: string;
   } | null;
-  invoice_recipient: Omit<PartyResponse, "role" | "contact_persons" | "billing_details" | "invoice_recipient"> | null;
+  invoice_recipient: Omit<
+    PartyResponse,
+    "role" | "contact_persons" | "billing_details" | "invoice_recipient"
+  > | null;
 };
 
 type CompensationResponse = {
@@ -144,7 +145,7 @@ type LookupResponse = {
 };
 
 const DECISION_MAKER_CODES: Record<string, string> = {
-  "Tonttipäällikkö": "LAND_MANAGER",
+  Tonttipäällikkö: "LAND_MANAGER",
   Kaupunkiympäristölautakunta: "URBAN_ENVIRONMENT_COMMITTEE",
   Kaupunginhallitus: "CITY_BOARD",
 };
@@ -156,8 +157,7 @@ const DECISION_TYPE_CODES: Record<string, string> = {
 };
 
 const CONDITION_TYPE_CODES: Record<string, string> = {
-  "Rasite - ja/tai rasitteenluont.ehto":
-    "EASEMENT_OR_EASEMENT_LIKE_CONDITION",
+  "Rasite - ja/tai rasitteenluont.ehto": "EASEMENT_OR_EASEMENT_LIKE_CONDITION",
   "Muu ehto": "OTHER",
 };
 
@@ -227,7 +227,17 @@ type ContractResponse = {
   note: string;
   title: string;
   contract_type: string;
-  changes: Omit<ContractResponse, "title" | "contract_type" | "changes" | "mortgage_deed_collaterals" | "cash_deposit_collaterals" | "personal_guarantee_collaterals" | "deposit_pledge_collaterals" | "other_collaterals">[];
+  changes: Omit<
+    ContractResponse,
+    | "title"
+    | "contract_type"
+    | "changes"
+    | "mortgage_deed_collaterals"
+    | "cash_deposit_collaterals"
+    | "personal_guarantee_collaterals"
+    | "deposit_pledge_collaterals"
+    | "other_collaterals"
+  >[];
   mortgage_deed_collaterals: CollateralResponse[];
   cash_deposit_collaterals: CollateralResponse[];
   personal_guarantee_collaterals: CollateralResponse[];
@@ -322,18 +332,23 @@ const mapPartyDetails = (
   };
 
   return party.party_type === "PERSON"
-    ? { ...details, nationalIdentificationNumber: party.national_identification_number }
+    ? {
+        ...details,
+        nationalIdentificationNumber: party.national_identification_number,
+      }
     : { ...details, businessId: party.business_id };
 };
 
 export const getAsemakaavat = async (): Promise<AsemakaavaListItem[]> => {
-  const response = await callApiGet<PaginatedResponse<DetailedPlanResponse>>(
-    "detailed-plans/",
-  );
+  const response =
+    await callApiGet<PaginatedResponse<DetailedPlanResponse>>(
+      "detailed-plans/",
+    );
 
   return response.results.map((plan) => ({
     asemakaavanNumero: plan.plan_number,
-    asemakaavanKasittelyvaihe: plan.processing_stage as AsemakaavaListItem["asemakaavanKasittelyvaihe"],
+    asemakaavanKasittelyvaihe:
+      plan.processing_stage as AsemakaavaListItem["asemakaavanKasittelyvaihe"],
     vahvistamisHyvaksymisPvm: plan.approval_date ?? "",
     asemakaavanLainvoimaisuusPvm: plan.effective_date ?? undefined,
     asemakaavanHyvaksyjä: plan.approver,
@@ -344,6 +359,7 @@ export const getAsemakaavat = async (): Promise<AsemakaavaListItem[]> => {
 const mapAgreementOverviewToSummary = (
   agreement: AgreementOverviewResponse,
 ): LandUseSummaryFormValues => ({
+  identifier: agreement.identifier,
   maankayttosopimusType: agreement.agreement_type || undefined,
   kaupunginosa: agreement.district?.name ?? "",
   edistamisalue: agreement.is_promotion_area,
@@ -365,8 +381,7 @@ const mapAgreementOverviewToSummary = (
     : "ei",
   velvoitteidenMaaraika: agreement.obligations_deadline ?? "",
   asemakaavanNumero: agreement.detailed_plan?.plan_number ?? "",
-  asemakaavanKasittelyvaihe:
-    agreement.detailed_plan?.processing_stage ?? "",
+  asemakaavanKasittelyvaihe: agreement.detailed_plan?.processing_stage ?? "",
   vahvistamisHyvaksymisPvm: agreement.detailed_plan?.approval_date ?? "",
   asemakaavanLainvoimaisuusPvm: agreement.detailed_plan?.effective_date ?? "",
   asemakaavanHyvaksyjä: agreement.detailed_plan?.approver ?? "",
@@ -384,17 +399,15 @@ export const getSummary = async (
 };
 
 export const getAgreementIdentifiers = async (): Promise<string[]> => {
-  const response = await callApiGet<PaginatedResponse<AgreementListResponse>>(
-    "agreements/",
-  );
+  const response =
+    await callApiGet<PaginatedResponse<AgreementListResponse>>("agreements/");
 
   return response.results.map((agreement) => agreement.identifier);
 };
 
 export const getLandUseList = async (): Promise<LandUseListItem[]> => {
-  const response = await callApiGet<PaginatedResponse<AgreementListResponse>>(
-    "agreements/",
-  );
+  const response =
+    await callApiGet<PaginatedResponse<AgreementListResponse>>("agreements/");
 
   return response.results.map((agreement) => ({
     id: agreement.id,
@@ -438,10 +451,7 @@ export const updateSummary = async (
   agreementId: string,
   values: LandUseSummaryFormValues,
 ): Promise<LandUseSummaryFormValues> => {
-  await callApiPatch<
-    AgreementOverviewResponse,
-    AgreementUpdateRequest
-  >(
+  await callApiPatch<AgreementOverviewResponse, AgreementUpdateRequest>(
     `agreements/${agreementId}/`,
     {
       agreement_type: values.maankayttosopimusType ?? "",
@@ -481,7 +491,11 @@ export const getParties = async (
         reference: party.billing_details?.customer_reference ?? "",
       },
       ...(party.invoice_recipient
-        ? { invoiceRecipient: { details: mapPartyDetails(party.invoice_recipient) } }
+        ? {
+            invoiceRecipient: {
+              details: mapPartyDetails(party.invoice_recipient),
+            },
+          }
         : {}),
     })),
   };
@@ -573,7 +587,11 @@ export const updateParties = async (
         reference: party.billing_details?.customer_reference ?? "",
       },
       ...(party.invoice_recipient
-        ? { invoiceRecipient: { details: mapPartyDetails(party.invoice_recipient) } }
+        ? {
+            invoiceRecipient: {
+              details: mapPartyDetails(party.invoice_recipient),
+            },
+          }
         : {}),
     })),
   };
@@ -622,7 +640,9 @@ export const getCompensations = async (
         { yksikkohinta: toText(site.unit_price_euro_per_kem2) },
       ]),
     ),
-    purkuTaiMuuVahennys: Number(compensation?.demolition_or_other_deduction ?? 0),
+    purkuTaiMuuVahennys: Number(
+      compensation?.demolition_or_other_deduction ?? 0,
+    ),
     maankayttokorvaus: toText(compensation?.land_use_compensation),
     maapoliittinenOhjelma: compensation?.land_policy_program?.name,
     huojennusProsentti: toText(
@@ -769,18 +789,20 @@ export const updateDecisions = async (
       ...(decision.id ? { id: Number(decision.id) } : {}),
       title: decision.title,
       decision_maker: decision.paattaja
-        ? DECISION_MAKER_CODES[decision.paattaja] ?? decision.paattaja
+        ? (DECISION_MAKER_CODES[decision.paattaja] ?? decision.paattaja)
         : "",
       decision_date: toIsoDate(decision.paatospvm),
       section: decision.pykala ? Number(decision.pykala) : null,
       decision_type: decision.paatoksenTyyppi
-        ? DECISION_TYPE_CODES[decision.paatoksenTyyppi] ?? decision.paatoksenTyyppi
+        ? (DECISION_TYPE_CODES[decision.paatoksenTyyppi] ??
+          decision.paatoksenTyyppi)
         : "",
       diary_number: decision.diaarinumero,
       note: decision.huomautus,
       conditions: (decision.ehdot ?? []).map((condition) => ({
         condition_type: condition.conditionType
-          ? CONDITION_TYPE_CODES[condition.conditionType] ?? condition.conditionType
+          ? (CONDITION_TYPE_CODES[condition.conditionType] ??
+            condition.conditionType)
           : "",
         supervision_date: toIsoDate(condition.valvontapvm),
         supervised_date: toIsoDate(condition.valvottuPvm),
@@ -799,7 +821,10 @@ export const getContracts = async (
   );
 
   const mapCollateral = (collateral: CollateralResponse): Guarantee => ({
-    tyyppi: getLabelForCode(LAND_USE_GUARANTEE_TYPES, collateral.guarantee_type),
+    tyyppi: getLabelForCode(
+      LAND_USE_GUARANTEE_TYPES,
+      collateral.guarantee_type,
+    ),
     osapuolet: collateral.parties.map(String),
     vakuusasiakirjanLaji: collateral.document_category,
     kiinteistoVaiLaitos: collateral.target,
@@ -808,14 +833,16 @@ export const getContracts = async (
     ),
     laitostunnus: collateral.facility_identifier ?? undefined,
     vierasvelkapanttaus: Boolean(
-      collateral.third_party_pledger_name || collateral.third_party_pledger_business_id,
+      collateral.third_party_pledger_name ||
+      collateral.third_party_pledger_business_id,
     ),
     vierasvelkapanttauksenAntajanNimi:
       collateral.third_party_pledger_name ?? undefined,
     vierasvelkapanttauksenAntajanYTunnus:
       collateral.third_party_pledger_business_id ?? undefined,
     jalkipanttaus: Boolean(
-      collateral.subsequent_pledgee_name || collateral.subsequent_pledgee_business_id,
+      collateral.subsequent_pledgee_name ||
+      collateral.subsequent_pledgee_business_id,
     ),
     jalkipantinSaajanNimi: collateral.subsequent_pledgee_name ?? undefined,
     jalkipantinSaajanYTunnus:
@@ -881,7 +908,9 @@ export const getPaymentSchedule = async (
     callApiGet<PartyResponse[]>(`agreements/${agreementId}/parties/`),
     callApiGet<ContractResponse[]>(`agreements/${agreementId}/contracts/`),
   ]);
-  const partyIndexes = new Map(parties.map((party, index) => [party.id, index]));
+  const partyIndexes = new Map(
+    parties.map((party, index) => [party.id, index]),
+  );
   const contractIndexes = new Map(
     contracts.map((contract, index) => [contract.id, index]),
   );
@@ -895,7 +924,10 @@ export const getPaymentSchedule = async (
       contractIndex: contractIndexes.has(schedule.contract)
         ? String(contractIndexes.get(schedule.contract))
         : undefined,
-      status: getLabelForCode(LAND_USE_PAYMENT_SCHEDULE_STATUSES, schedule.status),
+      status: getLabelForCode(
+        LAND_USE_PAYMENT_SCHEDULE_STATUSES,
+        schedule.status,
+      ),
       rejectedReason: schedule.rejected_reason || null,
       signedDate: schedule.signing_date ?? "",
       korotusProsentti: toText(schedule.increase_percentage),
@@ -940,7 +972,9 @@ export const getBilling = async (
     callApiGet<InvoiceResponse[]>(`agreements/${agreementId}/invoices/`),
     callApiGet<PartyResponse[]>(`agreements/${agreementId}/parties/`),
   ]);
-  const partyIndexes = new Map(parties.map((party, index) => [party.id, index]));
+  const partyIndexes = new Map(
+    parties.map((party, index) => [party.id, index]),
+  );
 
   return {
     invoices: invoices.map((invoice) => ({
@@ -965,14 +999,18 @@ export const getBilling = async (
   };
 };
 
-export const submitPaymentSchedule = async (scheduleId: string): Promise<void> => {
+export const submitPaymentSchedule = async (
+  scheduleId: string,
+): Promise<void> => {
   await callApiPost<PaymentScheduleResponse, Record<string, never>>(
     `payment-schedules/${scheduleId}/submit/`,
     {},
   );
 };
 
-export const approvePaymentSchedule = async (scheduleId: string): Promise<void> => {
+export const approvePaymentSchedule = async (
+  scheduleId: string,
+): Promise<void> => {
   await callApiPost<PaymentScheduleResponse, Record<string, never>>(
     `payment-schedules/${scheduleId}/approve/`,
     {},
