@@ -136,11 +136,6 @@ type AgreementSiteResponse = {
   unit_price_euro_per_kem2: string | null;
 };
 
-type LookupResponse = {
-  id: number;
-  name: string;
-};
-
 const DECISION_MAKER_CODES: Record<string, string> = {
   Tonttipäällikkö: "LAND_MANAGER",
   Kaupunkiympäristölautakunta: "URBAN_ENVIRONMENT_COMMITTEE",
@@ -614,7 +609,9 @@ export const getCompensations = async (
       kohteenTunnus: site.identifier,
       pintaAlaM2: toText(site.area_m2),
       kem2: toText(site.floor_area_kem2),
+      kayttotarkoitusId: site.intended_use?.id ?? null,
       kayttotarkoitus: site.intended_use?.name,
+      hallintamuotoIds: site.tenure_types.map((tenureType) => tenureType.id),
       hallintamuoto: site.tenure_types.map((tenureType) => tenureType.name),
       suojeltu: site.preservation_designation || undefined,
       amVelvoite: site.has_housing_obligation,
@@ -640,6 +637,7 @@ export const getCompensations = async (
       compensation?.demolition_or_other_deduction ?? 0,
     ),
     maankayttokorvaus: toText(compensation?.land_use_compensation),
+    maapoliittinenOhjelmaId: compensation?.land_policy_program?.id ?? null,
     maapoliittinenOhjelma: compensation?.land_policy_program?.name,
     huojennusProsentti: toText(
       compensation?.land_policy_program_discount_percentage,
@@ -656,21 +654,10 @@ const parseOptionalNumber = (value: string | undefined): number | null => {
   return value?.trim() && Number.isFinite(parsed) ? parsed : null;
 };
 
-const getLookupId = (
-  lookups: LookupResponse[],
-  name: string | undefined,
-): number | null => lookups.find((lookup) => lookup.name === name)?.id ?? null;
-
 export const updateCompensations = async (
   agreementId: string,
   values: LandUseCompensationsFormValues,
 ): Promise<LandUseCompensationsFormValues> => {
-  const [intendedUses, tenureTypes, landPolicyPrograms] = await Promise.all([
-    callApiGetAllPages<LookupResponse>("site-intended-uses/"),
-    callApiGetAllPages<LookupResponse>("site-tenure-types/"),
-    callApiGetAllPages<LookupResponse>("land-policy-programs/"),
-  ]);
-
   await Promise.all([
     callApiPut("agreements/" + agreementId + "/compensation/", {
       excel_calculation_url: values.excelLaskelmaUrl || null,
@@ -686,10 +673,7 @@ export const updateCompensations = async (
       ),
       demolition_or_other_deduction: values.purkuTaiMuuVahennys,
       land_use_compensation: parseOptionalNumber(values.maankayttokorvaus),
-      land_policy_program: getLookupId(
-        landPolicyPrograms,
-        values.maapoliittinenOhjelma,
-      ),
+      land_policy_program: values.maapoliittinenOhjelmaId ?? null,
       land_policy_program_discount_percentage: parseOptionalNumber(
         values.huojennusProsentti,
       ),
@@ -705,10 +689,8 @@ export const updateCompensations = async (
         identifier: site.kohteenTunnus,
         area_m2: parseOptionalNumber(site.pintaAlaM2),
         floor_area_kem2: parseOptionalNumber(site.kem2),
-        intended_use: getLookupId(intendedUses, site.kayttotarkoitus),
-        tenure_types: (site.hallintamuoto ?? [])
-          .map((name) => getLookupId(tenureTypes, name))
-          .filter((id): id is number => id !== null),
+        intended_use: site.kayttotarkoitusId ?? null,
+        tenure_types: site.hallintamuotoIds ?? [],
         preservation_designation: site.suojeltu || null,
         has_housing_obligation: site.amVelvoite,
         unit_price_euro_per_kem2: parseOptionalNumber(
