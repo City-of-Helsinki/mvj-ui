@@ -15,6 +15,7 @@ import {
 } from "@/landUse/utils/landUseIdentifier";
 import type { LandUseListItem } from "@/landUse/api/landUseListTypes";
 import {
+  callApiGetAllPages,
   callApiGet,
   callApiPatch,
   callApiPost,
@@ -50,10 +51,6 @@ type AgreementOverviewResponse = AgreementListResponse & {
     city: string;
   }[];
   preparers: { preparer: number; preparer_name: string }[];
-};
-
-type PaginatedResponse<T> = {
-  results: T[];
 };
 
 type AgreementListResponse = {
@@ -340,12 +337,10 @@ const mapPartyDetails = (
 };
 
 export const getAsemakaavat = async (): Promise<AsemakaavaListItem[]> => {
-  const response =
-    await callApiGet<PaginatedResponse<DetailedPlanResponse>>(
-      "detailed-plans/",
-    );
+  const plans =
+    await callApiGetAllPages<DetailedPlanResponse>("detailed-plans/");
 
-  return response.results.map((plan) => ({
+  return plans.map((plan) => ({
     asemakaavanNumero: plan.plan_number,
     asemakaavanKasittelyvaihe:
       plan.processing_stage as AsemakaavaListItem["asemakaavanKasittelyvaihe"],
@@ -399,17 +394,17 @@ export const getSummary = async (
 };
 
 export const getAgreementIdentifiers = async (): Promise<string[]> => {
-  const response =
-    await callApiGet<PaginatedResponse<AgreementListResponse>>("agreements/");
+  const agreements =
+    await callApiGetAllPages<AgreementListResponse>("agreements/");
 
-  return response.results.map((agreement) => agreement.identifier);
+  return agreements.map((agreement) => agreement.identifier);
 };
 
 export const getLandUseList = async (): Promise<LandUseListItem[]> => {
-  const response =
-    await callApiGet<PaginatedResponse<AgreementListResponse>>("agreements/");
+  const agreements =
+    await callApiGetAllPages<AgreementListResponse>("agreements/");
 
-  return response.results.map((agreement) => ({
+  return agreements.map((agreement) => ({
     id: agreement.id,
     identifier: agreement.identifier,
     party: "",
@@ -472,7 +467,7 @@ export const updateSummary = async (
 export const getParties = async (
   agreementId: string,
 ): Promise<LandUsePartiesFormValues> => {
-  const parties = await callApiGet<PartyResponse[]>(
+  const parties = await callApiGetAllPages<PartyResponse>(
     `agreements/${agreementId}/parties/`,
   );
 
@@ -597,8 +592,9 @@ export const updateParties = async (
   };
 };
 
-export const getDistricts = async (): Promise<District[]> =>
-  callApiGet<District[]>("districts/");
+export const getDistricts = async (): Promise<District[]> => {
+  return callApiGetAllPages<District>("districts/");
+};
 
 export const getCompensations = async (
   agreementId: string,
@@ -670,9 +666,9 @@ export const updateCompensations = async (
   values: LandUseCompensationsFormValues,
 ): Promise<LandUseCompensationsFormValues> => {
   const [intendedUses, tenureTypes, landPolicyPrograms] = await Promise.all([
-    callApiGet<LookupResponse[]>("site-intended-uses/"),
-    callApiGet<LookupResponse[]>("site-tenure-types/"),
-    callApiGet<LookupResponse[]>("land-policy-programs/"),
+    callApiGetAllPages<LookupResponse>("site-intended-uses/"),
+    callApiGetAllPages<LookupResponse>("site-tenure-types/"),
+    callApiGetAllPages<LookupResponse>("land-policy-programs/"),
   ]);
 
   await Promise.all([
@@ -755,7 +751,7 @@ export const getMonitoring = async (
 export const getDecisions = async (
   agreementId: string,
 ): Promise<LandUseDecisionsFormValues> => {
-  const decisions = await callApiGet<DecisionResponse[]>(
+  const decisions = await callApiGetAllPages<DecisionResponse>(
     `agreements/${agreementId}/decisions/`,
   );
 
@@ -816,7 +812,7 @@ export const updateDecisions = async (
 export const getContracts = async (
   agreementId: string,
 ): Promise<LandUseContractsFormValues> => {
-  const contracts = await callApiGet<ContractResponse[]>(
+  const contracts = await callApiGetAllPages<ContractResponse>(
     `agreements/${agreementId}/contracts/`,
   );
 
@@ -902,11 +898,13 @@ export const getPaymentSchedule = async (
   agreementId: string,
 ): Promise<LandUsePaymentScheduleFormValues> => {
   const [schedules, parties, contracts] = await Promise.all([
-    callApiGet<PaymentScheduleResponse[]>(
+    callApiGetAllPages<PaymentScheduleResponse>(
       `agreements/${agreementId}/payment-schedules/`,
     ),
-    callApiGet<PartyResponse[]>(`agreements/${agreementId}/parties/`),
-    callApiGet<ContractResponse[]>(`agreements/${agreementId}/contracts/`),
+    callApiGetAllPages<PartyResponse>(`agreements/${agreementId}/parties/`),
+    callApiGetAllPages<ContractResponse>(
+      `agreements/${agreementId}/contracts/`,
+    ),
   ]);
   const partyIndexes = new Map(
     parties.map((party, index) => [party.id, index]),
@@ -969,8 +967,8 @@ export const getBilling = async (
   agreementId: string,
 ): Promise<LandUseBillingFormValues> => {
   const [invoices, parties] = await Promise.all([
-    callApiGet<InvoiceResponse[]>(`agreements/${agreementId}/invoices/`),
-    callApiGet<PartyResponse[]>(`agreements/${agreementId}/parties/`),
+    callApiGetAllPages<InvoiceResponse>(`agreements/${agreementId}/invoices/`),
+    callApiGetAllPages<PartyResponse>(`agreements/${agreementId}/parties/`),
   ]);
   const partyIndexes = new Map(
     parties.map((party, index) => [party.id, index]),
