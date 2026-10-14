@@ -7,11 +7,9 @@ import React, {
 } from "react";
 import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import L from "leaflet";
-import { FeatureGroup } from "react-leaflet";
-import { EditControl } from "react-leaflet-draw";
-import "leaflet-measure-path";
 import { isEmpty, throttle } from "lodash-es";
 import MapContainer from "./MapContainer";
+import LeafletDrawControl from "@/components/map/LeafletDrawControl";
 import SaveConditionPanel, {
   type SaveConditionPanelHandle,
 } from "./SaveConditionPanel";
@@ -23,24 +21,33 @@ import {
   hideEditMode,
 } from "@/areaNote/slice";
 import { DEFAULT_CENTER, DEFAULT_ZOOM } from "@/util/constants";
-import { convertFeatureCollectionToFeature } from "@/areaNote/helpers";
+import { convertDrawnFeaturesToAreaNotePayload } from "@/areaNote/helpers";
+import type {
+  DrawnPolygonFeature,
+  GeoJsonPolygonLayer,
+} from "@/components/map/geojson";
 import { localizeMap } from "@/util/map";
 import { getInitialAreaNote, getIsEditMode } from "@/areaNote/selectors";
-
-localizeMap();
+import {
+  showMeasurements,
+  updateMeasurements,
+} from "@/components/map/measurements";
 
 const SHAPE_COLOR = "#9c27b0";
 const SHAPE_FILL_OPACITY = 0.5;
-const SHAPE_ERROR_COLOR = "#bd2719";
 
 type Props = {
   allowToEdit: boolean;
-  bounds?: Record<string, any>;
-  center?: Array<number>;
+  bounds?: L.LatLngBoundsExpression;
+  center?: L.LatLngExpression;
   isLoading?: boolean;
   onMapDidMount?: (...args: Array<any>) => any;
   onViewportChanged?: (...args: Array<any>) => any;
-  overlayLayers?: Array<Record<string, any>>;
+  overlayLayers?: Array<{
+    checked: boolean;
+    name: string;
+    component: React.ReactNode;
+  }>;
   showZoomLevelWarning?: boolean;
   zoom?: number;
   zoomLevelWarningText?: string;
@@ -62,20 +69,31 @@ const AreaNotesEditMap: React.FC<Props> = ({
   const initialValues = useAppSelector(getInitialAreaNote);
   const isEditMode = useAppSelector(getIsEditMode);
 
-  const featureGroupRef = useRef<Record<string, any> | null>(null);
+  const featureGroupRef = useRef<L.FeatureGroup | null>(null);
   const saveConditionPanelRef = useRef<SaveConditionPanelHandle | null>(null);
   const previousIsEditModeRef = useRef(isEditMode);
 
+  const [map, setMap] = useState<L.Map | null>(null);
+  const [featureGroup, setFeatureGroup] = useState<L.FeatureGroup | null>(null);
   const [id, setId] = useState<number>(-1);
   const [isNew, setIsNew] = useState(true);
   const [isValid, setIsValid] = useState(false);
+  const [isSavePanelOpen, setIsSavePanelOpen] = useState(false);
 
   const getLayerCount = useCallback(() => {
     if (!featureGroupRef.current) {
       return 0;
     }
 
-    return Object.keys(featureGroupRef.current.leafletElement._layers).length;
+    return featureGroupRef.current.getLayers().length;
+  }, []);
+
+  const handleMapReady = useCallback((leafletMap: L.Map) => {
+    const group = L.featureGroup().addTo(leafletMap);
+    localizeMap(leafletMap);
+    featureGroupRef.current = group;
+    setMap(leafletMap);
+    setFeatureGroup(group);
   }, []);
 
   useEffect(() => {
@@ -94,8 +112,8 @@ const AreaNotesEditMap: React.FC<Props> = ({
               color: SHAPE_COLOR,
               fillOpacity: SHAPE_FILL_OPACITY,
             });
-            featureGroupRef.current?.leafletElement.addLayer(layer);
-            layer.showMeasurements();
+            featureGroupRef.current?.addLayer(layer);
+            showMeasurements(layer);
           }
         });
         setIsValid(true);
@@ -109,8 +127,8 @@ const AreaNotesEditMap: React.FC<Props> = ({
     }
 
     if (!isEditMode && previousIsEditModeRef.current) {
-      featureGroupRef.current?.leafletElement.eachLayer((layer) => {
-        featureGroupRef.current?.leafletElement.removeLayer(layer);
+      featureGroupRef.current?.eachLayer((layer) => {
+        featureGroupRef.current?.removeLayer(layer);
       });
     }
 
@@ -121,9 +139,9 @@ const AreaNotesEditMap: React.FC<Props> = ({
     () =>
       throttle(
         () => {
-          featureGroupRef.current?.leafletElement?.eachLayer((layer) => {
-            layer.showMeasurements();
-            layer.updateMeasurements();
+          featureGroupRef.current?.eachLayer((layer: any) => {
+            showMeasurements(layer);
+            updateMeasurements(layer);
           });
         },
         1000 / 60,
@@ -141,6 +159,21 @@ const AreaNotesEditMap: React.FC<Props> = ({
     };
   }, [updateAllFeatures]);
 
+  useEffect(() => {
+    if (!isEditMode) {
+      setIsSavePanelOpen(false);
+      return;
+    }
+
+    const animationFrame = requestAnimationFrame(() => {
+      setIsSavePanelOpen(true);
+    });
+
+    return () => {
+      cancelAnimationFrame(animationFrame);
+    };
+  }, [isEditMode]);
+
   const handleAction = useCallback(() => {
     setIsValid(getLayerCount() > 0);
   }, [getLayerCount]);
@@ -148,7 +181,7 @@ const AreaNotesEditMap: React.FC<Props> = ({
   const handleCreated = useCallback(
     (e: Record<string, any>) => {
       const { layer } = e;
-      layer.showMeasurements();
+      showMeasurements(layer);
       setIsValid(getLayerCount() > 0);
     },
     [getLayerCount],
@@ -164,12 +197,12 @@ const AreaNotesEditMap: React.FC<Props> = ({
 
   const handleCreate = useCallback(
     (note: string) => {
-      const features: Array<Record<string, any>> = [];
-      featureGroupRef.current?.leafletElement.eachLayer((layer) =>
+      const features: Array<DrawnPolygonFeature> = [];
+      featureGroupRef.current?.eachLayer((layer: GeoJsonPolygonLayer) =>
         features.push(layer.toGeoJSON()),
       );
 
-      const payload = convertFeatureCollectionToFeature(features);
+      const payload = convertDrawnFeaturesToAreaNotePayload(features);
       payload.note = note;
       dispatch(createAreaNote(payload));
     },
@@ -178,12 +211,12 @@ const AreaNotesEditMap: React.FC<Props> = ({
 
   const handleEdit = useCallback(
     (note: string) => {
-      const features: Array<Record<string, any>> = [];
-      featureGroupRef.current?.leafletElement.eachLayer((layer) =>
+      const features: Array<DrawnPolygonFeature> = [];
+      featureGroupRef.current?.eachLayer((layer: GeoJsonPolygonLayer) =>
         features.push(layer.toGeoJSON()),
       );
 
-      const payload = convertFeatureCollectionToFeature(features);
+      const payload = convertDrawnFeaturesToAreaNotePayload(features);
       payload.note = note;
       payload.id = id;
       dispatch(editAreaNote(payload));
@@ -205,71 +238,52 @@ const AreaNotesEditMap: React.FC<Props> = ({
         onViewportChanged={onViewportChanged}
         overlayLayers={overlayLayers}
         zoom={zoom || DEFAULT_ZOOM}
-      >
-        <FeatureGroup
-          ref={(el) => {
-            featureGroupRef.current = el;
+        onMapReady={handleMapReady}
+      />
+      {allowToEdit && isEditMode && (
+        <LeafletDrawControl
+          map={map}
+          featureGroup={featureGroup}
+          onCreated={handleCreated}
+          onDeleted={handleAction}
+          onEdited={handleAction}
+          onNonCommittedChange={handleNonCommittedChange}
+          draw={{
+            polygon: {
+              allowSelfIntersection: false,
+              pathOptions: {
+                color: SHAPE_COLOR,
+                fillOpacity: SHAPE_FILL_OPACITY,
+              },
+            },
+            rectangle: {
+              pathOptions: {
+                color: SHAPE_COLOR,
+                fillOpacity: SHAPE_FILL_OPACITY,
+              },
+            },
           }}
-        >
-          {allowToEdit && isEditMode && (
-            <EditControl
-              position="topright"
-              onCreated={handleCreated}
-              onDeleted={handleAction}
-              onEdited={handleAction}
-              onEditMove={handleNonCommittedChange}
-              onEditVertex={handleNonCommittedChange}
-              onEditStop={handleNonCommittedChange}
-              onDeleteStop={handleNonCommittedChange}
-              draw={{
-                circlemarker: false,
-                circle: false,
-                marker: false,
-                polyline: false,
-                polygon: {
-                  allowIntersection: false,
-                  showArea: true,
-                  drawError: {
-                    color: SHAPE_ERROR_COLOR,
-                    timeout: 1000,
-                  },
-                  shapeOptions: {
-                    color: SHAPE_COLOR,
-                    fillOpacity: SHAPE_FILL_OPACITY,
-                  },
-                },
-                rectangle: {
-                  shapeOptions: {
-                    color: SHAPE_COLOR,
-                    fillOpacity: SHAPE_FILL_OPACITY,
-                  },
-                },
-              }}
-            />
-          )}
-        </FeatureGroup>
-
-        {allowToEdit && (
-          <SaveConditionPanel
-            ref={saveConditionPanelRef}
-            disableDelete={isNew}
-            disableSave={!isValid}
-            isNew={isNew}
-            onCancel={cancelChanges}
-            onCreate={handleCreate}
-            onDelete={handleDelete}
-            onEdit={handleEdit}
-            show={isEditMode}
-          />
-        )}
-
-        {zoomLevelWarningText && (
-          <ZoomLevelWarning
-            isOpen={showZoomLevelWarning || false}
-            text={zoomLevelWarningText}
-          />
-        )}
-      </MapContainer>
+        />
+      )}
+      {allowToEdit && isEditMode && (
+        <SaveConditionPanel
+          ref={saveConditionPanelRef}
+          disableDelete={isNew}
+          disableSave={!isValid}
+          isNew={isNew}
+          onCancel={cancelChanges}
+          onCreate={handleCreate}
+          onDelete={handleDelete}
+          onEdit={handleEdit}
+          show={isSavePanelOpen}
+        />
+      )}
+      {zoomLevelWarningText && (
+        <ZoomLevelWarning
+          isOpen={showZoomLevelWarning || false}
+          text={zoomLevelWarningText}
+        />
+      )}
     </div>
   );
 };

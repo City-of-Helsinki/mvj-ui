@@ -36,16 +36,17 @@ import type { AreaNoteList } from "@/areaNote/types";
 import type { InfillDevelopment } from "@/infillDevelopment/types";
 import type { Lease } from "@/leases/types";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
+import type { MapOverlayLayer } from "@/components/map/useAreaNotesOverlay";
 const SingleInfillDevelopmentMap: React.FC = () => {
   const dispatch = useAppDispatch();
   const location = useLocation();
 
-  const allLeases: Array<Lease> = useAppSelector(getAllLeases);
+  const allLeases: Record<string, Lease> = useAppSelector(getAllLeases);
   const areaNotes: AreaNoteList = useAppSelector(getAreaNoteList);
   const currentInfillDevelopment: InfillDevelopment = useAppSelector(
     getCurrentInfillDevelopment,
   );
-  const isFetchingAllLeases: Array<boolean> = useAppSelector(
+  const isFetchingAllLeases: Record<string, boolean> = useAppSelector(
     getIsFetchingAllLeases,
   );
   const leaseAttributes: Attributes = useAppSelector(getLeaseAttributes);
@@ -55,7 +56,7 @@ const SingleInfillDevelopmentMap: React.FC = () => {
   const [bounds, setBounds] = useState<any>();
   const [center, setCenter] = useState<any>();
   const [isLoading, setIsLoading] = useState(false);
-  const [layers, setLayers] = useState<Array<Record<string, any>>>([]);
+  const [layers, setLayers] = useState<Array<MapOverlayLayer>>([]);
 
   const infillDevelopmentLeases = useMemo(
     () =>

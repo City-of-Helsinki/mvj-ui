@@ -285,12 +285,13 @@
   border-radius: 4px;
 }
 .leaflet-bar a,
-.leaflet-bar a:hover {
+.leaflet-bar a:hover,
+.leaflet-bar button {
   background-color: #fff;
   border-bottom: 1px solid #ccc;
-  width: 26px;
-  height: 26px;
-  line-height: 26px;
+  width: 30px;
+  height: 30px;
+  line-height: 30px;
   display: block;
   text-align: center;
   text-decoration: none;
@@ -307,14 +308,18 @@
   background-image: url(/assets/images/layers-2x.png);
   background-size: 70%;
 }
-.leaflet-bar a:hover {
+.leaflet-bar a:hover,
+.leaflet-bar button:hover,
+.leaflet-bar button:focus {
   background-color: #f4f4f4;
 }
-.leaflet-bar a:first-child {
+.leaflet-bar a:first-child,
+.leaflet-bar button:first-child {
   border-top-left-radius: 4px;
   border-top-right-radius: 4px;
 }
-.leaflet-bar a:last-child {
+.leaflet-bar a:last-child,
+.leaflet-bar button:last-child {
   border-bottom-left-radius: 4px;
   border-bottom-right-radius: 4px;
   border-bottom: none;
@@ -668,12 +673,7 @@
   margin-left: -12px;
   border-right-color: #fff;
 }
-.leaflet-draw-actions a {
-  background-color: variables.$dark-gray;
-  color: white;
-}
-
-.leaflet-measure-path-measurement {
+.map-measurement {
   position: absolute;
   font-size: 10px;
   color: black;
@@ -690,46 +690,82 @@
   transform-origin: 0;
 }
 
-.leaflet-measure-path-measurement > div {
-  position: relative;
-  margin-top: -25%;
-  left: -50%;
+.map-measurement > div {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: center;
 }
 
-.leaflet-zoom-box-control {
-  font-size: 18px;
-}
-.leaflet-zoom-box-crosshair {
-  cursor: crosshair !important;
-}
-.leaflet-zoom-box-icon {
-  background: transparent no-repeat center center;
-  /*src: https://design.google.com/icons/#ic_crop_free*/
-  background-image: url(data:image/svg+xml;base64,PHN2ZyBmaWxsPSIjMDAwMDAwIiBoZWlnaHQ9IjI0IiB2aWV3Qm94PSIwIDAgMjQgMjQiIHdpZHRoPSIyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4gICAgPHBhdGggZD0iTTAgMGgyNHYyNEgweiIgZmlsbD0ibm9uZSIvPiAgICA8cGF0aCBkPSJNMyA1djRoMlY1aDRWM0g1Yy0xLjEgMC0yIC45LTIgMnptMiAxMEgzdjRjMCAxLjEuOSAyIDIgMmg0di0ySDV2LTR6bTE0IDRoLTR2Mmg0YzEuMSAwIDItLjkgMi0ydi00aC0ydjR6bTAtMTZoLTR2Mmg0djRoMlY1YzAtMS4xLS45LTItMi0yeiIvPjwvc3ZnPg==);
-}
-.leaflet-zoom-box-icon.active {
-  color: #fff;
-  background-color: #ccc;
-  /*src: https://design.google.com/icons/#ic_center_focus_strong*/
-  background-image: url(data:image/svg+xml;base64,PHN2ZyBmaWxsPSIjMDAwMDAwIiBoZWlnaHQ9IjI0IiB2aWV3Qm94PSIwIDAgMjQgMjQiIHdpZHRoPSIyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4gICAgPHBhdGggZD0iTTAgMGgyNHYyNEgweiIgZmlsbD0ibm9uZSIvPiAgICA8cGF0aCBkPSJNMTIgOGMtMi4yMSAwLTQgMS43OS00IDRzMS43OSA0IDQgNCA0LTEuNzkgNC00LTEuNzktNC00LTR6bS03IDdIM3Y0YzAgMS4xLjkgMiAyIDJoNHYtMkg1di00ek01IDVoNFYzSDVjLTEuMSAwLTIgLjktMiAydjRoMlY1em0xNC0yaC00djJoNHY0aDJWNWMwLTEuMS0uOS0yLTItMnptMCAxNmgtNHYyaDRjMS4xIDAgMi0uOSAyLTJ2LTRoLTJ2NHoiLz48L3N2Zz4=);
-}
-.leaflet-zoom-box-icon.leaflet-disabled {
-  background-image: url(data:image/svg+xml;base64,PHN2ZyBmaWxsPSIjQkJCQkJCIiBoZWlnaHQ9IjI0IiB2aWV3Qm94PSIwIDAgMjQgMjQiIHdpZHRoPSIyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4gICAgPHBhdGggZD0iTTAgMGgyNHYyNEgweiIgZmlsbD0ibm9uZSIvPiAgICA8cGF0aCBkPSJNMyA1djRoMlY1aDRWM0g1Yy0xLjEgMC0yIC45LTIgMnptMiAxMEgzdjRjMCAxLjEuOSAyIDIgMmg0di0ySDV2LTR6bTE0IDRoLTR2Mmg0YzEuMSAwIDItLjkgMi0ydi00aC0ydjR6bTAtMTZoLTR2Mmg0djRoMlY1YzAtMS4xLS45LTItMi0yeiIvPjwvc3ZnPg==);
-}
-
-/* global styling */
-.leaflet-control-geosearch *,
-.leaflet-control-geosearch *:before,
-.leaflet-control-geosearch *:after {
+.leaflet-control-fullscreen {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  cursor: pointer;
+  font-size: 18px;
+  appearance: none;
+  -webkit-appearance: none;
 }
-
-/* leaflet button styling */
-.leaflet-control-geosearch .leaflet-bar-part {
+.leaflet-control-geosearch {
+  position: relative;
+  width: 400px;
+  margin: 10px auto 0;
+}
+.leaflet-control-geosearch form {
+  position: relative;
+  display: block;
+  border: 2px solid rgba(0, 0, 0, 0.2);
   border-radius: 4px;
-  border-bottom: none;
+  background: #fff;
 }
-
+.leaflet-control-geosearch form.active {
+  border-color: variables.$blue;
+}
+.leaflet-control-geosearch form input {
+  width: 100%;
+  height: 30px;
+  border: 0;
+  padding: 0 32px 0 8px;
+  font-size: 12px;
+}
+.leaflet-control-geosearch form input:focus {
+  outline: 0;
+}
+.leaflet-control-geosearch button.reset {
+  position: absolute;
+  top: 0;
+  right: 0;
+  border: 0;
+  background: transparent;
+  color: #000;
+  cursor: pointer;
+  line-height: 30px;
+  padding: 0 8px;
+}
+.leaflet-control-geosearch .results {
+  display: none;
+  background: #fff;
+}
+.leaflet-control-geosearch .results.active {
+  display: block;
+  padding: 8px 0;
+  border-top: 1px solid #c6c6c6;
+}
+.leaflet-control-geosearch .results > * {
+  line-height: 24px;
+  padding: 0 8px;
+  overflow: hidden;
+  border: 1px solid transparent;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.leaflet-control-geosearch .results > .active,
+.leaflet-control-geosearch .results > :hover {
+  background: #f8f8f8;
+  border-color: #c6c6c6;
+  cursor: pointer;
+}
 .leaflet-control-geosearch a.leaflet-bar-part:before,
 .leaflet-control-geosearch a.leaflet-bar-part:after {
   position: absolute;
@@ -870,19 +906,20 @@
   }
 }
 
-.leaflet-top .leaflet-geosearch-bar,
-.leaflet-bottom .leaflet-geosearch-bar {
-  display: none;
-}
-
 .leaflet-geosearch-bar {
-  position: relative;
+  position: absolute;
+  top: 10px;
+  left: 50%;
   display: block;
   height: auto;
-  width: 400px;
-  margin: 10px auto 0;
+  width: min(400px, calc(100% - 32px));
+  margin: 0;
   cursor: auto;
   z-index: 1000;
+  transform: translateX(-50%);
+}
+.leaflet-address-search-placeholder {
+  display: none;
 }
 
 .leaflet-geosearch-bar form {
