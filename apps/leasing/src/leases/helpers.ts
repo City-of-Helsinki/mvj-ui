@@ -733,7 +733,7 @@ export const getContentContractCollaterals = (
   get(contract, "collaterals", []).map((collateral: Collateral) => {
     return {
       id: collateral.id,
-      type: get(collateral, "type.id") || collateral.type,
+      type: collateral.type,
       other_type: collateral.other_type,
       number: collateral.number,
       deed_date: collateral.deed_date,

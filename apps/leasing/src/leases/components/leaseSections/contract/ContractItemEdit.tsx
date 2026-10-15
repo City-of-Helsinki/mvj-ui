@@ -484,7 +484,6 @@ const Collaterals: React.FC<CollateralsProps> = ({
                         key={index}
                         field={field}
                         onRemove={handleRemove}
-                        collateralType={fields.value?.[index]?.type}
                       />
                     );
                   })}

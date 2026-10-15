@@ -42,8 +42,11 @@ import {
   DocumentTypeField,
   PledgorFields,
   SubordinatePledgeFields,
+  PropertyIdentifierField,
+  InstitutionIdentifierField,
 } from "@/leases/components/leaseSections/contract/CollateralEditFields";
 import FormTextTitle from "@/components/form/FormTextTitle";
+import { useFieldValue } from "@/components/helpers";
 
 type PropertyIdentifiersProps = {
   attributes: Attributes;
@@ -110,58 +113,20 @@ const PropertyIdentifiers = ({
               return (
                 <Row key={index}>
                   <Column small={6}>
-                    <Authorization
-                      allow={isFieldAllowedToRead(
-                        attributes,
-                        LeaseContractCollateralsFieldPaths.PROPERTY_IDENTIFIER,
-                      )}
-                    >
-                      <FormField
-                        disableTouched={isSaveClicked}
-                        fieldAttributes={getFieldAttributes(
-                          attributes,
-                          LeaseContractCollateralsFieldPaths.PROPERTY_IDENTIFIER,
-                        )}
-                        name={`${field}.property_identifier`}
-                        invisibleLabel
-                        overrideValues={{
-                          label:
-                            LeaseContractCollateralsFieldTitles.PROPERTY_IDENTIFIER,
-                        }}
-                        enableUiDataEdit
-                        uiDataKey={getUiDataLeaseKey(
-                          LeaseContractCollateralsFieldPaths.PROPERTY_IDENTIFIER,
-                        )}
-                      />
-                    </Authorization>
+                    <PropertyIdentifierField
+                      attributes={attributes}
+                      field={field}
+                      isSaveClicked={isSaveClicked}
+                    />
                   </Column>
                   <Column small={6}>
                     <FieldAndRemoveButtonWrapper
                       field={
-                        <Authorization
-                          allow={isFieldAllowedToRead(
-                            attributes,
-                            LeaseContractCollateralsFieldPaths.INSTITUTION_IDENTIFIER,
-                          )}
-                        >
-                          <FormField
-                            disableTouched={isSaveClicked}
-                            fieldAttributes={getFieldAttributes(
-                              attributes,
-                              LeaseContractCollateralsFieldPaths.INSTITUTION_IDENTIFIER,
-                            )}
-                            name={`${field}.institution_identifier`}
-                            invisibleLabel
-                            overrideValues={{
-                              label:
-                                LeaseContractCollateralsFieldTitles.INSTITUTION_IDENTIFIER,
-                            }}
-                            enableUiDataEdit
-                            uiDataKey={getUiDataLeaseKey(
-                              LeaseContractCollateralsFieldPaths.INSTITUTION_IDENTIFIER,
-                            )}
-                          />
-                        </Authorization>
+                        <InstitutionIdentifierField
+                          attributes={attributes}
+                          field={field}
+                          isSaveClicked={isSaveClicked}
+                        />
                       }
                       removeButton={
                         <RemoveButton
@@ -552,14 +517,10 @@ const CollateralPledgeOfFunds = (
 type Props = {
   field: string;
   onRemove: (...args: Array<any>) => any;
-  collateralType: number | null | undefined;
 };
 
-const CollateralEdit: React.FC<Props> = ({
-  field,
-  onRemove,
-  collateralType,
-}) => {
+const CollateralEdit: React.FC<Props> = ({ field, onRemove }) => {
+  const collateralType = useFieldValue(`${field}.type`);
   const attributes: Attributes = useAppSelector(getAttributes);
   const isSaveClicked: boolean = useAppSelector(getIsSaveClicked);
   const usersPermissions: UsersPermissionsType =
@@ -569,8 +530,14 @@ const CollateralEdit: React.FC<Props> = ({
     field,
     isSaveClicked,
   };
+  // TODO: Form validation doesn't run for some reason on edit mode in initial field mount.
+  // Forcing a remount as a workaround.
+  const [mounted, setMounted] = React.useState(false);
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
   return (
-    <BoxItem>
+    <BoxItem key={String(mounted)}>
       <BoxContentWrapper>
         <ActionButtonWrapper>
           <Authorization

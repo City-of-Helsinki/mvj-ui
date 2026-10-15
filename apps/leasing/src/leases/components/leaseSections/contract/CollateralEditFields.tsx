@@ -1,5 +1,6 @@
 import React, { useMemo } from "react";
-import { Field } from "react-final-form";
+import { Field, useForm } from "react-final-form";
+import { get } from "lodash-es";
 import { Column } from "@/components/grid/Grid";
 import Authorization from "@/components/authorization/Authorization";
 import FormField from "@/components/form/final-form/FormField";
@@ -24,6 +25,27 @@ import { getContactFullName } from "@/contacts/helpers";
 import { isArchived } from "@/util/helpers";
 import { SelectListOption } from "@/types";
 import FieldTypeBoolean from "@/components/form/final-form/FieldTypeBoolean";
+
+const PLEDGOR_IDENTIFIER_REQUIRED_ERROR = "Anna henkilötunnus tai Y-tunnus";
+const PROPERTY_IDENTIFIER_REQUIRED_ERROR =
+  "Anna kiinteistötunnus tai laitostunnus";
+
+// Hook for validating at least one of two related fields is filled in.
+export const useRequiredPairValidator = (
+  relatedField: string,
+  required: boolean,
+  requiredError: string,
+  formatValidator?: (value: any) => string | null | undefined,
+) => {
+  const form = useForm();
+  return (value: any) => {
+    if (required && !value) {
+      const otherValue = get(form.getState().values, relatedField);
+      if (!otherValue) return requiredError;
+    }
+    return formatValidator?.(value);
+  };
+};
 
 export const CollateralTypeField = ({
   attributes,
@@ -525,65 +547,79 @@ const PledgorIdentificationNumberField = ({
   field,
   isSaveClicked,
   required = false,
-}: CollateralEditFieldProps) => (
-  <Authorization
-    allow={isFieldAllowedToRead(
-      attributes,
-      LeaseContractCollateralsFieldPaths.PLEDGOR_NATIONAL_IDENTIFICATION_NUMBER,
-    )}
-  >
-    <FormField
-      disableTouched={isSaveClicked}
-      fieldAttributes={getFieldAttributes(
+}: CollateralEditFieldProps) => {
+  const validate = useRequiredPairValidator(
+    `${field}.pledgor_business_id`,
+    required,
+    PLEDGOR_IDENTIFIER_REQUIRED_ERROR,
+    personalIdentifierValidator,
+  );
+  return (
+    <Authorization
+      allow={isFieldAllowedToRead(
         attributes,
         LeaseContractCollateralsFieldPaths.PLEDGOR_NATIONAL_IDENTIFICATION_NUMBER,
       )}
-      validate={personalIdentifierValidator}
-      name={`${field}.pledgor_national_identification_number`}
-      overrideValues={{
-        label:
-          LeaseContractCollateralsFieldTitles.PLEDGOR_NATIONAL_IDENTIFICATION_NUMBER,
-        required: required,
-      }}
-      enableUiDataEdit
-      uiDataKey={getUiDataLeaseKey(
-        LeaseContractCollateralsFieldPaths.PLEDGOR_NATIONAL_IDENTIFICATION_NUMBER,
-      )}
-    />
-  </Authorization>
-);
+    >
+      <FormField
+        disableTouched={isSaveClicked}
+        fieldAttributes={getFieldAttributes(
+          attributes,
+          LeaseContractCollateralsFieldPaths.PLEDGOR_NATIONAL_IDENTIFICATION_NUMBER,
+        )}
+        validate={validate}
+        name={`${field}.pledgor_national_identification_number`}
+        overrideValues={{
+          label:
+            LeaseContractCollateralsFieldTitles.PLEDGOR_NATIONAL_IDENTIFICATION_NUMBER,
+        }}
+        enableUiDataEdit
+        uiDataKey={getUiDataLeaseKey(
+          LeaseContractCollateralsFieldPaths.PLEDGOR_NATIONAL_IDENTIFICATION_NUMBER,
+        )}
+      />
+    </Authorization>
+  );
+};
 
 const PledgorBusinessIdField = ({
   attributes,
   field,
   isSaveClicked,
   required = false,
-}: CollateralEditFieldProps) => (
-  <Authorization
-    allow={isFieldAllowedToRead(
-      attributes,
-      LeaseContractCollateralsFieldPaths.PLEDGOR_BUSINESS_ID,
-    )}
-  >
-    <FormField
-      disableTouched={isSaveClicked}
-      fieldAttributes={getFieldAttributes(
+}: CollateralEditFieldProps) => {
+  const validate = useRequiredPairValidator(
+    `${field}.pledgor_national_identification_number`,
+    required,
+    PLEDGOR_IDENTIFIER_REQUIRED_ERROR,
+    companyIdentifierValidator,
+  );
+  return (
+    <Authorization
+      allow={isFieldAllowedToRead(
         attributes,
         LeaseContractCollateralsFieldPaths.PLEDGOR_BUSINESS_ID,
       )}
-      validate={companyIdentifierValidator}
-      name={`${field}.pledgor_business_id`}
-      overrideValues={{
-        label: LeaseContractCollateralsFieldTitles.PLEDGOR_BUSINESS_ID,
-        required: required,
-      }}
-      enableUiDataEdit
-      uiDataKey={getUiDataLeaseKey(
-        LeaseContractCollateralsFieldPaths.PLEDGOR_BUSINESS_ID,
-      )}
-    />
-  </Authorization>
-);
+    >
+      <FormField
+        disableTouched={isSaveClicked}
+        fieldAttributes={getFieldAttributes(
+          attributes,
+          LeaseContractCollateralsFieldPaths.PLEDGOR_BUSINESS_ID,
+        )}
+        validate={validate}
+        name={`${field}.pledgor_business_id`}
+        overrideValues={{
+          label: LeaseContractCollateralsFieldTitles.PLEDGOR_BUSINESS_ID,
+        }}
+        enableUiDataEdit
+        uiDataKey={getUiDataLeaseKey(
+          LeaseContractCollateralsFieldPaths.PLEDGOR_BUSINESS_ID,
+        )}
+      />
+    </Authorization>
+  );
+};
 
 export const ContractPartyField = ({
   attributes,
@@ -696,3 +732,79 @@ export const DocumentTypeField = ({
     />
   </Authorization>
 );
+
+export const PropertyIdentifierField = ({
+  attributes,
+  field,
+  isSaveClicked,
+}: CollateralEditFieldProps) => {
+  const validate = useRequiredPairValidator(
+    `${field}.institution_identifier`,
+    true,
+    PROPERTY_IDENTIFIER_REQUIRED_ERROR,
+  );
+  return (
+    <Authorization
+      allow={isFieldAllowedToRead(
+        attributes,
+        LeaseContractCollateralsFieldPaths.PROPERTY_IDENTIFIER,
+      )}
+    >
+      <FormField
+        disableTouched={isSaveClicked}
+        fieldAttributes={getFieldAttributes(
+          attributes,
+          LeaseContractCollateralsFieldPaths.PROPERTY_IDENTIFIER,
+        )}
+        validate={validate}
+        name={`${field}.property_identifier`}
+        invisibleLabel
+        overrideValues={{
+          label: LeaseContractCollateralsFieldTitles.PROPERTY_IDENTIFIER,
+        }}
+        enableUiDataEdit
+        uiDataKey={getUiDataLeaseKey(
+          LeaseContractCollateralsFieldPaths.PROPERTY_IDENTIFIER,
+        )}
+      />
+    </Authorization>
+  );
+};
+
+export const InstitutionIdentifierField = ({
+  attributes,
+  field,
+  isSaveClicked,
+}: CollateralEditFieldProps) => {
+  const validate = useRequiredPairValidator(
+    `${field}.property_identifier`,
+    true,
+    PROPERTY_IDENTIFIER_REQUIRED_ERROR,
+  );
+  return (
+    <Authorization
+      allow={isFieldAllowedToRead(
+        attributes,
+        LeaseContractCollateralsFieldPaths.INSTITUTION_IDENTIFIER,
+      )}
+    >
+      <FormField
+        disableTouched={isSaveClicked}
+        fieldAttributes={getFieldAttributes(
+          attributes,
+          LeaseContractCollateralsFieldPaths.INSTITUTION_IDENTIFIER,
+        )}
+        validate={validate}
+        name={`${field}.institution_identifier`}
+        invisibleLabel
+        overrideValues={{
+          label: LeaseContractCollateralsFieldTitles.INSTITUTION_IDENTIFIER,
+        }}
+        enableUiDataEdit
+        uiDataKey={getUiDataLeaseKey(
+          LeaseContractCollateralsFieldPaths.INSTITUTION_IDENTIFIER,
+        )}
+      />
+    </Authorization>
+  );
+};
