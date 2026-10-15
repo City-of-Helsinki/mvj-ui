@@ -41,6 +41,7 @@ import {
   EndDateField,
   DocumentTypeField,
   PledgorFields,
+  SubordinatePledgeFields,
 } from "@/leases/components/leaseSections/contract/CollateralEditFields";
 import FormTextTitle from "@/components/form/FormTextTitle";
 
@@ -343,80 +344,7 @@ const CollateralMortgageDocument = (
         <Column small={6} medium={4} large={2}>
           <DocumentTypeField {...collateralFieldProps} />
         </Column>
-        <Column small={6} medium={4} large={2}>
-          <Authorization
-            allow={isFieldAllowedToRead(
-              attributes,
-              LeaseContractCollateralsFieldPaths.SUBORDINATE_PLEDGE,
-            )}
-          >
-            <FormField
-              disableTouched={isSaveClicked}
-              fieldAttributes={getFieldAttributes(
-                attributes,
-                LeaseContractCollateralsFieldPaths.SUBORDINATE_PLEDGE,
-              )}
-              name={`${field}.subordinate_pledge`}
-              overrideValues={{
-                label: LeaseContractCollateralsFieldTitles.SUBORDINATE_PLEDGE,
-              }}
-              enableUiDataEdit
-              uiDataKey={getUiDataLeaseKey(
-                LeaseContractCollateralsFieldPaths.SUBORDINATE_PLEDGE,
-              )}
-            />
-          </Authorization>
-        </Column>
-        <Column small={6} medium={4} large={2}>
-          <Authorization
-            allow={isFieldAllowedToRead(
-              attributes,
-              LeaseContractCollateralsFieldPaths.SUBORDINATE_PLEDGEE_NAME,
-            )}
-          >
-            <FormField
-              disableTouched={isSaveClicked}
-              fieldAttributes={getFieldAttributes(
-                attributes,
-                LeaseContractCollateralsFieldPaths.SUBORDINATE_PLEDGEE_NAME,
-              )}
-              name={`${field}.subordinate_pledgee_name`}
-              overrideValues={{
-                label:
-                  LeaseContractCollateralsFieldTitles.SUBORDINATE_PLEDGEE_NAME,
-              }}
-              enableUiDataEdit
-              uiDataKey={getUiDataLeaseKey(
-                LeaseContractCollateralsFieldPaths.SUBORDINATE_PLEDGEE_NAME,
-              )}
-            />
-          </Authorization>
-        </Column>
-        <Column small={6} medium={4} large={2}>
-          <Authorization
-            allow={isFieldAllowedToRead(
-              attributes,
-              LeaseContractCollateralsFieldPaths.SUBORDINATE_PLEDGEE_BUSINESS_ID,
-            )}
-          >
-            <FormField
-              disableTouched={isSaveClicked}
-              fieldAttributes={getFieldAttributes(
-                attributes,
-                LeaseContractCollateralsFieldPaths.SUBORDINATE_PLEDGEE_BUSINESS_ID,
-              )}
-              name={`${field}.subordinate_pledgee_business_id`}
-              overrideValues={{
-                label:
-                  LeaseContractCollateralsFieldTitles.SUBORDINATE_PLEDGEE_BUSINESS_ID,
-              }}
-              enableUiDataEdit
-              uiDataKey={getUiDataLeaseKey(
-                LeaseContractCollateralsFieldPaths.SUBORDINATE_PLEDGEE_BUSINESS_ID,
-              )}
-            />
-          </Authorization>
-        </Column>
+        <SubordinatePledgeFields {...collateralFieldProps} />
         <ReturnedDateFields {...collateralFieldProps} />
       </Row>
 

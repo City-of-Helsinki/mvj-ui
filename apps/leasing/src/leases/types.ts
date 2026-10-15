@@ -278,7 +278,6 @@ export type CollateralPayload = {
   note: string | null;
   start_date: string | null;
   end_date: string | null;
-  third_party_pledge: boolean | null;
   third_party_pledgor_name: string | null;
   third_party_pledgor_business_id: string | null;
   contract_party: Array<number> | null;
