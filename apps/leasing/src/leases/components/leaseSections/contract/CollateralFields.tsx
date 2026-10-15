@@ -202,15 +202,13 @@ export const NoteField = ({ attributes, collateral }: CollateralFieldProps) => (
 export const ThirdPartyPledgeFields = ({
   attributes,
   collateral,
-}: CollateralFieldProps) => (
-  <>
-    <Column small={6} medium={4} large={2}>
-      <Authorization
-        allow={isFieldAllowedToRead(
-          attributes,
-          LeaseContractCollateralsFieldPaths.THIRD_PARTY_PLEDGE,
-        )}
-      >
+}: CollateralFieldProps) => {
+  const hasThirdPartyPledge =
+    collateral.third_party_pledgor_business_id ||
+    collateral.third_party_pledgor_name;
+  return (
+    <>
+      <Column small={6} medium={4} large={2}>
         <>
           <FormTextTitle
             uiDataKey={getUiDataLeaseKey(
@@ -219,28 +217,28 @@ export const ThirdPartyPledgeFields = ({
           >
             {LeaseContractCollateralsFieldTitles.THIRD_PARTY_PLEDGE}
           </FormTextTitle>
-          <FormText>{collateral.third_party_pledge ? "Kyllä" : "Ei"}</FormText>
+          <FormText>{hasThirdPartyPledge ? "Kyllä" : "Ei"}</FormText>
         </>
-      </Authorization>
-    </Column>
-    {collateral.third_party_pledge && (
-      <>
-        <Column small={6} medium={4} large={2}>
-          <ThirdPartyPledgorNameField
-            attributes={attributes}
-            collateral={collateral}
-          />
-        </Column>
-        <Column small={6} medium={4} large={2}>
-          <ThirdPartyPledgorBusinessIdField
-            attributes={attributes}
-            collateral={collateral}
-          />
-        </Column>
-      </>
-    )}
-  </>
-);
+      </Column>
+      {hasThirdPartyPledge && (
+        <>
+          <Column small={6} medium={4} large={2}>
+            <ThirdPartyPledgorNameField
+              attributes={attributes}
+              collateral={collateral}
+            />
+          </Column>
+          <Column small={6} medium={4} large={2}>
+            <ThirdPartyPledgorBusinessIdField
+              attributes={attributes}
+              collateral={collateral}
+            />
+          </Column>
+        </>
+      )}
+    </>
+  );
+};
 
 const ThirdPartyPledgorNameField = ({
   attributes,
@@ -284,6 +282,94 @@ const ThirdPartyPledgorBusinessIdField = ({
         {LeaseContractCollateralsFieldTitles.THIRD_PARTY_PLEDGOR_BUSINESS_ID}
       </FormTextTitle>
       <FormText>{collateral.third_party_pledgor_business_id || "-"}</FormText>
+    </>
+  </Authorization>
+);
+
+export const SubordinatePledgeFields = ({
+  attributes,
+  collateral,
+}: CollateralFieldProps) => {
+  const hasSubordinatePledge =
+    collateral.subordinate_pledgee_business_id ||
+    collateral.subordinate_pledgee_name;
+  return (
+    <>
+      <Column small={6} medium={4} large={2}>
+        <>
+          <FormTextTitle
+            uiDataKey={getUiDataLeaseKey(
+              LeaseContractCollateralsFieldPaths.SUBORDINATE_PLEDGE,
+            )}
+          >
+            {LeaseContractCollateralsFieldTitles.SUBORDINATE_PLEDGE}
+          </FormTextTitle>
+          <FormText>{hasSubordinatePledge ? "Kyllä" : "Ei"}</FormText>
+        </>
+      </Column>
+      {hasSubordinatePledge && (
+        <>
+          <Column small={6} medium={4} large={2}>
+            <SubordinatePledgeeNameField
+              attributes={attributes}
+              collateral={collateral}
+            />
+          </Column>
+          <Column small={6} medium={4} large={2}>
+            <SubordinatePledgeeBusinessIdField
+              attributes={attributes}
+              collateral={collateral}
+            />
+          </Column>
+        </>
+      )}
+      {!hasSubordinatePledge && <Column large={4} />}
+    </>
+  );
+};
+
+const SubordinatePledgeeNameField = ({
+  attributes,
+  collateral,
+}: CollateralFieldProps) => (
+  <Authorization
+    allow={isFieldAllowedToRead(
+      attributes,
+      LeaseContractCollateralsFieldPaths.SUBORDINATE_PLEDGEE_NAME,
+    )}
+  >
+    <>
+      <FormTextTitle
+        uiDataKey={getUiDataLeaseKey(
+          LeaseContractCollateralsFieldPaths.SUBORDINATE_PLEDGEE_NAME,
+        )}
+      >
+        {LeaseContractCollateralsFieldTitles.SUBORDINATE_PLEDGEE_NAME}
+      </FormTextTitle>
+      <FormText>{collateral.subordinate_pledgee_name || "-"}</FormText>
+    </>
+  </Authorization>
+);
+
+const SubordinatePledgeeBusinessIdField = ({
+  attributes,
+  collateral,
+}: CollateralFieldProps) => (
+  <Authorization
+    allow={isFieldAllowedToRead(
+      attributes,
+      LeaseContractCollateralsFieldPaths.SUBORDINATE_PLEDGEE_BUSINESS_ID,
+    )}
+  >
+    <>
+      <FormTextTitle
+        uiDataKey={getUiDataLeaseKey(
+          LeaseContractCollateralsFieldPaths.SUBORDINATE_PLEDGEE_BUSINESS_ID,
+        )}
+      >
+        {LeaseContractCollateralsFieldTitles.SUBORDINATE_PLEDGEE_BUSINESS_ID}
+      </FormTextTitle>
+      <FormText>{collateral.subordinate_pledgee_business_id || "-"}</FormText>
     </>
   </Authorization>
 );
