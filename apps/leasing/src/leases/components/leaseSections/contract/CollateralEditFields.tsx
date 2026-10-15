@@ -26,13 +26,14 @@ import { isArchived } from "@/util/helpers";
 import { SelectListOption } from "@/types";
 import FieldTypeBoolean from "@/components/form/final-form/FieldTypeBoolean";
 
-const PLEDGOR_IDENTIFIER_REQUIRED_ERROR = "Anna henkilötunnus tai Y-tunnus";
+//TODO: move out of this file?
+const PLEDGOR_IDENTIFIER_REQUIRED_ERROR = "Syötä henkilötunnus tai Y-tunnus";
 const PROPERTY_IDENTIFIER_REQUIRED_ERROR =
-  "Anna kiinteistötunnus tai laitostunnus";
+  "Syötä kiinteistötunnus tai laitostunnus";
 
 // Hook for validating at least one of two related fields is filled in.
-export const useRequiredPairValidator = (
-  relatedField: string,
+const useRequiredFieldPairValidator = (
+  linkedFieldPath: string,
   required: boolean,
   requiredError: string,
   formatValidator?: (value: any) => string | null | undefined,
@@ -40,7 +41,7 @@ export const useRequiredPairValidator = (
   const form = useForm();
   return (value: any) => {
     if (required && !value) {
-      const otherValue = get(form.getState().values, relatedField);
+      const otherValue = get(form.getState().values, linkedFieldPath);
       if (!otherValue) return requiredError;
     }
     return formatValidator?.(value);

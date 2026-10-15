@@ -26,6 +26,7 @@ import {
   AccountNumberField,
   DocumentTypeField,
   PledgorFields,
+  SubordinatePledgeFields,
 } from "@/leases/components/leaseSections/contract/CollateralFields";
 import type { Collateral } from "@/leases/types";
 export type CollateralFieldProps = {
@@ -176,69 +177,10 @@ const CollateralMortgageDocument = ({
         <Column small={6} medium={4} large={2}>
           <DocumentTypeField attributes={attributes} collateral={collateral} />
         </Column>
-        <Column small={6} medium={4} large={2}>
-          <Authorization
-            allow={isFieldAllowedToRead(
-              attributes,
-              LeaseContractCollateralsFieldPaths.SUBORDINATE_PLEDGE,
-            )}
-          >
-            <>
-              <FormTextTitle
-                uiDataKey={getUiDataLeaseKey(
-                  LeaseContractCollateralsFieldPaths.SUBORDINATE_PLEDGE,
-                )}
-              >
-                {LeaseContractCollateralsFieldTitles.SUBORDINATE_PLEDGE}
-              </FormTextTitle>
-              <FormText>
-                {collateral.subordinate_pledge ? "Kyllä" : "Ei"}
-              </FormText>
-            </>
-          </Authorization>
-        </Column>
-        <Column small={6} medium={4} large={2}>
-          <Authorization
-            allow={isFieldAllowedToRead(
-              attributes,
-              LeaseContractCollateralsFieldPaths.SUBORDINATE_PLEDGEE_NAME,
-            )}
-          >
-            <>
-              <FormTextTitle
-                uiDataKey={getUiDataLeaseKey(
-                  LeaseContractCollateralsFieldPaths.SUBORDINATE_PLEDGEE_NAME,
-                )}
-              >
-                {LeaseContractCollateralsFieldTitles.SUBORDINATE_PLEDGEE_NAME}
-              </FormTextTitle>
-              <FormText>{collateral.subordinate_pledgee_name || "-"}</FormText>
-            </>
-          </Authorization>
-        </Column>
-        <Column small={6} medium={4} large={2}>
-          <Authorization
-            allow={isFieldAllowedToRead(
-              attributes,
-              LeaseContractCollateralsFieldPaths.SUBORDINATE_PLEDGEE_BUSINESS_ID,
-            )}
-          >
-            <>
-              <FormTextTitle
-                uiDataKey={getUiDataLeaseKey(
-                  LeaseContractCollateralsFieldPaths.SUBORDINATE_PLEDGEE_BUSINESS_ID,
-                )}
-              >
-                {
-                  LeaseContractCollateralsFieldTitles.SUBORDINATE_PLEDGEE_BUSINESS_ID
-                }
-              </FormTextTitle>
-              <FormText>
-                {collateral.subordinate_pledgee_business_id || "-"}
-              </FormText>
-            </>
-          </Authorization>
-        </Column>
+        <SubordinatePledgeFields
+          attributes={attributes}
+          collateral={collateral}
+        />
         <ReturnedDateFields attributes={attributes} collateral={collateral} />
       </Row>
       <Row>
