@@ -3,12 +3,13 @@ import Authorization from "@/components/authorization/Authorization";
 import FormText from "@/components/form/FormText";
 import FormTextTitle from "@/components/form/FormTextTitle";
 import { Row, Column } from "@/components/grid/Grid";
-import { ContactTypes } from "@/contacts/enums";
+import { useContactAttributes } from "@/components/attributes/ContactAttributes";
+import { ContactFieldPaths, ContactTypes } from "@/contacts/enums";
 import { getContactFullName } from "@/contacts/helpers";
-import type { Contact } from "@/contacts/types";
 import {
   LeaseContractCollateralsFieldPaths,
   LeaseContractCollateralsFieldTitles,
+  LeaseTenantContactSetFieldPaths,
 } from "@/leases/enums";
 import { getContentTenants } from "@/leases/helpers";
 import { getCurrentLease } from "@/leases/selectors";
@@ -24,6 +25,7 @@ import {
 } from "@/util/helpers";
 import { useAppSelector } from "@/root/hooks";
 import { CollateralFieldProps } from "@/leases/components/leaseSections/contract/Collateral";
+import type { Attributes } from "@/types";
 
 export const CollateralTypeField = ({
   attributes,
@@ -469,32 +471,28 @@ export const PledgorBusinessIdField = ({
   );
 };
 
-//TODO: figure out if we want these combined or separtedted
-const getContactIdentifier = (contact: Contact | null | undefined) =>
-  contact?.type === ContactTypes.BUSINESS
-    ? contact?.business_id
-    : contact?.national_identification_number;
-
 type ContractPartyTableProps = {
   tenantIds: Array<number> | null | undefined;
-  showTitleWhenEmpty?: boolean;
+  attributes: Attributes;
 };
 
 export const ContractPartyTable = ({
   tenantIds,
-  showTitleWhenEmpty = true,
+  attributes,
 }: ContractPartyTableProps) => {
   const currentLease = useAppSelector(getCurrentLease);
+  const { contactAttributes } = useContactAttributes();
   const contractParties = useMemo(() => {
     if (!tenantIds?.length) return [];
     const tenants = getContentTenants(currentLease);
     return tenantIds.map((id) => ({
+      id,
       contact: tenants.find((t) => t.id === id)?.tenant?.contact,
     }));
   }, [currentLease, tenantIds]);
 
   if (!contractParties.length) {
-    return showTitleWhenEmpty ? (
+    return (
       <>
         <FormTextTitle
           uiDataKey={getUiDataLeaseKey(
@@ -505,7 +503,7 @@ export const ContractPartyTable = ({
         </FormTextTitle>
         <FormText>-</FormText>
       </>
-    ) : null;
+    );
   }
 
   return (
@@ -526,14 +524,34 @@ export const ContractPartyTable = ({
           </FormTextTitle>
         </Column>
       </Row>
-      {contractParties.map(({ contact }) => (
-        <Row key={contact.id}>
-          <Column small={6}>
-            <FormText>{getContactFullName(contact) || "-"}</FormText>
-          </Column>
-          <Column small={6}>
-            <FormText>{getContactIdentifier(contact) || "-"}</FormText>
-          </Column>
+      {contractParties.map(({ id, contact }) => (
+        <Row key={id}>
+          <Authorization
+            allow={isFieldAllowedToRead(
+              attributes,
+              LeaseTenantContactSetFieldPaths.CONTACT,
+            )}
+          >
+            <Column small={6}>
+              <FormText>{getContactFullName(contact) || "-"}</FormText>
+            </Column>
+          </Authorization>
+          <Authorization
+            allow={isFieldAllowedToRead(
+              contactAttributes,
+              contact?.type === ContactTypes.BUSINESS
+                ? ContactFieldPaths.BUSINESS_ID
+                : ContactFieldPaths.NATIONAL_IDENTIFICATION_NUMBER,
+            )}
+          >
+            <Column small={6}>
+              <FormText>
+                {contact?.type === ContactTypes.BUSINESS
+                  ? contact?.business_id
+                  : contact?.national_identification_number || "-"}
+              </FormText>
+            </Column>
+          </Authorization>
         </Row>
       ))}
     </>
@@ -550,7 +568,10 @@ export const ContractPartyFields = ({
       LeaseContractCollateralsFieldPaths.CONTRACT_PARTY,
     )}
   >
-    <ContractPartyTable tenantIds={collateral.contract_party} />
+    <ContractPartyTable
+      tenantIds={collateral.contract_party}
+      attributes={attributes}
+    />
   </Authorization>
 );
 

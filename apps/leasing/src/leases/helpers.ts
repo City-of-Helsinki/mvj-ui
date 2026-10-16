@@ -6,7 +6,6 @@ import {
 } from "@/util/date";
 import { FormNames, TableSortOrder } from "@/enums";
 import {
-  CollateralTypes,
   ConstructabilityType,
   DecisionTypeKinds,
   LeaseState,
@@ -743,7 +742,7 @@ export const getContentContractCollaterals = (
       paid_date: collateral.paid_date,
       returned_date: collateral.returned_date,
       note: collateral.note,
-      third_party_pledge:
+      has_third_party_pledge:
         !!collateral.third_party_pledgor_name ||
         !!collateral.third_party_pledgor_business_id,
       third_party_pledgor_name: collateral.third_party_pledgor_name,
@@ -757,7 +756,7 @@ export const getContentContractCollaterals = (
       account_number: collateral.account_number,
       document_type: collateral.document_type,
       returned_by: getContentUser(collateral.returned_by),
-      subordinate_pledge:
+      has_subordinate_pledge:
         !!collateral.subordinate_pledgee_name ||
         !!collateral.subordinate_pledgee_business_id,
       subordinate_pledgee_name: collateral.subordinate_pledgee_name,
@@ -766,6 +765,9 @@ export const getContentContractCollaterals = (
       number_mortgage_document: collateral.number_mortgage_document,
       guarantee_number: collateral.guarantee_number,
       property_identifiers: collateral.property_identifiers,
+      institution_identifier: collateral.institution_identifier,
+      use_institution_identifier: !!collateral.institution_identifier,
+      form_version: collateral.form_version,
     } as Collateral;
   });
 
@@ -2982,21 +2984,23 @@ const getPayloadCollaterals = (
   return get(contract, "collaterals", []).map(
     (collateral: Collateral): CollateralPayload => ({
       id: collateral.id,
-      type: collateral.type,
+      type: get(collateral, "type.id") || collateral.type,
       other_type: collateral.other_type,
       total_amount: convertStrToDecimalNumber(collateral.total_amount),
       note: collateral.note,
       start_date: collateral.start_date,
       end_date: collateral.end_date,
-      third_party_pledgor_name: collateral.third_party_pledge
+      third_party_pledgor_name: collateral.has_third_party_pledge
         ? collateral.third_party_pledgor_name
         : null,
-      third_party_pledgor_business_id: collateral.third_party_pledge
+      third_party_pledgor_business_id: collateral.has_third_party_pledge
         ? collateral.third_party_pledgor_business_id
         : null,
       contract_party: collateral.contract_party,
       returned_date: collateral.returned_date,
-      returned_by: collateral.returned_by?.id,
+      returned_by: collateral.returned_date
+        ? (collateral.returned_by?.id ?? null)
+        : null,
       paid_date: collateral.paid_date,
       pledgor_name: collateral.pledgor_name,
       pledgor_national_identification_number:
@@ -3006,17 +3010,20 @@ const getPayloadCollaterals = (
       number: collateral.number,
       deed_date: collateral.deed_date,
       document_type: collateral.document_type,
-      subordinate_pledgee_name: collateral.subordinate_pledge
+      subordinate_pledgee_name: collateral.has_subordinate_pledge
         ? collateral.subordinate_pledgee_name
         : null,
-      subordinate_pledgee_business_id: collateral.subordinate_pledge
+      subordinate_pledgee_business_id: collateral.has_subordinate_pledge
         ? collateral.subordinate_pledgee_business_id
         : null,
       number_mortgage_document: collateral.number_mortgage_document,
       guarantee_number: collateral.guarantee_number,
-      property_identifiers: collateral.property_identifiers?.filter(
-        (identifiers) => Object.keys(identifiers).length > 0,
-      ),
+      property_identifiers: !collateral.use_institution_identifier
+        ? (collateral.property_identifiers?.filter(Boolean) ?? null)
+        : null,
+      institution_identifier: collateral.use_institution_identifier
+        ? collateral.institution_identifier
+        : null,
     }),
   );
 };
