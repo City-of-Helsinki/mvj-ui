@@ -433,7 +433,7 @@ const Collaterals: React.FC<CollateralsProps> = ({
   };
 
   const handleAdd = () => {
-    fields.push({});
+    fields.push({ property_identifiers: [{}] });
   };
 
   const collateralsErrors = get(errors, name);
@@ -484,7 +484,6 @@ const Collaterals: React.FC<CollateralsProps> = ({
                         key={index}
                         field={field}
                         onRemove={handleRemove}
-                        collateralType={fields.value?.[index]?.type}
                       />
                     );
                   })}
