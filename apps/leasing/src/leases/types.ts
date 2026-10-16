@@ -243,7 +243,7 @@ export type BasisOfRent = {
 };
 export type Collateral = {
   id: number;
-  type: number;
+  type: string;
   other_type: string | null;
   number: string | null;
   deed_date: string | null;
@@ -253,7 +253,7 @@ export type Collateral = {
   paid_date: string | null;
   returned_date: string | null;
   note: string | null;
-  third_party_pledge: boolean;
+  has_third_party_pledge: boolean;
   third_party_pledgor_name: string | null;
   third_party_pledgor_business_id: string | null;
   contract_party: Array<number> | null;
@@ -263,16 +263,19 @@ export type Collateral = {
   account_number: string | null;
   document_type: DocumentType | null;
   returned_by: User | null;
-  subordinate_pledge: boolean;
+  has_subordinate_pledge: boolean;
   subordinate_pledgee_name: string | null;
   subordinate_pledgee_business_id: string | null;
   number_mortgage_document: string | null;
   guarantee_number: string | null;
-  property_identifiers: Array<CollateralPropertyIdentifier> | null;
+  property_identifiers: Array<string> | null;
+  institution_identifier: string | null;
+  use_institution_identifier?: boolean;
+  form_version: number;
 };
 export type CollateralPayload = {
   id?: number;
-  type: number;
+  type: string;
   other_type: string | null;
   total_amount: number | null;
   note: string | null;
@@ -291,19 +294,14 @@ export type CollateralPayload = {
   number?: string | null;
   deed_date?: string | null;
   document_type?: DocumentType | null;
-  subordinate_pledge?: boolean | null;
   subordinate_pledgee_name?: string | null;
   subordinate_pledgee_business_id?: string | null;
   number_mortgage_document?: string | null;
   guarantee_number?: string | null;
-  property_identifiers?: Array<CollateralPropertyIdentifier> | null;
+  property_identifiers?: Array<string> | null;
+  institution_identifier?: string | null;
 };
 type DocumentType = "mail" | "electronic";
-type CollateralPropertyIdentifier = {
-  property_identifier: string | null;
-  institution_identifier: string | null;
-};
-
 export type PeriodicRentAdjustmentType =
   "TASOTARKISTUS_20_20" | "TASOTARKISTUS_20_10";
 

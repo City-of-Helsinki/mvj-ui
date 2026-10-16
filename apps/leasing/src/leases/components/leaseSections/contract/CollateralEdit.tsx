@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { FieldArray } from "react-final-form-arrays";
 import { Row, Column } from "@/components/grid/Grid";
 import { useAppSelector } from "@/root/hooks";
@@ -44,55 +44,33 @@ import {
   SubordinatePledgeFields,
   PropertyIdentifierField,
   InstitutionIdentifierField,
+  IdentifierTypeField,
 } from "@/leases/components/leaseSections/contract/CollateralEditFields";
-import FormTextTitle from "@/components/form/FormTextTitle";
 import { useFieldValue } from "@/components/helpers";
+
+// Collaterals had breaking changes done to their structure and required fields.
+// Uses version numbers to un-mark fields as required, to preserve backwards compatibility.
+export const FORM_VERSION_2 = 2;
 
 type PropertyIdentifiersProps = {
   attributes: Attributes;
   fields: any;
   isSaveClicked: boolean;
+  formVersion?: number;
 };
 
 const PropertyIdentifiers = ({
   attributes,
   fields,
   isSaveClicked,
+  formVersion,
 }: PropertyIdentifiersProps) => {
-  const handleAdd = () => fields.push({});
+  const handleAdd = () => fields.push();
 
   return (
     <ModalConsumer>
       {({ modalDispatch }) => (
         <>
-          {fields && !!fields.length && (
-            <Row>
-              <Column small={6}>
-                <Authorization
-                  allow={isFieldAllowedToRead(
-                    attributes,
-                    LeaseContractCollateralsFieldPaths.PROPERTY_IDENTIFIER,
-                  )}
-                >
-                  <FormTextTitle>
-                    {LeaseContractCollateralsFieldTitles.PROPERTY_IDENTIFIER}
-                  </FormTextTitle>
-                </Authorization>
-              </Column>
-              <Column small={6}>
-                <Authorization
-                  allow={isFieldAllowedToRead(
-                    attributes,
-                    LeaseContractCollateralsFieldPaths.INSTITUTION_IDENTIFIER,
-                  )}
-                >
-                  <FormTextTitle>
-                    {LeaseContractCollateralsFieldTitles.INSTITUTION_IDENTIFIER}
-                  </FormTextTitle>
-                </Authorization>
-              </Column>
-            </Row>
-          )}
           {fields &&
             !!fields.length &&
             fields.map((field, index) => {
@@ -112,20 +90,14 @@ const PropertyIdentifiers = ({
 
               return (
                 <Row key={index}>
-                  <Column small={6}>
-                    <PropertyIdentifierField
-                      attributes={attributes}
-                      field={field}
-                      isSaveClicked={isSaveClicked}
-                    />
-                  </Column>
-                  <Column small={6}>
+                  <Column small={12}>
                     <FieldAndRemoveButtonWrapper
                       field={
-                        <InstitutionIdentifierField
+                        <PropertyIdentifierField
                           attributes={attributes}
                           field={field}
                           isSaveClicked={isSaveClicked}
+                          formVersion={formVersion}
                         />
                       }
                       removeButton={
@@ -159,6 +131,7 @@ export type CollateralEditFieldProps = {
   field: string;
   isSaveClicked: boolean;
   required?: boolean;
+  formVersion?: number;
 };
 
 const CollateralEmpty = (collateralFieldProps: CollateralEditFieldProps) => {
@@ -173,11 +146,11 @@ const CollateralEmpty = (collateralFieldProps: CollateralEditFieldProps) => {
   );
 };
 
-// Rahavakuus
 const CollateralFinancialGuarantee = (
   collateralFieldProps: CollateralEditFieldProps,
 ) => {
-  const { attributes, field, isSaveClicked } = collateralFieldProps;
+  const { attributes, field, isSaveClicked, formVersion } =
+    collateralFieldProps;
   return (
     <>
       <Row>
@@ -185,7 +158,7 @@ const CollateralFinancialGuarantee = (
           <CollateralTypeField {...collateralFieldProps} />
         </Column>
         <Column small={6} medium={4} large={2}>
-          <TotalAmountField {...collateralFieldProps} />
+          <AccountNumberField {...collateralFieldProps} />
         </Column>
         <Column small={6} medium={4} large={2}>
           <Authorization
@@ -203,7 +176,7 @@ const CollateralFinancialGuarantee = (
               name={`${field}.paid_date`}
               overrideValues={{
                 label: LeaseContractCollateralsFieldTitles.PAID_DATE,
-                required: true,
+                required: formVersion >= FORM_VERSION_2,
               }}
               enableUiDataEdit
               uiDataKey={getUiDataLeaseKey(
@@ -213,19 +186,27 @@ const CollateralFinancialGuarantee = (
           </Authorization>
         </Column>
         <Column small={6} medium={4} large={2}>
-          <AccountNumberField {...collateralFieldProps} />
+          <StartDateField {...collateralFieldProps} />
         </Column>
-        <ReturnedDateFields {...collateralFieldProps} />
+        <Column small={6} medium={4} large={2}>
+          <EndDateField {...collateralFieldProps} />
+        </Column>
+        <Column small={6} medium={4} large={2}>
+          <TotalAmountField {...collateralFieldProps} />
+        </Column>
       </Row>
       <Row>
         <PledgorFields {...collateralFieldProps} />
-        <ThirdPartyPledgeFields {...collateralFieldProps} />
+        <ReturnedDateFields {...collateralFieldProps} />
       </Row>
       <Row>
         <Column small={12} large={4}>
           <ContractPartyField {...collateralFieldProps} />
         </Column>
-        <Column small={12} large={8}>
+        <ThirdPartyPledgeFields {...collateralFieldProps} />
+      </Row>
+      <Row>
+        <Column small={12}>
           <NoteField {...collateralFieldProps} />
         </Column>
       </Row>
@@ -233,11 +214,16 @@ const CollateralFinancialGuarantee = (
   );
 };
 
-//Panttikirja
+const DEFAULT_PROPERTY_IDENTIFIERS = [undefined];
+
 const CollateralMortgageDocument = (
   collateralFieldProps: CollateralEditFieldProps,
 ) => {
-  const { attributes, field, isSaveClicked } = collateralFieldProps;
+  const { attributes, field, isSaveClicked, formVersion } =
+    collateralFieldProps;
+  const useInstitutionIdentifier = useFieldValue(
+    `${field}.use_institution_identifier`,
+  );
   return (
     <>
       <Row>
@@ -261,7 +247,7 @@ const CollateralMortgageDocument = (
               overrideValues={{
                 label:
                   LeaseContractCollateralsFieldTitles.NUMBER_MORTGAGE_DOCUMENT,
-                required: true,
+                required: formVersion >= FORM_VERSION_2,
               }}
               enableUiDataEdit
               uiDataKey={getUiDataLeaseKey(
@@ -286,7 +272,7 @@ const CollateralMortgageDocument = (
               name={`${field}.deed_date`}
               overrideValues={{
                 label: LeaseContractCollateralsFieldTitles.DEED_DATE,
-                required: true,
+                required: formVersion >= FORM_VERSION_2,
               }}
               enableUiDataEdit
               uiDataKey={getUiDataLeaseKey(
@@ -321,17 +307,144 @@ const CollateralMortgageDocument = (
       </Row>
       <Row>
         <Column small={12} large={4}>
-          <FieldArray name={`${field}.property_identifiers`}>
-            {(fieldArrayProps) =>
-              PropertyIdentifiers({
-                ...fieldArrayProps,
-                attributes,
-                isSaveClicked,
-              })
-            }
-          </FieldArray>
+          <IdentifierTypeField {...collateralFieldProps} />
+          {useInstitutionIdentifier ? (
+            <InstitutionIdentifierField {...collateralFieldProps} />
+          ) : (
+            <FieldArray
+              name={`${field}.property_identifiers`}
+              initialValue={DEFAULT_PROPERTY_IDENTIFIERS}
+            >
+              {(fieldArrayProps) => (
+                <PropertyIdentifiers
+                  {...fieldArrayProps}
+                  attributes={attributes}
+                  isSaveClicked={isSaveClicked}
+                  formVersion={formVersion}
+                />
+              )}
+            </FieldArray>
+          )}
         </Column>
         <Column small={12} large={8}>
+          <NoteField {...collateralFieldProps} />
+        </Column>
+      </Row>
+    </>
+  );
+};
+
+const CollateralSelfDebtorGuarantee = (
+  collateralFieldProps: CollateralEditFieldProps,
+) => {
+  const { attributes, field, isSaveClicked, formVersion } =
+    collateralFieldProps;
+  return (
+    <>
+      <Row>
+        <Column small={6} medium={4} large={2}>
+          <CollateralTypeField {...collateralFieldProps} />
+        </Column>
+        <Column small={6} medium={4} large={2}>
+          <Authorization
+            allow={isFieldAllowedToRead(
+              attributes,
+              LeaseContractCollateralsFieldPaths.GUARANTEE_NUMBER,
+            )}
+          >
+            <FormField
+              disableTouched={isSaveClicked}
+              fieldAttributes={getFieldAttributes(
+                attributes,
+                LeaseContractCollateralsFieldPaths.GUARANTEE_NUMBER,
+              )}
+              name={`${field}.guarantee_number`}
+              overrideValues={{
+                label: LeaseContractCollateralsFieldTitles.GUARANTEE_NUMBER,
+              }}
+              enableUiDataEdit
+              uiDataKey={getUiDataLeaseKey(
+                LeaseContractCollateralsFieldPaths.GUARANTEE_NUMBER,
+              )}
+            />
+          </Authorization>
+        </Column>
+        <Column small={6} medium={4} large={2}>
+          <StartDateField {...collateralFieldProps} />
+        </Column>
+        <Column small={6} medium={4} large={2}>
+          <EndDateField {...collateralFieldProps} />
+        </Column>
+        <Column small={6} medium={4} large={2}>
+          <TotalAmountField {...collateralFieldProps} />
+        </Column>
+      </Row>
+      <Row>
+        <Column small={6} medium={4} large={2}>
+          <DocumentTypeField {...collateralFieldProps} />
+        </Column>
+        <PledgorFields
+          {...collateralFieldProps}
+          required={formVersion >= FORM_VERSION_2}
+        />
+        <ReturnedDateFields {...collateralFieldProps} />
+      </Row>
+      <Row>
+        <Column small={12} large={4}>
+          <ContractPartyField {...collateralFieldProps} />
+        </Column>
+        <ThirdPartyPledgeFields {...collateralFieldProps} />
+      </Row>
+      <Row>
+        <Column small={12}>
+          <NoteField {...collateralFieldProps} />
+        </Column>
+      </Row>
+    </>
+  );
+};
+
+const CollateralPledgeOfFunds = (
+  collateralFieldProps: CollateralEditFieldProps,
+) => {
+  const { formVersion } = collateralFieldProps;
+  return (
+    <>
+      <Row>
+        <Column small={6} medium={4} large={2}>
+          <CollateralTypeField {...collateralFieldProps} />
+        </Column>
+        <Column small={6} medium={4} large={2}>
+          <AccountNumberField
+            {...collateralFieldProps}
+            required={formVersion >= FORM_VERSION_2}
+          />
+        </Column>
+        <Column small={6} medium={4} large={2}>
+          <StartDateField {...collateralFieldProps} />
+        </Column>
+        <Column small={6} medium={4} large={2}>
+          <EndDateField {...collateralFieldProps} />
+        </Column>
+        <Column small={6} medium={4} large={2}>
+          <TotalAmountField {...collateralFieldProps} />
+        </Column>
+      </Row>
+      <Row>
+        <Column small={6} medium={4} large={2}>
+          <DocumentTypeField {...collateralFieldProps} />
+        </Column>
+        <PledgorFields {...collateralFieldProps} />
+        <ReturnedDateFields {...collateralFieldProps} />
+      </Row>
+      <Row>
+        <Column small={12} large={4}>
+          <ContractPartyField {...collateralFieldProps} />
+        </Column>
+        <ThirdPartyPledgeFields {...collateralFieldProps} />
+      </Row>
+      <Row>
+        <Column small={6} medium={8} large={10}>
           <NoteField {...collateralFieldProps} />
         </Column>
       </Row>
@@ -403,117 +516,6 @@ const CollateralOther = (collateralFieldProps: CollateralEditFieldProps) => {
   );
 };
 
-//Omavelkainen takaus
-const CollateralSelfDebtorGuarantee = (
-  collateralFieldProps: CollateralEditFieldProps,
-) => {
-  const { attributes, field, isSaveClicked } = collateralFieldProps;
-  return (
-    <>
-      <Row>
-        <Column small={6} medium={4} large={2}>
-          <CollateralTypeField {...collateralFieldProps} />
-        </Column>
-        <Column small={6} medium={4} large={2}>
-          <Authorization
-            allow={isFieldAllowedToRead(
-              attributes,
-              LeaseContractCollateralsFieldPaths.GUARANTEE_NUMBER,
-            )}
-          >
-            <FormField
-              disableTouched={isSaveClicked}
-              fieldAttributes={getFieldAttributes(
-                attributes,
-                LeaseContractCollateralsFieldPaths.GUARANTEE_NUMBER,
-              )}
-              name={`${field}.guarantee_number`}
-              overrideValues={{
-                label: LeaseContractCollateralsFieldTitles.GUARANTEE_NUMBER,
-              }}
-              enableUiDataEdit
-              uiDataKey={getUiDataLeaseKey(
-                LeaseContractCollateralsFieldPaths.GUARANTEE_NUMBER,
-              )}
-            />
-          </Authorization>
-        </Column>
-        <Column small={6} medium={4} large={2}>
-          <StartDateField {...collateralFieldProps} />
-        </Column>
-        <Column small={6} medium={4} large={2}>
-          <EndDateField {...collateralFieldProps} />
-        </Column>
-        <Column small={6} medium={4} large={2}>
-          <TotalAmountField {...collateralFieldProps} />
-        </Column>
-      </Row>
-      <Row>
-        <Column small={6} medium={4} large={2}>
-          <DocumentTypeField {...collateralFieldProps} />
-        </Column>
-        <PledgorFields {...collateralFieldProps} required={true} />
-        <ReturnedDateFields {...collateralFieldProps} />
-      </Row>
-      <Row>
-        <Column small={12} large={4}>
-          <ContractPartyField {...collateralFieldProps} />
-        </Column>
-        <ThirdPartyPledgeFields {...collateralFieldProps} />
-      </Row>
-      <Row>
-        <Column small={12}>
-          <NoteField {...collateralFieldProps} />
-        </Column>
-      </Row>
-    </>
-  );
-};
-
-const CollateralPledgeOfFunds = (
-  collateralFieldProps: CollateralEditFieldProps,
-) => {
-  return (
-    <>
-      <Row>
-        <Column small={6} medium={4} large={2}>
-          <CollateralTypeField {...collateralFieldProps} />
-        </Column>
-        <Column small={6} medium={4} large={2}>
-          <AccountNumberField {...collateralFieldProps} required={true} />
-        </Column>
-        <Column small={6} medium={4} large={2}>
-          <StartDateField {...collateralFieldProps} />
-        </Column>
-        <Column small={6} medium={4} large={2}>
-          <EndDateField {...collateralFieldProps} />
-        </Column>
-        <Column small={6} medium={4} large={2}>
-          <TotalAmountField {...collateralFieldProps} />
-        </Column>
-      </Row>
-      <Row>
-        <Column small={6} medium={4} large={2}>
-          <DocumentTypeField {...collateralFieldProps} />
-        </Column>
-        <PledgorFields {...collateralFieldProps} />
-        <ReturnedDateFields {...collateralFieldProps} />
-      </Row>
-      <Row>
-        <Column small={12} large={4}>
-          <ContractPartyField {...collateralFieldProps} />
-        </Column>
-        <ThirdPartyPledgeFields {...collateralFieldProps} />
-      </Row>
-      <Row>
-        <Column small={6} medium={8} large={10}>
-          <NoteField {...collateralFieldProps} />
-        </Column>
-      </Row>
-    </>
-  );
-};
-
 type Props = {
   field: string;
   onRemove: (...args: Array<any>) => any;
@@ -521,6 +523,7 @@ type Props = {
 
 const CollateralEdit: React.FC<Props> = ({ field, onRemove }) => {
   const collateralType = useFieldValue(`${field}.type`);
+  const formVersion: number = useFieldValue(`${field}.form_version`);
   const attributes: Attributes = useAppSelector(getAttributes);
   const isSaveClicked: boolean = useAppSelector(getIsSaveClicked);
   const usersPermissions: UsersPermissionsType =
@@ -529,11 +532,12 @@ const CollateralEdit: React.FC<Props> = ({ field, onRemove }) => {
     attributes,
     field,
     isSaveClicked,
+    formVersion,
   };
-  // TODO: Form validation doesn't run for some reason on edit mode in initial field mount.
+  // Form validation doesn't run for some reason on edit mode in initial field mount.
   // Forcing a remount as a workaround.
-  const [mounted, setMounted] = React.useState(false);
-  React.useEffect(() => {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
     setMounted(true);
   }, []);
   return (
@@ -558,23 +562,14 @@ const CollateralEdit: React.FC<Props> = ({ field, onRemove }) => {
           <CollateralMortgageDocument {...collateralFieldProps} />
         )}
         {collateralType === CollateralTypes.SELF_DEBTOR_GUARANTEE && (
-          <CollateralSelfDebtorGuarantee
-            attributes={attributes}
-            field={field}
-            isSaveClicked={isSaveClicked}
-          />
+          <CollateralSelfDebtorGuarantee {...collateralFieldProps} />
         )}
         {collateralType === CollateralTypes.PLEDGE_OF_FUNDS && (
-          <CollateralPledgeOfFunds
-            attributes={attributes}
-            field={field}
-            isSaveClicked={isSaveClicked}
-          />
+          <CollateralPledgeOfFunds {...collateralFieldProps} />
         )}
-        {Boolean(collateralType) &&
-          (collateralType === CollateralTypes.OTHER || collateralType > 5) && (
-            <CollateralOther {...collateralFieldProps} />
-          )}
+        {collateralType === CollateralTypes.OTHER && (
+          <CollateralOther {...collateralFieldProps} />
+        )}
       </BoxContentWrapper>
     </BoxItem>
   );

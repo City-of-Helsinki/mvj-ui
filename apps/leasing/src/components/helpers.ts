@@ -21,7 +21,7 @@ import type {
   BillingPeriodInvoice,
   PreviewInvoices,
 } from "@/previewInvoices/types";
-import { useField } from "react-final-form";
+import { useField, useForm } from "react-final-form";
 export const getRentsTotalAmount = (rents: Array<Record<string, any>>) => {
   let amount = 0;
   rents.forEach((rent) => {
@@ -184,10 +184,29 @@ export const getContentPreviewInvoiceBillingPeriods = (
   );
 };
 
-// Convenience function which simplifies field value subscription
+// Convenience hook, which simplifies field value subscription
 export const useFieldValue = (name: string) => {
   return useField(name, {
     subscription: { value: true },
     format: (value) => value,
   }).input.value;
+};
+
+// Hook for validating at least one of two related fields is filled in.
+// Use in both field components of a related pair. Can be wrapped around another validator.
+// Example use case: Either business id or national id is required.
+export const useFieldPairValidator = (
+  linkedFieldPath: string,
+  required: boolean = true,
+  errorMessage?: string,
+  validate?: (value: any) => string | null | undefined,
+) => {
+  const form = useForm();
+  return (value: any) => {
+    if (required && !value) {
+      const otherValue = get(form.getState().values, linkedFieldPath);
+      if (!otherValue) return errorMessage || "Täytä toinen kentistä";
+    }
+    return validate?.(value);
+  };
 };

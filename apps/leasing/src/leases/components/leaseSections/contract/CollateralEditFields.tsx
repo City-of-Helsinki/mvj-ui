@@ -1,6 +1,5 @@
 import React, { useMemo } from "react";
-import { Field, useForm } from "react-final-form";
-import { get } from "lodash-es";
+import { Field } from "react-final-form";
 import { Column } from "@/components/grid/Grid";
 import Authorization from "@/components/authorization/Authorization";
 import FormField from "@/components/form/final-form/FormField";
@@ -10,43 +9,27 @@ import {
   LeaseContractCollateralsFieldTitles,
 } from "@/leases/enums";
 import { getUiDataLeaseKey } from "@/uiData/helpers";
-import { getFieldAttributes, isFieldAllowedToRead } from "@/util/helpers";
-import { useFieldValue } from "@/components/helpers";
+import {
+  getFieldAttributes,
+  isFieldAllowedToRead,
+  isArchived,
+} from "@/util/helpers";
+import { useFieldPairValidator, useFieldValue } from "@/components/helpers";
 import {
   companyIdentifierValidator,
   personalIdentifierValidator,
 } from "@/application/formValidation";
-import type { CollateralEditFieldProps } from "@/leases/components/leaseSections/contract/CollateralEdit";
+import {
+  FORM_VERSION_2,
+  type CollateralEditFieldProps,
+} from "@/leases/components/leaseSections/contract/CollateralEdit";
+import FieldTypeBoolean from "@/components/form/final-form/FieldTypeBoolean";
 import { FieldTypes } from "@/enums";
 import { useAppSelector } from "@/root/hooks";
 import { getCurrentLease } from "@/leases/selectors";
 import { getContentTenants } from "@/leases/helpers";
 import { getContactFullName } from "@/contacts/helpers";
-import { isArchived } from "@/util/helpers";
 import { SelectListOption } from "@/types";
-import FieldTypeBoolean from "@/components/form/final-form/FieldTypeBoolean";
-
-//TODO: move out of this file?
-const PLEDGOR_IDENTIFIER_REQUIRED_ERROR = "Syötä henkilötunnus tai Y-tunnus";
-const PROPERTY_IDENTIFIER_REQUIRED_ERROR =
-  "Syötä kiinteistötunnus tai laitostunnus";
-
-// Hook for validating at least one of two related fields is filled in.
-const useRequiredFieldPairValidator = (
-  linkedFieldPath: string,
-  required: boolean,
-  requiredError: string,
-  formatValidator?: (value: any) => string | null | undefined,
-) => {
-  const form = useForm();
-  return (value: any) => {
-    if (required && !value) {
-      const otherValue = get(form.getState().values, linkedFieldPath);
-      if (!otherValue) return requiredError;
-    }
-    return formatValidator?.(value);
-  };
-};
 
 export const CollateralTypeField = ({
   attributes,
@@ -69,9 +52,8 @@ export const CollateralTypeField = ({
         )}
         name={`${field}.type`}
         overrideValues={{ label: LeaseContractCollateralsFieldTitles.TYPE }}
-        //TODO: Uncomment
         // Disabled when a type is already selected to help avoid malformed data.
-        // disabled={!!type}
+        disabled={!!type}
         enableUiDataEdit
         uiDataKey={getUiDataLeaseKey(LeaseContractCollateralsFieldPaths.TYPE)}
       />
@@ -83,6 +65,7 @@ export const TotalAmountField = ({
   attributes,
   field,
   isSaveClicked,
+  formVersion,
 }: CollateralEditFieldProps) => (
   <Authorization
     allow={isFieldAllowedToRead(
@@ -100,7 +83,7 @@ export const TotalAmountField = ({
       unit="€"
       overrideValues={{
         label: LeaseContractCollateralsFieldTitles.TOTAL_AMOUNT,
-        required: true,
+        required: formVersion >= FORM_VERSION_2,
       }}
       enableUiDataEdit
       tooltipStyle={{
@@ -117,6 +100,7 @@ export const StartDateField = ({
   attributes,
   field,
   isSaveClicked,
+  formVersion,
 }: CollateralEditFieldProps) => (
   <Authorization
     allow={isFieldAllowedToRead(
@@ -133,7 +117,7 @@ export const StartDateField = ({
       name={`${field}.start_date`}
       overrideValues={{
         label: LeaseContractCollateralsFieldTitles.START_DATE,
-        required: true,
+        required: formVersion >= FORM_VERSION_2,
       }}
       enableUiDataEdit
       uiDataKey={getUiDataLeaseKey(
@@ -174,6 +158,7 @@ export const ReturnedDateFields = ({
   attributes,
   field,
   isSaveClicked,
+  formVersion,
 }: CollateralEditFieldProps) => {
   const returned_date = useFieldValue(`${field}.returned_date`);
 
@@ -209,6 +194,7 @@ export const ReturnedDateFields = ({
             attributes={attributes}
             field={field}
             isSaveClicked={isSaveClicked}
+            formVersion={formVersion}
           />
         </Column>
       )}
@@ -220,6 +206,7 @@ export const ReturnedByField = ({
   attributes,
   field,
   isSaveClicked,
+  formVersion,
 }: CollateralEditFieldProps) => (
   <Authorization
     allow={isFieldAllowedToRead(
@@ -237,7 +224,7 @@ export const ReturnedByField = ({
       overrideValues={{
         label: LeaseContractCollateralsFieldTitles.RETURNED_BY,
         fieldType: FieldTypes.USER,
-        required: true,
+        required: formVersion >= FORM_VERSION_2,
       }}
       enableUiDataEdit
       uiDataKey={getUiDataLeaseKey(
@@ -279,7 +266,7 @@ export const ThirdPartyPledgeFields = ({
   field,
   isSaveClicked,
 }: CollateralEditFieldProps) => {
-  const checked = useFieldValue(`${field}.third_party_pledge`);
+  const checked = useFieldValue(`${field}.has_third_party_pledge`);
   return (
     <>
       <Column small={6} medium={4} large={2}>
@@ -290,7 +277,7 @@ export const ThirdPartyPledgeFields = ({
         >
           {LeaseContractCollateralsFieldTitles.THIRD_PARTY_PLEDGE}
         </FormTextTitle>
-        <Field name={`${field}.third_party_pledge`} defaultValue={false}>
+        <Field name={`${field}.has_third_party_pledge`} defaultValue={false}>
           {({ input, meta }) => <FieldTypeBoolean input={input} meta={meta} />}
         </Field>
       </Column>
@@ -381,7 +368,7 @@ export const SubordinatePledgeFields = ({
   field,
   isSaveClicked,
 }: CollateralEditFieldProps) => {
-  const checked = useFieldValue(`${field}.subordinate_pledge`);
+  const checked = useFieldValue(`${field}.has_subordinate_pledge`);
   return (
     <>
       <Column small={6} medium={4} large={2}>
@@ -392,7 +379,7 @@ export const SubordinatePledgeFields = ({
         >
           {LeaseContractCollateralsFieldTitles.SUBORDINATE_PLEDGE}
         </FormTextTitle>
-        <Field name={`${field}.subordinate_pledge`} defaultValue={false}>
+        <Field name={`${field}.has_subordinate_pledge`} defaultValue={false}>
           {({ input, meta }) => <FieldTypeBoolean input={input} meta={meta} />}
         </Field>
       </Column>
@@ -465,6 +452,7 @@ const SubordinatePledgeeBusinessIdField = ({
         attributes,
         LeaseContractCollateralsFieldPaths.SUBORDINATE_PLEDGEE_BUSINESS_ID,
       )}
+      validate={companyIdentifierValidator}
       name={`${field}.subordinate_pledgee_business_id`}
       overrideValues={{
         label:
@@ -543,16 +531,18 @@ const PledgorNameField = ({
   </Authorization>
 );
 
+const FIELD_PAIR_PERSONAL_IDENTIFIER_ERROR = "Syötä henkilötunnus tai Y-tunnus";
+
 const PledgorIdentificationNumberField = ({
   attributes,
   field,
   isSaveClicked,
   required = false,
 }: CollateralEditFieldProps) => {
-  const validate = useRequiredPairValidator(
+  const validate = useFieldPairValidator(
     `${field}.pledgor_business_id`,
     required,
-    PLEDGOR_IDENTIFIER_REQUIRED_ERROR,
+    FIELD_PAIR_PERSONAL_IDENTIFIER_ERROR,
     personalIdentifierValidator,
   );
   return (
@@ -589,10 +579,10 @@ const PledgorBusinessIdField = ({
   isSaveClicked,
   required = false,
 }: CollateralEditFieldProps) => {
-  const validate = useRequiredPairValidator(
+  const validate = useFieldPairValidator(
     `${field}.pledgor_national_identification_number`,
     required,
-    PLEDGOR_IDENTIFIER_REQUIRED_ERROR,
+    FIELD_PAIR_PERSONAL_IDENTIFIER_ERROR,
     companyIdentifierValidator,
   );
   return (
@@ -626,6 +616,7 @@ export const ContractPartyField = ({
   attributes,
   field,
   isSaveClicked,
+  formVersion,
 }: CollateralEditFieldProps) => {
   const currentLease = useAppSelector(getCurrentLease);
   const selectedTenantIds: Array<number> | null = useFieldValue(
@@ -663,7 +654,7 @@ export const ContractPartyField = ({
           label: LeaseContractCollateralsFieldTitles.CONTRACT_PARTY,
           fieldType: FieldTypes.MULTISELECT,
           options: tenantOptions,
-          required: true,
+          required: formVersion >= FORM_VERSION_2,
         }}
         enableUiDataEdit
         uiDataKey={getUiDataLeaseKey(
@@ -738,74 +729,92 @@ export const PropertyIdentifierField = ({
   attributes,
   field,
   isSaveClicked,
-}: CollateralEditFieldProps) => {
-  const validate = useRequiredPairValidator(
-    `${field}.institution_identifier`,
-    true,
-    PROPERTY_IDENTIFIER_REQUIRED_ERROR,
-  );
-  return (
-    <Authorization
-      allow={isFieldAllowedToRead(
+  formVersion,
+}: CollateralEditFieldProps) => (
+  <Authorization
+    allow={isFieldAllowedToRead(
+      attributes,
+      LeaseContractCollateralsFieldPaths.PROPERTY_IDENTIFIER,
+    )}
+  >
+    <FormField
+      disableTouched={isSaveClicked}
+      fieldAttributes={getFieldAttributes(
         attributes,
         LeaseContractCollateralsFieldPaths.PROPERTY_IDENTIFIER,
       )}
-    >
-      <FormField
-        disableTouched={isSaveClicked}
-        fieldAttributes={getFieldAttributes(
-          attributes,
-          LeaseContractCollateralsFieldPaths.PROPERTY_IDENTIFIER,
-        )}
-        validate={validate}
-        name={`${field}.property_identifier`}
-        invisibleLabel
-        overrideValues={{
-          label: LeaseContractCollateralsFieldTitles.PROPERTY_IDENTIFIER,
-        }}
-        enableUiDataEdit
-        uiDataKey={getUiDataLeaseKey(
-          LeaseContractCollateralsFieldPaths.PROPERTY_IDENTIFIER,
-        )}
-      />
-    </Authorization>
-  );
-};
+      name={field}
+      invisibleLabel
+      overrideValues={{
+        label: LeaseContractCollateralsFieldTitles.PROPERTY_IDENTIFIER,
+        required: formVersion >= FORM_VERSION_2,
+      }}
+      enableUiDataEdit
+      uiDataKey={getUiDataLeaseKey(
+        LeaseContractCollateralsFieldPaths.PROPERTY_IDENTIFIER,
+      )}
+    />
+  </Authorization>
+);
 
 export const InstitutionIdentifierField = ({
   attributes,
   field,
   isSaveClicked,
-}: CollateralEditFieldProps) => {
-  const validate = useRequiredPairValidator(
-    `${field}.property_identifier`,
-    true,
-    PROPERTY_IDENTIFIER_REQUIRED_ERROR,
-  );
-  return (
-    <Authorization
-      allow={isFieldAllowedToRead(
+  formVersion,
+}: CollateralEditFieldProps) => (
+  <Authorization
+    allow={isFieldAllowedToRead(
+      attributes,
+      LeaseContractCollateralsFieldPaths.INSTITUTION_IDENTIFIER,
+    )}
+  >
+    <FormField
+      disableTouched={isSaveClicked}
+      fieldAttributes={getFieldAttributes(
         attributes,
         LeaseContractCollateralsFieldPaths.INSTITUTION_IDENTIFIER,
       )}
-    >
-      <FormField
-        disableTouched={isSaveClicked}
-        fieldAttributes={getFieldAttributes(
-          attributes,
-          LeaseContractCollateralsFieldPaths.INSTITUTION_IDENTIFIER,
-        )}
-        validate={validate}
-        name={`${field}.institution_identifier`}
-        invisibleLabel
-        overrideValues={{
-          label: LeaseContractCollateralsFieldTitles.INSTITUTION_IDENTIFIER,
-        }}
-        enableUiDataEdit
-        uiDataKey={getUiDataLeaseKey(
-          LeaseContractCollateralsFieldPaths.INSTITUTION_IDENTIFIER,
-        )}
-      />
-    </Authorization>
-  );
-};
+      name={`${field}.institution_identifier`}
+      overrideValues={{
+        label: null,
+        required: formVersion >= FORM_VERSION_2,
+      }}
+      enableUiDataEdit
+      uiDataKey={getUiDataLeaseKey(
+        LeaseContractCollateralsFieldPaths.INSTITUTION_IDENTIFIER,
+      )}
+    />
+  </Authorization>
+);
+
+export const IdentifierTypeField = ({ field }: CollateralEditFieldProps) => (
+  <Field name={`${field}.use_institution_identifier`} defaultValue={false}>
+    {({ input }) => (
+      <fieldset className="form-field__boolean">
+        <label className="option-label">
+          <input
+            type="radio"
+            checked={input.value === false}
+            name={input.name}
+            onChange={() => input.onChange(false)}
+            value="false"
+          />
+          <span>{LeaseContractCollateralsFieldTitles.PROPERTY_IDENTIFIER}</span>
+        </label>
+        <label className="option-label">
+          <input
+            type="radio"
+            checked={input.value === true}
+            name={input.name}
+            onChange={() => input.onChange(true)}
+            value="true"
+          />
+          <span>
+            {LeaseContractCollateralsFieldTitles.INSTITUTION_IDENTIFIER}
+          </span>
+        </label>
+      </fieldset>
+    )}
+  </Field>
+);

@@ -31,11 +31,11 @@ export const CalculatorTypes = {
  * @type {{}}
  */
 export const CollateralTypes = {
-  FINANCIAL_GUARANTEE: 2,
-  MORTGAGE_DOCUMENT: 1,
-  OTHER: 3,
-  SELF_DEBTOR_GUARANTEE: 4,
-  PLEDGE_OF_FUNDS: 5,
+  FINANCIAL_GUARANTEE: "financial_guarantee",
+  MORTGAGE_DOCUMENT: "mortgage_document",
+  SELF_DEBTOR_GUARANTEE: "self_debtor_guarantee",
+  PLEDGE_OF_FUNDS: "pledge_of_funds",
+  OTHER: "other",
 };
 
 /**
@@ -1585,7 +1585,7 @@ export const LeaseContractCollateralsFieldPaths = {
     "contracts.child.children.collaterals.child.children.total_amount",
   TYPE: "contracts.child.children.collaterals.child.children.type",
   THIRD_PARTY_PLEDGE:
-    "contracts.child.children.collaterals.child.children.third_party_pledge",
+    "contracts.child.children.collaterals.child.children.has_third_party_pledge",
   THIRD_PARTY_PLEDGOR_NAME:
     "contracts.child.children.collaterals.child.children.third_party_pledgor_name",
   THIRD_PARTY_PLEDGOR_BUSINESS_ID:
@@ -1605,7 +1605,7 @@ export const LeaseContractCollateralsFieldPaths = {
   DOCUMENT_TYPE:
     "contracts.child.children.collaterals.child.children.document_type",
   SUBORDINATE_PLEDGE:
-    "contracts.child.children.collaterals.child.children.subordinate_pledge",
+    "contracts.child.children.collaterals.child.children.has_subordinate_pledge",
   SUBORDINATE_PLEDGEE_NAME:
     "contracts.child.children.collaterals.child.children.subordinate_pledgee_name",
   SUBORDINATE_PLEDGEE_BUSINESS_ID:
@@ -1615,9 +1615,9 @@ export const LeaseContractCollateralsFieldPaths = {
   PROPERTY_IDENTIFIERS:
     "contracts.child.children.collaterals.child.children.property_identifiers",
   PROPERTY_IDENTIFIER:
-    "contracts.child.children.collaterals.child.children.property_identifiers.child.children.property_identifier",
+    "contracts.child.children.collaterals.child.children.property_identifiers.child",
   INSTITUTION_IDENTIFIER:
-    "contracts.child.children.collaterals.child.children.property_identifiers.child.children.institution_identifier",
+    "contracts.child.children.collaterals.child.children.institution_identifier",
 };
 
 /**
@@ -1639,13 +1639,13 @@ export const LeaseContractCollateralsFieldTitles = {
   TOTAL_AMOUNT: "Vakuuden määrä",
   TYPE: "Vakuuden tyyppi",
   THIRD_PARTY_PLEDGE: "Vierasvelkapanttaus",
-  THIRD_PARTY_PLEDGOR_NAME: "Vierasvelkapanttaajan nimi", //TODO: ensure this can be used, instead of the longer Vierasvelkapanttauksen antajan nimi
-  THIRD_PARTY_PLEDGOR_BUSINESS_ID: "Vierasvelkapanttaajan Y-tunnus",
+  THIRD_PARTY_PLEDGOR_NAME: "Vierasvelkapanttauksen antajan nimi",
+  THIRD_PARTY_PLEDGOR_BUSINESS_ID: "Vierasvelkapanttauksen antajan Y-tunnus",
   PLEDGOR_NAME: "Vakuuden antajan nimi",
   PLEDGOR_NATIONAL_IDENTIFICATION_NUMBER: "Vakuuden antajan henkilötunnus",
   PLEDGOR_BUSINESS_ID: "Vakuuden antajan Y-tunnus",
   CONTRACT_PARTY: "Sopimusosapuoli",
-  CONTRACT_PARTY_IDENTIFIER: "Henkilötunnus / Y-tunnus", //TODO: Separate?
+  CONTRACT_PARTY_IDENTIFIER: "Osapuolen henkilö- tai Y-tunnus",
   ACCOUNT_NUMBER: "Tilinumero",
   RETURNED_BY: "Palautuksen merkitsijä",
   DOCUMENT_TYPE: "Vakuusasiakirjan laji",
