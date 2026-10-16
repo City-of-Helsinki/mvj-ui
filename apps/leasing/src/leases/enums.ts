@@ -1639,13 +1639,13 @@ export const LeaseContractCollateralsFieldTitles = {
   TOTAL_AMOUNT: "Vakuuden määrä",
   TYPE: "Vakuuden tyyppi",
   THIRD_PARTY_PLEDGE: "Vierasvelkapanttaus",
-  THIRD_PARTY_PLEDGOR_NAME: "Vierasvelkapanttaajan nimi", //TODO: ensure this can be used, instead of the longer Vierasvelkapanttauksen antajan nimi
-  THIRD_PARTY_PLEDGOR_BUSINESS_ID: "Vierasvelkapanttaajan Y-tunnus",
+  THIRD_PARTY_PLEDGOR_NAME: "Vierasvelkapanttauksen antajan nimi",
+  THIRD_PARTY_PLEDGOR_BUSINESS_ID: "Vierasvelkapanttauksen antajan Y-tunnus",
   PLEDGOR_NAME: "Vakuuden antajan nimi",
   PLEDGOR_NATIONAL_IDENTIFICATION_NUMBER: "Vakuuden antajan henkilötunnus",
   PLEDGOR_BUSINESS_ID: "Vakuuden antajan Y-tunnus",
   CONTRACT_PARTY: "Sopimusosapuoli",
-  CONTRACT_PARTY_IDENTIFIER: "Henkilötunnus / Y-tunnus", //TODO: Separate?
+  CONTRACT_PARTY_IDENTIFIER: "Henkilötunnus / Y-tunnus",
   ACCOUNT_NUMBER: "Tilinumero",
   RETURNED_BY: "Palautuksen merkitsijä",
   DOCUMENT_TYPE: "Vakuusasiakirjan laji",

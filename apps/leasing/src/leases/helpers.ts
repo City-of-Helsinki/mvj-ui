@@ -6,7 +6,6 @@ import {
 } from "@/util/date";
 import { FormNames, TableSortOrder } from "@/enums";
 import {
-  CollateralTypes,
   ConstructabilityType,
   DecisionTypeKinds,
   LeaseState,

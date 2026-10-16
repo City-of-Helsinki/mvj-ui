@@ -469,7 +469,6 @@ export const PledgorBusinessIdField = ({
   );
 };
 
-//TODO: figure out if we want these combined or separtedted
 const getContactIdentifier = (contact: Contact | null | undefined) =>
   contact?.type === ContactTypes.BUSINESS
     ? contact?.business_id

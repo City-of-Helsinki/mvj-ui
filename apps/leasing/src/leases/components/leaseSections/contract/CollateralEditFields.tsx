@@ -1,4 +1,4 @@
-import React, { useMemo, useRef } from "react";
+import React, { useMemo } from "react";
 import { Field, useForm } from "react-final-form";
 import { get } from "lodash-es";
 import { Column } from "@/components/grid/Grid";
@@ -70,9 +70,8 @@ export const CollateralTypeField = ({
         )}
         name={`${field}.type`}
         overrideValues={{ label: LeaseContractCollateralsFieldTitles.TYPE }}
-        //TODO: Uncomment
         // Disabled when a type is already selected to help avoid malformed data.
-        // disabled={!!type}
+        disabled={!!type}
         enableUiDataEdit
         uiDataKey={getUiDataLeaseKey(LeaseContractCollateralsFieldPaths.TYPE)}
       />
