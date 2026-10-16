@@ -766,6 +766,7 @@ export const getContentContractCollaterals = (
       number_mortgage_document: collateral.number_mortgage_document,
       guarantee_number: collateral.guarantee_number,
       property_identifiers: collateral.property_identifiers,
+      is_legacy: collateral.is_legacy,
     } as Collateral;
   });
 

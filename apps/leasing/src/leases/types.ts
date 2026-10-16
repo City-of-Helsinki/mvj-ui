@@ -269,6 +269,7 @@ export type Collateral = {
   number_mortgage_document: string | null;
   guarantee_number: string | null;
   property_identifiers: Array<CollateralPropertyIdentifier> | null;
+  is_legacy: boolean;
 };
 export type CollateralPayload = {
   id?: number;

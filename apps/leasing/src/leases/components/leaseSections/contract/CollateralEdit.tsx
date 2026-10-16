@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { FieldArray } from "react-final-form-arrays";
 import { Row, Column } from "@/components/grid/Grid";
 import { useAppSelector } from "@/root/hooks";
@@ -159,6 +159,7 @@ export type CollateralEditFieldProps = {
   field: string;
   isSaveClicked: boolean;
   required?: boolean;
+  isLegacy?: boolean;
 };
 
 const CollateralEmpty = (collateralFieldProps: CollateralEditFieldProps) => {
@@ -177,7 +178,7 @@ const CollateralEmpty = (collateralFieldProps: CollateralEditFieldProps) => {
 const CollateralFinancialGuarantee = (
   collateralFieldProps: CollateralEditFieldProps,
 ) => {
-  const { attributes, field, isSaveClicked } = collateralFieldProps;
+  const { attributes, field, isSaveClicked, isLegacy } = collateralFieldProps;
   return (
     <>
       <Row>
@@ -203,7 +204,7 @@ const CollateralFinancialGuarantee = (
               name={`${field}.paid_date`}
               overrideValues={{
                 label: LeaseContractCollateralsFieldTitles.PAID_DATE,
-                required: true,
+                required: !isLegacy,
               }}
               enableUiDataEdit
               uiDataKey={getUiDataLeaseKey(
@@ -237,7 +238,7 @@ const CollateralFinancialGuarantee = (
 const CollateralMortgageDocument = (
   collateralFieldProps: CollateralEditFieldProps,
 ) => {
-  const { attributes, field, isSaveClicked } = collateralFieldProps;
+  const { attributes, field, isSaveClicked, isLegacy } = collateralFieldProps;
   return (
     <>
       <Row>
@@ -261,7 +262,7 @@ const CollateralMortgageDocument = (
               overrideValues={{
                 label:
                   LeaseContractCollateralsFieldTitles.NUMBER_MORTGAGE_DOCUMENT,
-                required: true,
+                required: !isLegacy,
               }}
               enableUiDataEdit
               uiDataKey={getUiDataLeaseKey(
@@ -286,7 +287,7 @@ const CollateralMortgageDocument = (
               name={`${field}.deed_date`}
               overrideValues={{
                 label: LeaseContractCollateralsFieldTitles.DEED_DATE,
-                required: true,
+                required: !isLegacy,
               }}
               enableUiDataEdit
               uiDataKey={getUiDataLeaseKey(
@@ -407,7 +408,7 @@ const CollateralOther = (collateralFieldProps: CollateralEditFieldProps) => {
 const CollateralSelfDebtorGuarantee = (
   collateralFieldProps: CollateralEditFieldProps,
 ) => {
-  const { attributes, field, isSaveClicked } = collateralFieldProps;
+  const { attributes, field, isSaveClicked, isLegacy } = collateralFieldProps;
   return (
     <>
       <Row>
@@ -452,7 +453,7 @@ const CollateralSelfDebtorGuarantee = (
         <Column small={6} medium={4} large={2}>
           <DocumentTypeField {...collateralFieldProps} />
         </Column>
-        <PledgorFields {...collateralFieldProps} required={true} />
+        <PledgorFields {...collateralFieldProps} required={!isLegacy} />
         <ReturnedDateFields {...collateralFieldProps} />
       </Row>
       <Row>
@@ -473,6 +474,7 @@ const CollateralSelfDebtorGuarantee = (
 const CollateralPledgeOfFunds = (
   collateralFieldProps: CollateralEditFieldProps,
 ) => {
+  const { isLegacy } = collateralFieldProps;
   return (
     <>
       <Row>
@@ -480,7 +482,7 @@ const CollateralPledgeOfFunds = (
           <CollateralTypeField {...collateralFieldProps} />
         </Column>
         <Column small={6} medium={4} large={2}>
-          <AccountNumberField {...collateralFieldProps} required={true} />
+          <AccountNumberField {...collateralFieldProps} required={!isLegacy} />
         </Column>
         <Column small={6} medium={4} large={2}>
           <StartDateField {...collateralFieldProps} />
@@ -521,6 +523,7 @@ type Props = {
 
 const CollateralEdit: React.FC<Props> = ({ field, onRemove }) => {
   const collateralType = useFieldValue(`${field}.type`);
+  const isLegacy: boolean = useFieldValue(`${field}.is_legacy`);
   const attributes: Attributes = useAppSelector(getAttributes);
   const isSaveClicked: boolean = useAppSelector(getIsSaveClicked);
   const usersPermissions: UsersPermissionsType =
@@ -529,11 +532,12 @@ const CollateralEdit: React.FC<Props> = ({ field, onRemove }) => {
     attributes,
     field,
     isSaveClicked,
+    isLegacy,
   };
   // TODO: Form validation doesn't run for some reason on edit mode in initial field mount.
   // Forcing a remount as a workaround.
-  const [mounted, setMounted] = React.useState(false);
-  React.useEffect(() => {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
     setMounted(true);
   }, []);
   return (
@@ -558,18 +562,10 @@ const CollateralEdit: React.FC<Props> = ({ field, onRemove }) => {
           <CollateralMortgageDocument {...collateralFieldProps} />
         )}
         {collateralType === CollateralTypes.SELF_DEBTOR_GUARANTEE && (
-          <CollateralSelfDebtorGuarantee
-            attributes={attributes}
-            field={field}
-            isSaveClicked={isSaveClicked}
-          />
+          <CollateralSelfDebtorGuarantee {...collateralFieldProps} />
         )}
         {collateralType === CollateralTypes.PLEDGE_OF_FUNDS && (
-          <CollateralPledgeOfFunds
-            attributes={attributes}
-            field={field}
-            isSaveClicked={isSaveClicked}
-          />
+          <CollateralPledgeOfFunds {...collateralFieldProps} />
         )}
         {Boolean(collateralType) &&
           (collateralType === CollateralTypes.OTHER || collateralType > 5) && (

@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useRef } from "react";
 import { Field, useForm } from "react-final-form";
 import { get } from "lodash-es";
 import { Column } from "@/components/grid/Grid";
@@ -27,22 +27,23 @@ import { SelectListOption } from "@/types";
 import FieldTypeBoolean from "@/components/form/final-form/FieldTypeBoolean";
 
 //TODO: move out of this file?
-const PLEDGOR_IDENTIFIER_REQUIRED_ERROR = "Syötä henkilötunnus tai Y-tunnus";
-const PROPERTY_IDENTIFIER_REQUIRED_ERROR =
+const FIELD_PAIR_PERSONAL_IDENTIFIER_ERROR = "Syötä henkilötunnus tai Y-tunnus";
+const FIELD_PAIR_PROPERTY_IDENTIFIER_ERROR =
   "Syötä kiinteistötunnus tai laitostunnus";
+const FIELD_PAIR_GENERIC_ERROR = "Täytä toinen kentistä";
 
 // Hook for validating at least one of two related fields is filled in.
 const useRequiredFieldPairValidator = (
   linkedFieldPath: string,
-  required: boolean,
-  requiredError: string,
+  required: boolean = true,
+  errorMessage?: string,
   formatValidator?: (value: any) => string | null | undefined,
 ) => {
   const form = useForm();
   return (value: any) => {
     if (required && !value) {
       const otherValue = get(form.getState().values, linkedFieldPath);
-      if (!otherValue) return requiredError;
+      if (!otherValue) return errorMessage || FIELD_PAIR_GENERIC_ERROR;
     }
     return formatValidator?.(value);
   };
@@ -83,6 +84,7 @@ export const TotalAmountField = ({
   attributes,
   field,
   isSaveClicked,
+  isLegacy,
 }: CollateralEditFieldProps) => (
   <Authorization
     allow={isFieldAllowedToRead(
@@ -100,7 +102,7 @@ export const TotalAmountField = ({
       unit="€"
       overrideValues={{
         label: LeaseContractCollateralsFieldTitles.TOTAL_AMOUNT,
-        required: true,
+        required: !isLegacy,
       }}
       enableUiDataEdit
       tooltipStyle={{
@@ -117,6 +119,7 @@ export const StartDateField = ({
   attributes,
   field,
   isSaveClicked,
+  isLegacy,
 }: CollateralEditFieldProps) => (
   <Authorization
     allow={isFieldAllowedToRead(
@@ -133,7 +136,7 @@ export const StartDateField = ({
       name={`${field}.start_date`}
       overrideValues={{
         label: LeaseContractCollateralsFieldTitles.START_DATE,
-        required: true,
+        required: !isLegacy,
       }}
       enableUiDataEdit
       uiDataKey={getUiDataLeaseKey(
@@ -174,6 +177,7 @@ export const ReturnedDateFields = ({
   attributes,
   field,
   isSaveClicked,
+  isLegacy,
 }: CollateralEditFieldProps) => {
   const returned_date = useFieldValue(`${field}.returned_date`);
 
@@ -209,6 +213,7 @@ export const ReturnedDateFields = ({
             attributes={attributes}
             field={field}
             isSaveClicked={isSaveClicked}
+            isLegacy={isLegacy}
           />
         </Column>
       )}
@@ -220,6 +225,7 @@ export const ReturnedByField = ({
   attributes,
   field,
   isSaveClicked,
+  isLegacy,
 }: CollateralEditFieldProps) => (
   <Authorization
     allow={isFieldAllowedToRead(
@@ -237,7 +243,7 @@ export const ReturnedByField = ({
       overrideValues={{
         label: LeaseContractCollateralsFieldTitles.RETURNED_BY,
         fieldType: FieldTypes.USER,
-        required: true,
+        required: !isLegacy,
       }}
       enableUiDataEdit
       uiDataKey={getUiDataLeaseKey(
@@ -549,10 +555,10 @@ const PledgorIdentificationNumberField = ({
   isSaveClicked,
   required = false,
 }: CollateralEditFieldProps) => {
-  const validate = useRequiredPairValidator(
+  const validate = useRequiredFieldPairValidator(
     `${field}.pledgor_business_id`,
     required,
-    PLEDGOR_IDENTIFIER_REQUIRED_ERROR,
+    FIELD_PAIR_PERSONAL_IDENTIFIER_ERROR,
     personalIdentifierValidator,
   );
   return (
@@ -589,10 +595,10 @@ const PledgorBusinessIdField = ({
   isSaveClicked,
   required = false,
 }: CollateralEditFieldProps) => {
-  const validate = useRequiredPairValidator(
+  const validate = useRequiredFieldPairValidator(
     `${field}.pledgor_national_identification_number`,
     required,
-    PLEDGOR_IDENTIFIER_REQUIRED_ERROR,
+    FIELD_PAIR_PERSONAL_IDENTIFIER_ERROR,
     companyIdentifierValidator,
   );
   return (
@@ -626,6 +632,7 @@ export const ContractPartyField = ({
   attributes,
   field,
   isSaveClicked,
+  isLegacy,
 }: CollateralEditFieldProps) => {
   const currentLease = useAppSelector(getCurrentLease);
   const selectedTenantIds: Array<number> | null = useFieldValue(
@@ -663,7 +670,7 @@ export const ContractPartyField = ({
           label: LeaseContractCollateralsFieldTitles.CONTRACT_PARTY,
           fieldType: FieldTypes.MULTISELECT,
           options: tenantOptions,
-          required: true,
+          required: !isLegacy,
         }}
         enableUiDataEdit
         uiDataKey={getUiDataLeaseKey(
@@ -738,11 +745,12 @@ export const PropertyIdentifierField = ({
   attributes,
   field,
   isSaveClicked,
+  isLegacy,
 }: CollateralEditFieldProps) => {
-  const validate = useRequiredPairValidator(
+  const validate = useRequiredFieldPairValidator(
     `${field}.institution_identifier`,
-    true,
-    PROPERTY_IDENTIFIER_REQUIRED_ERROR,
+    !isLegacy,
+    FIELD_PAIR_PROPERTY_IDENTIFIER_ERROR,
   );
   return (
     <Authorization
@@ -776,11 +784,12 @@ export const InstitutionIdentifierField = ({
   attributes,
   field,
   isSaveClicked,
+  isLegacy,
 }: CollateralEditFieldProps) => {
-  const validate = useRequiredPairValidator(
+  const validate = useRequiredFieldPairValidator(
     `${field}.property_identifier`,
-    true,
-    PROPERTY_IDENTIFIER_REQUIRED_ERROR,
+    !isLegacy,
+    FIELD_PAIR_PROPERTY_IDENTIFIER_ERROR,
   );
   return (
     <Authorization
