@@ -1,3 +1,11 @@
+export const getRelatedRecordIndex = (
+  recordId: string | undefined,
+  records: { id?: string }[],
+): string | undefined => {
+  const index = records.findIndex((record) => record.id === recordId);
+  return recordId && index >= 0 ? String(index) : undefined;
+};
+
 // Utilities for form field normalization
 
 /**

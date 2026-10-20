@@ -97,6 +97,7 @@ export interface LandUseBillingInvoice extends Pick<
   | "invoiceItems"
 > {
   id?: string;
+  recipientPartyId?: string;
   sourceInstallmentId?: string;
   recipientSnapshot?: LandUseBillingParty;
   payments?: { id: number; paid_amount: string; paid_date: string; filing_code: string }[];

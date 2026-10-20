@@ -7,6 +7,7 @@ import { createLandUseAgreement, updateContracts, updatePaymentSchedule, sendInv
 import { callApiPost } from "../fetchClient";
 import { callApiPut } from "../fetchClient";
 import { metadataOptions } from "../../hooks/useUiMetadata";
+import { getRelatedRecordIndex } from "../../utils/fieldUtils";
 
 vi.mock("../fetchClient", () => ({
   callApiGet: vi.fn(),
@@ -175,4 +176,9 @@ it("builds form options from authoritative metadata without losing codes", () =>
   const metadata = { decision_makers: [{ value: "LAND_MANAGER", label: "Manager" }] };
   expect(metadataOptions(metadata, "decision_makers")).toEqual(metadata.decision_makers);
   expect(metadataOptions(metadata, "decision_makers", true)).toEqual([{ value: "Manager", label: "Manager" }]);
+});
+
+it("resolves relationships by record ID after collection order changes", () => {
+  expect(getRelatedRecordIndex("12", [{ id: "23" }, { id: "12" }])).toBe("1");
+  expect(getRelatedRecordIndex("34", [{ id: "12" }])).toBeUndefined();
 });

@@ -36,6 +36,7 @@ import {
 import { DEFAULT_KOROTUSKERROIN } from "@/landUse/constants";
 import { useUiMetadata } from "@/landUse/hooks/useUiMetadata";
 import { getLanduseErrorMessage } from "@/landUse/api/fetchClient";
+import { getRelatedRecordIndex } from "@/landUse/utils/fieldUtils";
 import { useCalculateActivePageSection } from "@/landUse/hooks/useCalculateActivePageSection";
 import {
   getTocScrollTarget,
@@ -609,6 +610,23 @@ const LandUseDetailPage: React.FC = () => {
     agreementId,
   ]);
 
+  useEffect(() => {
+    if (formStates.paymentSchedule?.dirty) return;
+    const values = paymentScheduleFormApi.getState().values;
+    if (!values.paymentSchedules) return;
+    const parties = partiesFormApi.getState().values.parties ?? [];
+    const contracts = contractsFormApi.getState().values.contracts ?? [];
+    paymentScheduleFormApi.initialize({ paymentSchedules: values.paymentSchedules.map((schedule) => {
+      const recipientPartyIndex = schedule.recipientPartyId
+        ? getRelatedRecordIndex(schedule.recipientPartyId, parties) : schedule.recipientPartyIndex;
+      const contractIndex = schedule.contractId
+        ? getRelatedRecordIndex(schedule.contractId, contracts) : schedule.contractIndex;
+      return { ...schedule, recipientPartyIndex, contractIndex,
+        installments: schedule.installments.map((installment) => ({ ...installment, recipientPartyIndex, contractIndex })),
+      };
+    }) });
+  }, [partiesQuery.dataUpdatedAt, contractsQuery.dataUpdatedAt, paymentScheduleQuery.dataUpdatedAt]);
+
   // Check if any form is dirty
   const isAnyFormDirty = useCallback(() => {
     return Object.values(formStates).some((state) => state.dirty);
@@ -663,6 +681,7 @@ const LandUseDetailPage: React.FC = () => {
       updateParties(agreementId, values),
     onSuccess: (data) => {
       queryClient.setQueryData(["land-use", agreementId, "parties"], data);
+      queryClient.invalidateQueries({ queryKey: ["land-use", "list"] });
     },
   });
 
@@ -756,6 +775,9 @@ const LandUseDetailPage: React.FC = () => {
       setIsSaveClicked(false);
       setIsEditMode(false);
       resetFormStates();
+      await Promise.all(["contracts", "paymentSchedule", "billing"].map((key) =>
+        queryClient.invalidateQueries({ queryKey: ["land-use", agreementId, key] }),
+      ));
     } catch (error) {
       setSaveError(getLanduseErrorMessage(error));
     }

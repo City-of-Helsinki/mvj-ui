@@ -1092,6 +1092,7 @@ export const getBilling = async (
 
   return {
     invoices: invoices.map((invoice) => ({
+      recipientPartyId: String(invoice.recipient_party),
       id: String(invoice.id),
       sourceInstallmentId: invoice.source_payment_schedule_installment == null ? undefined : String(invoice.source_payment_schedule_installment),
       recipientSnapshot: invoice.recipient_snapshot ? {
