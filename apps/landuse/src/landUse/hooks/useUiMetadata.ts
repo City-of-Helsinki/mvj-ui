@@ -4,5 +4,6 @@ import { getUiMetadata } from "@/landUse/api/landUseApi";
 export const useUiMetadata = () => useQuery({
   queryKey: ["land-use", "ui-metadata"],
   queryFn: getUiMetadata,
-  staleTime: Infinity,
+  staleTime: 0,
+  refetchOnMount: "always",
 });

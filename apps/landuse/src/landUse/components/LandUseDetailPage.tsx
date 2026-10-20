@@ -34,6 +34,7 @@ import {
   sendInvoiceToSap,
 } from "@/landUse/api/landUseApi";
 import { DEFAULT_KOROTUSKERROIN } from "@/landUse/constants";
+import { useUiMetadata } from "@/landUse/hooks/useUiMetadata";
 import { useCalculateActivePageSection } from "@/landUse/hooks/useCalculateActivePageSection";
 import {
   getTocScrollTarget,
@@ -241,6 +242,9 @@ const LandUseDetailPage: React.FC = () => {
   const [activeSectionId, setActiveSectionId] = useState<string | null>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const queryClient = useQueryClient();
+  const metadata = useUiMetadata();
+  const hasPermission = (permission: string) =>
+    metadata.data?.permissions?.some((option) => option.value === `landuse.${permission}`) ?? false;
 
   useCalculateActivePageSection(
     contentRef,
@@ -917,8 +921,18 @@ const LandUseDetailPage: React.FC = () => {
 
   const renderActiveTabPanel = () => {
     const activeTabKey = TABS_CONFIG[activeTab]?.queryKey;
+    const editPermissions: Partial<Record<FormKey, string>> = {
+      summary: "change_landuseagreement",
+      parties: "change_agreementparty",
+      compensations: "change_landusecompensation",
+      decisions: "change_decision",
+      collaterals: "change_landuseagreement",
+      contracts: "change_contract",
+      paymentSchedule: "change_paymentschedule",
+    };
     const isCurrentTabEditable =
       isEditMode &&
+      hasPermission(editPermissions[activeTabKey!] ?? "") &&
       (activeTabKey === "summary" ||
         activeTabKey === "parties" ||
         activeTabKey === "compensations" ||
@@ -1023,8 +1037,8 @@ const LandUseDetailPage: React.FC = () => {
         return (
           <LandUsePaymentSchedule
             form={paymentScheduleFormApi}
-            isEditMode={isEditMode}
-            canSubmitSchedules={isEditMode}
+            isEditMode={isEditMode && hasPermission("change_paymentschedule")}
+            canSubmitSchedules={isEditMode && hasPermission("change_paymentschedule") && !isAnyFormDirty()}
             parties={activeParties}
             contracts={
               (contractsFormApi.getState().values as LandUseContractsFormValues)
@@ -1051,13 +1065,13 @@ const LandUseDetailPage: React.FC = () => {
       case "billing":
         return (
           <LandUseBilling
-            onSendInvoice={isEditMode ? async (invoiceId) => {
+            onSendInvoice={isEditMode && hasPermission("send_invoice_to_sap") ? async (invoiceId) => {
               await sendInvoiceToSap(invoiceId);
               await queryClient.invalidateQueries({ queryKey: ["land-use", agreementId, "billing"] });
             } : undefined}
             form={billingFormApi}
             isEditMode={false}
-            canReviewSchedules={isEditMode}
+            canReviewSchedules={isEditMode && hasPermission("approve_paymentschedule") && !isAnyFormDirty()}
             parties={billingParties}
             paymentSchedules={billingPaymentSchedules.map((schedule) => ({
               id: schedule.id,

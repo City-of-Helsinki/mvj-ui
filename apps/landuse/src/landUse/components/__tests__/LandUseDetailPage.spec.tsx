@@ -389,6 +389,7 @@ vi.mock("hds-react", async (importOriginal) => {
 
 vi.mock("../../api/landUseApi", () => ({
   getSummary: vi.fn(),
+  getUiMetadata: vi.fn(),
   getLandUseList: vi.fn(),
   getParties: vi.fn(),
   getCompensations: vi.fn(),
@@ -414,6 +415,10 @@ describe("LandUseDetailPage", () => {
     cleanup();
     vi.clearAllMocks();
     mockLocationSearch = "";
+    vi.mocked(landUseApi.getUiMetadata).mockResolvedValue({ permissions: [
+      { value: "landuse.change_landuseagreement", label: "" },
+      { value: "landuse.change_landusecompensation", label: "" },
+    ] });
 
     vi.mocked(landUseApi.getSummary).mockResolvedValue({
       tila: LAND_USE_NEGOTIATION_PHASES.IN_PROGRESS,
@@ -619,6 +624,15 @@ describe("LandUseDetailPage", () => {
     await screen.findByLabelText("monitoring-input");
     fireEvent.click(screen.getByRole("button", { name: "Muokkaa" }));
     expect((screen.getByLabelText("monitoring-input") as HTMLInputElement).disabled).toBe(true);
+  });
+
+  it("keeps summary read-only for a user without change permission", async () => {
+    vi.mocked(landUseApi.getUiMetadata).mockResolvedValue({ permissions: [] });
+    const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+    render(<QueryClientProvider client={queryClient}><LandUseDetailPage /></QueryClientProvider>);
+    await screen.findByLabelText("summary-input");
+    fireEvent.click(screen.getByRole("button", { name: "Muokkaa" }));
+    expect((screen.getByLabelText("summary-input") as HTMLInputElement).disabled).toBe(true);
   });
 
   it("writes summary query parameter when first tab is selected", async () => {
