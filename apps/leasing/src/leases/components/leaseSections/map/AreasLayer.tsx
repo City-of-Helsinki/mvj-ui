@@ -40,9 +40,13 @@ const AreasLayer = ({
     },
     [locationOptions, typeOptions],
   );
+  const isHighlighted = useCallback(
+    (feature: GeoJSON.Feature) => feature.properties?.id === defaultArea,
+    [defaultArea],
+  );
   const onEachFeature = useGeoJsonFeatureInteractions({
     getPopupContent,
-    isHighlighted: (feature) => feature.properties?.id === defaultArea,
+    isHighlighted,
   });
 
   return (

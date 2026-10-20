@@ -49,9 +49,13 @@ const PlotsLayer = ({
     },
     [typeOptions],
   );
+  const isHighlighted = useCallback(
+    (feature: GeoJSON.Feature) => feature.properties?.id === defaultPlot,
+    [defaultPlot],
+  );
   const onEachFeature = useGeoJsonFeatureInteractions({
     getPopupContent,
-    isHighlighted: (feature) => feature.properties?.id === defaultPlot,
+    isHighlighted,
   });
 
   return (

@@ -90,10 +90,15 @@ const AreaNotesLayer: React.FC<Props> = ({
     },
     [allowToEdit, areaNoteMethods, dispatch, isEditMode],
   );
+  const isHighlighted = useCallback(
+    (feature: GeoJSON.Feature) => feature.properties?.id === defaultAreaNote,
+    [defaultAreaNote],
+  );
+  const isHoverEnabled = useCallback(() => !isEditMode, [isEditMode]);
   const onEachFeatureInteractions = useGeoJsonFeatureInteractions({
     getPopupContent,
-    isHighlighted: (feature) => feature.properties?.id === defaultAreaNote,
-    isHoverEnabled: () => !isEditMode,
+    isHighlighted,
+    isHoverEnabled,
     onClick,
   });
   const onEachFeature = useCallback(
