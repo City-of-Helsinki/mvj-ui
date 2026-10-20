@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { getSummary, updateSummary, getCompensationLookups, getUiMetadata, getLandUseList } from "../landUseApi";
+import { getSummary, updateSummary, getCompensationLookups, getUiMetadata, getLandUseList, getContracts } from "../landUseApi";
 import { callApiGet, callApiPatch, callApiGetAllPages } from "../fetchClient";
 import { landUseNegotiationPhaseOptions, landUseSuojeltuOptions } from "../../options";
 import { calculateInvoicingPeriodDays } from "../../utils/date";
@@ -105,4 +105,22 @@ it("clears optional years and supports API preservation and date values", async 
   expect(landUseSuojeltuOptions.map((option) => option.value)).toEqual(["", "SR1", "SR2", "SR3"]);
   expect(calculateInvoicingPeriodDays("2026-01-01", "2026-02-01")).toBe(31);
   expect(calculateInvoicingPeriodDays("01.01.2026", "01.02.2026")).toBe(31);
+});
+
+it("loads identifiable contracts and renders backend collateral types", async () => {
+  vi.mocked(callApiGet).mockResolvedValue({
+    contract_types: [{ value: "LAND_USE_AGREEMENT", label: "Maankäyttösopimus" }],
+    collateral_types: [{ value: "MORTGAGE_DEED", label: "Panttikirja" }],
+    collateral_document_categories: [{ value: "ELECTRONIC", label: "Sähköinen" }],
+    mortgage_deed_collateral_targets: [{ value: "PROPERTY", label: "Kiinteistö" }],
+  });
+  vi.mocked(callApiGetAllPages).mockResolvedValue([{
+    id: 12, identifier: "Contract 1", title: "", contract_type: "LAND_USE_AGREEMENT", changes: [],
+    mortgage_deed_collaterals: [{ id: 23, guarantee_type: "MORTGAGE_DEED", parties: [34], document_category: "ELECTRONIC", target: "PROPERTY", property_identifiers: [], amount: "100.00" }],
+    cash_deposit_collaterals: [], personal_guarantee_collaterals: [], deposit_pledge_collaterals: [], other_collaterals: [],
+  }]);
+  expect((await getContracts("1")).contracts?.[0]).toMatchObject({
+    id: "12", sopimuksenTyyppi: "Maankäyttösopimus",
+    vakuudet: [{ id: "23", tyyppi: "Panttikirja", osapuolet: ["34"], vakuusasiakirjanLaji: "Sähköinen", kiinteistoVaiLaitos: "Kiinteistö" }],
+  });
 });

@@ -5,6 +5,7 @@ import type { LandUseGuaranteeType } from "@/landUse/options";
  * Which fields apply depends on `tyyppi`.
  */
 export interface Guarantee {
+  id?: string;
   tyyppi?: LandUseGuaranteeType;
   osapuolet?: string[];
   vakuusasiakirjanLaji?: string;

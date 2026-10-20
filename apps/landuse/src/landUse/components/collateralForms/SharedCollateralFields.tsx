@@ -117,7 +117,7 @@ export const SharedCollateralFields: React.FC<CollateralFormProps> = ({
                 label="Osapuolet"
                 value={
                   Array.isArray(input.value) && input.value.length > 0
-                    ? input.value.join(", ")
+                    ? input.value.map((value: string) => partyOptions.find((option) => option.value === value)?.label ?? value).join(", ")
                     : "-"
                 }
                 readOnly

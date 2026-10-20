@@ -11,11 +11,13 @@ import {
   TextInput,
 } from "hds-react";
 import React, { useEffect, useMemo, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useParams } from "react-router";
+import { getDecisions } from "@/landUse/api/landUseApi";
 import { Field, Form } from "react-final-form";
 import { useTocEntries } from "@/landUse/hooks/useTableOfContents";
 import {
   landUseAgreementTypeOptions,
-  landUseDecisionTypeOptions,
   landUseGuaranteeTypeOptions,
   type LandUseGuaranteeType,
 } from "@/landUse/options";
@@ -32,6 +34,7 @@ import {
 import type { PartyEntry } from "@/landUse/components/tabs/LandUseParties";
 
 interface ContractChange {
+  id?: string;
   sopimusnumero: string;
   allekirjoituspvm: string;
   allekirjoitettavaMennessa: string;
@@ -44,6 +47,7 @@ interface ContractChange {
 }
 
 interface ContractItem {
+  id?: string;
   title: string;
   sopimuksenTyyppi?: string;
   sopimusnumero: string;
@@ -124,6 +128,15 @@ export const LandUseContracts: React.FC<LandUseContractsProps> = ({
   isEditMode,
   parties,
 }) => {
+  const { id } = useParams();
+  const decisions = useQuery({
+    queryKey: ["land-use", id, "decisions"],
+    queryFn: () => getDecisions(id!),
+    enabled: Boolean(id),
+  });
+  const decisionOptions = (decisions.data?.decisions ?? []).map((decision) => ({
+    value: decision.id!, label: decision.title || decision.diaarinumero || decision.id!,
+  }));
   const [contracts, setContracts] = useState<ContractItem[]>(
     () => form.getState().values.contracts ?? [],
   );
@@ -148,9 +161,9 @@ export const LandUseContracts: React.FC<LandUseContractsProps> = ({
 
   useTocEntries(tocEntries);
 
-  const partyOptions = parties.map((entry) => ({
+  const partyOptions = parties.filter((entry) => entry.id).map((entry) => ({
     label: entry.party.details.name,
-    value: entry.party.details.name,
+    value: entry.id!,
   }));
   const [pendingGuaranteeTypeByContract, setPendingGuaranteeTypeByContract] =
     React.useState<Record<number, LandUseGuaranteeType | undefined>>({});
@@ -415,7 +428,7 @@ export const LandUseContracts: React.FC<LandUseContractsProps> = ({
                                             label: "Päätös",
                                             placeholder: "Valitse",
                                           }}
-                                          options={landUseDecisionTypeOptions}
+                                          options={decisionOptions}
                                           value={normalizeSelectValue(
                                             input.value,
                                           )}
@@ -430,7 +443,7 @@ export const LandUseContracts: React.FC<LandUseContractsProps> = ({
                                         <TextInput
                                           id={`contract-paatos-${contractIndex}`}
                                           label="Päätös"
-                                          value={readOnlyTextValue(input.value)}
+                                          value={readOnlyTextValue(decisionOptions.find((option) => option.value === input.value)?.label ?? input.value)}
                                           readOnly
                                         />
                                       )
@@ -658,7 +671,7 @@ export const LandUseContracts: React.FC<LandUseContractsProps> = ({
                                                   placeholder: "Valitse",
                                                 }}
                                                 options={
-                                                  landUseDecisionTypeOptions
+                                                  decisionOptions
                                                 }
                                                 value={normalizeSelectValue(
                                                   input.value,
@@ -675,7 +688,7 @@ export const LandUseContracts: React.FC<LandUseContractsProps> = ({
                                                 id={`contract-change-paatos-${contractIndex}-${changeIndex}`}
                                                 label="Päätös"
                                                 value={readOnlyTextValue(
-                                                  input.value,
+                                                  decisionOptions.find((option) => option.value === input.value)?.label ?? input.value,
                                                 )}
                                                 readOnly
                                               />

@@ -24,7 +24,6 @@ import {
 import type { District } from "@/landUse/api/landUseTypes";
 import { formatLandUseDate } from "@/landUse/utils/date";
 import {
-  LAND_USE_GUARANTEE_TYPES,
   LAND_USE_INVOICE_STATUSES,
   LAND_USE_INVOICE_TYPES,
   LAND_USE_PAYMENT_SCHEDULE_STATUSES,
@@ -190,6 +189,7 @@ type DecisionResponse = {
 };
 
 type CollateralResponse = {
+  id: number;
   guarantee_type: string;
   parties: number[];
   document_category?: string;
@@ -849,15 +849,16 @@ export const getContracts = async (
   const contracts = await callApiGetAllPages<ContractResponse>(
     `agreements/${agreementId}/contracts/`,
   );
+  const metadata = await getUiMetadata();
+  const label = (key: string, code: string | undefined) =>
+    metadata[key]?.find((option) => option.value === code)?.label ?? code;
 
   const mapCollateral = (collateral: CollateralResponse): Guarantee => ({
-    tyyppi: getLabelForCode(
-      LAND_USE_GUARANTEE_TYPES,
-      collateral.guarantee_type,
-    ),
+    id: String(collateral.id),
+    tyyppi: label("collateral_types", collateral.guarantee_type) as Guarantee["tyyppi"],
     osapuolet: collateral.parties.map(String),
-    vakuusasiakirjanLaji: collateral.document_category,
-    kiinteistoVaiLaitos: collateral.target,
+    vakuusasiakirjanLaji: label("collateral_document_categories", collateral.document_category),
+    kiinteistoVaiLaitos: label("mortgage_deed_collateral_targets", collateral.target),
     kiinteistotunnukset: collateral.property_identifiers?.map(
       (property) => property.identifier,
     ),
@@ -895,8 +896,9 @@ export const getContracts = async (
 
   return {
     contracts: contracts.map((contract) => ({
+      id: String(contract.id),
       title: contract.title,
-      sopimuksenTyyppi: contract.contract_type || undefined,
+      sopimuksenTyyppi: label("contract_types", contract.contract_type) || undefined,
       sopimusnumero: contract.identifier,
       allekirjoituspvm: formatLandUseDate(contract.signing_date),
       huomautus: contract.note,
@@ -907,6 +909,7 @@ export const getContracts = async (
       paatos: contract.decision ? String(contract.decision) : undefined,
       toimeenpanija: contract.executor ?? "",
       muutokset: contract.changes.map((change) => ({
+        id: String(change.id),
         sopimusnumero: change.identifier,
         allekirjoituspvm: formatLandUseDate(change.signing_date),
         allekirjoitettavaMennessa: formatLandUseDate(change.signing_deadline),
