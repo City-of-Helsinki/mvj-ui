@@ -979,7 +979,7 @@ const LandUseDetailPage: React.FC = () => {
         return (
           <LandUseMonitoring
             form={monitoringFormApi}
-            isEditMode={isEditMode}
+            isEditMode={false}
             sites={sitesWithAmVelvoite}
             perushinta={compensationsQuery.data?.perushinta}
             compensationsRowsBySiteId={

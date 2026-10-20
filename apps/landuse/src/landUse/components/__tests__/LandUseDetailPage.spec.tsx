@@ -606,6 +606,21 @@ describe("LandUseDetailPage", () => {
     expect(screen.queryByLabelText("summary-input")).toBeNull();
   });
 
+  it("keeps monitoring read-only while agreement editing is enabled", async () => {
+    mockLocationSearch = "?tab=monitoring";
+    const queryClient = new QueryClient({
+      defaultOptions: { queries: { retry: false } },
+    });
+    render(
+      <QueryClientProvider client={queryClient}>
+        <LandUseDetailPage />
+      </QueryClientProvider>,
+    );
+    await screen.findByLabelText("monitoring-input");
+    fireEvent.click(screen.getByRole("button", { name: "Muokkaa" }));
+    expect((screen.getByLabelText("monitoring-input") as HTMLInputElement).disabled).toBe(true);
+  });
+
   it("writes summary query parameter when first tab is selected", async () => {
     const queryClient = new QueryClient({
       defaultOptions: {
