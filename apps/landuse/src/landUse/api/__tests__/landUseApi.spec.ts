@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { getSummary, updateSummary } from "../landUseApi";
-import { callApiGet, callApiPatch } from "../fetchClient";
+import { getSummary, updateSummary, getCompensationLookups } from "../landUseApi";
+import { callApiGet, callApiPatch, callApiGetAllPages } from "../fetchClient";
 import { landUseNegotiationPhaseOptions } from "../../options";
 
 vi.mock("../fetchClient", () => ({
@@ -46,5 +46,17 @@ describe("landuse summary contract", () => {
       label: "Vireillä",
       value: "IN_PROGRESS",
     });
+  });
+});
+
+it("loads authoritative compensation lookup records", async () => {
+  vi.mocked(callApiGetAllPages)
+    .mockResolvedValueOnce([{ id: 12, name: "Housing" }])
+    .mockResolvedValueOnce([{ id: 23, name: "Ownership" }])
+    .mockResolvedValueOnce([{ id: 34, name: "MAPO", default_discount_percentage: "15.00" }]);
+  expect(await getCompensationLookups()).toEqual({
+    intendedUses: [{ id: 12, name: "Housing" }],
+    tenureTypes: [{ id: 23, name: "Ownership" }],
+    landPolicyPrograms: [{ id: 34, name: "MAPO", default_discount_percentage: "15.00" }],
   });
 });

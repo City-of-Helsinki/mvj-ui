@@ -18,12 +18,15 @@ import {
   ToggleButton,
 } from "hds-react";
 import React, { useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
+import {
+  getCompensationLookups,
+  type NamedLookup,
+  type LandPolicyProgram,
+} from "@/landUse/api/landUseApi";
 import { Field, Form } from "react-final-form";
 import { useTocEntries } from "@/landUse/hooks/useTableOfContents";
 import {
-  landUseHallintamuotoOptions,
-  landUseKayttotarkoitusOptions,
-  landUseMaapoliittinenOhjelmaOptions,
   landUseSuojeltuOptions,
 } from "@/landUse/options";
 import {
@@ -156,16 +159,24 @@ const handleSelectChange = (
   }
 };
 
-const handleMultiSelectChange = (
-  selectedOptions: SelectOption[],
-  callback: (value: string[] | undefined) => void,
-) => {
-  if (selectedOptions.length > 0) {
-    callback(selectedOptions.map((option) => option.value));
-  } else {
-    callback(undefined);
-  }
-};
+export const selectSiteLookups = (
+  intendedUse: NamedLookup | undefined,
+  tenureTypes: NamedLookup[],
+) => ({
+  kayttotarkoitusId: intendedUse?.id ?? null,
+  kayttotarkoitus: intendedUse?.name,
+  hallintamuotoIds: tenureTypes.map((record) => record.id),
+  hallintamuoto: tenureTypes.map((record) => record.name),
+});
+
+export const selectLandPolicyProgram = (program: LandPolicyProgram | undefined) => ({
+  maapoliittinenOhjelmaId: program?.id ?? null,
+  maapoliittinenOhjelma: program?.name,
+  huojennusProsentti: program?.default_discount_percentage ?? "",
+});
+
+const lookupOptions = (records: NamedLookup[]) =>
+  records.map((record) => ({ label: record.name, value: String(record.id) }));
 
 const createUniqueSiteId = (sites: LandUseSite[]): string => {
   const usedIds = new Set(sites.map((site) => site.id));
@@ -179,6 +190,9 @@ const createUniqueSiteId = (sites: LandUseSite[]): string => {
 };
 
 interface SiteRowProps {
+  intendedUses: NamedLookup[];
+  tenureTypes: NamedLookup[];
+  onLookupChange: (values: ReturnType<typeof selectSiteLookups>) => void;
   site: LandUseSite;
   siteIndex: number;
   rowValues: PerustietotaulukkoRowValues | undefined;
@@ -191,6 +205,9 @@ interface SiteRowProps {
 }
 
 const SiteRow: React.FC<SiteRowProps> = ({
+  intendedUses,
+  tenureTypes,
+  onLookupChange,
   site,
   siteIndex,
   rowValues,
@@ -282,10 +299,13 @@ const SiteRow: React.FC<SiteRowProps> = ({
                       ) : (
                         <Select
                           id={`landuse-compensations-kayttotarkoitus-${site.id}`}
-                          options={landUseKayttotarkoitusOptions}
-                          value={normalizeSelectValue(input.value)}
+                          options={lookupOptions(intendedUses)}
+                          value={site.kayttotarkoitusId == null ? undefined : String(site.kayttotarkoitusId)}
                           onChange={(selectedOptions) => {
-                            handleSelectChange(selectedOptions, input.onChange);
+                            onLookupChange(selectSiteLookups(
+                              intendedUses.find((record) => String(record.id) === selectedOptions[0]?.value),
+                              tenureTypes.filter((record) => site.hallintamuotoIds?.includes(record.id)),
+                            ));
                             onSetTabDirty();
                           }}
                           texts={{
@@ -315,13 +335,13 @@ const SiteRow: React.FC<SiteRowProps> = ({
                       ) : (
                         <Select
                           id={`landuse-compensations-hallintamuoto-${site.id}`}
-                          options={landUseHallintamuotoOptions}
-                          value={normalizeMultiSelectValue(input.value)}
+                          options={lookupOptions(tenureTypes)}
+                          value={normalizeMultiSelectValue(site.hallintamuotoIds?.map(String))}
                           onChange={(selectedOptions) => {
-                            handleMultiSelectChange(
-                              selectedOptions,
-                              input.onChange,
-                            );
+                            onLookupChange(selectSiteLookups(
+                              intendedUses.find((record) => record.id === site.kayttotarkoitusId),
+                              tenureTypes.filter((record) => selectedOptions.some((option) => option.value === String(record.id))),
+                            ));
                             onSetTabDirty();
                           }}
                           multiSelect
@@ -455,6 +475,11 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
   onSetTabDirty,
 }) => {
   const [openSiteId, setOpenSiteId] = React.useState<string | null>(null);
+  const lookups = useQuery({
+    queryKey: ["land-use", "compensation-lookups"],
+    queryFn: getCompensationLookups,
+  });
+  const { intendedUses = [], tenureTypes = [], landPolicyPrograms = [] } = lookups.data ?? {};
 
   const tocEntries = useMemo(
     () => [
@@ -527,15 +552,15 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
           selectedOptions: SelectOption[],
         ) => {
           const selectedValue = selectedOptions[0]?.value;
-          const selectedOption = landUseMaapoliittinenOhjelmaOptions.find(
-            (option) => option.value === selectedValue,
+          const selectedOption = landPolicyPrograms.find(
+            (record) => String(record.id) === selectedValue,
           );
-
-          form.change("maapoliittinenOhjelma", selectedOption?.value ?? "");
-          form.change(
-            "huojennusProsentti",
-            selectedOption?.defaultHuojennusProsentti ?? "",
-          );
+          const selection = selectLandPolicyProgram(selectedOption);
+          form.batch(() => {
+            form.change("maapoliittinenOhjelmaId", selection.maapoliittinenOhjelmaId);
+            form.change("maapoliittinenOhjelma", selection.maapoliittinenOhjelma);
+            form.change("huojennusProsentti", selection.huojennusProsentti);
+          });
           onSetTabDirty?.("compensations");
         };
 
@@ -774,6 +799,13 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                   {sites.map((site, index) => (
                     <SiteRow
                       key={site.id}
+                      intendedUses={intendedUses}
+                      tenureTypes={tenureTypes}
+                      onLookupChange={(selection) => {
+                        form.change("sites", sites.map((currentSite) =>
+                          currentSite.id === site.id ? { ...currentSite, ...selection } : currentSite,
+                        ));
+                      }}
                       site={site}
                       siteIndex={index}
                       rowValues={rowsBySiteId[site.id]}
@@ -847,8 +879,8 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                       ) : (
                         <Select
                           id="landuse-compensations-maapoliittinen-ohjelma"
-                          options={landUseMaapoliittinenOhjelmaOptions}
-                          value={normalizeSelectValue(input.value)}
+                          options={lookupOptions(landPolicyPrograms)}
+                          value={values.maapoliittinenOhjelmaId == null ? undefined : String(values.maapoliittinenOhjelmaId)}
                           onChange={handleMaapoliittinenOhjelmaChange}
                           clearable
                           texts={{

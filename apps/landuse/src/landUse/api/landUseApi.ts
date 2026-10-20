@@ -596,6 +596,20 @@ export const getDistricts = async (): Promise<District[]> => {
   return callApiGetAllPages<District>("districts/");
 };
 
+export type NamedLookup = { id: number; name: string };
+export type LandPolicyProgram = NamedLookup & {
+  default_discount_percentage: string | null;
+};
+
+export const getCompensationLookups = async () => {
+  const [intendedUses, tenureTypes, landPolicyPrograms] = await Promise.all([
+    callApiGetAllPages<NamedLookup>("site-intended-uses/"),
+    callApiGetAllPages<NamedLookup>("site-tenure-types/"),
+    callApiGetAllPages<LandPolicyProgram>("land-policy-programs/"),
+  ]);
+  return { intendedUses, tenureTypes, landPolicyPrograms };
+};
+
 export const getCompensations = async (
   agreementId: string,
 ): Promise<LandUseCompensationsFormValues> => {

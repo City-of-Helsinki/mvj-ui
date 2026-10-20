@@ -2,8 +2,31 @@ import { createForm } from "final-form";
 import { describe, expect, it } from "vitest";
 import {
   maankayttokorvausYhteensaDecorator,
+  selectSiteLookups,
+  selectLandPolicyProgram,
   type LandUseCompensationsFormValues,
 } from "@/landUse/components/tabs/LandUseCompensations";
+
+describe("compensation lookup selections", () => {
+  it("retains authoritative IDs and names and applies the policy discount", () => {
+    const site = selectSiteLookups({ id: 12, name: "Housing" }, [
+      { id: 23, name: "Ownership" },
+    ]);
+    expect(site).toEqual({
+      kayttotarkoitusId: 12,
+      kayttotarkoitus: "Housing",
+      hallintamuotoIds: [23],
+      hallintamuoto: ["Ownership"],
+    });
+    expect(selectLandPolicyProgram({
+      id: 34, name: "MAPO", default_discount_percentage: "15.00",
+    })).toEqual({
+      maapoliittinenOhjelmaId: 34,
+      maapoliittinenOhjelma: "MAPO",
+      huojennusProsentti: "15.00",
+    });
+  });
+});
 
 describe("maankayttokorvausYhteensaDecorator", () => {
   it("keeps the form pristine on mount and recalculates after an edit", () => {
@@ -17,12 +40,13 @@ describe("maankayttokorvausYhteensaDecorator", () => {
       maankayttokorvausYhteensa: "600",
     } as LandUseCompensationsFormValues);
 
-    const unregisterFields = [
+    const fields: (keyof LandUseCompensationsFormValues)[] = [
       "rahakorvaus",
       "maakorvaus",
       "muuKorvaus",
       "maankayttokorvausYhteensa",
-    ].map((field) =>
+    ];
+    const unregisterFields = fields.map((field) =>
       form.registerField(field, () => {}, {
         value: true,
       }),
