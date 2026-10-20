@@ -732,44 +732,51 @@ const LandUseDetailPage: React.FC = () => {
         setFormStates((previous) => ({ ...previous, [key]: { dirty: false, valid: true } }));
       };
       if (formStates.summary?.dirty) {
-        await summaryMutation.mutateAsync(
+        const data = await summaryMutation.mutateAsync(
           summaryFormApi.getState().values as LandUseSummaryFormValues,
         );
+        summaryFormApi.initialize(data);
         markSaved("summary");
       }
       if (formStates.parties?.dirty) {
-        await partiesMutation.mutateAsync(
+        const data = await partiesMutation.mutateAsync(
           partiesFormApi.getState().values as LandUsePartiesFormValues,
         );
+        partiesFormApi.initialize(data);
         markSaved("parties");
       }
       if (formStates.compensations?.dirty) {
-        await compensationsMutation.mutateAsync(
+        const data = await compensationsMutation.mutateAsync(
           compensationsFormApi.getState()
             .values as LandUseCompensationsFormValues,
         );
+        compensationsFormApi.initialize(data);
         markSaved("compensations");
       }
       if (formStates.decisions?.dirty) {
-        await decisionsMutation.mutateAsync(
+        const data = await decisionsMutation.mutateAsync(
           decisionsFormApi.getState().values as LandUseDecisionsFormValues,
         );
+        decisionsFormApi.initialize(data);
         markSaved("decisions");
       }
       if (formStates.collaterals?.dirty) {
-        await collateralsMutation.mutateAsync(
+        const data = await collateralsMutation.mutateAsync(
           collateralsFormApi.getState().values as LandUseCollateralsFormValues,
         );
+        collateralsFormApi.initialize(data);
         markSaved("collaterals");
       }
       if (formStates.contracts?.dirty) {
         const data = await updateContracts(agreementId, contractsFormApi.getState().values);
         queryClient.setQueryData(["land-use", agreementId, "contracts"], data);
+        contractsFormApi.initialize(data);
         markSaved("contracts");
       }
       if (formStates.paymentSchedule?.dirty) {
         const data = await updatePaymentSchedule(agreementId, paymentScheduleFormApi.getState().values);
         queryClient.setQueryData(["land-use", agreementId, "paymentSchedule"], data);
+        paymentScheduleFormApi.initialize(data);
         markSaved("paymentSchedule");
       }
       setIsSaveClicked(false);

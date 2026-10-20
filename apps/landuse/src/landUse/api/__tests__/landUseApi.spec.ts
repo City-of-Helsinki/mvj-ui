@@ -8,6 +8,7 @@ import { callApiPost } from "../fetchClient";
 import { callApiPut } from "../fetchClient";
 import { metadataOptions } from "../../hooks/useUiMetadata";
 import { getRelatedRecordIndex } from "../../utils/fieldUtils";
+import { createEmptySummaryFormValues } from "../landUseFormValues";
 
 vi.mock("../fetchClient", () => ({
   callApiGet: vi.fn(),
@@ -181,4 +182,8 @@ it("builds form options from authoritative metadata without losing codes", () =>
 it("resolves relationships by record ID after collection order changes", () => {
   expect(getRelatedRecordIndex("12", [{ id: "23" }, { id: "12" }])).toBe("1");
   expect(getRelatedRecordIndex("34", [{ id: "12" }])).toBeUndefined();
+});
+
+it("creates a complete empty summary document", () => {
+  expect(createEmptySummaryFormValues()).toMatchObject({ identifier: "", kaupunginosa: "", osoitteet: [{ katuosoite: "", postinumero: "", kaupunki: "" }] });
 });

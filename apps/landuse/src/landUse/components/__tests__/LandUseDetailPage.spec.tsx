@@ -67,7 +67,7 @@ vi.mock("../tabs/LandUseCompensations", () => ({
     const decorator = createDecorator({
       field: /^(rahakorvaus|maakorvaus|muuKorvaus)$/,
       updates: {
-        maankayttokorvausYhteensa: (_value, allValues) =>
+        maankayttokorvausYhteensa: (_value, allValues: Record<string, string>) =>
           (
             Number(allValues.rahakorvaus ?? 0) +
             Number(allValues.maakorvaus ?? 0) +
@@ -402,11 +402,9 @@ vi.mock("../../api/landUseApi", () => ({
   updateSummary: vi.fn(),
   updateParties: vi.fn(),
   updateCompensations: vi.fn(),
-  updateMonitoring: vi.fn(),
   updateDecisions: vi.fn(),
   updateContracts: vi.fn(),
   updatePaymentSchedule: vi.fn(),
-  updateBilling: vi.fn(),
   updateCollaterals: vi.fn(),
 }));
 
@@ -453,9 +451,6 @@ describe("LandUseDetailPage", () => {
     vi.mocked(landUseApi.updateCollaterals).mockImplementation(
       async (_agreementId, values) => values as any,
     );
-    vi.mocked(landUseApi.updateMonitoring).mockImplementation(
-      async (_agreementId, values) => values as any,
-    );
     vi.mocked(landUseApi.updateDecisions).mockImplementation(
       async (_agreementId, values) => values as any,
     );
@@ -463,9 +458,6 @@ describe("LandUseDetailPage", () => {
       async (_agreementId, values) => values as any,
     );
     vi.mocked(landUseApi.updatePaymentSchedule).mockImplementation(
-      async (_agreementId, values) => values as any,
-    );
-    vi.mocked(landUseApi.updateBilling).mockImplementation(
       async (_agreementId, values) => values as any,
     );
   });
