@@ -22,6 +22,7 @@ import {
   callApiPut,
 } from "@/landUse/api/fetchClient";
 import type { District } from "@/landUse/api/landUseTypes";
+import { formatLandUseDate } from "@/landUse/utils/date";
 import {
   LAND_USE_GUARANTEE_TYPES,
   LAND_USE_INVOICE_STATUSES,
@@ -286,6 +287,7 @@ const getAgreementStatusValue = (status: string | undefined): string =>
   status ?? "";
 
 const getOptionalYear = (value: string): number | null => {
+  if (!value.trim()) return null;
   const year = Number(value);
   return Number.isInteger(year) ? year : null;
 };
@@ -347,8 +349,8 @@ export const getAsemakaavat = async (): Promise<AsemakaavaListItem[]> => {
     asemakaavanNumero: plan.plan_number,
     asemakaavanKasittelyvaihe:
       plan.processing_stage as AsemakaavaListItem["asemakaavanKasittelyvaihe"],
-    vahvistamisHyvaksymisPvm: plan.approval_date ?? "",
-    asemakaavanLainvoimaisuusPvm: plan.effective_date ?? undefined,
+    vahvistamisHyvaksymisPvm: formatLandUseDate(plan.approval_date),
+    asemakaavanLainvoimaisuusPvm: formatLandUseDate(plan.effective_date) || undefined,
     asemakaavanHyvaksyjä: plan.approver,
     asemakaavanDiaarinumero: plan.diary_number,
   }));
@@ -384,11 +386,11 @@ const mapAgreementOverviewToSummary = (
   sisaltaaAmVelvoitteita: agreement.includes_housing_obligations
     ? "kyllä"
     : "ei",
-  velvoitteidenMaaraika: agreement.obligations_deadline ?? "",
+  velvoitteidenMaaraika: formatLandUseDate(agreement.obligations_deadline),
   asemakaavanNumero: agreement.detailed_plan?.plan_number ?? "",
   asemakaavanKasittelyvaihe: agreement.detailed_plan?.processing_stage ?? "",
-  vahvistamisHyvaksymisPvm: agreement.detailed_plan?.approval_date ?? "",
-  asemakaavanLainvoimaisuusPvm: agreement.detailed_plan?.effective_date ?? "",
+  vahvistamisHyvaksymisPvm: formatLandUseDate(agreement.detailed_plan?.approval_date),
+  asemakaavanLainvoimaisuusPvm: formatLandUseDate(agreement.detailed_plan?.effective_date),
   asemakaavanHyvaksyjä: agreement.detailed_plan?.approver ?? "",
   asemakaavanDiaarinumero: agreement.detailed_plan?.diary_number ?? "",
 });
@@ -792,15 +794,15 @@ export const getDecisions = async (
       id: String(decision.id),
       title: decision.title,
       paattaja: decision.decision_maker || undefined,
-      paatospvm: decision.decision_date ?? "",
+      paatospvm: formatLandUseDate(decision.decision_date),
       pykala: decision.section || undefined,
       paatoksenTyyppi: decision.decision_type || undefined,
       diaarinumero: decision.diary_number,
       huomautus: decision.note,
       ehdot: decision.conditions.map((condition) => ({
         conditionType: condition.condition_type || undefined,
-        valvontapvm: condition.supervision_date ?? "",
-        valvottuPvm: condition.supervised_date ?? "",
+        valvontapvm: formatLandUseDate(condition.supervision_date),
+        valvottuPvm: formatLandUseDate(condition.supervised_date),
         note: condition.note,
       })),
     })),
@@ -879,14 +881,14 @@ export const getContracts = async (
     antajanYTunnus: collateral.guarantor_business_id,
     antajanHenkilotunnus: collateral.guarantor_national_identification_number,
     panttikirjanNumero: collateral.mortgage_deed_number,
-    panttikirjanPaivays: collateral.mortgage_deed_date ?? undefined,
+    panttikirjanPaivays: formatLandUseDate(collateral.mortgage_deed_date) || undefined,
     takausnumero: collateral.guarantee_identifier,
     tilinumero: collateral.account_number,
-    alkupvm: collateral.start_date ?? undefined,
-    loppupvm: collateral.end_date ?? undefined,
+    alkupvm: formatLandUseDate(collateral.start_date) || undefined,
+    loppupvm: formatLandUseDate(collateral.end_date) || undefined,
     maara: toText(collateral.amount),
-    maksettuPvm: collateral.paid_at_date ?? undefined,
-    palautettuPvm: collateral.returned_date ?? undefined,
+    maksettuPvm: formatLandUseDate(collateral.paid_at_date) || undefined,
+    palautettuPvm: formatLandUseDate(collateral.returned_date) || undefined,
     merkitsijaPalautus: collateral.marked_returned_by ?? undefined,
     lisatiedot: collateral.additional_information,
   });
@@ -896,21 +898,21 @@ export const getContracts = async (
       title: contract.title,
       sopimuksenTyyppi: contract.contract_type || undefined,
       sopimusnumero: contract.identifier,
-      allekirjoituspvm: contract.signing_date ?? "",
+      allekirjoituspvm: formatLandUseDate(contract.signing_date),
       huomautus: contract.note,
-      allekirjoitettavaMennessa: contract.signing_deadline ?? "",
-      ensimmainenKutsuLahetetty: contract.first_invitation_sent_date ?? "",
-      toinenKutsuLahetetty: contract.second_invitation_sent_date ?? "",
-      kolmasKutsuLahetetty: contract.third_invitation_sent_date ?? "",
+      allekirjoitettavaMennessa: formatLandUseDate(contract.signing_deadline),
+      ensimmainenKutsuLahetetty: formatLandUseDate(contract.first_invitation_sent_date),
+      toinenKutsuLahetetty: formatLandUseDate(contract.second_invitation_sent_date),
+      kolmasKutsuLahetetty: formatLandUseDate(contract.third_invitation_sent_date),
       paatos: contract.decision ? String(contract.decision) : undefined,
       toimeenpanija: contract.executor ?? "",
       muutokset: contract.changes.map((change) => ({
         sopimusnumero: change.identifier,
-        allekirjoituspvm: change.signing_date ?? "",
-        allekirjoitettavaMennessa: change.signing_deadline ?? "",
-        ensimmainenKutsuLahetetty: change.first_invitation_sent_date ?? "",
-        toinenKutsuLahetetty: change.second_invitation_sent_date ?? "",
-        kolmasKutsuLahetetty: change.third_invitation_sent_date ?? "",
+        allekirjoituspvm: formatLandUseDate(change.signing_date),
+        allekirjoitettavaMennessa: formatLandUseDate(change.signing_deadline),
+        ensimmainenKutsuLahetetty: formatLandUseDate(change.first_invitation_sent_date),
+        toinenKutsuLahetetty: formatLandUseDate(change.second_invitation_sent_date),
+        kolmasKutsuLahetetty: formatLandUseDate(change.third_invitation_sent_date),
         paatos: change.decision ? String(change.decision) : undefined,
         huomautus: change.note,
         toimeenpanija: change.executor ?? "",
@@ -959,7 +961,7 @@ export const getPaymentSchedule = async (
         schedule.status,
       ),
       rejectedReason: schedule.rejected_reason || null,
-      signedDate: schedule.signing_date ?? "",
+      signedDate: formatLandUseDate(schedule.signing_date),
       korotusProsentti: toText(schedule.increase_percentage),
       korkoPeruskorko: toText(schedule.base_interest_rate),
       korkoMarginaali: toText(schedule.interest_margin),
@@ -973,13 +975,11 @@ export const getPaymentSchedule = async (
           : undefined,
         installmentNumber: String(installment.installment_sequence_number),
         installmentTotal: String(installment.installment_count_total),
-        signedDate: schedule.signing_date ?? "",
+        signedDate: formatLandUseDate(schedule.signing_date),
         asemakaavanLainvoimaisuusPvm: undefined,
-        dueDate: installment.due_date ?? "",
-        laskentajaksonAlkupvm:
-          installment.interest_calculation_period_start_date ?? "",
-        laskentajaksonLoppupvm:
-          installment.interest_calculation_period_end_date ?? "",
+        dueDate: formatLandUseDate(installment.due_date),
+        laskentajaksonAlkupvm: formatLandUseDate(installment.interest_calculation_period_start_date),
+        laskentajaksonLoppupvm: formatLandUseDate(installment.interest_calculation_period_end_date),
         invoiceNumber: "",
         type: undefined,
         status: undefined,
@@ -1013,7 +1013,7 @@ export const getBilling = async (
         : undefined,
       installmentNumber: String(invoice.installment_sequence_number),
       installmentTotal: String(invoice.installment_count_total),
-      dueDate: invoice.due_date ?? "",
+      dueDate: formatLandUseDate(invoice.due_date),
       invoiceNumber: invoice.invoice_identifier,
       type: getLabelForCode(LAND_USE_INVOICE_TYPES, invoice.invoice_type),
       status: getLabelForCode(LAND_USE_INVOICE_STATUSES, invoice.status),

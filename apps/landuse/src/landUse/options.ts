@@ -166,8 +166,8 @@ export const landUseHallintamuotoOptions = [
   "ASO",
 ].map((value) => ({ label: value, value }));
 
-export const landUseSuojeltuOptions = ["-", "SR1", "SR2"].map((value) => ({
-  label: value,
+export const landUseSuojeltuOptions = ["", "SR1", "SR2", "SR3"].map((value) => ({
+  label: value || "-",
   value,
 }));
 

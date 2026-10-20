@@ -1,7 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { getSummary, updateSummary, getCompensationLookups, getUiMetadata, getLandUseList } from "../landUseApi";
 import { callApiGet, callApiPatch, callApiGetAllPages } from "../fetchClient";
-import { landUseNegotiationPhaseOptions } from "../../options";
+import { landUseNegotiationPhaseOptions, landUseSuojeltuOptions } from "../../options";
+import { calculateInvoicingPeriodDays } from "../../utils/date";
 
 vi.mock("../fetchClient", () => ({
   callApiGet: vi.fn(),
@@ -95,4 +96,13 @@ it("maps searchable list fields and preserves the status code", async () => {
   expect(await getLandUseList()).toEqual([expect.objectContaining({
     party: "Test Oy", zoningPlanNumber: "12345", site: "91-1-1-1", negotiationPhase: "IN_PROGRESS",
   })]);
+});
+
+it("clears optional years and supports API preservation and date values", async () => {
+  vi.mocked(callApiGet).mockResolvedValue(agreementOverview);
+  await updateSummary("1", { ...(await getSummary("1")), arvioituMaksuvuosi: "" });
+  expect(callApiPatch).toHaveBeenLastCalledWith("agreements/1/", expect.objectContaining({ estimated_payment_year: null }));
+  expect(landUseSuojeltuOptions.map((option) => option.value)).toEqual(["", "SR1", "SR2", "SR3"]);
+  expect(calculateInvoicingPeriodDays("2026-01-01", "2026-02-01")).toBe(31);
+  expect(calculateInvoicingPeriodDays("01.01.2026", "01.02.2026")).toBe(31);
 });
