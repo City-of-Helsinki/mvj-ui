@@ -109,6 +109,7 @@ export type AsemakaavaKasittelyvaihe =
   (typeof ASEMAKAAVA_KASITTELYVAIHE_OPTIONS)[number];
 
 export interface AsemakaavaListItem {
+  id?: number;
   asemakaavanNumero: string;
   asemakaavanKasittelyvaihe: AsemakaavaKasittelyvaihe;
   vahvistamisHyvaksymisPvm: string;

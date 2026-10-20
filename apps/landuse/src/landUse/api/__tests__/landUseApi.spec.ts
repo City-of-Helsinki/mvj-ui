@@ -67,3 +67,22 @@ it("loads authoritative UI choices with country and language codes", async () =>
   expect(await getUiMetadata()).toEqual(metadata);
   expect(callApiGet).toHaveBeenCalledWith("ui-metadata/");
 });
+
+it("saves summary relationships and reloads canonical overview values", async () => {
+  vi.mocked(callApiGet).mockResolvedValue(agreementOverview);
+  const summary = await getSummary("1");
+  await updateSummary("1", {
+    ...summary,
+    asemakaavaId: 12,
+    toimivaltainenPaattajaId: 23,
+    valmistelijat: [{ value: "34" }],
+    osoitteet: [{ katuosoite: "Testikatu 1", postinumero: "00100", kaupunki: "Helsinki" }],
+  });
+  expect(callApiPatch).toHaveBeenCalledWith("agreements/1/", expect.objectContaining({
+    detailed_plan: 12,
+    authorized_signatory: 23,
+    preparers: [{ preparer: 34 }],
+    addresses: [{ street_address: "Testikatu 1", postal_code: "00100", city: "Helsinki" }],
+  }));
+  expect(callApiGet).toHaveBeenLastCalledWith("agreements/1/overview/");
+});

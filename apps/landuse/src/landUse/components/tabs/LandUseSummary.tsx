@@ -15,11 +15,12 @@ import {
 import React, { useEffect, useMemo, useState } from "react";
 import { Field, Form } from "react-final-form";
 import { FieldArray } from "react-final-form-arrays";
-import { getAsemakaavat } from "@/landUse/api/landUseApi";
+import { getAsemakaavat, getAuthorizedSignatories } from "@/landUse/api/landUseApi";
+import { useQuery } from "@tanstack/react-query";
+import { useUiMetadata } from "@/landUse/hooks/useUiMetadata";
 import { useTocEntries } from "@/landUse/hooks/useTableOfContents";
 import {
   type AsemakaavaListItem,
-  landUseDecisionMakerOptions,
   landUseNegotiationPhaseOptions,
 } from "@/landUse/options";
 import {
@@ -31,10 +32,12 @@ import {
 import { ConfirmDeleteButton } from "@/landUse/components/ConfirmDeleteButton";
 
 interface ValmistelijaEntry {
+  id?: number;
   value: string | undefined;
 }
 
 interface OsoiteEntry {
+  id?: number;
   katuosoite: string;
   postinumero: string;
   kaupunki: string;
@@ -45,6 +48,8 @@ interface KohdeEntry {
 }
 
 export interface LandUseSummaryFormValues {
+  asemakaavaId?: number | null;
+  toimivaltainenPaattajaId?: number | null;
   identifier: string;
   maankayttosopimusType: string | undefined;
   kaupunginosa: string;
@@ -115,6 +120,13 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
   isEditMode,
 }) => {
   const [asemakaavat, setAsemakaavat] = useState<AsemakaavaListItem[]>([]);
+  const metadata = useUiMetadata();
+  const signatories = useQuery({
+    queryKey: ["land-use", "authorized-signatories"],
+    queryFn: getAuthorizedSignatories,
+  });
+  const signatoryOptions = (signatories.data ?? []).map((record) => ({ label: record.name, value: String(record.id) }));
+  const preparerOptions = metadata.data?.preparers ?? [];
 
   const tocEntries = useMemo(
     () =>
@@ -163,6 +175,7 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
     );
 
     form.batch(() => {
+      form.change("asemakaavaId", selectedAsemakaava?.id ?? null);
       form.change("asemakaavanNumero", selectedNumber);
       form.change(
         "asemakaavanKasittelyvaihe",
@@ -416,14 +429,12 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                                 isEditMode ? (
                                   <Select
                                     id="toimivaltainen-paattaja"
-                                    options={landUseDecisionMakerOptions}
-                                    value={normalizeSelectValue(input.value)}
-                                    onChange={(selectedOptions) =>
-                                      handleSelectChange(
-                                        selectedOptions,
-                                        input.onChange,
-                                      )
-                                    }
+                                    options={signatoryOptions}
+                                    value={values.toimivaltainenPaattajaId == null ? undefined : String(values.toimivaltainenPaattajaId)}
+                                    onChange={(selectedOptions) => {
+                                      form.change("toimivaltainenPaattajaId", selectedOptions[0] ? Number(selectedOptions[0].value) : null);
+                                      input.onChange(selectedOptions[0]?.label ?? "");
+                                    }}
                                     texts={{
                                       label: "Toimivaltainen päättäjä",
                                       placeholder: "Valitse",
@@ -794,20 +805,7 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                                           isEditMode ? (
                                             <Select
                                               id={`valmistelija-${index}`}
-                                              options={[
-                                                {
-                                                  label: "Valmistelija 1",
-                                                  value: "valmistelija1",
-                                                },
-                                                {
-                                                  label: "Valmistelija 2",
-                                                  value: "valmistelija2",
-                                                },
-                                                {
-                                                  label: "Valmistelija 3",
-                                                  value: "valmistelija3",
-                                                },
-                                              ]}
+                                              options={preparerOptions}
                                               value={normalizeSelectValue(
                                                 input.value,
                                               )}
@@ -828,7 +826,7 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                                               id={`valmistelija-${index}`}
                                               label="Valmistelija"
                                               value={readOnlyTextValue(
-                                                input.value,
+                                                preparerOptions.find((option) => option.value === input.value)?.label ?? input.value,
                                               )}
                                               readOnly
                                             />

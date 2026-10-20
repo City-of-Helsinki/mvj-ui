@@ -46,11 +46,12 @@ type AgreementOverviewResponse = AgreementListResponse & {
   authorized_signatory: { id: number; name: string } | null;
   detailed_plan: DetailedPlanResponse | null;
   addresses: {
+    id?: number;
     street_address: string;
     postal_code: string;
     city: string;
   }[];
-  preparers: { preparer: number; preparer_name: string }[];
+  preparers: { id?: number; preparer: number; preparer_name: string }[];
 };
 
 type AgreementListResponse = {
@@ -69,6 +70,10 @@ type AgreementCreateResponse = {
 };
 
 type AgreementUpdateRequest = {
+  detailed_plan: number | null;
+  authorized_signatory: number | null;
+  addresses: { street_address: string; postal_code: string; city: string }[];
+  preparers: { preparer: number }[];
   detailed_plan_sites: string[];
   agreement_type: string;
   is_promotion_area: boolean;
@@ -335,6 +340,7 @@ export const getAsemakaavat = async (): Promise<AsemakaavaListItem[]> => {
     await callApiGetAllPages<DetailedPlanResponse>("detailed-plans/");
 
   return plans.map((plan) => ({
+    id: plan.id,
     asemakaavanNumero: plan.plan_number,
     asemakaavanKasittelyvaihe:
       plan.processing_stage as AsemakaavaListItem["asemakaavanKasittelyvaihe"],
@@ -358,9 +364,11 @@ const mapAgreementOverviewToSummary = (
       ? agreement.detailed_plan_sites.map((value) => ({ value }))
       : [{ value: undefined }],
   valmistelijat: agreement.preparers.map((preparer) => ({
+    ...(preparer.id ? { id: preparer.id } : {}),
     value: String(preparer.preparer),
   })),
   osoitteet: agreement.addresses.map((address) => ({
+    ...(address.id ? { id: address.id } : {}),
     katuosoite: address.street_address,
     postinumero: address.postal_code,
     kaupunki: address.city,
@@ -368,6 +376,8 @@ const mapAgreementOverviewToSummary = (
   arvioituEsittelyvuosi: String(agreement.estimated_presentation_year ?? ""),
   arvioituMaksuvuosi: String(agreement.estimated_payment_year ?? ""),
   toimivaltainenPaattaja: agreement.authorized_signatory?.name ?? "",
+  toimivaltainenPaattajaId: agreement.authorized_signatory?.id ?? null,
+  asemakaavaId: agreement.detailed_plan?.id ?? null,
   sisaltaaAmVelvoitteita: agreement.includes_housing_obligations
     ? "kyllä"
     : "ei",
@@ -446,6 +456,15 @@ export const updateSummary = async (
   await callApiPatch<AgreementOverviewResponse, AgreementUpdateRequest>(
     `agreements/${agreementId}/`,
     {
+      detailed_plan: values.asemakaavaId ?? null,
+      authorized_signatory: values.toimivaltainenPaattajaId ?? null,
+      addresses: values.osoitteet.map((address) => ({
+        ...(address.id ? { id: address.id } : {}),
+        street_address: address.katuosoite,
+        postal_code: address.postinumero,
+        city: address.kaupunki,
+      })),
+      preparers: values.valmistelijat.filter((entry) => entry.value).map((entry) => ({ ...(entry.id ? { id: entry.id } : {}), preparer: Number(entry.value) })),
       detailed_plan_sites: values.suunnittelunPerusteenaOlevatKohteet
         .map(({ value }) => value?.trim() ?? "")
         .filter(Boolean),
@@ -461,7 +480,7 @@ export const updateSummary = async (
     },
   );
 
-  return values;
+  return getSummary(agreementId);
 };
 
 export const getParties = async (
@@ -601,6 +620,9 @@ export type LandUseUiMetadata = Record<string, UiChoice[]>;
 
 export const getUiMetadata = (): Promise<LandUseUiMetadata> =>
   callApiGet<LandUseUiMetadata>("ui-metadata/");
+
+export const getAuthorizedSignatories = (): Promise<NamedLookup[]> =>
+  callApiGetAllPages<NamedLookup>("authorized-signatories/");
 
 export type NamedLookup = { id: number; name: string };
 export type LandPolicyProgram = NamedLookup & {
