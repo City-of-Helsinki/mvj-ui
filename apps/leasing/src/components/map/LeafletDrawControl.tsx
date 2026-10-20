@@ -91,7 +91,13 @@ const LeafletDrawControl = ({
       return;
     }
 
+    const previousExitModeOnEscape = map.pm.getGlobalOptions().exitModeOnEscape;
+    map.pm.setGlobalOptions({ exitModeOnEscape: true });
+
     return () => {
+      map.pm.setGlobalOptions({
+        exitModeOnEscape: previousExitModeOnEscape,
+      });
       map.pm.disableDraw("Polygon");
       map.pm.disableDraw("Rectangle");
       map.pm.disableGlobalEditMode();
