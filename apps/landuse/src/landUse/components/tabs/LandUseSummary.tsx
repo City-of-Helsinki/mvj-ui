@@ -20,7 +20,6 @@ import { useTocEntries } from "@/landUse/hooks/useTableOfContents";
 import {
   type AsemakaavaListItem,
   landUseDecisionMakerOptions,
-  landUseKohdeSelectOptions,
   landUseNegotiationPhaseOptions,
 } from "@/landUse/options";
 import {
@@ -584,38 +583,15 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                                     <div className="landuse-grid__column-6">
                                       <Field name={`${name}.value`}>
                                         {({ input }) =>
-                                          isEditMode ? (
-                                            <Select
-                                              id={`suunnittelun-kohde-${index}`}
-                                              options={
-                                                landUseKohdeSelectOptions
-                                              }
-                                              value={normalizeSelectValue(
-                                                input.value,
-                                              )}
-                                              onChange={(selectedOptions) =>
-                                                handleSelectChange(
-                                                  selectedOptions,
-                                                  input.onChange,
-                                                )
-                                              }
-                                              filter={selectLabelIncludesFilter}
-                                              texts={{
-                                                label: `Kohde ${index + 1}`,
-                                                placeholder: "Valitse",
-                                              }}
-                                              disabled={!isEditMode}
-                                            />
-                                          ) : (
                                             <TextInput
                                               id={`suunnittelun-kohde-${index}`}
                                               label={`Kohde ${index + 1}`}
-                                              value={readOnlyTextValue(
+                                              value={isEditMode ? input.value : readOnlyTextValue(
                                                 input.value,
                                               )}
-                                              readOnly
+                                              onChange={input.onChange}
+                                              readOnly={!isEditMode}
                                             />
-                                          )
                                         }
                                       </Field>
                                     </div>

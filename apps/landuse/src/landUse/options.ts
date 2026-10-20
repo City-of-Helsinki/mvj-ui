@@ -266,15 +266,6 @@ export const interestCalculationDaysInYearOptions = Object.values(
   INTEREST_CALCULATION_DAYS_IN_YEAR,
 ).map((value) => ({ label: value, value }));
 
-export const landUseKohdeSelectOptions = [
-  { label: "91-10-100-1", value: "91-10-100-1" },
-  { label: "91-11-200-2", value: "91-11-200-2" },
-  { label: "91-12-300-3", value: "91-12-300-3" },
-  { label: "91-13-400-4", value: "91-13-400-4" },
-  { label: "91-14-500-5", value: "91-14-500-5" },
-  { label: "91-15-600-6", value: "91-15-600-6" },
-];
-
 export const partyRoleOptions = [
   { label: "Maanomistaja", value: "maanomistaja" },
   { label: "Toteuttaja", value: "toteuttaja" },

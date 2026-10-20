@@ -41,6 +41,7 @@ type DetailedPlanResponse = {
 };
 
 type AgreementOverviewResponse = AgreementListResponse & {
+  detailed_plan_sites: string[];
   includes_housing_obligations: boolean;
   obligations_deadline: string | null;
   authorized_signatory: { id: number; name: string } | null;
@@ -69,6 +70,7 @@ type AgreementCreateResponse = {
 };
 
 type AgreementUpdateRequest = {
+  detailed_plan_sites: string[];
   agreement_type: string;
   is_promotion_area: boolean;
   status: string;
@@ -354,7 +356,10 @@ const mapAgreementOverviewToSummary = (
   kaupunginosa: agreement.district?.name ?? "",
   edistamisalue: agreement.is_promotion_area,
   tila: agreement.status || undefined,
-  suunnittelunPerusteenaOlevatKohteet: [{ value: undefined }],
+  suunnittelunPerusteenaOlevatKohteet:
+    agreement.detailed_plan_sites.length > 0
+      ? agreement.detailed_plan_sites.map((value) => ({ value }))
+      : [{ value: undefined }],
   valmistelijat: agreement.preparers.map((preparer) => ({
     value: String(preparer.preparer),
   })),
@@ -444,6 +449,9 @@ export const updateSummary = async (
   await callApiPatch<AgreementOverviewResponse, AgreementUpdateRequest>(
     `agreements/${agreementId}/`,
     {
+      detailed_plan_sites: values.suunnittelunPerusteenaOlevatKohteet
+        .map(({ value }) => value?.trim() ?? "")
+        .filter(Boolean),
       agreement_type: values.maankayttosopimusType ?? "",
       is_promotion_area: values.edistamisalue,
       status: getAgreementStatusValue(values.tila),
