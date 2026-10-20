@@ -13,7 +13,7 @@ describe("html", () => {
 
     expect(popupHtml).toBe(
       "<p><strong>Id:</strong> 25</p>\n" +
-        '      <p><strong>Identifier:</strong> &lt;img src=x onerror="alert(1)"&gt;</p>\n' +
+        "      <p><strong>Identifier:</strong> &lt;img src=x onerror=&quot;alert(1)&quot;&gt;</p>\n" +
         "      <p><strong>Status:</strong> Active</p>",
     );
 
@@ -22,5 +22,16 @@ describe("html", () => {
 
     expect(popup.querySelector("img")).toBeNull();
     expect(popup.textContent).toContain(identifier);
+  });
+
+  it("keeps interpolated values inside quoted attributes", () => {
+    const value = '" onmouseover="alert(1)';
+    const popupHtml = html`<a href="/leases/${value}">Lease</a>`;
+    const popup = document.createElement("div");
+    popup.innerHTML = popupHtml;
+
+    const link = popup.querySelector("a");
+    expect(link?.getAttribute("href")).toBe(`/leases/${value}`);
+    expect(link?.hasAttribute("onmouseover")).toBe(false);
   });
 });
