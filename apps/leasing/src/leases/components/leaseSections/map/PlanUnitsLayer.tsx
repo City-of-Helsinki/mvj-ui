@@ -109,9 +109,13 @@ const PlanUnitsLayer = ({
       plotDivisionStateOptions,
     ],
   );
+  const isHighlighted = useCallback(
+    (feature: GeoJSON.Feature) => feature.properties?.id === defaultPlanUnit,
+    [defaultPlanUnit],
+  );
   const onEachFeature = useGeoJsonFeatureInteractions({
     getPopupContent,
-    isHighlighted: (feature) => feature.properties?.id === defaultPlanUnit,
+    isHighlighted,
   });
 
   return (

@@ -10,8 +10,11 @@ type Options = {
   openHighlightedPopup?: boolean;
 };
 
+const isHoverEnabledByDefault: NonNullable<Options["isHoverEnabled"]> = () =>
+  true;
+
 const useGeoJsonFeatureInteractions = ({
-  isHoverEnabled = () => true,
+  isHoverEnabled = isHoverEnabledByDefault,
   getPopupContent,
   isHighlighted,
   onClick,
