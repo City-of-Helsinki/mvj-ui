@@ -635,6 +635,25 @@ describe("LandUseDetailPage", () => {
     expect((screen.getByLabelText("summary-input") as HTMLInputElement).disabled).toBe(true);
   });
 
+  it("shows a save error and retries only the unsaved tab", async () => {
+    vi.mocked(landUseApi.updateCompensations)
+      .mockRejectedValueOnce(new LanduseApiError(400, { detail: "Invalid compensation" }))
+      .mockImplementation(async (_id, values) => values);
+    const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false }, mutations: { retry: false } } });
+    render(<QueryClientProvider client={queryClient}><LandUseDetailPage /></QueryClientProvider>);
+    await screen.findByLabelText("summary-input");
+    fireEvent.click(screen.getByRole("button", { name: "Muokkaa" }));
+    fireEvent.change(screen.getByLabelText("summary-input"), { target: { value: "changed" } });
+    fireEvent.click(screen.getByRole("tab", { name: /Korvaukset/i }));
+    await screen.findByLabelText("compensations-input");
+    fireEvent.change(screen.getByLabelText("compensations-input"), { target: { value: "changed" } });
+    fireEvent.click(screen.getByRole("button", { name: "Tallenna" }));
+    await screen.findByText(/Invalid compensation/);
+    fireEvent.click(screen.getByRole("button", { name: "Tallenna" }));
+    await waitFor(() => expect(landUseApi.updateCompensations).toHaveBeenCalledTimes(2));
+    expect(landUseApi.updateSummary).toHaveBeenCalledTimes(1);
+  });
+
   it("writes summary query parameter when first tab is selected", async () => {
     const queryClient = new QueryClient({
       defaultOptions: {

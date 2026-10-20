@@ -697,8 +697,8 @@ export const updateCompensations = async (
   agreementId: string,
   values: LandUseCompensationsFormValues,
 ): Promise<LandUseCompensationsFormValues> => {
-  await Promise.all([
-    callApiPut("agreements/" + agreementId + "/compensation/", {
+  await callApiPut(`agreements/${agreementId}/compensation-document/`, {
+    compensation: {
       excel_calculation_url: values.excelLaskelmaUrl || null,
       monetary_compensation: parseOptionalNumber(values.rahakorvaus),
       land_compensation: parseOptionalNumber(values.maakorvaus),
@@ -720,10 +720,8 @@ export const updateCompensations = async (
       public_areas_acquisition_value: parseOptionalNumber(
         values.yleisetAlueetHankinnanArvo,
       ),
-    }),
-    callApiPut(
-      "agreements/" + agreementId + "/sites/",
-      values.sites.map((site) => ({
+    },
+    sites: values.sites.map((site) => ({
         ...(Number.isInteger(Number(site.id)) ? { id: Number(site.id) } : {}),
         identifier: site.kohteenTunnus,
         area_m2: parseOptionalNumber(site.pintaAlaM2),
@@ -736,8 +734,7 @@ export const updateCompensations = async (
           values.perustietotaulukkoRowsBySiteId[site.id]?.yksikkohinta,
         ),
       })),
-    ),
-  ]);
+  });
 
   return getCompensations(agreementId);
 };

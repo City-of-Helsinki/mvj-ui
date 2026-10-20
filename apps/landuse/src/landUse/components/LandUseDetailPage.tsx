@@ -35,6 +35,7 @@ import {
 } from "@/landUse/api/landUseApi";
 import { DEFAULT_KOROTUSKERROIN } from "@/landUse/constants";
 import { useUiMetadata } from "@/landUse/hooks/useUiMetadata";
+import { getLanduseErrorMessage } from "@/landUse/api/fetchClient";
 import { useCalculateActivePageSection } from "@/landUse/hooks/useCalculateActivePageSection";
 import {
   getTocScrollTarget,
@@ -238,6 +239,7 @@ const LandUseDetailPage: React.FC = () => {
   );
   const [isEditMode, setIsEditMode] = useState(false);
   const [isSaveClicked, setIsSaveClicked] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
   const [sectionEntries, setSectionEntries] = useState<SectionEntry[]>([]);
   const [activeSectionId, setActiveSectionId] = useState<string | null>(null);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -693,6 +695,7 @@ const LandUseDetailPage: React.FC = () => {
 
   const handleSaveClick = async () => {
     setIsSaveClicked(true);
+    setSaveError(null);
 
     if (!agreementId) {
       return;
@@ -705,49 +708,61 @@ const LandUseDetailPage: React.FC = () => {
     }
 
     try {
+      const markSaved = (key: FormKey) => {
+        formApis[key].initialize(formApis[key].getState().values as never);
+        setFormStates((previous) => ({ ...previous, [key]: { dirty: false, valid: true } }));
+      };
       if (formStates.summary?.dirty) {
         await summaryMutation.mutateAsync(
           summaryFormApi.getState().values as LandUseSummaryFormValues,
         );
+        markSaved("summary");
       }
       if (formStates.parties?.dirty) {
         await partiesMutation.mutateAsync(
           partiesFormApi.getState().values as LandUsePartiesFormValues,
         );
+        markSaved("parties");
       }
       if (formStates.compensations?.dirty) {
         await compensationsMutation.mutateAsync(
           compensationsFormApi.getState()
             .values as LandUseCompensationsFormValues,
         );
+        markSaved("compensations");
       }
       if (formStates.decisions?.dirty) {
         await decisionsMutation.mutateAsync(
           decisionsFormApi.getState().values as LandUseDecisionsFormValues,
         );
+        markSaved("decisions");
       }
       if (formStates.collaterals?.dirty) {
         await collateralsMutation.mutateAsync(
           collateralsFormApi.getState().values as LandUseCollateralsFormValues,
         );
+        markSaved("collaterals");
       }
       if (formStates.contracts?.dirty) {
         const data = await updateContracts(agreementId, contractsFormApi.getState().values);
         queryClient.setQueryData(["land-use", agreementId, "contracts"], data);
+        markSaved("contracts");
       }
       if (formStates.paymentSchedule?.dirty) {
         const data = await updatePaymentSchedule(agreementId, paymentScheduleFormApi.getState().values);
         queryClient.setQueryData(["land-use", agreementId, "paymentSchedule"], data);
+        markSaved("paymentSchedule");
       }
       setIsSaveClicked(false);
       setIsEditMode(false);
       resetFormStates();
     } catch (error) {
-      console.error("Failed to save agreement data", error);
+      setSaveError(getLanduseErrorMessage(error));
     }
   };
 
   const handleDiscardClick = () => {
+    setSaveError(null);
     // Reset all forms to their initial values
     Object.values(formApis).forEach((formApi) => {
       formApi.reset();
@@ -831,6 +846,10 @@ const LandUseDetailPage: React.FC = () => {
     );
   }
 
+  if (summaryQuery.isError) {
+    return <div role="alert">{getLanduseErrorMessage(summaryQuery.error)}</div>;
+  }
+
   const sitesWithAmVelvoite = (compensationsQuery.data?.sites ?? []).filter(
     (site) => site.amVelvoite === true,
   );
@@ -889,25 +908,30 @@ const LandUseDetailPage: React.FC = () => {
   const handleSendToInvoicing = async (
     schedule: LandUsePaymentScheduleEntry,
   ) => {
+    try {
     await submitPaymentSchedule(schedule.id);
     await queryClient.invalidateQueries({
       queryKey: ["land-use", agreementId, "paymentSchedule"],
     });
+    } catch (error) { setSaveError(getLanduseErrorMessage(error)); }
   };
 
   const handleDeclineSchedule = async (
     schedule: LandUsePaymentScheduleEntry,
     rejectedReason: string,
   ) => {
+    try {
     await rejectPaymentSchedule(schedule.id, rejectedReason);
     await queryClient.invalidateQueries({
       queryKey: ["land-use", agreementId, "paymentSchedule"],
     });
+    } catch (error) { setSaveError(getLanduseErrorMessage(error)); }
   };
 
   const handleAcceptSchedule = async (
     schedule: LandUsePaymentScheduleEntry,
   ) => {
+    try {
     await approvePaymentSchedule(schedule.id);
     await Promise.all([
       queryClient.invalidateQueries({
@@ -917,6 +941,7 @@ const LandUseDetailPage: React.FC = () => {
         queryKey: ["land-use", agreementId, "billing"],
       }),
     ]);
+    } catch (error) { setSaveError(getLanduseErrorMessage(error)); }
   };
 
   const renderActiveTabPanel = () => {
@@ -1066,8 +1091,10 @@ const LandUseDetailPage: React.FC = () => {
         return (
           <LandUseBilling
             onSendInvoice={isEditMode && hasPermission("send_invoice_to_sap") ? async (invoiceId) => {
+              try {
               await sendInvoiceToSap(invoiceId);
               await queryClient.invalidateQueries({ queryKey: ["land-use", agreementId, "billing"] });
+              } catch (error) { setSaveError(getLanduseErrorMessage(error)); }
             } : undefined}
             form={billingFormApi}
             isEditMode={false}
@@ -1113,6 +1140,10 @@ const LandUseDetailPage: React.FC = () => {
         />
 
         <div className="landuse-detail__main">
+          {saveError && <div role="alert">{saveError}</div>}
+          {[partiesQuery, compensationsQuery, collateralsQuery, decisionsQuery, contractsQuery, paymentScheduleQuery, billingQuery].filter((query) => query.isError).map((query, index) => (
+            <div role="alert" key={index}>{getLanduseErrorMessage(query.error)}</div>
+          ))}
           <Breadcrumb
             aria-label="Breadcrumb"
             list={[

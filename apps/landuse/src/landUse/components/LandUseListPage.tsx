@@ -14,6 +14,7 @@ import {
   Select,
 } from "hds-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { getLanduseErrorMessage } from "@/landUse/api/fetchClient";
 import { parseUrlParams, buildQueryString } from "@/landUse/urlParams";
 import { selectLabelIncludesFilter } from "@/landUse/utils/fieldUtils";
 import {
@@ -232,6 +233,8 @@ const LandUseListPage: React.FC = () => {
 
   return (
     <div className="landuse-list">
+      {landUseListQuery.isError && <div role="alert">{getLanduseErrorMessage(landUseListQuery.error)}</div>}
+      {createAgreementMutation.isError && <div role="alert">{getLanduseErrorMessage(createAgreementMutation.error)}</div>}
       <Breadcrumb
         aria-label="Breadcrumb"
         list={[

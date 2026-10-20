@@ -32,6 +32,15 @@ export class LanduseApiError extends Error {
   }
 }
 
+export const getLanduseErrorMessage = (error: unknown): string => {
+  if (error instanceof LanduseApiError && error.body) {
+    return Object.entries(error.body).map(([field, value]) =>
+      field === "detail" ? String(value) : `${field}: ${JSON.stringify(value)}`,
+    ).join("; ");
+  }
+  return error instanceof Error ? error.message : "Pyyntö epäonnistui.";
+};
+
 const getQueryString = (query?: LanduseApiQuery): string => {
   const searchParams = new URLSearchParams();
 
