@@ -211,6 +211,10 @@
   cursor: -webkit-grabbing;
   cursor: grabbing;
 }
+// Fix override polygon drawing to show crosshair instead grab cursor with more specific targeting
+.leaflet-container.geoman-draw-cursor {
+  cursor: crosshair;
+}
 
 /* marker & overlays interactivity */
 .leaflet-marker-icon,
@@ -224,7 +228,6 @@
 .leaflet-marker-icon.leaflet-interactive,
 .leaflet-image-layer.leaflet-interactive,
 .leaflet-pane > svg path.leaflet-interactive {
-  pointer-events: visiblePainted; /* IE 9-10 doesn't have auto */
   pointer-events: auto;
 }
 
