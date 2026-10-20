@@ -206,6 +206,7 @@ export type LandUseInvoiceType =
   (typeof LAND_USE_INVOICE_TYPES)[keyof typeof LAND_USE_INVOICE_TYPES];
 
 export interface LandUseInvoice {
+  id?: string;
   recipientPartyIndex: string | undefined;
   contractIndex: string | undefined;
   installmentNumber: string;

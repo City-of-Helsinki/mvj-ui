@@ -29,6 +29,8 @@ import {
   updateDecisions,
   updateParties,
   updateSummary,
+  updateContracts,
+  updatePaymentSchedule,
 } from "@/landUse/api/landUseApi";
 import { DEFAULT_KOROTUSKERROIN } from "@/landUse/constants";
 import { useCalculateActivePageSection } from "@/landUse/hooks/useCalculateActivePageSection";
@@ -724,6 +726,14 @@ const LandUseDetailPage: React.FC = () => {
           collateralsFormApi.getState().values as LandUseCollateralsFormValues,
         );
       }
+      if (formStates.contracts?.dirty) {
+        const data = await updateContracts(agreementId, contractsFormApi.getState().values);
+        queryClient.setQueryData(["land-use", agreementId, "contracts"], data);
+      }
+      if (formStates.paymentSchedule?.dirty) {
+        const data = await updatePaymentSchedule(agreementId, paymentScheduleFormApi.getState().values);
+        queryClient.setQueryData(["land-use", agreementId, "paymentSchedule"], data);
+      }
       setIsSaveClicked(false);
       setIsEditMode(false);
       resetFormStates();
@@ -912,6 +922,7 @@ const LandUseDetailPage: React.FC = () => {
         activeTabKey === "parties" ||
         activeTabKey === "compensations" ||
         activeTabKey === "decisions" ||
+        activeTabKey === "contracts" ||
         activeTabKey === "collaterals");
     switch (activeTabKey) {
       case "summary":
@@ -971,7 +982,7 @@ const LandUseDetailPage: React.FC = () => {
         return (
           <LandUseContracts
             form={contractsFormApi}
-            isEditMode={false}
+            isEditMode={isCurrentTabEditable}
             parties={activeParties}
           />
         );
@@ -1011,7 +1022,7 @@ const LandUseDetailPage: React.FC = () => {
         return (
           <LandUsePaymentSchedule
             form={paymentScheduleFormApi}
-            isEditMode={false}
+            isEditMode={isEditMode}
             canSubmitSchedules={isEditMode}
             parties={activeParties}
             contracts={

@@ -254,6 +254,7 @@ type PaymentScheduleResponse = {
   base_interest_rate: string | null;
   interest_margin: string | null;
   installments: {
+    id: number;
     installment_sequence_number: number;
     installment_count_total: number;
     due_date: string | null;
@@ -917,6 +918,68 @@ export const getContracts = async (
   };
 };
 
+export const updateContracts = async (
+  agreementId: string,
+  values: LandUseContractsFormValues,
+): Promise<LandUseContractsFormValues> => {
+  const metadata = await getUiMetadata();
+  const code = (key: string, value: string | undefined) =>
+    metadata[key]?.find((option) => option.label === value || option.value === value)?.value ?? value ?? "";
+  const details = (contract: NonNullable<LandUseContractsFormValues["contracts"]>[number] | NonNullable<LandUseContractsFormValues["contracts"]>[number]["muutokset"][number]) => ({
+    ...(contract.id ? { id: Number(contract.id) } : {}),
+    identifier: contract.sopimusnumero,
+    signing_date: toIsoDate(contract.allekirjoituspvm),
+    signing_deadline: toIsoDate(contract.allekirjoitettavaMennessa),
+    first_invitation_sent_date: toIsoDate(contract.ensimmainenKutsuLahetetty),
+    second_invitation_sent_date: toIsoDate(contract.toinenKutsuLahetetty),
+    third_invitation_sent_date: toIsoDate(contract.kolmasKutsuLahetetty),
+    executor: contract.toimeenpanija || null,
+    decision: contract.paatos ? Number(contract.paatos) : null,
+    note: contract.huomautus,
+  });
+  const payload = (values.contracts ?? []).map((contract) => {
+    const collaterals: Record<string, unknown[]> = {
+      mortgage_deed_collaterals: [], cash_deposit_collaterals: [],
+      personal_guarantee_collaterals: [], deposit_pledge_collaterals: [], other_collaterals: [],
+    };
+    const collections: Record<string, string> = {
+      MORTGAGE_DEED: "mortgage_deed_collaterals", CASH_DEPOSIT: "cash_deposit_collaterals",
+      PERSONAL_GUARANTEE: "personal_guarantee_collaterals", DEPOSIT_PLEDGE: "deposit_pledge_collaterals", OTHER: "other_collaterals",
+    };
+    for (const guarantee of contract.vakuudet) {
+      const type = code("collateral_types", guarantee.tyyppi);
+      if (!collections[type]) throw new Error("Unknown collateral type");
+      collaterals[collections[type]].push({
+        ...(guarantee.id ? { id: Number(guarantee.id) } : {}),
+        guarantee_type: type, parties: (guarantee.osapuolet ?? []).map(Number),
+        third_party_pledger_name: guarantee.vierasvelkapanttaus ? guarantee.vierasvelkapanttauksenAntajanNimi || null : null,
+        third_party_pledger_business_id: guarantee.vierasvelkapanttaus ? guarantee.vierasvelkapanttauksenAntajanYTunnus || null : null,
+        start_date: toIsoDate(guarantee.alkupvm ?? ""), end_date: toIsoDate(guarantee.loppupvm ?? ""),
+        amount: parseOptionalNumber(guarantee.maara), returned_date: toIsoDate(guarantee.palautettuPvm ?? ""),
+        marked_returned_by: guarantee.merkitsijaPalautus || null, additional_information: guarantee.lisatiedot ?? "",
+        ...(type !== "CASH_DEPOSIT" ? { document_category: code("collateral_document_categories", guarantee.vakuusasiakirjanLaji) } : {}),
+        ...(type === "MORTGAGE_DEED" ? {
+          target: code("mortgage_deed_collateral_targets", guarantee.kiinteistoVaiLaitos),
+          facility_identifier: guarantee.laitostunnus || null,
+          property_identifiers: (guarantee.kiinteistotunnukset ?? []).map((identifier) => ({ identifier })),
+          mortgage_deed_number: guarantee.panttikirjanNumero ?? "", mortgage_deed_date: toIsoDate(guarantee.panttikirjanPaivays ?? ""),
+          subsequent_pledgee_name: guarantee.jalkipanttaus ? guarantee.jalkipantinSaajanNimi || null : null,
+          subsequent_pledgee_business_id: guarantee.jalkipanttaus ? guarantee.jalkipantinSaajanYTunnus || null : null,
+        } : {
+          guarantor_name: guarantee.antajanNimi ?? "", guarantor_business_id: guarantee.antajanYTunnus ?? "",
+          guarantor_national_identification_number: guarantee.antajanHenkilotunnus ?? "",
+          ...(type === "CASH_DEPOSIT" || type === "DEPOSIT_PLEDGE" ? { account_number: guarantee.tilinumero ?? "" } : {}),
+          ...(type === "CASH_DEPOSIT" ? { paid_at_date: toIsoDate(guarantee.maksettuPvm ?? "") } : {}),
+          ...(type === "PERSONAL_GUARANTEE" ? { guarantee_identifier: guarantee.takausnumero ?? "" } : {}),
+        }),
+      });
+    }
+    return { ...details(contract), title: contract.title, contract_type: code("contract_types", contract.sopimuksenTyyppi), changes: contract.muutokset.map(details), ...collaterals };
+  });
+  await callApiPut(`agreements/${agreementId}/contracts/`, payload);
+  return getContracts(agreementId);
+};
+
 export const getPaymentSchedule = async (
   agreementId: string,
 ): Promise<LandUsePaymentScheduleFormValues> => {
@@ -939,6 +1002,8 @@ export const getPaymentSchedule = async (
   return {
     paymentSchedules: schedules.map((schedule) => ({
       id: String(schedule.id),
+      recipientPartyId: String(schedule.recipient_party),
+      contractId: String(schedule.contract),
       recipientPartyIndex: partyIndexes.has(schedule.recipient_party)
         ? String(partyIndexes.get(schedule.recipient_party))
         : undefined,
@@ -956,6 +1021,7 @@ export const getPaymentSchedule = async (
       korkoMarginaali: toText(schedule.interest_margin),
       daysInYear: "365",
       installments: schedule.installments.map((installment) => ({
+        id: String(installment.id),
         recipientPartyIndex: partyIndexes.has(schedule.recipient_party)
           ? String(partyIndexes.get(schedule.recipient_party))
           : undefined,
@@ -982,6 +1048,38 @@ export const getPaymentSchedule = async (
       })),
     })),
   };
+};
+
+export const updatePaymentSchedule = async (
+  agreementId: string,
+  values: LandUsePaymentScheduleFormValues,
+): Promise<LandUsePaymentScheduleFormValues> => {
+  const [parties, contracts] = await Promise.all([
+    callApiGetAllPages<PartyResponse>(`agreements/${agreementId}/parties/`),
+    callApiGetAllPages<ContractResponse>(`agreements/${agreementId}/contracts/`),
+  ]);
+  const editable = (values.paymentSchedules ?? []).filter((schedule) =>
+    !schedule.status || schedule.status === LAND_USE_PAYMENT_SCHEDULE_STATUSES.DRAFT || schedule.status === LAND_USE_PAYMENT_SCHEDULE_STATUSES.REJECTED,
+  );
+  await callApiPut(`agreements/${agreementId}/payment-schedules/`, editable.map((schedule) => ({
+    ...(Number.isInteger(Number(schedule.id)) ? { id: Number(schedule.id) } : {}),
+    recipient_party: Number(schedule.recipientPartyId ?? parties[Number(schedule.recipientPartyIndex)]?.id),
+    contract: Number(schedule.contractId ?? contracts[Number(schedule.contractIndex)]?.id),
+    signing_date: toIsoDate(schedule.signedDate),
+    increase_percentage: parseOptionalNumber(schedule.korotusProsentti),
+    base_interest_rate: parseOptionalNumber(schedule.korkoPeruskorko),
+    interest_margin: parseOptionalNumber(schedule.korkoMarginaali),
+    installments: schedule.installments.map((installment) => ({
+      ...(installment.id ? { id: Number(installment.id) } : {}),
+      installment_sequence_number: Number(installment.installmentNumber),
+      installment_count_total: Number(installment.installmentTotal),
+      due_date: toIsoDate(installment.dueDate),
+      interest_calculation_period_start_date: toIsoDate(installment.laskentajaksonAlkupvm),
+      interest_calculation_period_end_date: toIsoDate(installment.laskentajaksonLoppupvm),
+      items: (installment.invoiceItems ?? []).map((item) => ({ item_type: item.itemType, description: item.description, amount: item.amountExcludingVat })),
+    })),
+  })));
+  return getPaymentSchedule(agreementId);
 };
 
 export const getBilling = async (

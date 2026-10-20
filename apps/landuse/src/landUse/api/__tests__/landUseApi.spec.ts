@@ -3,8 +3,9 @@ import { getSummary, updateSummary, getCompensationLookups, getUiMetadata, getLa
 import { callApiGet, callApiPatch, callApiGetAllPages } from "../fetchClient";
 import { landUseNegotiationPhaseOptions, landUseSuojeltuOptions } from "../../options";
 import { calculateInvoicingPeriodDays } from "../../utils/date";
-import { createLandUseAgreement } from "../landUseApi";
+import { createLandUseAgreement, updateContracts, updatePaymentSchedule } from "../landUseApi";
 import { callApiPost } from "../fetchClient";
+import { callApiPut } from "../fetchClient";
 
 vi.mock("../fetchClient", () => ({
   callApiGet: vi.fn(),
@@ -146,4 +147,20 @@ it("creates an agreement using server-side identifier allocation", async () => {
   vi.mocked(callApiPost).mockResolvedValue({ id: 12 });
   expect(await createLandUseAgreement("1", "23")).toBe("12");
   expect(callApiPost).toHaveBeenLastCalledWith("agreements/", { municipality: "1", district: 23 });
+});
+
+it("saves contract types using metadata codes and retains record IDs", async () => {
+  vi.mocked(callApiGet).mockResolvedValue({ contract_types: [{ value: "LAND_USE_AGREEMENT", label: "Maankäyttösopimus" }] });
+  vi.mocked(callApiGetAllPages).mockResolvedValue([]);
+  await updateContracts("1", { contracts: [{ id: "12", title: "", sopimuksenTyyppi: "Maankäyttösopimus", sopimusnumero: "C1", allekirjoituspvm: "", huomautus: "", allekirjoitettavaMennessa: "", ensimmainenKutsuLahetetty: "", toinenKutsuLahetetty: "", kolmasKutsuLahetetty: "", muutokset: [], vakuudet: [], toimeenpanija: "" }] });
+  expect(callApiPut).toHaveBeenCalledWith("agreements/1/contracts/", [expect.objectContaining({ id: 12, identifier: "C1", contract_type: "LAND_USE_AGREEMENT" })]);
+});
+
+it("saves draft schedules using party and contract IDs", async () => {
+  vi.mocked(callApiGetAllPages).mockResolvedValue([]);
+  await updatePaymentSchedule("1", { paymentSchedules: [{
+    id: "schedule-new", recipientPartyId: "12", contractId: "23", recipientPartyIndex: undefined, contractIndex: undefined,
+    status: "Luonnos", rejectedReason: null, signedDate: "", korotusProsentti: "0", korkoPeruskorko: "0", korkoMarginaali: "0", daysInYear: "365", installments: [],
+  }] });
+  expect(callApiPut).toHaveBeenLastCalledWith("agreements/1/payment-schedules/", [expect.objectContaining({ recipient_party: 12, contract: 23, installments: [] })]);
 });

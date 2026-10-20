@@ -73,6 +73,8 @@ export interface LandUsePaymentScheduleFormValues {
 }
 
 export interface LandUsePaymentScheduleEntry {
+  recipientPartyId?: string;
+  contractId?: string;
   id: string;
   recipientPartyIndex: string | undefined;
   contractIndex: string | undefined;
@@ -1539,6 +1541,8 @@ export const LandUsePaymentSchedule: React.FC<LandUsePaymentScheduleProps> = ({
       id: crypto.randomUUID(),
       recipientPartyIndex: values.recipientPartyIndex,
       contractIndex: values.contractIndex,
+      recipientPartyId: parties[Number(values.recipientPartyIndex)]?.id,
+      contractId: selectedContract?.id,
       status: LAND_USE_PAYMENT_SCHEDULE_STATUSES.DRAFT,
       rejectedReason: null,
       signedDate,
