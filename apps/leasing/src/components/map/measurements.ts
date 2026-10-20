@@ -47,6 +47,8 @@ const createMeasurementMarker = (
     }),
     interactive: false,
     keyboard: false,
+    pmIgnore: true,
+    snapIgnore: true,
   });
 
 const getMap = (layer: MeasurableLayer): L.Map | undefined =>
