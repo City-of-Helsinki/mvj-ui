@@ -268,6 +268,8 @@ type PaymentScheduleResponse = {
 };
 
 type InvoiceResponse = {
+  recipient_snapshot: PartyResponse & { ovt_code: string; sap_customer_number: string; customer_reference: string };
+  payments: { id: number; paid_amount: string; paid_date: string; filing_code: string }[];
   id: number;
   recipient_party: number;
   source_payment_schedule_installment: number | null;
@@ -1011,6 +1013,17 @@ export const getBilling = async (
 
   return {
     invoices: invoices.map((invoice) => ({
+      id: String(invoice.id),
+      sourceInstallmentId: invoice.source_payment_schedule_installment == null ? undefined : String(invoice.source_payment_schedule_installment),
+      recipientSnapshot: invoice.recipient_snapshot ? {
+        party: { details: mapPartyDetails(invoice.recipient_snapshot) },
+        billingDetails: {
+          ovtCode: invoice.recipient_snapshot.ovt_code,
+          sapCustomerNumber: invoice.recipient_snapshot.sap_customer_number,
+          reference: invoice.recipient_snapshot.customer_reference,
+        },
+      } : undefined,
+      payments: invoice.payments ?? [],
       recipientPartyIndex: partyIndexes.has(invoice.recipient_party)
         ? String(partyIndexes.get(invoice.recipient_party))
         : undefined,
@@ -1018,7 +1031,7 @@ export const getBilling = async (
       installmentTotal: String(invoice.installment_count_total),
       dueDate: formatLandUseDate(invoice.due_date),
       invoiceNumber: invoice.invoice_identifier,
-      type: getLabelForCode(LAND_USE_INVOICE_TYPES, invoice.invoice_type),
+      type: invoice.invoice_type === "LAND_USE_COMPENSATION" ? LAND_USE_INVOICE_TYPES.MAANKAYTTOKORVAUS : invoice.invoice_type === "PENALTY" ? LAND_USE_INVOICE_TYPES.SAKKO : undefined,
       status: getLabelForCode(LAND_USE_INVOICE_STATUSES, invoice.status),
       sentAt: invoice.sent_at ?? undefined,
       billedAmount: toText(invoice.billed_amount),

@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { getSummary, updateSummary, getCompensationLookups, getUiMetadata, getLandUseList, getContracts } from "../landUseApi";
+import { getSummary, updateSummary, getCompensationLookups, getUiMetadata, getLandUseList, getContracts, getBilling } from "../landUseApi";
 import { callApiGet, callApiPatch, callApiGetAllPages } from "../fetchClient";
 import { landUseNegotiationPhaseOptions, landUseSuojeltuOptions } from "../../options";
 import { calculateInvoicingPeriodDays } from "../../utils/date";
@@ -122,5 +122,20 @@ it("loads identifiable contracts and renders backend collateral types", async ()
   expect((await getContracts("1")).contracts?.[0]).toMatchObject({
     id: "12", sopimuksenTyyppi: "Maankäyttösopimus",
     vakuudet: [{ id: "23", tyyppi: "Panttikirja", osapuolet: ["34"], vakuusasiakirjanLaji: "Sähköinen", kiinteistoVaiLaitos: "Kiinteistö" }],
+  });
+});
+
+it("loads historical invoice recipients and ledger entries with invoice identity", async () => {
+  vi.mocked(callApiGetAllPages).mockResolvedValueOnce([{
+    id: 12, recipient_party: 34, source_payment_schedule_installment: 23,
+    installment_sequence_number: 1, installment_count_total: 1, invoice_identifier: "INV-12",
+    invoice_type: "LAND_USE_COMPENSATION", status: "OPEN", items: [], billed_amount: "100.00", remaining_amount: "75.00",
+    recipient_snapshot: { party_type: "COMPANY", name: "Historical Oy", street_address: "Old 1", city: "Helsinki", postal_code: "00100", business_id: "123", ovt_code: "OVT", sap_customer_number: "SAP", customer_reference: "REF" },
+    payments: [{ id: 45, paid_amount: "25.00", paid_date: "2026-10-20", filing_code: "FILE" }],
+  }]).mockResolvedValueOnce([]);
+  expect((await getBilling("1")).invoices?.[0]).toMatchObject({
+    id: "12", sourceInstallmentId: "23", type: "Maankäyttökorvaus",
+    recipientSnapshot: { party: { details: { name: "Historical Oy" } } },
+    payments: [{ id: 45, paid_amount: "25.00", paid_date: "2026-10-20", filing_code: "FILE" }],
   });
 });

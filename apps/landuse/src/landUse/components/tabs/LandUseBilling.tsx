@@ -96,6 +96,10 @@ export interface LandUseBillingInvoice extends Pick<
   | "remainingAmount"
   | "invoiceItems"
 > {
+  id?: string;
+  sourceInstallmentId?: string;
+  recipientSnapshot?: LandUseBillingParty;
+  payments?: { id: number; paid_amount: string; paid_date: string; filing_code: string }[];
   sourcePaymentScheduleId?: string;
   sourceInstallmentIndex?: number;
 }
@@ -145,7 +149,7 @@ function isInvoiceEditableBasedOnStatus(
 export const isInvoiceContentEditableInBilling = (
   invoice: LandUseBillingInvoice,
 ): boolean =>
-  !invoice.sourcePaymentScheduleId && isInvoiceEditableBasedOnStatus(invoice);
+  !invoice.sourcePaymentScheduleId && !invoice.sourceInstallmentId && isInvoiceEditableBasedOnStatus(invoice);
 
 const getPartyName = (value: string | undefined): string => value?.trim() ?? "";
 
@@ -306,8 +310,8 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
             ? `${invoice.installmentNumber}/${invoice.installmentTotal}`
             : "-";
         const selectedPartyData = getSelectedPartyInvoiceData(
-          invoice.recipientPartyIndex,
-          parties,
+          invoice.recipientSnapshot ? "0" : invoice.recipientPartyIndex,
+          invoice.recipientSnapshot ? [invoice.recipientSnapshot] : parties,
         );
         const canEditInvoiceContent =
           isEditMode && isInvoiceContentEditableInBilling(invoice);
@@ -335,7 +339,7 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
                 </button>
               </td>
               <td>
-                {getOptionsDisplayValue(
+                {invoice.recipientSnapshot?.party.details.name ?? getOptionsDisplayValue(
                   invoice.recipientPartyIndex,
                   partyOptions,
                 )}
@@ -416,7 +420,7 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
                               <TextInput
                                 id={`landuse-billing-recipient-${index}`}
                                 label="Laskunsaaja"
-                                value={getOptionsDisplayValue(
+                                value={invoice.recipientSnapshot?.party.details.name ?? getOptionsDisplayValue(
                                   recipientInput.value,
                                   partyOptions,
                                 )}
@@ -706,6 +710,16 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
                     </Fieldset>
                     <div className="landuse-grid">
                       <div className="landuse-grid__column-12">
+                        {!!invoice.payments?.length && (
+                          <Fieldset heading="Maksusuoritukset">
+                            <table>
+                              <thead><tr><th>Maksupäivä</th><th>Maksettu</th><th>Arkistointitunnus</th></tr></thead>
+                              <tbody>{invoice.payments.map((payment) => (
+                                <tr key={payment.id}><td>{payment.paid_date}</td><td>{formatLandUseEuroDisplayValue(payment.paid_amount)}</td><td>{payment.filing_code}</td></tr>
+                              ))}</tbody>
+                            </table>
+                          </Fieldset>
+                        )}
                         <Fieldset heading="Laskurivit">
                           <FieldArray<LandUseInvoiceItem>
                             name={`${fieldName}.invoiceItems`}
