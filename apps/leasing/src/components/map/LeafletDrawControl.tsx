@@ -63,14 +63,14 @@ const LeafletDrawControl = ({
 
     map.on("pm:create", handleCreated);
     map.on("pm:remove", handleDeleted);
-    map.on("pm:edit", handleEdited);
-    map.on("pm:change", handleNonCommittedChange);
+    featureGroup.on("pm:edit", handleEdited);
+    featureGroup.on("pm:change", handleNonCommittedChange);
 
     return () => {
       map.off("pm:create", handleCreated);
       map.off("pm:remove", handleDeleted);
-      map.off("pm:edit", handleEdited);
-      map.off("pm:change", handleNonCommittedChange);
+      featureGroup.off("pm:edit", handleEdited);
+      featureGroup.off("pm:change", handleNonCommittedChange);
       map.pm.removeControls();
     };
   }, [
