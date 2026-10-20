@@ -596,6 +596,12 @@ export const getDistricts = async (): Promise<District[]> => {
   return callApiGetAllPages<District>("districts/");
 };
 
+export type UiChoice = { label: string; value: string };
+export type LandUseUiMetadata = Record<string, UiChoice[]>;
+
+export const getUiMetadata = (): Promise<LandUseUiMetadata> =>
+  callApiGet<LandUseUiMetadata>("ui-metadata/");
+
 export type NamedLookup = { id: number; name: string };
 export type LandPolicyProgram = NamedLookup & {
   default_discount_percentage: string | null;

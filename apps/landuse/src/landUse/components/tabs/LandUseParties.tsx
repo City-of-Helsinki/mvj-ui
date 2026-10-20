@@ -14,9 +14,8 @@ import { Field, Form } from "react-final-form";
 import { FieldArray } from "react-final-form-arrays";
 import { createEmptyPartyEntry } from "@/landUse/api/landUseFormValues";
 import { useTocEntries } from "@/landUse/hooks/useTableOfContents";
+import { useUiMetadata } from "@/landUse/hooks/useUiMetadata";
 import {
-  countryOptions,
-  languageOptions,
   partyRoleOptions,
   partyTypeOptions,
 } from "@/landUse/options";
@@ -103,7 +102,11 @@ const CompanyPartyForm: React.FC<PartyFormProps> = ({
   fieldPrefix,
   idPrefix,
   isEditMode,
-}) => (
+}) => {
+  const { data } = useUiMetadata();
+  const languageOptions = data?.languages ?? [];
+  const countryOptions = data?.countries ?? [];
+  return (
   <div className="landuse-grid landuse-grid__bottom-margin">
     <div className="landuse-grid__column-6">
       <Field name={`${fieldPrefix}.name`}>
@@ -305,12 +308,17 @@ const CompanyPartyForm: React.FC<PartyFormProps> = ({
     </div>
   </div>
 );
+};
 
 const PersonPartyForm: React.FC<PartyFormProps> = ({
   fieldPrefix,
   idPrefix,
   isEditMode,
-}) => (
+}) => {
+  const { data } = useUiMetadata();
+  const languageOptions = data?.languages ?? [];
+  const countryOptions = data?.countries ?? [];
+  return (
   <div className="landuse-grid landuse-grid__bottom-margin">
     <div className="landuse-grid__column-6">
       <Field name={`${fieldPrefix}.name`}>
@@ -512,6 +520,7 @@ const PersonPartyForm: React.FC<PartyFormProps> = ({
     </div>
   </div>
 );
+};
 
 const getPartyHeadingId = (index: number): string => `party-heading-${index}`;
 

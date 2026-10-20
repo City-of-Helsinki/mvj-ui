@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { getSummary, updateSummary, getCompensationLookups } from "../landUseApi";
+import { getSummary, updateSummary, getCompensationLookups, getUiMetadata } from "../landUseApi";
 import { callApiGet, callApiPatch, callApiGetAllPages } from "../fetchClient";
 import { landUseNegotiationPhaseOptions } from "../../options";
 
@@ -59,4 +59,11 @@ it("loads authoritative compensation lookup records", async () => {
     tenureTypes: [{ id: 23, name: "Ownership" }],
     landPolicyPrograms: [{ id: 34, name: "MAPO", default_discount_percentage: "15.00" }],
   });
+});
+
+it("loads authoritative UI choices with country and language codes", async () => {
+  const metadata = { countries: [{ label: "Finland", value: "FI" }], languages: [{ label: "Finnish", value: "fi" }] };
+  vi.mocked(callApiGet).mockResolvedValue(metadata);
+  expect(await getUiMetadata()).toEqual(metadata);
+  expect(callApiGet).toHaveBeenCalledWith("ui-metadata/");
 });
