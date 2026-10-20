@@ -105,6 +105,7 @@ export interface LandUseBillingInvoice extends Pick<
 }
 
 interface LandUseBillingProps {
+  onSendInvoice?: (invoiceId: string) => Promise<void>;
   form: FormApi<LandUseBillingFormValues>;
   isEditMode: boolean;
   canReviewSchedules: boolean;
@@ -267,6 +268,7 @@ const getInvoiceStatusAction = (
 };
 
 interface InvoiceTableRowProps {
+  onSendInvoice?: (invoiceId: string) => Promise<void>;
   fieldName: string;
   index: number;
   isEditMode: boolean;
@@ -289,9 +291,8 @@ const getInvoiceDeleteLabel = (invoiceNumber: string | undefined): string => {
   return "tämä lasku";
 };
 
-const getSentAtTimestamp = (): string => new Date().toISOString();
-
 const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
+  onSendInvoice,
   fieldName,
   index,
   isEditMode,
@@ -593,49 +594,13 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
                                     value={readOnlyTextValue(statusInput.value)}
                                     readOnly
                                   />
-                                  {isEditMode && statusAction && (
+                                  {onSendInvoice && invoice.id && !invoice.sentAt && statusAction && (
                                     <div>
                                       <Button
                                         type="button"
                                         variant={ButtonVariant.Primary}
                                         size={ButtonSize.Small}
-                                        onClick={() => {
-                                          const nextSentAtValue =
-                                            statusAction.nextStatus ===
-                                            LAND_USE_INVOICE_STATUSES.OPEN
-                                              ? getSentAtTimestamp()
-                                              : (invoice.sentAt ?? "");
-                                          if (
-                                            statusAction.nextStatus ===
-                                            LAND_USE_INVOICE_STATUSES.OPEN
-                                          ) {
-                                            const invoiceAmount =
-                                              invoice.invoiceItems?.reduce(
-                                                (sum, item) => {
-                                                  const amount = Number(
-                                                    item.amountExcludingVat,
-                                                  );
-                                                  return sum + amount;
-                                                },
-                                                0,
-                                              );
-                                            input.onChange({
-                                              ...invoice,
-                                              status: statusAction.nextStatus,
-                                              sentAt: nextSentAtValue,
-                                              invoiceNumber:
-                                                Date.now().toString(),
-                                              billedAmount: invoiceAmount,
-                                              remainingAmount: invoiceAmount,
-                                            });
-                                          } else {
-                                            input.onChange({
-                                              ...invoice,
-                                              status: statusAction.nextStatus,
-                                              sentAt: nextSentAtValue,
-                                            });
-                                          }
-                                        }}
+                                        onClick={() => { void onSendInvoice(invoice.id!); }}
                                       >
                                         {statusAction.buttonLabel}
                                       </Button>
@@ -1334,6 +1299,7 @@ const InvoiceReviewTable: React.FC<InvoiceReviewTableProps> = ({
 };
 
 export const LandUseBilling: React.FC<LandUseBillingProps> = ({
+  onSendInvoice,
   form,
   isEditMode,
   canReviewSchedules,
@@ -1440,6 +1406,7 @@ export const LandUseBilling: React.FC<LandUseBillingProps> = ({
                             {fields.length > 0 ? (
                               fields.map((fieldName, index) => (
                                 <InvoiceTableRow
+                                  onSendInvoice={onSendInvoice}
                                   key={fieldName}
                                   fieldName={fieldName}
                                   index={index}

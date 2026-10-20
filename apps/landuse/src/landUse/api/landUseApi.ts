@@ -1136,6 +1136,10 @@ export const submitPaymentSchedule = async (
   );
 };
 
+export const sendInvoiceToSap = async (invoiceId: string): Promise<void> => {
+  await callApiPost(`invoices/${invoiceId}/send-to-sap/`, {});
+};
+
 export const approvePaymentSchedule = async (
   scheduleId: string,
 ): Promise<void> => {

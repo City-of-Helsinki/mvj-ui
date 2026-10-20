@@ -3,7 +3,7 @@ import { getSummary, updateSummary, getCompensationLookups, getUiMetadata, getLa
 import { callApiGet, callApiPatch, callApiGetAllPages } from "../fetchClient";
 import { landUseNegotiationPhaseOptions, landUseSuojeltuOptions } from "../../options";
 import { calculateInvoicingPeriodDays } from "../../utils/date";
-import { createLandUseAgreement, updateContracts, updatePaymentSchedule } from "../landUseApi";
+import { createLandUseAgreement, updateContracts, updatePaymentSchedule, sendInvoiceToSap } from "../landUseApi";
 import { callApiPost } from "../fetchClient";
 import { callApiPut } from "../fetchClient";
 
@@ -163,4 +163,9 @@ it("saves draft schedules using party and contract IDs", async () => {
     status: "Luonnos", rejectedReason: null, signedDate: "", korotusProsentti: "0", korkoPeruskorko: "0", korkoMarginaali: "0", daysInYear: "365", installments: [],
   }] });
   expect(callApiPut).toHaveBeenLastCalledWith("agreements/1/payment-schedules/", [expect.objectContaining({ recipient_party: 12, contract: 23, installments: [] })]);
+});
+
+it("sends a persisted invoice using the backend SAP operation", async () => {
+  await sendInvoiceToSap("12");
+  expect(callApiPost).toHaveBeenLastCalledWith("invoices/12/send-to-sap/", {});
 });

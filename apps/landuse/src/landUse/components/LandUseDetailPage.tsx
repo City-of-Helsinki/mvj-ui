@@ -31,6 +31,7 @@ import {
   updateSummary,
   updateContracts,
   updatePaymentSchedule,
+  sendInvoiceToSap,
 } from "@/landUse/api/landUseApi";
 import { DEFAULT_KOROTUSKERROIN } from "@/landUse/constants";
 import { useCalculateActivePageSection } from "@/landUse/hooks/useCalculateActivePageSection";
@@ -1050,6 +1051,10 @@ const LandUseDetailPage: React.FC = () => {
       case "billing":
         return (
           <LandUseBilling
+            onSendInvoice={isEditMode ? async (invoiceId) => {
+              await sendInvoiceToSap(invoiceId);
+              await queryClient.invalidateQueries({ queryKey: ["land-use", agreementId, "billing"] });
+            } : undefined}
             form={billingFormApi}
             isEditMode={false}
             canReviewSchedules={isEditMode}
