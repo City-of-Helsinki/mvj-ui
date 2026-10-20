@@ -33,6 +33,7 @@ import {
   LAND_USE_INVOICE_TYPES,
   LAND_USE_PAYMENT_SCHEDULE_STATUSES,
   landUseInvoiceItemTypeSelectOptions,
+  getInvoiceItemLabel,
 } from "@/landUse/options";
 import {
   normalizeSelectValue,
@@ -275,7 +276,7 @@ const getSelectedPartyInvoiceData = (
  */
 type InterestKind = "korotus" | "korko";
 
-const getInterestKind = (itemType: string): InterestKind | null => {
+export const getInterestKind = (itemType: string): InterestKind | null => {
   if (itemType === LAND_USE_INVOICE_ITEM_TYPES.KOROTUS) return "korotus";
   if (itemType === LAND_USE_INVOICE_ITEM_TYPES.KORKO) return "korko";
   return null;
@@ -433,7 +434,7 @@ const InvoiceItemRow: React.FC<InvoiceItemRowProps> = ({
           <TextInput
             id={`landuse-payment-schedule-invoice-row-item-type-${scheduleIndex}-${installmentIndex}-${itemIndex}`}
             label="Maksun tyyppi"
-            value={readOnlyTextValue(itemTypeInput.value)}
+            value={readOnlyTextValue(getInvoiceItemLabel(itemTypeInput.value))}
             invalid={Boolean(itemTypeMeta.error)}
             errorText={itemTypeMeta.error}
             required

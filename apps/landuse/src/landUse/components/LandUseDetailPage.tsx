@@ -204,7 +204,7 @@ const getActiveTabFromSearch = (search: string): number => {
   return 0;
 };
 
-const calculatePaidMaankayttokorvaus = (
+export const calculatePaidMaankayttokorvaus = (
   invoices: Pick<LandUseInvoice, "status" | "invoiceItems">[],
 ) => {
   const isMaankayttokorvausItem = (item: LandUseInvoiceItem) =>

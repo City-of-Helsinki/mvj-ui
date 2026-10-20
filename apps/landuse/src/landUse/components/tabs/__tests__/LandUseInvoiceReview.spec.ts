@@ -17,7 +17,21 @@ import {
   getMissingPaymentScheduleFieldLabels,
   type LandUsePaymentScheduleEntry,
   validateRequiredInstallmentField,
+  getInterestKind,
 } from "@/landUse/components/tabs/LandUsePaymentSchedule";
+import { calculatePaidMaankayttokorvaus } from "@/landUse/components/LandUseDetailPage";
+
+it("calculates paid compensation and interest kinds using API item codes", () => {
+  expect(calculatePaidMaankayttokorvaus([{
+    status: LAND_USE_INVOICE_STATUSES.PAID,
+    invoiceItems: [
+      { itemType: "LAND_USE_COMPENSATION", description: "", amountExcludingVat: "125.00" },
+      { itemType: "INTEREST", description: "", amountExcludingVat: "5.00" },
+    ],
+  }])).toBe(125);
+  expect(getInterestKind("INTEREST")).toBe("korko");
+  expect(getInterestKind("INCREASE")).toBe("korotus");
+});
 
 const createInvoice = (installmentNumber: string): LandUseInvoice => ({
   recipientPartyIndex: "0",

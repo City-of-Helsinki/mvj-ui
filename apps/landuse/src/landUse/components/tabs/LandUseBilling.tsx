@@ -23,6 +23,7 @@ import { FieldArray } from "react-final-form-arrays";
 import {
   LAND_USE_INVOICE_STATUSES,
   landUseInvoiceItemTypeSelectOptions,
+  getInvoiceItemLabel,
   landUseInvoiceTypeSelectOptions,
   type LandUseInvoice,
   type LandUseInvoiceItem,
@@ -783,7 +784,7 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
                                                     id={`landuse-billing-invoice-row-item-type-${index}-${invoiceItemIndex}`}
                                                     label="Laskurivin tyyppi"
                                                     value={readOnlyTextValue(
-                                                      itemTypeInput.value,
+                                                      getInvoiceItemLabel(itemTypeInput.value),
                                                     )}
                                                     readOnly
                                                   />
@@ -1187,7 +1188,7 @@ const InvoiceReviewTable: React.FC<InvoiceReviewTableProps> = ({
                                                   id={`landuse-billing-review-item-type-${scheduleIndex}-${index}-${invoiceItemIndex}`}
                                                   label="Laskurivin tyyppi"
                                                   value={readOnlyTextValue(
-                                                    invoiceItem.itemType,
+                                                    getInvoiceItemLabel(invoiceItem.itemType),
                                                   )}
                                                   readOnly
                                                 />
