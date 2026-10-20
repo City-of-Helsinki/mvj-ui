@@ -26,9 +26,7 @@ import {
 } from "@/landUse/api/landUseApi";
 import { Field, Form } from "react-final-form";
 import { useTocEntries } from "@/landUse/hooks/useTableOfContents";
-import {
-  landUseSuojeltuOptions,
-} from "@/landUse/options";
+import { useUiMetadata } from "@/landUse/hooks/useUiMetadata";
 import {
   normalizeMultiSelectValue,
   normalizeSelectValue,
@@ -218,6 +216,8 @@ const SiteRow: React.FC<SiteRowProps> = ({
   isOpen,
   colCount,
 }) => {
+  const metadata = useUiMetadata();
+  const landUseSuojeltuOptions = [{ label: "-", value: "" }, ...(metadata.data?.preservation_designations ?? [])];
   const yksikkohinta = parseNumber(rowValues?.yksikkohinta);
   const pintaAlaM2 = parseNumber(site.pintaAlaM2);
   const kerrosala = parseNumber(site.kem2);

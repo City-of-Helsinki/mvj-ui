@@ -1,7 +1,6 @@
 /**
- * Options for all Select elements.
- * This data will eventually be fetched from the backend, but for now it is hardcoded here
- * during UI mocking phase.
+ * Shared form types, calculation constants and legacy mock fixtures.
+ * Live form choices are provided by API metadata and lookup endpoints.
  */
 
 export const MUNICIPALITY_OPTIONS = [{ label: "Helsinki", value: "1" }];

@@ -14,6 +14,7 @@ import {
   readOnlyTextValue,
 } from "@/landUse/utils/fieldUtils";
 import { NumericDecimalInput } from "@/landUse/components/NumericDecimalInput";
+import { useUiMetadata, metadataOptions } from "@/landUse/hooks/useUiMetadata";
 
 interface CommonProps {
   namePrefix: string;
@@ -156,6 +157,8 @@ export const CollateralSelectField: React.FC<SelectProps> = ({
   isEditMode,
   options,
 }) => {
+  const metadata = useUiMetadata();
+  if (fieldName === "vakuusasiakirjanLaji") options = metadataOptions(metadata.data, "collateral_document_categories", true);
   const id = buildId(namePrefix, idSuffix);
   return (
     <Field name={`${namePrefix}.${fieldName}`}>
@@ -199,6 +202,8 @@ export const CollateralRadioField: React.FC<RadioProps> = ({
   isEditMode,
   options,
 }) => {
+  const metadata = useUiMetadata();
+  if (fieldName === "kiinteistoVaiLaitos") options = metadataOptions(metadata.data, "mortgage_deed_collateral_targets", true);
   const id = buildId(namePrefix, idSuffix);
   return (
     <Field name={`${namePrefix}.${fieldName}`}>

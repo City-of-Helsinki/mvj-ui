@@ -13,11 +13,7 @@ import {
 import React, { useEffect, useMemo, useState } from "react";
 import { Field, Form } from "react-final-form";
 import { useTocEntries } from "@/landUse/hooks/useTableOfContents";
-import {
-  landUseConditionTypeOptions,
-  landUseDecisionMakerOptions,
-  landUseDecisionTypeOptions,
-} from "@/landUse/options";
+import { useUiMetadata, metadataOptions } from "@/landUse/hooks/useUiMetadata";
 import {
   getFieldTextValue,
   normalizeSelectValue,
@@ -106,6 +102,10 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
   form,
   isEditMode,
 }) => {
+  const { data } = useUiMetadata();
+  const landUseConditionTypeOptions = metadataOptions(data, "decision_condition_types");
+  const landUseDecisionMakerOptions = metadataOptions(data, "decision_makers");
+  const landUseDecisionTypeOptions = metadataOptions(data, "decision_types");
   const [decisions, setDecisions] = useState<DecisionItem[]>(
     () => form.getState().values.decisions ?? [],
   );
@@ -209,7 +209,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                         <TextInput
                                           id={`decision-paattaja-${decisionIndex}`}
                                           label="Päättäjä"
-                                          value={readOnlyTextValue(input.value)}
+                                          value={readOnlyTextValue(landUseDecisionMakerOptions.find((option) => option.value === input.value)?.label ?? input.value)}
                                           readOnly
                                         />
                                       )
@@ -289,7 +289,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                         <TextInput
                                           id={`decision-paatoksen-tyyppi-${decisionIndex}`}
                                           label="Päätöksen tyyppi"
-                                          value={readOnlyTextValue(input.value)}
+                                          value={readOnlyTextValue(landUseDecisionTypeOptions.find((option) => option.value === input.value)?.label ?? input.value)}
                                           readOnly
                                         />
                                       )
@@ -377,7 +377,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                               id={`decision-ehto-tyyppi-${decisionIndex}-${conditionIndex}`}
                                               label="Ehtotyyppi"
                                               value={readOnlyTextValue(
-                                                input.value,
+                                                landUseConditionTypeOptions.find((option) => option.value === input.value)?.label ?? input.value,
                                               )}
                                               readOnly
                                             />

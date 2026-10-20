@@ -16,10 +16,6 @@ import { createEmptyPartyEntry } from "@/landUse/api/landUseFormValues";
 import { useTocEntries } from "@/landUse/hooks/useTableOfContents";
 import { useUiMetadata } from "@/landUse/hooks/useUiMetadata";
 import {
-  partyRoleOptions,
-  partyTypeOptions,
-} from "@/landUse/options";
-import {
   getFieldTextValue,
   getOptionsDisplayValue,
   normalizeSelectValue,
@@ -531,6 +527,9 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
   form,
   isEditMode,
 }) => {
+  const metadata = useUiMetadata();
+  const partyRoleOptions = (metadata.data?.agreement_party_roles ?? []).map((option) => ({ ...option, value: option.value === "LAND_OWNER" ? "maanomistaja" : "toteuttaja" }));
+  const partyTypeOptions = (metadata.data?.party_types ?? []).map((option) => ({ ...option, value: option.value === "COMPANY" ? "yritys" : "yksityishenkilo" }));
   const newlyAddedIndexRef = useRef<number | null>(null);
   const [parties, setParties] = useState<PartyEntry[]>(
     () => form.getState().values.parties ?? [],

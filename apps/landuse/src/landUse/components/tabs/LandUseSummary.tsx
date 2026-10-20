@@ -21,7 +21,6 @@ import { useUiMetadata } from "@/landUse/hooks/useUiMetadata";
 import { useTocEntries } from "@/landUse/hooks/useTableOfContents";
 import {
   type AsemakaavaListItem,
-  landUseNegotiationPhaseOptions,
 } from "@/landUse/options";
 import {
   getFieldTextValue,
@@ -121,6 +120,7 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
 }) => {
   const [asemakaavat, setAsemakaavat] = useState<AsemakaavaListItem[]>([]);
   const metadata = useUiMetadata();
+  const landUseNegotiationPhaseOptions = metadata.data?.agreement_statuses ?? [];
   const signatories = useQuery({
     queryKey: ["land-use", "authorized-signatories"],
     queryFn: getAuthorizedSignatories,

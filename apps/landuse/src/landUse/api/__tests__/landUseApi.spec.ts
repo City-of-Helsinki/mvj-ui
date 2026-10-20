@@ -6,6 +6,7 @@ import { calculateInvoicingPeriodDays } from "../../utils/date";
 import { createLandUseAgreement, updateContracts, updatePaymentSchedule, sendInvoiceToSap } from "../landUseApi";
 import { callApiPost } from "../fetchClient";
 import { callApiPut } from "../fetchClient";
+import { metadataOptions } from "../../hooks/useUiMetadata";
 
 vi.mock("../fetchClient", () => ({
   callApiGet: vi.fn(),
@@ -168,4 +169,10 @@ it("saves draft schedules using party and contract IDs", async () => {
 it("sends a persisted invoice using the backend SAP operation", async () => {
   await sendInvoiceToSap("12");
   expect(callApiPost).toHaveBeenLastCalledWith("invoices/12/send-to-sap/", {});
+});
+
+it("builds form options from authoritative metadata without losing codes", () => {
+  const metadata = { decision_makers: [{ value: "LAND_MANAGER", label: "Manager" }] };
+  expect(metadataOptions(metadata, "decision_makers")).toEqual(metadata.decision_makers);
+  expect(metadataOptions(metadata, "decision_makers", true)).toEqual([{ value: "Manager", label: "Manager" }]);
 });

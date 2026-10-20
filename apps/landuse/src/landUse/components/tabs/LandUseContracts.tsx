@@ -14,11 +14,10 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router";
 import { getDecisions } from "@/landUse/api/landUseApi";
+import { useUiMetadata, metadataOptions } from "@/landUse/hooks/useUiMetadata";
 import { Field, Form } from "react-final-form";
 import { useTocEntries } from "@/landUse/hooks/useTableOfContents";
 import {
-  landUseAgreementTypeOptions,
-  landUseGuaranteeTypeOptions,
   type LandUseGuaranteeType,
 } from "@/landUse/options";
 import {
@@ -129,6 +128,9 @@ export const LandUseContracts: React.FC<LandUseContractsProps> = ({
   parties,
 }) => {
   const { id } = useParams();
+  const metadata = useUiMetadata();
+  const landUseAgreementTypeOptions = metadataOptions(metadata.data, "contract_types", true);
+  const landUseGuaranteeTypeOptions = metadataOptions(metadata.data, "collateral_types", true);
   const decisions = useQuery({
     queryKey: ["land-use", id, "decisions"],
     queryFn: () => getDecisions(id!),
