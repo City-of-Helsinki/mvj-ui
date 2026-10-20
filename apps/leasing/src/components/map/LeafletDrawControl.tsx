@@ -83,6 +83,22 @@ const LeafletDrawControl = ({
     onNonCommittedChange,
   ]);
 
+  // Separate from the effect above, which reruns whenever `draw` or the
+  // callback props change identity; disabling active modes there would
+  // cancel in-progress drawing/editing on those unrelated re-renders.
+  useEffect(() => {
+    if (!map) {
+      return;
+    }
+
+    return () => {
+      map.pm.disableDraw("Polygon");
+      map.pm.disableDraw("Rectangle");
+      map.pm.disableGlobalEditMode();
+      map.pm.disableGlobalRemovalMode();
+    };
+  }, [map]);
+
   return null;
 };
 
