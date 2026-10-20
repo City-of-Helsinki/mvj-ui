@@ -7,11 +7,11 @@ export type EscapedHtml = string & {
 const escapeHtml = (value: unknown): string => {
   const element = document.createElement("span");
   element.textContent = value == null ? "" : String(value);
-  return element.innerHTML;
+  return element.innerHTML.replaceAll('"', "&quot;").replaceAll("'", "&#39;");
 };
 
 /**
- * Builds trusted popup markup while HTML-escaping every interpolated value.
+ * Builds popup markup by escaping interpolated values for HTML text and quoted attributes.
  *
  * Leaflet parses popup strings as HTML, so directly inserting untrusted values
  * could allow stored cross-site scripting (XSS). This keeps the HTML written
