@@ -194,9 +194,10 @@ const InfillDevelopmentLeaseLayer = ({
       plotTypeOptions,
     ],
   );
+  const isHighlighted = useCallback(() => highlighted, [highlighted]);
   const onEachFeature = useGeoJsonFeatureInteractions({
     getPopupContent,
-    isHighlighted: () => highlighted,
+    isHighlighted,
     openHighlightedPopup: false,
   });
 
