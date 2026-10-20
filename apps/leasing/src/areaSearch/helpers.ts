@@ -56,9 +56,9 @@ export const getAreaSearchFeatures = (
 ): Array<LeafletFeature> => {
   const features = [];
   searches.forEach((search) => {
-    const coords = get(search, "geometry.coordinates", []);
+    const coords = get(search, "geometry.coordinates");
 
-    if (!coords.length) {
+    if (!isArray(coords) || !coords.length) {
       return;
     }
 

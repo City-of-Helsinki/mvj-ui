@@ -40,15 +40,18 @@ export const getCoordinatesOfGeometry = (
   }
 
   const getSingleArrayOfCoordinates = (items) => {
-    let tempCoords = [];
+    if (!isArray(items) || items.length === 0) {
+      return [];
+    }
 
     if (isArray(items) && !isArray(items[0])) {
-      tempCoords.push([items[0], items[1]]);
-    } else {
-      items.forEach((item) => {
-        tempCoords = [...tempCoords, ...getSingleArrayOfCoordinates(item)];
-      });
+      return items.length >= 2 ? [[items[0], items[1]]] : [];
     }
+
+    let tempCoords = [];
+    items.forEach((item) => {
+      tempCoords = [...tempCoords, ...getSingleArrayOfCoordinates(item)];
+    });
 
     return tempCoords;
   };
