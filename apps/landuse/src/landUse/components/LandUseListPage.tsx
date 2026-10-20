@@ -29,16 +29,16 @@ import {
 import {
   MUNICIPALITY_OPTIONS,
   LAND_USE_NEGOTIATION_PHASES,
-  type LandUseNegotiationPhase,
+  landUseNegotiationPhaseOptions,
 } from "@/landUse/options";
 
 type LandUseFilters = {
   search: string;
-  phases: LandUseNegotiationPhase[];
+  phases: string[];
 };
 
-const NEGOTIATION_PHASE_VALUES = new Set<LandUseNegotiationPhase>(
-  Object.values(LAND_USE_NEGOTIATION_PHASES),
+const NEGOTIATION_PHASE_VALUES = new Set<string>(
+  Object.keys(LAND_USE_NEGOTIATION_PHASES),
 );
 
 const getFiltersFromUrl = (searchString: string): LandUseFilters => {
@@ -50,8 +50,8 @@ const getFiltersFromUrl = (searchString: string): LandUseFilters => {
       ? phaseParams
       : [phaseParams]
     : [];
-  const phases = phaseArray.filter((phase): phase is LandUseNegotiationPhase =>
-    NEGOTIATION_PHASE_VALUES.has(phase as LandUseNegotiationPhase),
+  const phases = phaseArray.filter((phase) =>
+    NEGOTIATION_PHASE_VALUES.has(phase),
   );
 
   return {
@@ -137,7 +137,7 @@ const LandUseListPage: React.FC = () => {
   );
 
   const handlePhaseFilterChange = (
-    phase: LandUseNegotiationPhase,
+    phase: string,
     checked: boolean,
   ) => {
     let newPhases = [...currentFilters.phases];
@@ -302,11 +302,11 @@ const LandUseListPage: React.FC = () => {
               id="filter-vireilla"
               label="Vireillä"
               checked={selectedPhases.includes(
-                LAND_USE_NEGOTIATION_PHASES.IN_PROGRESS,
+                "IN_PROGRESS",
               )}
               onChange={(e) =>
                 handlePhaseFilterChange(
-                  LAND_USE_NEGOTIATION_PHASES.IN_PROGRESS,
+                  "IN_PROGRESS",
                   e.target.checked,
                 )
               }
@@ -315,11 +315,11 @@ const LandUseListPage: React.FC = () => {
               id="filter-neuvotteilla"
               label="Neuvotteilla"
               checked={selectedPhases.includes(
-                LAND_USE_NEGOTIATION_PHASES.NEGOTIATION,
+                "NEGOTIATION",
               )}
               onChange={(e) =>
                 handlePhaseFilterChange(
-                  LAND_USE_NEGOTIATION_PHASES.NEGOTIATION,
+                  "NEGOTIATION",
                   e.target.checked,
                 )
               }
@@ -328,11 +328,11 @@ const LandUseListPage: React.FC = () => {
               id="filter-paatos"
               label="Päätös"
               checked={selectedPhases.includes(
-                LAND_USE_NEGOTIATION_PHASES.DECISION,
+                "DECISION",
               )}
               onChange={(e) =>
                 handlePhaseFilterChange(
-                  LAND_USE_NEGOTIATION_PHASES.DECISION,
+                  "DECISION",
                   e.target.checked,
                 )
               }
@@ -359,6 +359,8 @@ const LandUseListPage: React.FC = () => {
             indexKey="id"
             rows={landUseData.map((item) => ({
               ...item,
+              negotiationPhase: landUseNegotiationPhaseOptions.find((option) => option.value === item.negotiationPhase)?.label ?? item.negotiationPhase,
+              projectArea: item.projectArea ? "Kyllä" : "Ei",
               identifier: (
                 <Link href={`/maankayttosopimukset/${item.id}`}>
                   {item.identifier}

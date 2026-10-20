@@ -55,6 +55,9 @@ type AgreementOverviewResponse = AgreementListResponse & {
 };
 
 type AgreementListResponse = {
+  party_names?: string[];
+  detailed_plan_number?: string;
+  detailed_plan_sites?: string[];
   id: number;
   identifier: string;
   agreement_type: string;
@@ -414,9 +417,9 @@ export const getLandUseList = async (): Promise<LandUseListItem[]> => {
   return agreements.map((agreement) => ({
     id: agreement.id,
     identifier: agreement.identifier,
-    party: "",
-    zoningPlanNumber: "",
-    site: "",
+    party: (agreement.party_names ?? []).join(", "),
+    zoningPlanNumber: agreement.detailed_plan_number ?? "",
+    site: (agreement.detailed_plan_sites ?? []).join(", "),
     projectArea: agreement.is_promotion_area,
     negotiationPhase: agreement.status,
   }));

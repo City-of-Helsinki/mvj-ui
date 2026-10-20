@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { getSummary, updateSummary, getCompensationLookups, getUiMetadata } from "../landUseApi";
+import { getSummary, updateSummary, getCompensationLookups, getUiMetadata, getLandUseList } from "../landUseApi";
 import { callApiGet, callApiPatch, callApiGetAllPages } from "../fetchClient";
 import { landUseNegotiationPhaseOptions } from "../../options";
 
@@ -85,4 +85,14 @@ it("saves summary relationships and reloads canonical overview values", async ()
     addresses: [{ street_address: "Testikatu 1", postal_code: "00100", city: "Helsinki" }],
   }));
   expect(callApiGet).toHaveBeenLastCalledWith("agreements/1/overview/");
+});
+
+it("maps searchable list fields and preserves the status code", async () => {
+  vi.mocked(callApiGetAllPages).mockResolvedValue([{
+    ...agreementOverview,
+    party_names: ["Test Oy"], detailed_plan_number: "12345", detailed_plan_sites: ["91-1-1-1"],
+  }]);
+  expect(await getLandUseList()).toEqual([expect.objectContaining({
+    party: "Test Oy", zoningPlanNumber: "12345", site: "91-1-1-1", negotiationPhase: "IN_PROGRESS",
+  })]);
 });
