@@ -3,6 +3,8 @@ import { getSummary, updateSummary, getCompensationLookups, getUiMetadata, getLa
 import { callApiGet, callApiPatch, callApiGetAllPages } from "../fetchClient";
 import { landUseNegotiationPhaseOptions, landUseSuojeltuOptions } from "../../options";
 import { calculateInvoicingPeriodDays } from "../../utils/date";
+import { createLandUseAgreement } from "../landUseApi";
+import { callApiPost } from "../fetchClient";
 
 vi.mock("../fetchClient", () => ({
   callApiGet: vi.fn(),
@@ -138,4 +140,10 @@ it("loads historical invoice recipients and ledger entries with invoice identity
     recipientSnapshot: { party: { details: { name: "Historical Oy" } } },
     payments: [{ id: 45, paid_amount: "25.00", paid_date: "2026-10-20", filing_code: "FILE" }],
   });
+});
+
+it("creates an agreement using server-side identifier allocation", async () => {
+  vi.mocked(callApiPost).mockResolvedValue({ id: 12 });
+  expect(await createLandUseAgreement("1", "23")).toBe("12");
+  expect(callApiPost).toHaveBeenLastCalledWith("agreements/", { municipality: "1", district: 23 });
 });

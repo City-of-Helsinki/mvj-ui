@@ -9,10 +9,6 @@ import type { LandUsePartiesFormValues } from "@/landUse/components/tabs/LandUse
 import type { LandUseSummaryFormValues } from "@/landUse/components/tabs/LandUseSummary";
 import type { Guarantee } from "@/landUse/components/collateralForms";
 import { type AsemakaavaListItem } from "@/landUse/options";
-import {
-  createLandUseIdentifier,
-  getNextLandUseSequence,
-} from "@/landUse/utils/landUseIdentifier";
 import type { LandUseListItem } from "@/landUse/api/landUseListTypes";
 import {
   callApiGetAllPages,
@@ -433,23 +429,11 @@ export const createLandUseAgreement = async (
   municipalityId: string,
   districtId: string,
 ): Promise<string> => {
-  const existingIdentifiers = await getAgreementIdentifiers();
-  const sequence = getNextLandUseSequence(
-    existingIdentifiers,
-    municipalityId,
-    districtId,
-  );
-  const identifier = createLandUseIdentifier(
-    municipalityId,
-    districtId,
-    sequence,
-  );
-
   const agreement = await callApiPost<
     AgreementCreateResponse,
-    { identifier: string; district: number }
+    { municipality: string; district: number }
   >("agreements/", {
-    identifier,
+    municipality: municipalityId,
     district: Number(districtId),
   });
 

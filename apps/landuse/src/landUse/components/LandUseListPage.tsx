@@ -15,14 +15,9 @@ import {
 } from "hds-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { parseUrlParams, buildQueryString } from "@/landUse/urlParams";
-import {
-  createLandUseIdentifier,
-  getNextLandUseSequence,
-} from "@/landUse/utils/landUseIdentifier";
 import { selectLabelIncludesFilter } from "@/landUse/utils/fieldUtils";
 import {
   createLandUseAgreement,
-  getAgreementIdentifiers,
   getLandUseList,
   getDistricts,
 } from "@/landUse/api/landUseApi";
@@ -79,11 +74,6 @@ const LandUseListPage: React.FC = () => {
     setIsCreateDialogOpen(false);
   };
 
-  const agreementIdentifiersQuery = useQuery({
-    queryKey: ["land-use", "identifiers"],
-    queryFn: getAgreementIdentifiers,
-    refetchOnWindowFocus: false,
-  });
 
   const landUseListQuery = useQuery({
     queryKey: ["land-use", "list"],
@@ -213,23 +203,6 @@ const LandUseListPage: React.FC = () => {
   ]);
   const isLoading = landUseListQuery.isLoading || landUseListQuery.isFetching;
 
-  const existingIdentifiers = agreementIdentifiersQuery.data ?? [];
-  const sequenceNumber =
-    selectedMunicipality && selectedDistrict
-      ? getNextLandUseSequence(
-          existingIdentifiers,
-          selectedMunicipality,
-          selectedDistrict,
-        )
-      : undefined;
-  const newIdentifier =
-    selectedMunicipality && selectedDistrict && sequenceNumber
-      ? createLandUseIdentifier(
-          selectedMunicipality,
-          selectedDistrict,
-          sequenceNumber,
-        )
-      : "";
 
   const districtOptions = useMemo(() => {
     return (districtsQuery.data ?? []).map(({ name, identifier, id }) => ({
@@ -433,7 +406,7 @@ const LandUseListPage: React.FC = () => {
           <Button
             variant={ButtonVariant.Primary}
             onClick={handleCreate}
-            disabled={!newIdentifier || createAgreementMutation.isPending}
+            disabled={!selectedMunicipality || !selectedDistrict || createAgreementMutation.isPending}
           >
             Luo tunnus
           </Button>
