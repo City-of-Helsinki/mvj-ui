@@ -302,7 +302,11 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                                   <TextInput
                                     id="summary-tila"
                                     label="Maankäyttösopimuksen tila"
-                                    value={readOnlyTextValue(input.value)}
+                                    value={readOnlyTextValue(
+                                      landUseNegotiationPhaseOptions.find(
+                                        (option) => option.value === input.value,
+                                      )?.label,
+                                    )}
                                     readOnly
                                   />
                                 )

@@ -26,7 +26,6 @@ import {
   LAND_USE_GUARANTEE_TYPES,
   LAND_USE_INVOICE_STATUSES,
   LAND_USE_INVOICE_TYPES,
-  LAND_USE_NEGOTIATION_PHASES,
   LAND_USE_PAYMENT_SCHEDULE_STATUSES,
 } from "@/landUse/options";
 
@@ -276,9 +275,7 @@ type InvoiceResponse = {
 };
 
 const getAgreementStatusValue = (status: string | undefined): string =>
-  Object.entries(LAND_USE_NEGOTIATION_PHASES).find(
-    ([, label]) => label === status,
-  )?.[0] ?? "";
+  status ?? "";
 
 const getOptionalYear = (value: string): number | null => {
   const year = Number(value);

@@ -18,10 +18,10 @@ export const LAND_USE_NEGOTIATION_PHASES = {
 export type LandUseNegotiationPhase =
   (typeof LAND_USE_NEGOTIATION_PHASES)[keyof typeof LAND_USE_NEGOTIATION_PHASES];
 
-export const landUseNegotiationPhaseOptions = Object.values(
+export const landUseNegotiationPhaseOptions = Object.entries(
   LAND_USE_NEGOTIATION_PHASES,
-).map((value) => ({
-  label: value,
+).map(([value, label]) => ({
+  label,
   value,
 }));
 
