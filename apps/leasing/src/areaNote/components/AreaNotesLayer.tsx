@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import L from "leaflet";
-import type {} from "@geoman-io/leaflet-geoman-free";
 import LeafletGeoJSONLayer from "@/components/map/LeafletGeoJSONLayer";
 import useGeoJsonFeatureInteractions from "@/components/map/useGeoJsonFeatureInteractions";
 import { initializeAreaNote, showEditMode } from "@/areaNote/slice";
@@ -14,6 +13,10 @@ import type { AreaNoteMultiPolygonFeature } from "@/areaNote/helpers";
 import { getUserFullName } from "@/users/helpers";
 import { formatDate, isMethodAllowed } from "@/util/helpers";
 import { html } from "@/util/html";
+import {
+  DEFAULT_LEAFLET_PATH_OPTIONS,
+  SAVED_AREA_NOTE_COLOR,
+} from "@/components/map/mapStyles";
 import {
   getInitialAreaNote,
   getIsEditMode,
@@ -29,7 +32,7 @@ type Props = {
 };
 
 const AREA_NOTE_OPTIONS: L.PathOptions & Pick<L.LayerOptions, "pmIgnore"> = {
-  color: "#2196f3",
+  color: SAVED_AREA_NOTE_COLOR,
   // Saved overlays remain read-only while the selected note is edited as a draft.
   pmIgnore: true,
 };
@@ -85,7 +88,9 @@ const AreaNotesLayer: React.FC<Props> = ({
       );
       dispatch(showEditMode());
       if (event.target instanceof L.Path) {
-        event.target.setStyle({ fillOpacity: 0.2 });
+        event.target.setStyle({
+          fillOpacity: DEFAULT_LEAFLET_PATH_OPTIONS.fillOpacity,
+        });
       }
     },
     [allowToEdit, areaNoteMethods, dispatch, isEditMode],

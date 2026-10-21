@@ -4,7 +4,8 @@ import type { LatLngBounds } from "leaflet";
 import { useAppSelector } from "@/root/hooks";
 import AreaNotesEditMap from "@/areaNote/components/AreaNotesEditMap";
 import TargetListLayer from "@/plotApplications/components/map/TargetListLayer";
-import { DEFAULT_ZOOM, MAP_COLORS } from "@/util/constants";
+import { DEFAULT_ZOOM } from "@/util/constants";
+import { MAP_LAYER_COLORS } from "@/components/map/mapStyles";
 import { MAX_ZOOM_LEVEL_TO_FETCH_LEASES } from "@/leases/constants";
 import { getApplicationTargetGeoJson } from "@/plotApplications/helpers";
 import { getApiResponseResults, getUrlParams } from "@/util/helpers";
@@ -45,7 +46,7 @@ const ApplicationListMap = ({ isLoading, onViewportChanged }: OwnProps) => {
         component: (
           <TargetListLayer
             key="plot_search_targets"
-            color={MAP_COLORS[0]}
+            color={MAP_LAYER_COLORS[0]}
             targetsGeoJson={applicationsGeoJson}
             stateOptions={[]}
           />
