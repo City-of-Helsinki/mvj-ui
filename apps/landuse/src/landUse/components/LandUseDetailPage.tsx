@@ -21,14 +21,16 @@ import {
   getMonitoring,
   getParties,
   getPaymentSchedule,
-  getSummary,
   rejectPaymentSchedule,
   submitPaymentSchedule,
   updateCompensations,
   updateCollaterals,
+  updateContracts,
   updateDecisions,
+  updatePaymentSchedule,
   updateParties,
   updateSummary,
+  getSummary,
 } from "@/landUse/api/landUseApi";
 import { DEFAULT_KOROTUSKERROIN } from "@/landUse/constants";
 import { useCalculateActivePageSection } from "@/landUse/hooks/useCalculateActivePageSection";
@@ -43,6 +45,7 @@ import {
   type LandUseInvoiceItem,
 } from "@/landUse/options";
 import { parseLandUseNumericValueOrZero } from "@/landUse/utils/number";
+import { getLanduseApiErrorMessage } from "@/landUse/api/fetchClient";
 import type {
   SectionEntry,
   SideNavigationTab,
@@ -204,7 +207,7 @@ const getActiveTabFromSearch = (search: string): number => {
   return 0;
 };
 
-const calculatePaidMaankayttokorvaus = (
+export const calculatePaidMaankayttokorvaus = (
   invoices: Pick<LandUseInvoice, "status" | "invoiceItems">[],
 ) => {
   const isMaankayttokorvausItem = (item: LandUseInvoiceItem) =>
@@ -234,6 +237,8 @@ const LandUseDetailPage: React.FC = () => {
   );
   const [isEditMode, setIsEditMode] = useState(false);
   const [isSaveClicked, setIsSaveClicked] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
   const [sectionEntries, setSectionEntries] = useState<SectionEntry[]>([]);
   const [activeSectionId, setActiveSectionId] = useState<string | null>(null);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -272,6 +277,13 @@ const LandUseDetailPage: React.FC = () => {
       });
       return newState;
     });
+  };
+
+  const markFormSaved = (formKey: FormKey) => {
+    setFormStates((previous) => ({
+      ...previous,
+      [formKey]: { ...initialFormState },
+    }));
   };
 
   const summaryQuery = useQuery({
@@ -498,12 +510,7 @@ const LandUseDetailPage: React.FC = () => {
     if (summaryQuery.data) {
       summaryFormApi.initialize(summaryQuery.data);
     }
-  }, [
-    summaryFormApi,
-    summaryQuery.data,
-    summaryQuery.dataUpdatedAt,
-    agreementId,
-  ]);
+  }, [summaryFormApi, summaryQuery.data, agreementId]);
 
   useEffect(() => {
     if (partiesQuery.data) {
@@ -538,12 +545,7 @@ const LandUseDetailPage: React.FC = () => {
     if (collateralsQuery.data) {
       collateralsFormApi.initialize(collateralsQuery.data);
     }
-  }, [
-    collateralsFormApi,
-    collateralsQuery.data,
-    collateralsQuery.dataUpdatedAt,
-    agreementId,
-  ]);
+  }, [collateralsFormApi, collateralsQuery.data, agreementId]);
 
   useEffect(() => {
     if (monitoringQuery.data) {
@@ -627,6 +629,7 @@ const LandUseDetailPage: React.FC = () => {
   }, [isAnyFormDirty]);
 
   const handleEditClick = () => {
+    setSaveError(null);
     setIsEditMode(true);
   };
 
@@ -644,6 +647,7 @@ const LandUseDetailPage: React.FC = () => {
     mutationFn: (values: LandUseSummaryFormValues) =>
       updateSummary(agreementId, values),
     onSuccess: (data) => {
+      summaryFormApi.initialize(data);
       queryClient.setQueryData(["land-use", agreementId, "summary"], data);
       queryClient.invalidateQueries({ queryKey: ["land-use", "list"] });
     },
@@ -676,16 +680,40 @@ const LandUseDetailPage: React.FC = () => {
     },
   });
 
+  const contractsMutation = useMutation({
+    mutationFn: (values: LandUseContractsFormValues) =>
+      updateContracts(agreementId, values),
+    onSuccess: (data) => {
+      queryClient.setQueryData(["land-use", agreementId, "contracts"], data);
+    },
+  });
+
+  const paymentScheduleMutation = useMutation({
+    mutationFn: (values: LandUsePaymentScheduleFormValues) =>
+      updatePaymentSchedule(agreementId, values),
+    onSuccess: (data) => {
+      queryClient.setQueryData(
+        ["land-use", agreementId, "paymentSchedule"],
+        data,
+      );
+    },
+  });
+
   const collateralsMutation = useMutation({
     mutationFn: (values: LandUseCollateralsFormValues) =>
       updateCollaterals(agreementId, values),
     onSuccess: (data) => {
+      collateralsFormApi.initialize(data);
       queryClient.setQueryData(["land-use", agreementId, "collaterals"], data);
     },
   });
 
   const handleSaveClick = async () => {
+    if (isSaving) {
+      return;
+    }
     setIsSaveClicked(true);
+    setSaveError(null);
 
     if (!agreementId) {
       return;
@@ -697,38 +725,58 @@ const LandUseDetailPage: React.FC = () => {
       return;
     }
 
+    setIsSaving(true);
     try {
       if (formStates.summary?.dirty) {
         await summaryMutation.mutateAsync(
           summaryFormApi.getState().values as LandUseSummaryFormValues,
         );
+        markFormSaved("summary");
       }
       if (formStates.parties?.dirty) {
         await partiesMutation.mutateAsync(
           partiesFormApi.getState().values as LandUsePartiesFormValues,
         );
+        markFormSaved("parties");
       }
       if (formStates.compensations?.dirty) {
         await compensationsMutation.mutateAsync(
           compensationsFormApi.getState()
             .values as LandUseCompensationsFormValues,
         );
+        markFormSaved("compensations");
       }
       if (formStates.decisions?.dirty) {
         await decisionsMutation.mutateAsync(
           decisionsFormApi.getState().values as LandUseDecisionsFormValues,
         );
+        markFormSaved("decisions");
+      }
+      if (formStates.contracts?.dirty) {
+        await contractsMutation.mutateAsync(
+          contractsFormApi.getState().values as LandUseContractsFormValues,
+        );
+        markFormSaved("contracts");
+      }
+      if (formStates.paymentSchedule?.dirty) {
+        await paymentScheduleMutation.mutateAsync(
+          paymentScheduleFormApi.getState()
+            .values as LandUsePaymentScheduleFormValues,
+        );
+        markFormSaved("paymentSchedule");
       }
       if (formStates.collaterals?.dirty) {
         await collateralsMutation.mutateAsync(
           collateralsFormApi.getState().values as LandUseCollateralsFormValues,
         );
+        markFormSaved("collaterals");
       }
       setIsSaveClicked(false);
       setIsEditMode(false);
-      resetFormStates();
     } catch (error) {
-      console.error("Failed to save agreement data", error);
+      setSaveError(getLanduseApiErrorMessage(error));
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -816,6 +864,16 @@ const LandUseDetailPage: React.FC = () => {
     );
   }
 
+  if (summaryQuery.isError) {
+    return (
+      <div className="landuse-detail">
+        <div className="landuse-detail__content" role="alert">
+          {getLanduseApiErrorMessage(summaryQuery.error)}
+        </div>
+      </div>
+    );
+  }
+
   const sitesWithAmVelvoite = (compensationsQuery.data?.sites ?? []).filter(
     (site) => site.amVelvoite === true,
   );
@@ -833,7 +891,7 @@ const LandUseDetailPage: React.FC = () => {
         streetAddress: party.party.details?.streetAddress,
         city: party.party.details?.city,
         postalCode: party.party.details?.postalCode,
-        ...(party.party.details?.partyType === "yritys" &&
+        ...(party.party.details?.partyType === "COMPANY" &&
         "businessId" in party.party.details
           ? { businessId: party.party.details?.businessId }
           : {}),
@@ -853,7 +911,7 @@ const LandUseDetailPage: React.FC = () => {
               streetAddress: party.invoiceRecipient?.details?.streetAddress,
               city: party.invoiceRecipient?.details?.city,
               postalCode: party.invoiceRecipient?.details?.postalCode,
-              ...(party.invoiceRecipient?.details?.partyType === "yritys" &&
+              ...(party.invoiceRecipient?.details?.partyType === "COMPANY" &&
               "businessId" in party.invoiceRecipient.details
                 ? { businessId: party.invoiceRecipient?.details?.businessId }
                 : {}),
@@ -874,34 +932,69 @@ const LandUseDetailPage: React.FC = () => {
   const handleSendToInvoicing = async (
     schedule: LandUsePaymentScheduleEntry,
   ) => {
-    await submitPaymentSchedule(schedule.id);
-    await queryClient.invalidateQueries({
-      queryKey: ["land-use", agreementId, "paymentSchedule"],
-    });
+    if (isSaving) return;
+    setSaveError(null);
+    setIsSaving(true);
+    try {
+      const values = paymentScheduleFormApi.getState()
+        .values as LandUsePaymentScheduleFormValues;
+      const scheduleIndex = values.paymentSchedules?.indexOf(schedule) ?? -1;
+      const savedValues = await paymentScheduleMutation.mutateAsync(values);
+      const savedSchedule = savedValues.paymentSchedules?.[scheduleIndex];
+      if (!savedSchedule) {
+        throw new Error("The payment schedule could not be persisted.");
+      }
+      await submitPaymentSchedule(savedSchedule.id);
+      await queryClient.invalidateQueries({
+        queryKey: ["land-use", agreementId, "paymentSchedule"],
+      });
+    } catch (error) {
+      setSaveError(getLanduseApiErrorMessage(error));
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const handleDeclineSchedule = async (
     schedule: LandUsePaymentScheduleEntry,
     rejectedReason: string,
   ) => {
-    await rejectPaymentSchedule(schedule.id, rejectedReason);
-    await queryClient.invalidateQueries({
-      queryKey: ["land-use", agreementId, "paymentSchedule"],
-    });
+    if (isSaving) return;
+    setSaveError(null);
+    setIsSaving(true);
+    try {
+      await rejectPaymentSchedule(schedule.id, rejectedReason);
+      await queryClient.invalidateQueries({
+        queryKey: ["land-use", agreementId, "paymentSchedule"],
+      });
+    } catch (error) {
+      setSaveError(getLanduseApiErrorMessage(error));
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const handleAcceptSchedule = async (
     schedule: LandUsePaymentScheduleEntry,
   ) => {
-    await approvePaymentSchedule(schedule.id);
-    await Promise.all([
-      queryClient.invalidateQueries({
-        queryKey: ["land-use", agreementId, "paymentSchedule"],
-      }),
-      queryClient.invalidateQueries({
-        queryKey: ["land-use", agreementId, "billing"],
-      }),
-    ]);
+    if (isSaving) return;
+    setSaveError(null);
+    setIsSaving(true);
+    try {
+      await approvePaymentSchedule(schedule.id);
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: ["land-use", agreementId, "paymentSchedule"],
+        }),
+        queryClient.invalidateQueries({
+          queryKey: ["land-use", agreementId, "billing"],
+        }),
+      ]);
+    } catch (error) {
+      setSaveError(getLanduseApiErrorMessage(error));
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const renderActiveTabPanel = () => {
@@ -912,7 +1005,9 @@ const LandUseDetailPage: React.FC = () => {
         activeTabKey === "parties" ||
         activeTabKey === "compensations" ||
         activeTabKey === "decisions" ||
-        activeTabKey === "collaterals");
+        activeTabKey === "collaterals" ||
+        activeTabKey === "contracts" ||
+        activeTabKey === "paymentSchedule");
     switch (activeTabKey) {
       case "summary":
         return (
@@ -971,15 +1066,16 @@ const LandUseDetailPage: React.FC = () => {
         return (
           <LandUseContracts
             form={contractsFormApi}
-            isEditMode={false}
+            isEditMode={isCurrentTabEditable}
             parties={activeParties}
+            decisions={decisionsQuery.data?.decisions}
           />
         );
       case "monitoring":
         return (
           <LandUseMonitoring
             form={monitoringFormApi}
-            isEditMode={isEditMode}
+            isEditMode={false}
             sites={sitesWithAmVelvoite}
             perushinta={compensationsQuery.data?.perushinta}
             compensationsRowsBySiteId={
@@ -1011,8 +1107,8 @@ const LandUseDetailPage: React.FC = () => {
         return (
           <LandUsePaymentSchedule
             form={paymentScheduleFormApi}
-            isEditMode={false}
-            canSubmitSchedules={isEditMode}
+            isEditMode={isCurrentTabEditable}
+            canSubmitSchedules={isCurrentTabEditable}
             parties={activeParties}
             contracts={
               (contractsFormApi.getState().values as LandUseContractsFormValues)
@@ -1077,6 +1173,7 @@ const LandUseDetailPage: React.FC = () => {
           activeTocId={activeSectionId}
           onTocClick={handleTocClick}
           isEditMode={isEditMode}
+          isSaving={isSaving}
           onEditClick={handleEditClick}
           onSaveClick={handleSaveClick}
           onDiscardClick={handleDiscardClick}
@@ -1091,6 +1188,7 @@ const LandUseDetailPage: React.FC = () => {
               { title: summaryQuery?.data?.identifier, path: "" },
             ]}
           />
+          {saveError && <div role="alert">{saveError}</div>}
           <TableOfContentsProvider setEntries={setSectionEntries}>
             <div ref={contentRef}>{renderActiveTabPanel()}</div>
           </TableOfContentsProvider>

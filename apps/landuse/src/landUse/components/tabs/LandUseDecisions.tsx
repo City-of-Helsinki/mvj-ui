@@ -13,13 +13,11 @@ import {
 import React, { useEffect, useMemo, useState } from "react";
 import { Field, Form } from "react-final-form";
 import { useTocEntries } from "@/landUse/hooks/useTableOfContents";
-import {
-  landUseConditionTypeOptions,
-  landUseDecisionMakerOptions,
-  landUseDecisionTypeOptions,
-} from "@/landUse/options";
+import { useLandUseMetadata } from "@/landUse/api/useLandUseMetadata";
+import type { LandUseUiMetadata } from "@/landUse/api/landUseTypes";
 import {
   getFieldTextValue,
+  getOptionsDisplayValue,
   normalizeSelectValue,
   readOnlyTextValue,
 } from "@/landUse/utils/fieldUtils";
@@ -28,7 +26,9 @@ import type { PartyEntry } from "@/landUse/components/tabs/LandUseParties";
 import { validatePykala } from "@/landUse/validators";
 
 interface DecisionCondition {
-  conditionType?: string;
+  conditionType?:
+    | LandUseUiMetadata["decision_condition_types"][number]["value"]
+    | "";
   valvontapvm: string;
   valvottuPvm: string;
   note: string;
@@ -36,11 +36,12 @@ interface DecisionCondition {
 
 interface DecisionItem {
   id?: string;
+  clientKey?: string;
   title: string;
-  paattaja?: string;
+  paattaja?: LandUseUiMetadata["decision_makers"][number]["value"] | "";
   paatospvm: string;
   pykala?: string;
-  paatoksenTyyppi?: string;
+  paatoksenTyyppi?: LandUseUiMetadata["decision_types"][number]["value"] | "";
   diaarinumero: string;
   huomautus: string;
   ehdot: DecisionCondition[];
@@ -76,6 +77,7 @@ const createNewDecisionCondition = (): DecisionCondition => ({
 });
 
 const createNewDecision = (): DecisionItem => ({
+  clientKey: crypto.randomUUID(),
   title: "",
   paattaja: undefined,
   paatospvm: "",
@@ -86,15 +88,19 @@ const createNewDecision = (): DecisionItem => ({
   ehdot: [],
 });
 
-const getDecisionHeadingText = (decision: DecisionItem): string => {
+const getDecisionHeadingText = (
+  decision: DecisionItem,
+  decisionMakers: LandUseUiMetadata["decision_makers"],
+  decisionTypes: LandUseUiMetadata["decision_types"],
+): string => {
   const parts = [
-    decision.paattaja,
+    getOptionsDisplayValue(decision.paattaja, decisionMakers),
     decision.paatospvm,
     decision.pykala,
-    decision.paatoksenTyyppi,
+    getOptionsDisplayValue(decision.paatoksenTyyppi, decisionTypes),
   ]
     .map((part) => part?.trim())
-    .filter((part): part is string => Boolean(part));
+    .filter((part): part is string => Boolean(part) && part !== "-");
 
   return parts.join(" ") || "Päätös";
 };
@@ -106,6 +112,16 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
   form,
   isEditMode,
 }) => {
+  const metadataQuery = useLandUseMetadata();
+  const metadata = metadataQuery.data;
+  const decisionMakers = useMemo(
+    () => metadata?.decision_makers ?? [],
+    [metadata?.decision_makers],
+  );
+  const decisionTypes = useMemo(
+    () => metadata?.decision_types ?? [],
+    [metadata?.decision_types],
+  );
   const [decisions, setDecisions] = useState<DecisionItem[]>(
     () => form.getState().values.decisions ?? [],
   );
@@ -122,10 +138,10 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
     () =>
       decisions.map((decision, index) => ({
         id: getDecisionHeadingId(index),
-        text: getDecisionHeadingText(decision),
+        text: getDecisionHeadingText(decision, decisionMakers, decisionTypes),
         level: 2,
       })),
-    [decisions],
+    [decisions, decisionMakers, decisionTypes],
   );
 
   useTocEntries(tocEntries);
@@ -149,11 +165,19 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                 return (
                   <div
                     className="landuse-detail__party-entry"
-                    key={`decision-${decisionIndex}`}
+                    key={
+                      decision.id ??
+                      decision.clientKey ??
+                      `decision-${decisionIndex}`
+                    }
                   >
                     <div className="landuse-detail__heading-with-delete">
                       <h2 id={getDecisionHeadingId(decisionIndex)}>
-                        {getDecisionHeadingText(decision)}
+                        {getDecisionHeadingText(
+                          decision,
+                          decisionMakers,
+                          decisionTypes,
+                        )}
                       </h2>
                       {isEditMode && (
                         <ConfirmDeleteButton
@@ -171,7 +195,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                             );
                           }}
                           dialogTitle="Poista päätös"
-                          dialogContent={`Haluatko varmasti poistaa päätöksen ${getDecisionHeadingText(decision)}?`}
+                          dialogContent={`Haluatko varmasti poistaa päätöksen ${getDecisionHeadingText(decision, decisionMakers, decisionTypes)}?`}
                         />
                       )}
                     </div>
@@ -194,7 +218,10 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                             label: "Päättäjä",
                                             placeholder: "Valitse",
                                           }}
-                                          options={landUseDecisionMakerOptions}
+                                          options={
+                                            metadata?.decision_makers ?? []
+                                          }
+                                          clearable
                                           value={normalizeSelectValue(
                                             input.value,
                                           )}
@@ -209,7 +236,12 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                         <TextInput
                                           id={`decision-paattaja-${decisionIndex}`}
                                           label="Päättäjä"
-                                          value={readOnlyTextValue(input.value)}
+                                          value={
+                                            getOptionsDisplayValue(
+                                              input.value,
+                                              decisionMakers,
+                                            )
+                                          }
                                           readOnly
                                         />
                                       )
@@ -274,7 +306,10 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                             label: "Päätöksen tyyppi",
                                             placeholder: "Valitse",
                                           }}
-                                          options={landUseDecisionTypeOptions}
+                                          options={
+                                            metadata?.decision_types ?? []
+                                          }
+                                          clearable
                                           value={normalizeSelectValue(
                                             input.value,
                                           )}
@@ -289,7 +324,12 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                         <TextInput
                                           id={`decision-paatoksen-tyyppi-${decisionIndex}`}
                                           label="Päätöksen tyyppi"
-                                          value={readOnlyTextValue(input.value)}
+                                          value={
+                                            getOptionsDisplayValue(
+                                              input.value,
+                                              decisionTypes,
+                                            )
+                                          }
                                           readOnly
                                         />
                                       )
@@ -360,7 +400,8 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                                 placeholder: "Valitse",
                                               }}
                                               options={
-                                                landUseConditionTypeOptions
+                                                metadata?.decision_condition_types ??
+                                                []
                                               }
                                               value={normalizeSelectValue(
                                                 input.value,
@@ -376,9 +417,13 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                             <TextInput
                                               id={`decision-ehto-tyyppi-${decisionIndex}-${conditionIndex}`}
                                               label="Ehtotyyppi"
-                                              value={readOnlyTextValue(
-                                                input.value,
-                                              )}
+                                              value={
+                                                getOptionsDisplayValue(
+                                                  input.value,
+                                                  metadata?.decision_condition_types ??
+                                                    [],
+                                                )
+                                              }
                                               readOnly
                                             />
                                           )

@@ -7,7 +7,7 @@ import type {
 } from "@/landUse/components/tabs/LandUseParties";
 
 export const createEmptySummaryFormValues = (): LandUseSummaryFormValues => ({
-  maankayttosopimusType: undefined,
+  identifier: "",
   kaupunginosa: "",
   edistamisalue: false,
   tila: undefined,
@@ -19,6 +19,7 @@ export const createEmptySummaryFormValues = (): LandUseSummaryFormValues => ({
   toimivaltainenPaattaja: "",
   sisaltaaAmVelvoitteita: "kyllä",
   velvoitteidenMaaraika: "",
+  detailedPlanId: null,
   asemakaavanNumero: "",
   asemakaavanKasittelyvaihe: "",
   vahvistamisHyvaksymisPvm: "",
@@ -28,6 +29,7 @@ export const createEmptySummaryFormValues = (): LandUseSummaryFormValues => ({
 });
 
 export const createEmptyPartyEntry = (): PartyEntry => ({
+  clientKey: crypto.randomUUID(),
   party: {
     details: {
       partyRole: undefined,

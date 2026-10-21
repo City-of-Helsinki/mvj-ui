@@ -9,10 +9,6 @@ import {
 import { Field, useField, useForm } from "react-final-form";
 import { FieldArray } from "react-final-form-arrays";
 import {
-  landUseGuaranteeCategoryOptions,
-  landUseGuaranteeTargetOptions,
-} from "@/landUse/options";
-import {
   CollateralDateField,
   CollateralRadioField,
   CollateralSelectField,
@@ -32,6 +28,7 @@ export const PanttikirjaForm: React.FC<CollateralFormProps> = ({
   namePrefix,
   isEditMode,
   partyOptions,
+  metadata,
 }) => {
   const form = useForm();
   const targetField = useField<string>(`${namePrefix}.kiinteistoVaiLaitos`, {
@@ -66,13 +63,13 @@ export const PanttikirjaForm: React.FC<CollateralFormProps> = ({
             label="Kiinteistö vai laitos?"
             idSuffix="kiinteisto-vai-laitos"
             isEditMode={isEditMode}
-            options={landUseGuaranteeTargetOptions}
+            options={metadata?.mortgage_deed_collateral_targets ?? []}
           />
         </div>
       </div>
 
       <div className="landuse-grid landuse-grid__bottom-margin">
-        {target === "Kiinteistö" && (
+        {target === "PROPERTY" && (
           <FieldArray<string> name={`${namePrefix}.kiinteistotunnukset`}>
             {({ fields }) => (
               <>
@@ -126,7 +123,7 @@ export const PanttikirjaForm: React.FC<CollateralFormProps> = ({
             )}
           </FieldArray>
         )}
-        {target === "Laitos" && (
+        {target === "FACILITY" && (
           <div className="landuse-grid__column-6">
             <CollateralTextField
               namePrefix={namePrefix}
@@ -147,7 +144,7 @@ export const PanttikirjaForm: React.FC<CollateralFormProps> = ({
             label="Vakuusasiakirjan laji"
             idSuffix="vakuusasiakirjan-laji"
             isEditMode={isEditMode}
-            options={landUseGuaranteeCategoryOptions}
+            options={metadata?.collateral_document_categories ?? []}
           />
         </div>
 

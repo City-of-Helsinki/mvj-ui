@@ -1,5 +1,4 @@
 import React from "react";
-import { landUseGuaranteeCategoryOptions } from "@/landUse/options";
 import {
   CollateralSelectField,
   CollateralTextField,
@@ -11,6 +10,7 @@ export const TilivarojenPanttausForm: React.FC<CollateralFormProps> = ({
   namePrefix,
   isEditMode,
   partyOptions,
+  metadata,
 }) => (
   <>
     <div className="landuse-grid landuse-grid__bottom-margin">
@@ -21,7 +21,7 @@ export const TilivarojenPanttausForm: React.FC<CollateralFormProps> = ({
           label="Vakuusasiakirjan laji"
           idSuffix="vakuusasiakirjan-laji"
           isEditMode={isEditMode}
-          options={landUseGuaranteeCategoryOptions}
+          options={metadata?.collateral_document_categories ?? []}
         />
       </div>
 

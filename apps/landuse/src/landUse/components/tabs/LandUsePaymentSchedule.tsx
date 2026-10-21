@@ -32,9 +32,9 @@ import {
   LAND_USE_INVOICE_ITEM_TYPES,
   LAND_USE_INVOICE_TYPES,
   LAND_USE_PAYMENT_SCHEDULE_STATUSES,
-  landUseInvoiceItemTypeSelectOptions,
 } from "@/landUse/options";
 import {
+  getOptionsDisplayValue,
   normalizeSelectValue,
   readOnlyTextValue,
   type SelectOption,
@@ -45,6 +45,7 @@ import {
   parseLandUseNumericValueOrZero,
 } from "@/landUse/utils/number";
 import { ConfirmDeleteButton } from "@/landUse/components/ConfirmDeleteButton";
+import { useLandUseMetadata } from "@/landUse/api/useLandUseMetadata";
 import {
   LAND_USE_INVOICE_STATUSES,
   type LandUseInvoice,
@@ -94,7 +95,7 @@ interface LandUsePaymentScheduleProps {
   asemakaavanNumero: AsemakaavaListItem["asemakaavanNumero"];
   asemakaavanLainvoimaisuusPvm: AsemakaavaListItem["asemakaavanLainvoimaisuusPvm"];
   agreementIdentifier: string;
-  onSendToInvoicing: (schedule: LandUsePaymentScheduleEntry) => void;
+  onSendToInvoicing: (schedule: LandUsePaymentScheduleEntry) => Promise<void>;
 }
 
 type SelectedPartyInvoiceData = Pick<
@@ -192,34 +193,41 @@ const getSchedulePartyName = (party: PartyEntry, index: number): string => {
 };
 
 const createPartyOptions = (parties: PartyEntry[]): SelectOption[] =>
-  parties.map((party, index) => ({
-    label: getSchedulePartyName(party, index),
-    value: String(index),
-  }));
+  parties
+    .filter((party) => party.id)
+    .map((party, index) => ({
+      label: getSchedulePartyName(party, index),
+      value: party.id!,
+    }));
 
 const createInvoiceContractOptions = (
   contracts: ContractItem[],
+  contractTypeChoices: SelectOption[],
 ): ContractOption[] =>
-  contracts.map((agreement, index) => {
-    const contractType = agreement.sopimuksenTyyppi?.trim();
-    const contractNumber = agreement.sopimusnumero?.trim() ?? "";
-    const parts = [contractType, contractNumber].filter(
-      (part): part is string => Boolean(part),
-    );
+  contracts
+    .filter((agreement) => agreement.id)
+    .map((agreement, index) => {
+      const contractTypeCode = agreement.sopimuksenTyyppi?.trim();
+      const contractType = contractTypeCode
+        ? getOptionsDisplayValue(contractTypeCode, contractTypeChoices)
+        : "";
+      const contractNumber = agreement.sopimusnumero?.trim() ?? "";
+      const parts = [contractType, contractNumber].filter(
+        (part): part is string => Boolean(part),
+      );
 
-    return {
-      label: parts.join(" ") || `Sopimus ${index + 1}`,
-      value: String(index),
-      sopimusnumero: contractNumber,
-    };
-  });
+      return {
+        label: parts.join(" ") || `Sopimus ${index + 1}`,
+        value: agreement.id!,
+        sopimusnumero: contractNumber,
+      };
+    });
 
 const getSelectedPartyInvoiceData = (
   recipientPartyIndex: string | undefined,
   parties: PartyEntry[],
 ): SelectedPartyInvoiceData => {
-  const selectedIndex = Number(recipientPartyIndex);
-  if (!Number.isInteger(selectedIndex) || selectedIndex < 0) {
+  if (!recipientPartyIndex) {
     return {
       name: "",
       streetAddress: "",
@@ -233,7 +241,9 @@ const getSelectedPartyInvoiceData = (
     };
   }
 
-  const selectedParty = parties[selectedIndex];
+  const selectedParty = parties.find(
+    (party) => party.id === recipientPartyIndex,
+  );
   if (!selectedParty) {
     return {
       name: "",
@@ -250,7 +260,7 @@ const getSelectedPartyInvoiceData = (
 
   const recipientDetails =
     selectedParty.invoiceRecipient?.details ?? selectedParty.party?.details;
-  const isCompany = recipientDetails?.partyType === "yritys";
+  const isCompany = recipientDetails?.partyType === "COMPANY";
 
   return {
     name: recipientDetails?.name ?? "",
@@ -363,6 +373,9 @@ const InvoiceItemRow: React.FC<InvoiceItemRowProps> = ({
   periodDays,
   validateInstallments,
 }) => {
+  const metadataQuery = useLandUseMetadata();
+  const scheduleItemTypeOptions =
+    metadataQuery.data?.payment_schedule_item_types ?? [];
   const { input: itemTypeInput, meta: itemTypeMeta } = useField<string>(
     `${itemFieldName}.itemType`,
     {
@@ -419,7 +432,7 @@ const InvoiceItemRow: React.FC<InvoiceItemRowProps> = ({
           <Select
             id={`landuse-payment-schedule-invoice-row-item-type-${scheduleIndex}-${installmentIndex}-${itemIndex}`}
             texts={{ label: "Maksun tyyppi", placeholder: "Valitse" }}
-            options={landUseInvoiceItemTypeSelectOptions}
+            options={scheduleItemTypeOptions}
             value={itemTypeInput.value}
             invalid={Boolean(itemTypeMeta.error)}
             required
@@ -433,7 +446,10 @@ const InvoiceItemRow: React.FC<InvoiceItemRowProps> = ({
           <TextInput
             id={`landuse-payment-schedule-invoice-row-item-type-${scheduleIndex}-${installmentIndex}-${itemIndex}`}
             label="Maksun tyyppi"
-            value={readOnlyTextValue(itemTypeInput.value)}
+            value={getOptionsDisplayValue(
+              itemTypeInput.value,
+              scheduleItemTypeOptions,
+            )}
             invalid={Boolean(itemTypeMeta.error)}
             errorText={itemTypeMeta.error}
             required
@@ -1031,7 +1047,7 @@ interface PartyGroupSectionProps {
   parties: PartyEntry[];
   contractOptions: ContractOption[];
   onRemoveSchedule: (index: number) => void;
-  onSendToInvoicing: (schedule: LandUsePaymentScheduleEntry) => void;
+  onSendToInvoicing: (schedule: LandUsePaymentScheduleEntry) => Promise<void>;
 }
 
 const getPartyGroupHeadingId = (partyValue: string): string =>
@@ -1049,6 +1065,7 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
   onRemoveSchedule,
   onSendToInvoicing,
 }) => {
+  const metadataQuery = useLandUseMetadata();
   const [scheduleToSend, setScheduleToSend] =
     useState<LandUsePaymentScheduleEntry | null>(null);
 
@@ -1056,10 +1073,10 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
     setScheduleToSend(null);
   };
 
-  const handleSendConfirm = () => {
+  const handleSendConfirm = async () => {
     if (!scheduleToSend) return;
 
-    onSendToInvoicing(scheduleToSend);
+    await onSendToInvoicing(scheduleToSend);
     closeSendDialog();
   };
 
@@ -1219,7 +1236,10 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
                           type={getScheduleStatusLabelType(schedule.status)}
                           iconStart={getScheduleStatusIcon(schedule.status)}
                         >
-                          {schedule.status ?? "-"}
+                          {getOptionsDisplayValue(
+                            schedule.status,
+                            metadataQuery.data?.payment_schedule_statuses ?? [],
+                          )}
                         </StatusLabel>
                         {canSubmitSchedules && statusAction && (
                           <Button
@@ -1479,6 +1499,7 @@ export const LandUsePaymentSchedule: React.FC<LandUsePaymentScheduleProps> = ({
   agreementIdentifier,
   onSendToInvoicing,
 }) => {
+  const metadataQuery = useLandUseMetadata();
   const [isBulkCreateOpen, setIsBulkCreateOpen] = useState(false);
 
   const partyOptions = useMemo(
@@ -1486,8 +1507,12 @@ export const LandUsePaymentSchedule: React.FC<LandUsePaymentScheduleProps> = ({
     [parties],
   );
   const contractOptions = useMemo(
-    () => createInvoiceContractOptions(contracts ?? []),
-    [contracts],
+    () =>
+      createInvoiceContractOptions(
+        contracts ?? [],
+        metadataQuery.data?.contract_types ?? [],
+      ),
+    [contracts, metadataQuery.data?.contract_types],
   );
 
   const tocEntries = useMemo(
@@ -1513,14 +1538,16 @@ export const LandUsePaymentSchedule: React.FC<LandUsePaymentScheduleProps> = ({
       return;
     }
 
-    const selectedContract = contracts[Number(values.contractIndex)];
+    const selectedContract = contracts.find(
+      (contract) => contract.id === values.contractIndex,
+    );
     const signedDate = selectedContract?.allekirjoituspvm ?? "";
     const sopimusnumero =
       contractOptions.find((option) => option.value === values.contractIndex)
         ?.sopimusnumero ?? "";
-    const recipientName =
-      partyOptions.find((o) => o.value === values.recipientPartyIndex)?.label ??
-      "";
+    const recipientName = values.recipientPartyIndex
+      ? getOptionsDisplayValue(values.recipientPartyIndex, partyOptions)
+      : "";
 
     const installments = Array.from({ length: total }, (_, index) =>
       createBulkInvoice(

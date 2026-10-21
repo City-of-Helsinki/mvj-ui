@@ -1,4 +1,11 @@
 import { NumericDecimalInput } from "@/landUse/components/NumericDecimalInput";
+import { useLandUseMetadata } from "@/landUse/api/useLandUseMetadata";
+import { useQuery } from "@tanstack/react-query";
+import {
+  getLandPolicyPrograms,
+  getSiteIntendedUses,
+  getSiteTenureTypes,
+} from "@/landUse/api/landUseApi";
 import { Decorator, FormApi } from "final-form";
 import createDecorator from "final-form-calculate";
 import {
@@ -20,12 +27,6 @@ import {
 import React, { useMemo } from "react";
 import { Field, Form } from "react-final-form";
 import { useTocEntries } from "@/landUse/hooks/useTableOfContents";
-import {
-  landUseHallintamuotoOptions,
-  landUseKayttotarkoitusOptions,
-  landUseMaapoliittinenOhjelmaOptions,
-  landUseSuojeltuOptions,
-} from "@/landUse/options";
 import {
   normalizeMultiSelectValue,
   normalizeSelectValue,
@@ -182,6 +183,9 @@ interface SiteRowProps {
   site: LandUseSite;
   siteIndex: number;
   rowValues: PerustietotaulukkoRowValues | undefined;
+  intendedUseOptions: SelectOption[];
+  tenureTypeOptions: SelectOption[];
+  preservationOptions: SelectOption[];
   isEditMode: boolean;
   onSetTabDirty: () => void;
   onRemove: (siteId: string) => void;
@@ -194,6 +198,9 @@ const SiteRow: React.FC<SiteRowProps> = ({
   site,
   siteIndex,
   rowValues,
+  intendedUseOptions,
+  tenureTypeOptions,
+  preservationOptions,
   isEditMode,
   onSetTabDirty,
   onRemove,
@@ -270,22 +277,28 @@ const SiteRow: React.FC<SiteRowProps> = ({
                 </div>
 
                 <div className="landuse-grid__column-4">
-                  <Field name={`sites.${siteIndex}.kayttotarkoitus`}>
+                  <Field name={`sites.${siteIndex}.kayttotarkoitusId`}>
                     {({ input }) =>
                       !isEditMode ? (
                         <TextInput
                           id={`landuse-compensations-kayttotarkoitus-${site.id}`}
                           label="Käyttötarkoitus"
-                          value={readOnlyTextValue(input.value)}
+                          value={readOnlyTextValue(site.kayttotarkoitus)}
                           readOnly
                         />
                       ) : (
                         <Select
                           id={`landuse-compensations-kayttotarkoitus-${site.id}`}
-                          options={landUseKayttotarkoitusOptions}
-                          value={normalizeSelectValue(input.value)}
+                          options={intendedUseOptions}
+                          value={normalizeSelectValue(
+                            input.value == null ? undefined : String(input.value),
+                          )}
                           onChange={(selectedOptions) => {
-                            handleSelectChange(selectedOptions, input.onChange);
+                            input.onChange(
+                              selectedOptions[0]
+                                ? Number(selectedOptions[0].value)
+                                : null,
+                            );
                             onSetTabDirty();
                           }}
                           texts={{
@@ -299,15 +312,15 @@ const SiteRow: React.FC<SiteRowProps> = ({
                 </div>
 
                 <div className="landuse-grid__column-4">
-                  <Field name={`sites.${siteIndex}.hallintamuoto`}>
+                  <Field name={`sites.${siteIndex}.hallintamuotoIds`}>
                     {({ input }) =>
                       !isEditMode ? (
                         <TextInput
                           id={`landuse-compensations-hallintamuoto-${site.id}`}
                           label="Hallintamuoto"
                           value={
-                            Array.isArray(input.value) && input.value.length > 0
-                              ? input.value.join(", ")
+                            site.hallintamuoto && site.hallintamuoto.length > 0
+                              ? site.hallintamuoto.join(", ")
                               : "-"
                           }
                           readOnly
@@ -315,12 +328,15 @@ const SiteRow: React.FC<SiteRowProps> = ({
                       ) : (
                         <Select
                           id={`landuse-compensations-hallintamuoto-${site.id}`}
-                          options={landUseHallintamuotoOptions}
-                          value={normalizeMultiSelectValue(input.value)}
+                          options={tenureTypeOptions}
+                          value={normalizeMultiSelectValue(
+                            (input.value ?? []).map(String),
+                          )}
                           onChange={(selectedOptions) => {
-                            handleMultiSelectChange(
-                              selectedOptions,
-                              input.onChange,
+                            input.onChange(
+                              selectedOptions.map((option) =>
+                                Number(option.value),
+                              ),
                             );
                             onSetTabDirty();
                           }}
@@ -348,7 +364,8 @@ const SiteRow: React.FC<SiteRowProps> = ({
                       ) : (
                         <Select
                           id={`landuse-compensations-suojeltu-${site.id}`}
-                          options={landUseSuojeltuOptions}
+                          options={preservationOptions}
+                          clearable
                           value={normalizeSelectValue(input.value)}
                           onChange={(selectedOptions) =>
                             handleSelectChange(selectedOptions, input.onChange)
@@ -454,6 +471,39 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
   isEditMode,
   onSetTabDirty,
 }) => {
+  const metadataQuery = useLandUseMetadata();
+  const intendedUsesQuery = useQuery({
+    queryKey: ["land-use", "site-intended-uses"],
+    queryFn: getSiteIntendedUses,
+    staleTime: 60 * 60 * 1000,
+  });
+  const tenureTypesQuery = useQuery({
+    queryKey: ["land-use", "site-tenure-types"],
+    queryFn: getSiteTenureTypes,
+    staleTime: 60 * 60 * 1000,
+  });
+  const landPolicyProgramsQuery = useQuery({
+    queryKey: ["land-use", "land-policy-programs"],
+    queryFn: getLandPolicyPrograms,
+    staleTime: 60 * 60 * 1000,
+  });
+  const intendedUseOptions = (intendedUsesQuery.data ?? []).map(
+    ({ id, name }) => ({
+      label: name,
+      value: String(id),
+    }),
+  );
+  const tenureTypeOptions = (tenureTypesQuery.data ?? []).map(
+    ({ id, name }) => ({
+      label: name,
+      value: String(id),
+    }),
+  );
+  const preservationOptions =
+    metadataQuery.data?.preservation_designations ?? [];
+  const landPolicyProgramOptions = (landPolicyProgramsQuery.data ?? []).map(
+    ({ id, name }) => ({ label: name, value: String(id) }),
+  );
   const [openSiteId, setOpenSiteId] = React.useState<string | null>(null);
 
   const tocEntries = useMemo(
@@ -527,14 +577,15 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
           selectedOptions: SelectOption[],
         ) => {
           const selectedValue = selectedOptions[0]?.value;
-          const selectedOption = landUseMaapoliittinenOhjelmaOptions.find(
-            (option) => option.value === selectedValue,
+          const selectedOption = landPolicyProgramsQuery.data?.find(
+            (option) => String(option.id) === selectedValue,
           );
 
-          form.change("maapoliittinenOhjelma", selectedOption?.value ?? "");
+          form.change("maapoliittinenOhjelmaId", selectedOption?.id ?? null);
+          form.change("maapoliittinenOhjelma", selectedOption?.name ?? "");
           form.change(
             "huojennusProsentti",
-            selectedOption?.defaultHuojennusProsentti ?? "",
+            selectedOption?.default_discount_percentage ?? "",
           );
           onSetTabDirty?.("compensations");
         };
@@ -777,6 +828,9 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                       site={site}
                       siteIndex={index}
                       rowValues={rowsBySiteId[site.id]}
+                      intendedUseOptions={intendedUseOptions}
+                      tenureTypeOptions={tenureTypeOptions}
+                      preservationOptions={preservationOptions}
                       isEditMode={isEditMode}
                       onSetTabDirty={() => onSetTabDirty?.("compensations")}
                       onRemove={handleRemoveSite}
@@ -835,7 +889,7 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
             <Fieldset heading="" className="full-width">
               <div className="landuse-grid">
                 <div className="landuse-grid__column-6">
-                  <Field name="maapoliittinenOhjelma">
+                  <Field name="maapoliittinenOhjelmaId">
                     {({ input }) =>
                       !isEditMode ? (
                         <TextInput
@@ -847,8 +901,12 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                       ) : (
                         <Select
                           id="landuse-compensations-maapoliittinen-ohjelma"
-                          options={landUseMaapoliittinenOhjelmaOptions}
-                          value={normalizeSelectValue(input.value)}
+                          options={landPolicyProgramOptions}
+                          value={normalizeSelectValue(
+                            input.value == null
+                              ? undefined
+                              : String(input.value),
+                          )}
                           onChange={handleMaapoliittinenOhjelmaChange}
                           clearable
                           texts={{
