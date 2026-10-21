@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
 import LeafletGeoJSONLayer from "@/components/map/LeafletGeoJSONLayer";
 import useGeoJsonFeatureInteractions from "@/components/map/useGeoJsonFeatureInteractions";
-import { MAP_COLORS } from "@/util/constants";
+import { MAP_LAYER_COLORS } from "@/components/map/mapStyles";
 import {
   LeaseAreasFieldTitles,
   LeasePlanUnitsFieldTitles,
@@ -32,7 +32,7 @@ type Props = {
 const InfillDevelopmentLeaseLayer = ({
   areaLocationOptions,
   areaTypeOptions,
-  color = MAP_COLORS[0],
+  color = MAP_LAYER_COLORS[0],
   geoJSONData,
   highlighted,
   leaseIdentifier,

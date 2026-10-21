@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import L from "leaflet";
 import { useLeafletMap, type LeafletLayerContainer } from "./LeafletMapContext";
+import { DEFAULT_LEAFLET_PATH_OPTIONS } from "./mapStyles";
 
 type Props = {
   layerContainer?: LeafletLayerContainer | null;
@@ -30,7 +31,7 @@ const LeafletGeoJSONLayer = ({
     }
 
     const layer = L.geoJSON(data, {
-      style,
+      style: { ...DEFAULT_LEAFLET_PATH_OPTIONS, ...style },
       onEachFeature: (feature, featureLayer) => {
         onEachFeatureRef.current?.(feature, featureLayer);
       },
