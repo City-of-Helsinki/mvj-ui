@@ -1,10 +1,13 @@
 import type { LandUseGuaranteeType } from "@/landUse/options";
+import type { LandUseUiMetadata } from "@/landUse/api/landUseTypes";
 
 /**
  * Union of all possible fields across collateral types.
  * Which fields apply depends on `tyyppi`.
  */
 export interface Guarantee {
+  id?: string;
+  clientKey?: string;
   tyyppi?: LandUseGuaranteeType;
   osapuolet?: string[];
   vakuusasiakirjanLaji?: string;
@@ -37,4 +40,5 @@ export interface CollateralFormProps {
   namePrefix: string;
   isEditMode: boolean;
   partyOptions: { label: string; value: string }[];
+  metadata?: LandUseUiMetadata;
 }

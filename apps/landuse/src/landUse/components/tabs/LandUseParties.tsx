@@ -13,13 +13,8 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Field, Form } from "react-final-form";
 import { FieldArray } from "react-final-form-arrays";
 import { createEmptyPartyEntry } from "@/landUse/api/landUseFormValues";
+import { useLandUseMetadata } from "@/landUse/api/useLandUseMetadata";
 import { useTocEntries } from "@/landUse/hooks/useTableOfContents";
-import {
-  countryOptions,
-  languageOptions,
-  partyRoleOptions,
-  partyTypeOptions,
-} from "@/landUse/options";
 import {
   getFieldTextValue,
   getOptionsDisplayValue,
@@ -63,6 +58,7 @@ export interface ContactPerson {
 
 export interface PartyEntry {
   id?: string;
+  clientKey?: string;
   party: {
     details: PersonPartyDetails | CompanyPartyDetails;
   };
@@ -103,415 +99,429 @@ const CompanyPartyForm: React.FC<PartyFormProps> = ({
   fieldPrefix,
   idPrefix,
   isEditMode,
-}) => (
-  <div className="landuse-grid landuse-grid__bottom-margin">
-    <div className="landuse-grid__column-6">
-      <Field name={`${fieldPrefix}.name`}>
-        {({ input }) => (
-          <TextInput
-            inputMode="text"
-            id={`${idPrefix}-name`}
-            label="Nimi"
-            value={getFieldTextValue(isEditMode, input.value)}
-            onChange={input.onChange}
-            readOnly={!isEditMode}
-            placeholder="Placeholder"
-          />
-        )}
-      </Field>
-    </div>
-
-    <div className="landuse-grid__column-6">
-      <Field name={`${fieldPrefix}.businessId`}>
-        {({ input }) => (
-          <TextInput
-            inputMode="text"
-            id={`${idPrefix}-business-id`}
-            label="Y-tunnus"
-            value={getFieldTextValue(isEditMode, input.value)}
-            onChange={input.onChange}
-            readOnly={!isEditMode}
-            placeholder="12345"
-          />
-        )}
-      </Field>
-    </div>
-
-    <div className="landuse-grid__column-6">
-      <Field name={`${fieldPrefix}.language`}>
-        {({ input }) =>
-          isEditMode ? (
-            <Select
-              id={`${idPrefix}-language`}
-              texts={{
-                label: "Kieli",
-                placeholder: "Valitse kieli",
-              }}
-              options={languageOptions}
-              value={normalizeSelectValue(input.value)}
-              onChange={(selected) =>
-                handleSelectChange(selected, input.onChange)
-              }
-            />
-          ) : (
+}) => {
+  const metadataQuery = useLandUseMetadata();
+  const languageOptions = metadataQuery.data?.languages ?? [];
+  const countryOptions = metadataQuery.data?.countries ?? [];
+  return (
+    <div className="landuse-grid landuse-grid__bottom-margin">
+      <div className="landuse-grid__column-6">
+        <Field name={`${fieldPrefix}.name`}>
+          {({ input }) => (
             <TextInput
-              id={`${idPrefix}-language`}
-              label="Kieli"
-              value={getOptionsDisplayValue(input.value, languageOptions)}
-              readOnly
+              inputMode="text"
+              id={`${idPrefix}-name`}
+              label="Nimi"
+              value={getFieldTextValue(isEditMode, input.value)}
+              onChange={input.onChange}
+              readOnly={!isEditMode}
+              placeholder="Placeholder"
             />
-          )
-        }
-      </Field>
-    </div>
+          )}
+        </Field>
+      </div>
 
-    <div className="landuse-grid__column-6">
-      <Field name={`${fieldPrefix}.streetAddress`}>
-        {({ input }) => (
-          <TextInput
-            inputMode="text"
-            id={`${idPrefix}-street`}
-            label="Katuosoite"
-            value={getFieldTextValue(isEditMode, input.value)}
-            onChange={input.onChange}
-            readOnly={!isEditMode}
-            placeholder="Placeholder"
-          />
-        )}
-      </Field>
-    </div>
-
-    <div className="landuse-grid__column-6">
-      <Field name={`${fieldPrefix}.postalCode`}>
-        {({ input }) => (
-          <TextInput
-            id={`${idPrefix}-postal-code`}
-            label="Postinumero"
-            inputMode="numeric"
-            value={getFieldTextValue(isEditMode, input.value)}
-            onChange={input.onChange}
-            readOnly={!isEditMode}
-            placeholder="Placeholder"
-          />
-        )}
-      </Field>
-    </div>
-
-    <div className="landuse-grid__column-6">
-      <Field name={`${fieldPrefix}.city`}>
-        {({ input }) => (
-          <TextInput
-            inputMode="text"
-            id={`${idPrefix}-city`}
-            label="Postitoimipaikka"
-            value={getFieldTextValue(isEditMode, input.value)}
-            onChange={input.onChange}
-            readOnly={!isEditMode}
-            placeholder="Placeholder"
-          />
-        )}
-      </Field>
-    </div>
-
-    <div className="landuse-grid__column-6">
-      <Field name={`${fieldPrefix}.country`}>
-        {({ input }) =>
-          isEditMode ? (
-            <Select
-              id={`${idPrefix}-country`}
-              texts={{
-                label: "Maa",
-                placeholder: "Valitse maa",
-              }}
-              options={countryOptions}
-              value={normalizeSelectValue(input.value)}
-              onChange={(selected) =>
-                handleSelectChange(selected, input.onChange)
-              }
-            />
-          ) : (
+      <div className="landuse-grid__column-6">
+        <Field name={`${fieldPrefix}.businessId`}>
+          {({ input }) => (
             <TextInput
-              id={`${idPrefix}-country`}
-              label="Maa"
-              value={getOptionsDisplayValue(input.value, countryOptions)}
-              readOnly
+              inputMode="text"
+              id={`${idPrefix}-business-id`}
+              label="Y-tunnus"
+              value={getFieldTextValue(isEditMode, input.value)}
+              onChange={input.onChange}
+              readOnly={!isEditMode}
+              placeholder="12345"
             />
-          )
-        }
-      </Field>
-    </div>
+          )}
+        </Field>
+      </div>
 
-    <div className="landuse-grid__column-6">
-      <Field name={`${fieldPrefix}.careOf`}>
-        {({ input }) => (
-          <TextInput
-            inputMode="text"
-            id={`${idPrefix}-care-of`}
-            label="c/o"
-            value={getFieldTextValue(isEditMode, input.value)}
-            onChange={input.onChange}
-            readOnly={!isEditMode}
-            placeholder="Placeholder"
-          />
-        )}
-      </Field>
-    </div>
+      <div className="landuse-grid__column-6">
+        <Field name={`${fieldPrefix}.language`}>
+          {({ input }) =>
+            isEditMode ? (
+              <Select
+                id={`${idPrefix}-language`}
+                texts={{
+                  label: "Kieli",
+                  placeholder: "Valitse kieli",
+                }}
+                options={languageOptions}
+                clearable
+                value={normalizeSelectValue(input.value)}
+                onChange={(selected) =>
+                  handleSelectChange(selected, input.onChange)
+                }
+              />
+            ) : (
+              <TextInput
+                id={`${idPrefix}-language`}
+                label="Kieli"
+                value={getOptionsDisplayValue(input.value, languageOptions)}
+                readOnly
+              />
+            )
+          }
+        </Field>
+      </div>
 
-    <div className="landuse-grid__column-6">
-      <Field name={`${fieldPrefix}.phone`}>
-        {({ input }) => (
-          <TextInput
-            id={`${idPrefix}-phone`}
-            label="Puhelinnumero"
-            inputMode="tel"
-            value={getFieldTextValue(isEditMode, input.value)}
-            onChange={input.onChange}
-            readOnly={!isEditMode}
-            placeholder="Placeholder"
-          />
-        )}
-      </Field>
-    </div>
+      <div className="landuse-grid__column-6">
+        <Field name={`${fieldPrefix}.streetAddress`}>
+          {({ input }) => (
+            <TextInput
+              inputMode="text"
+              id={`${idPrefix}-street`}
+              label="Katuosoite"
+              value={getFieldTextValue(isEditMode, input.value)}
+              onChange={input.onChange}
+              readOnly={!isEditMode}
+              placeholder="Placeholder"
+            />
+          )}
+        </Field>
+      </div>
 
-    <div className="landuse-grid__column-6">
-      <Field name={`${fieldPrefix}.email`}>
-        {({ input }) => (
-          <TextInput
-            id={`${idPrefix}-email`}
-            label="Sähköposti"
-            inputMode="email"
-            value={getFieldTextValue(isEditMode, input.value)}
-            onChange={input.onChange}
-            readOnly={!isEditMode}
-            placeholder="Placeholder"
-          />
-        )}
-      </Field>
-    </div>
+      <div className="landuse-grid__column-6">
+        <Field name={`${fieldPrefix}.postalCode`}>
+          {({ input }) => (
+            <TextInput
+              id={`${idPrefix}-postal-code`}
+              label="Postinumero"
+              inputMode="numeric"
+              value={getFieldTextValue(isEditMode, input.value)}
+              onChange={input.onChange}
+              readOnly={!isEditMode}
+              placeholder="Placeholder"
+            />
+          )}
+        </Field>
+      </div>
 
-    <div className="landuse-grid__column-12">
-      <Field name={`${fieldPrefix}.note`}>
-        {({ input }) => (
-          <TextArea
-            id={`${idPrefix}-note`}
-            label="Huomautus"
-            value={getFieldTextValue(isEditMode, input.value)}
-            onChange={input.onChange}
-            readOnly={!isEditMode}
-            placeholder="Placeholder"
-          />
-        )}
-      </Field>
+      <div className="landuse-grid__column-6">
+        <Field name={`${fieldPrefix}.city`}>
+          {({ input }) => (
+            <TextInput
+              inputMode="text"
+              id={`${idPrefix}-city`}
+              label="Postitoimipaikka"
+              value={getFieldTextValue(isEditMode, input.value)}
+              onChange={input.onChange}
+              readOnly={!isEditMode}
+              placeholder="Placeholder"
+            />
+          )}
+        </Field>
+      </div>
+
+      <div className="landuse-grid__column-6">
+        <Field name={`${fieldPrefix}.country`}>
+          {({ input }) =>
+            isEditMode ? (
+              <Select
+                id={`${idPrefix}-country`}
+                texts={{
+                  label: "Maa",
+                  placeholder: "Valitse maa",
+                }}
+                options={countryOptions}
+                clearable
+                value={normalizeSelectValue(input.value)}
+                onChange={(selected) =>
+                  handleSelectChange(selected, input.onChange)
+                }
+              />
+            ) : (
+              <TextInput
+                id={`${idPrefix}-country`}
+                label="Maa"
+                value={getOptionsDisplayValue(input.value, countryOptions)}
+                readOnly
+              />
+            )
+          }
+        </Field>
+      </div>
+
+      <div className="landuse-grid__column-6">
+        <Field name={`${fieldPrefix}.careOf`}>
+          {({ input }) => (
+            <TextInput
+              inputMode="text"
+              id={`${idPrefix}-care-of`}
+              label="c/o"
+              value={getFieldTextValue(isEditMode, input.value)}
+              onChange={input.onChange}
+              readOnly={!isEditMode}
+              placeholder="Placeholder"
+            />
+          )}
+        </Field>
+      </div>
+
+      <div className="landuse-grid__column-6">
+        <Field name={`${fieldPrefix}.phone`}>
+          {({ input }) => (
+            <TextInput
+              id={`${idPrefix}-phone`}
+              label="Puhelinnumero"
+              inputMode="tel"
+              value={getFieldTextValue(isEditMode, input.value)}
+              onChange={input.onChange}
+              readOnly={!isEditMode}
+              placeholder="Placeholder"
+            />
+          )}
+        </Field>
+      </div>
+
+      <div className="landuse-grid__column-6">
+        <Field name={`${fieldPrefix}.email`}>
+          {({ input }) => (
+            <TextInput
+              id={`${idPrefix}-email`}
+              label="Sähköposti"
+              inputMode="email"
+              value={getFieldTextValue(isEditMode, input.value)}
+              onChange={input.onChange}
+              readOnly={!isEditMode}
+              placeholder="Placeholder"
+            />
+          )}
+        </Field>
+      </div>
+
+      <div className="landuse-grid__column-12">
+        <Field name={`${fieldPrefix}.note`}>
+          {({ input }) => (
+            <TextArea
+              id={`${idPrefix}-note`}
+              label="Huomautus"
+              value={getFieldTextValue(isEditMode, input.value)}
+              onChange={input.onChange}
+              readOnly={!isEditMode}
+              placeholder="Placeholder"
+            />
+          )}
+        </Field>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 const PersonPartyForm: React.FC<PartyFormProps> = ({
   fieldPrefix,
   idPrefix,
   isEditMode,
-}) => (
-  <div className="landuse-grid landuse-grid__bottom-margin">
-    <div className="landuse-grid__column-6">
-      <Field name={`${fieldPrefix}.name`}>
-        {({ input }) => (
-          <TextInput
-            inputMode="text"
-            id={`${idPrefix}-name`}
-            label="Nimi"
-            value={getFieldTextValue(isEditMode, input.value)}
-            onChange={input.onChange}
-            readOnly={!isEditMode}
-            placeholder="Placeholder"
-          />
-        )}
-      </Field>
-    </div>
-
-    <div className="landuse-grid__column-6">
-      <Field name={`${fieldPrefix}.nationalIdentificationNumber`}>
-        {({ input }) => (
-          <TextInput
-            inputMode="text"
-            id={`${idPrefix}-national-id`}
-            label="Henkilötunnus"
-            value={getFieldTextValue(isEditMode, input.value)}
-            onChange={input.onChange}
-            readOnly={!isEditMode}
-            placeholder="Placeholder"
-          />
-        )}
-      </Field>
-    </div>
-
-    <div className="landuse-grid__column-6">
-      <Field name={`${fieldPrefix}.language`}>
-        {({ input }) =>
-          isEditMode ? (
-            <Select
-              id={`${idPrefix}-language`}
-              texts={{
-                label: "Kieli",
-                placeholder: "Valitse kieli",
-              }}
-              options={languageOptions}
-              value={normalizeSelectValue(input.value)}
-              onChange={(selected) =>
-                handleSelectChange(selected, input.onChange)
-              }
-            />
-          ) : (
+}) => {
+  const metadataQuery = useLandUseMetadata();
+  const languageOptions = metadataQuery.data?.languages ?? [];
+  const countryOptions = metadataQuery.data?.countries ?? [];
+  return (
+    <div className="landuse-grid landuse-grid__bottom-margin">
+      <div className="landuse-grid__column-6">
+        <Field name={`${fieldPrefix}.name`}>
+          {({ input }) => (
             <TextInput
-              id={`${idPrefix}-language`}
-              label="Kieli"
-              value={getOptionsDisplayValue(input.value, languageOptions)}
-              readOnly
+              inputMode="text"
+              id={`${idPrefix}-name`}
+              label="Nimi"
+              value={getFieldTextValue(isEditMode, input.value)}
+              onChange={input.onChange}
+              readOnly={!isEditMode}
+              placeholder="Placeholder"
             />
-          )
-        }
-      </Field>
-    </div>
+          )}
+        </Field>
+      </div>
 
-    <div className="landuse-grid__column-6">
-      <Field name={`${fieldPrefix}.streetAddress`}>
-        {({ input }) => (
-          <TextInput
-            inputMode="text"
-            id={`${idPrefix}-street`}
-            label="Katuosoite"
-            value={getFieldTextValue(isEditMode, input.value)}
-            onChange={input.onChange}
-            readOnly={!isEditMode}
-            placeholder="Placeholder"
-          />
-        )}
-      </Field>
-    </div>
-
-    <div className="landuse-grid__column-6">
-      <Field name={`${fieldPrefix}.postalCode`}>
-        {({ input }) => (
-          <TextInput
-            id={`${idPrefix}-postal-code`}
-            label="Postinumero"
-            inputMode="numeric"
-            value={getFieldTextValue(isEditMode, input.value)}
-            onChange={input.onChange}
-            readOnly={!isEditMode}
-            placeholder="Placeholder"
-          />
-        )}
-      </Field>
-    </div>
-
-    <div className="landuse-grid__column-6">
-      <Field name={`${fieldPrefix}.city`}>
-        {({ input }) => (
-          <TextInput
-            inputMode="text"
-            id={`${idPrefix}-city`}
-            label="Postitoimipaikka"
-            value={getFieldTextValue(isEditMode, input.value)}
-            onChange={input.onChange}
-            readOnly={!isEditMode}
-            placeholder="Placeholder"
-          />
-        )}
-      </Field>
-    </div>
-
-    <div className="landuse-grid__column-6">
-      <Field name={`${fieldPrefix}.country`}>
-        {({ input }) =>
-          isEditMode ? (
-            <Select
-              id={`${idPrefix}-country`}
-              texts={{
-                label: "Maa",
-                placeholder: "Valitse maa",
-              }}
-              options={countryOptions}
-              value={normalizeSelectValue(input.value)}
-              onChange={(selected) =>
-                handleSelectChange(selected, input.onChange)
-              }
-            />
-          ) : (
+      <div className="landuse-grid__column-6">
+        <Field name={`${fieldPrefix}.nationalIdentificationNumber`}>
+          {({ input }) => (
             <TextInput
-              id={`${idPrefix}-country`}
-              label="Maa"
-              value={getOptionsDisplayValue(input.value, countryOptions)}
-              readOnly
+              inputMode="text"
+              id={`${idPrefix}-national-id`}
+              label="Henkilötunnus"
+              value={getFieldTextValue(isEditMode, input.value)}
+              onChange={input.onChange}
+              readOnly={!isEditMode}
+              placeholder="Placeholder"
             />
-          )
-        }
-      </Field>
-    </div>
+          )}
+        </Field>
+      </div>
 
-    <div className="landuse-grid__column-6">
-      <Field name={`${fieldPrefix}.careOf`}>
-        {({ input }) => (
-          <TextInput
-            inputMode="text"
-            id={`${idPrefix}-care-of`}
-            label="c/o"
-            value={getFieldTextValue(isEditMode, input.value)}
-            onChange={input.onChange}
-            readOnly={!isEditMode}
-            placeholder="Placeholder"
-          />
-        )}
-      </Field>
-    </div>
+      <div className="landuse-grid__column-6">
+        <Field name={`${fieldPrefix}.language`}>
+          {({ input }) =>
+            isEditMode ? (
+              <Select
+                id={`${idPrefix}-language`}
+                texts={{
+                  label: "Kieli",
+                  placeholder: "Valitse kieli",
+                }}
+                options={languageOptions}
+                clearable
+                value={normalizeSelectValue(input.value)}
+                onChange={(selected) =>
+                  handleSelectChange(selected, input.onChange)
+                }
+              />
+            ) : (
+              <TextInput
+                id={`${idPrefix}-language`}
+                label="Kieli"
+                value={getOptionsDisplayValue(input.value, languageOptions)}
+                readOnly
+              />
+            )
+          }
+        </Field>
+      </div>
 
-    <div className="landuse-grid__column-6">
-      <Field name={`${fieldPrefix}.phone`}>
-        {({ input }) => (
-          <TextInput
-            id={`${idPrefix}-phone`}
-            label="Puhelinnumero"
-            inputMode="tel"
-            value={getFieldTextValue(isEditMode, input.value)}
-            onChange={input.onChange}
-            readOnly={!isEditMode}
-            placeholder="Placeholder"
-          />
-        )}
-      </Field>
-    </div>
+      <div className="landuse-grid__column-6">
+        <Field name={`${fieldPrefix}.streetAddress`}>
+          {({ input }) => (
+            <TextInput
+              inputMode="text"
+              id={`${idPrefix}-street`}
+              label="Katuosoite"
+              value={getFieldTextValue(isEditMode, input.value)}
+              onChange={input.onChange}
+              readOnly={!isEditMode}
+              placeholder="Placeholder"
+            />
+          )}
+        </Field>
+      </div>
 
-    <div className="landuse-grid__column-6">
-      <Field name={`${fieldPrefix}.email`}>
-        {({ input }) => (
-          <TextInput
-            id={`${idPrefix}-email`}
-            label="Sähköposti"
-            inputMode="email"
-            value={getFieldTextValue(isEditMode, input.value)}
-            onChange={input.onChange}
-            readOnly={!isEditMode}
-            placeholder="Placeholder"
-          />
-        )}
-      </Field>
-    </div>
+      <div className="landuse-grid__column-6">
+        <Field name={`${fieldPrefix}.postalCode`}>
+          {({ input }) => (
+            <TextInput
+              id={`${idPrefix}-postal-code`}
+              label="Postinumero"
+              inputMode="numeric"
+              value={getFieldTextValue(isEditMode, input.value)}
+              onChange={input.onChange}
+              readOnly={!isEditMode}
+              placeholder="Placeholder"
+            />
+          )}
+        </Field>
+      </div>
 
-    <div className="landuse-grid__column-12">
-      <Field name={`${fieldPrefix}.note`}>
-        {({ input }) => (
-          <TextArea
-            id={`${idPrefix}-note`}
-            label="Huomautus"
-            value={getFieldTextValue(isEditMode, input.value)}
-            onChange={input.onChange}
-            readOnly={!isEditMode}
-            placeholder="Placeholder"
-          />
-        )}
-      </Field>
+      <div className="landuse-grid__column-6">
+        <Field name={`${fieldPrefix}.city`}>
+          {({ input }) => (
+            <TextInput
+              inputMode="text"
+              id={`${idPrefix}-city`}
+              label="Postitoimipaikka"
+              value={getFieldTextValue(isEditMode, input.value)}
+              onChange={input.onChange}
+              readOnly={!isEditMode}
+              placeholder="Placeholder"
+            />
+          )}
+        </Field>
+      </div>
+
+      <div className="landuse-grid__column-6">
+        <Field name={`${fieldPrefix}.country`}>
+          {({ input }) =>
+            isEditMode ? (
+              <Select
+                id={`${idPrefix}-country`}
+                texts={{
+                  label: "Maa",
+                  placeholder: "Valitse maa",
+                }}
+                options={countryOptions}
+                clearable
+                value={normalizeSelectValue(input.value)}
+                onChange={(selected) =>
+                  handleSelectChange(selected, input.onChange)
+                }
+              />
+            ) : (
+              <TextInput
+                id={`${idPrefix}-country`}
+                label="Maa"
+                value={getOptionsDisplayValue(input.value, countryOptions)}
+                readOnly
+              />
+            )
+          }
+        </Field>
+      </div>
+
+      <div className="landuse-grid__column-6">
+        <Field name={`${fieldPrefix}.careOf`}>
+          {({ input }) => (
+            <TextInput
+              inputMode="text"
+              id={`${idPrefix}-care-of`}
+              label="c/o"
+              value={getFieldTextValue(isEditMode, input.value)}
+              onChange={input.onChange}
+              readOnly={!isEditMode}
+              placeholder="Placeholder"
+            />
+          )}
+        </Field>
+      </div>
+
+      <div className="landuse-grid__column-6">
+        <Field name={`${fieldPrefix}.phone`}>
+          {({ input }) => (
+            <TextInput
+              id={`${idPrefix}-phone`}
+              label="Puhelinnumero"
+              inputMode="tel"
+              value={getFieldTextValue(isEditMode, input.value)}
+              onChange={input.onChange}
+              readOnly={!isEditMode}
+              placeholder="Placeholder"
+            />
+          )}
+        </Field>
+      </div>
+
+      <div className="landuse-grid__column-6">
+        <Field name={`${fieldPrefix}.email`}>
+          {({ input }) => (
+            <TextInput
+              id={`${idPrefix}-email`}
+              label="Sähköposti"
+              inputMode="email"
+              value={getFieldTextValue(isEditMode, input.value)}
+              onChange={input.onChange}
+              readOnly={!isEditMode}
+              placeholder="Placeholder"
+            />
+          )}
+        </Field>
+      </div>
+
+      <div className="landuse-grid__column-12">
+        <Field name={`${fieldPrefix}.note`}>
+          {({ input }) => (
+            <TextArea
+              id={`${idPrefix}-note`}
+              label="Huomautus"
+              value={getFieldTextValue(isEditMode, input.value)}
+              onChange={input.onChange}
+              readOnly={!isEditMode}
+              placeholder="Placeholder"
+            />
+          )}
+        </Field>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 const getPartyHeadingId = (index: number): string => `party-heading-${index}`;
 
@@ -522,6 +532,9 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
   form,
   isEditMode,
 }) => {
+  const metadataQuery = useLandUseMetadata();
+  const partyRoleOptions = metadataQuery.data?.agreement_party_roles ?? [];
+  const partyTypeOptions = metadataQuery.data?.party_types ?? [];
   const newlyAddedIndexRef = useRef<number | null>(null);
   const [parties, setParties] = useState<PartyEntry[]>(
     () => form.getState().values.parties ?? [],
@@ -567,7 +580,11 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                       return (
                         <div
                           className="landuse-detail__party-entry"
-                          key={`${fieldName}-${index}`}
+                          key={
+                            fields.value[index].id ??
+                            fields.value[index].clientKey ??
+                            fieldName
+                          }
                         >
                           <div className="landuse-detail__heading-with-delete">
                             <h2 id={getPartyHeadingId(index)}>{partyName}</h2>
@@ -671,7 +688,7 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                                     </div>
 
                                     {partyEntry?.party?.details?.partyType ===
-                                      "yritys" && (
+                                      "COMPANY" && (
                                       <CompanyPartyForm
                                         fieldPrefix={`${fieldName}.party.details`}
                                         idPrefix={`party-${index}`}
@@ -679,7 +696,7 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                                       />
                                     )}
                                     {partyEntry?.party?.details?.partyType ===
-                                      "yksityishenkilo" && (
+                                      "PERSON" && (
                                       <PersonPartyForm
                                         fieldPrefix={`${fieldName}.party.details`}
                                         idPrefix={`party-${index}`}
@@ -951,7 +968,7 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                                       </div>
 
                                       {partyEntry?.invoiceRecipient?.details
-                                        ?.partyType === "yritys" && (
+                                        ?.partyType === "COMPANY" && (
                                         <CompanyPartyForm
                                           fieldPrefix={`${fieldName}.invoiceRecipient.details`}
                                           idPrefix={`party-${index}-invoice`}
@@ -959,7 +976,7 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                                         />
                                       )}
                                       {partyEntry?.invoiceRecipient?.details
-                                        ?.partyType === "yksityishenkilo" && (
+                                        ?.partyType === "PERSON" && (
                                         <PersonPartyForm
                                           fieldPrefix={`${fieldName}.invoiceRecipient.details`}
                                           idPrefix={`party-${index}-invoice`}

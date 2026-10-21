@@ -10,6 +10,7 @@ import {
 import { Field } from "react-final-form";
 import {
   getFieldTextValue,
+  getOptionsDisplayValue,
   normalizeSelectValue,
   readOnlyTextValue,
 } from "@/landUse/utils/fieldUtils";
@@ -178,7 +179,7 @@ export const CollateralSelectField: React.FC<SelectProps> = ({
           <TextInput
             id={id}
             label={label}
-            value={readOnlyTextValue(input.value)}
+            value={getOptionsDisplayValue(input.value, options)}
             readOnly
           />
         )
@@ -219,7 +220,7 @@ export const CollateralRadioField: React.FC<RadioProps> = ({
           <TextInput
             id={id}
             label={label}
-            value={readOnlyTextValue(input.value)}
+            value={getOptionsDisplayValue(input.value, options)}
             readOnly
           />
         )

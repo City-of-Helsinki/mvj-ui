@@ -10,13 +10,73 @@ import {
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Form, Field } from "react-final-form";
 import createDecorator from "final-form-calculate";
-import LandUseDetailPage from "@/landUse/components/LandUseDetailPage";
+import LandUseDetailPage, {
+  calculatePaidMaankayttokorvaus,
+} from "@/landUse/components/LandUseDetailPage";
 import * as landUseApi from "@/landUse/api/landUseApi";
 import { LanduseApiError } from "@/landUse/api/fetchClient";
 import { LAND_USE_NEGOTIATION_PHASES } from "@/landUse/options";
 
 const mockNavigate = vi.fn();
 let mockLocationSearch = "";
+
+it("counts only paid backend-coded compensation items", () => {
+  expect(
+    calculatePaidMaankayttokorvaus([
+      {
+        status: "PAID",
+        invoiceItems: [
+          {
+            itemType: "LAND_USE_COMPENSATION",
+            amountExcludingVat: "100.25",
+            description: "",
+          },
+          {
+            itemType: "INTEREST",
+            amountExcludingVat: "20.00",
+            description: "",
+          },
+          {
+            itemType: "INCREASE",
+            amountExcludingVat: "30.00",
+            description: "",
+          },
+          { itemType: "PENALTY", amountExcludingVat: "40.00", description: "" },
+        ],
+      },
+      {
+        status: "OPEN",
+        invoiceItems: [
+          {
+            itemType: "LAND_USE_COMPENSATION",
+            amountExcludingVat: "999",
+            description: "",
+          },
+        ],
+      },
+      {
+        status: "CREDITED",
+        invoiceItems: [
+          {
+            itemType: "LAND_USE_COMPENSATION",
+            amountExcludingVat: "999",
+            description: "",
+          },
+        ],
+      },
+      {
+        status: "PAID",
+        invoiceItems: [
+          {
+            itemType: "LAND_USE_COMPENSATION",
+            amountExcludingVat: "0.10",
+            description: "",
+          },
+        ],
+      },
+    ]),
+  ).toBeCloseTo(100.35);
+});
 
 vi.mock("react-router", () => ({
   useParams: () => ({ id: "1" }),
@@ -123,6 +183,32 @@ vi.mock("../tabs/LandUseParties", () => ({
           {({ input }) => (
             <input
               aria-label="parties-input"
+              {...input}
+              disabled={!isEditMode}
+            />
+          )}
+        </Field>
+      )}
+    />
+  ),
+}));
+
+vi.mock("../tabs/LandUseCollaterals", () => ({
+  LandUseCollaterals: ({
+    form,
+    isEditMode,
+  }: {
+    form: any;
+    isEditMode: boolean;
+  }) => (
+    <Form
+      form={form}
+      onSubmit={() => {}}
+      render={() => (
+        <Field name="korotuskerroin">
+          {({ input }) => (
+            <input
+              aria-label="collaterals-input"
               {...input}
               disabled={!isEditMode}
             />
@@ -389,6 +475,7 @@ vi.mock("hds-react", async (importOriginal) => {
 
 vi.mock("../../api/landUseApi", () => ({
   getSummary: vi.fn(),
+  getCollaterals: vi.fn(),
   getLandUseList: vi.fn(),
   getParties: vi.fn(),
   getCompensations: vi.fn(),
@@ -397,7 +484,6 @@ vi.mock("../../api/landUseApi", () => ({
   getContracts: vi.fn(),
   getPaymentSchedule: vi.fn(),
   getBilling: vi.fn(),
-  getCollaterals: vi.fn(),
   updateSummary: vi.fn(),
   updateParties: vi.fn(),
   updateCompensations: vi.fn(),
@@ -419,6 +505,9 @@ describe("LandUseDetailPage", () => {
       tila: LAND_USE_NEGOTIATION_PHASES.IN_PROGRESS,
       summaryField: "initial-summary",
     } as any);
+    vi.mocked(landUseApi.getCollaterals).mockResolvedValue({
+      korotuskerroin: "1.25",
+    });
     vi.mocked(landUseApi.getLandUseList).mockResolvedValue([
       { id: 1, identifier: "LU-1" },
     ] as any);
@@ -429,7 +518,6 @@ describe("LandUseDetailPage", () => {
       muuKorvaus: "300",
       maankayttokorvausYhteensa: "stale-value",
     } as any);
-    vi.mocked(landUseApi.getCollaterals).mockResolvedValue({} as any);
     vi.mocked(landUseApi.getMonitoring).mockResolvedValue({} as any);
     vi.mocked(landUseApi.getDecisions).mockResolvedValue({} as any);
     vi.mocked(landUseApi.getContracts).mockResolvedValue({} as any);
@@ -465,7 +553,7 @@ describe("LandUseDetailPage", () => {
     );
   });
 
-  it("renders a loading state until the agreement overview resolves", () => {
+  it("renders a loading state until the agreement resolves", () => {
     vi.mocked(landUseApi.getSummary).mockReturnValue(new Promise(() => {}));
 
     const queryClient = new QueryClient({
@@ -505,7 +593,7 @@ describe("LandUseDetailPage", () => {
 
     // Wait for initial data load to complete before editing
     await waitFor(() => {
-      expect(landUseApi.getSummary).toHaveBeenCalled();
+      expect(landUseApi.getSummary).toHaveBeenCalledTimes(1);
     });
 
     fireEvent.click(screen.getByRole("button", { name: "Muokkaa" }));
@@ -548,6 +636,41 @@ describe("LandUseDetailPage", () => {
       "1",
       expect.objectContaining({ compensationsField: "compensations-updated" }),
     );
+  });
+
+  it("preserves unsaved collateral edits while saving the summary", async () => {
+    const queryClient = new QueryClient({
+      defaultOptions: {
+        queries: { retry: false },
+        mutations: { retry: false },
+      },
+    });
+    render(
+      <QueryClientProvider client={queryClient}>
+        <LandUseDetailPage />
+      </QueryClientProvider>,
+    );
+
+    fireEvent.click(await screen.findByRole("button", { name: "Muokkaa" }));
+    fireEvent.change(await screen.findByLabelText("summary-input"), {
+      target: { value: "summary-updated" },
+    });
+    fireEvent.click(screen.getByRole("tab", { name: /Vakuustarve/i }));
+    const collateralInput = await screen.findByLabelText("collaterals-input");
+    expect((collateralInput as HTMLInputElement).value).toBe("1.25");
+    fireEvent.change(collateralInput, {
+      target: { value: "1.50" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Tallenna" }));
+
+    await waitFor(() => {
+      expect(landUseApi.updateCollaterals).toHaveBeenCalledWith(
+        "1",
+        expect.objectContaining({ korotuskerroin: "1.50" }),
+      );
+    });
+    expect(landUseApi.updateSummary).toHaveBeenCalledTimes(1);
+    expect(landUseApi.getCollaterals).toHaveBeenCalledTimes(1);
   });
 
   it("does not dirty compensations when its calculated total initializes", async () => {

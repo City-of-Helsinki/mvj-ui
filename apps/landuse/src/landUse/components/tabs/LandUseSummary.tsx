@@ -1,4 +1,5 @@
 import { FormApi } from "final-form";
+import { parseIsoDateToFinnishDate } from "@/landUse/utils/date";
 import {
   Button,
   ButtonVariant,
@@ -15,15 +16,21 @@ import {
 import React, { useEffect, useMemo, useState } from "react";
 import { Field, Form } from "react-final-form";
 import { FieldArray } from "react-final-form-arrays";
-import { getAsemakaavat } from "@/landUse/api/landUseApi";
+import {
+  getAsemakaavat,
+  getAuthorizedSignatories,
+  getPreparers,
+} from "@/landUse/api/landUseApi";
+import { useLandUseMetadata } from "@/landUse/api/useLandUseMetadata";
+import type {
+  AgreementStatusCode,
+  DetailedPlanResponse,
+} from "@/landUse/api/landUseTypes";
+import { useQuery } from "@tanstack/react-query";
 import { useTocEntries } from "@/landUse/hooks/useTableOfContents";
 import {
-  type AsemakaavaListItem,
-  landUseDecisionMakerOptions,
-  landUseNegotiationPhaseOptions,
-} from "@/landUse/options";
-import {
   getFieldTextValue,
+  getOptionsDisplayValue,
   selectLabelIncludesFilter,
   normalizeSelectValue,
   readOnlyTextValue,
@@ -46,10 +53,9 @@ interface KohdeEntry {
 
 export interface LandUseSummaryFormValues {
   identifier: string;
-  maankayttosopimusType: string | undefined;
   kaupunginosa: string;
   edistamisalue: boolean;
-  tila: string | undefined;
+  tila: AgreementStatusCode | undefined;
   suunnittelunPerusteenaOlevatKohteet: KohdeEntry[];
   valmistelijat: ValmistelijaEntry[];
   osoitteet: OsoiteEntry[];
@@ -58,6 +64,7 @@ export interface LandUseSummaryFormValues {
   toimivaltainenPaattaja: string;
   sisaltaaAmVelvoitteita: string;
   velvoitteidenMaaraika: string;
+  detailedPlanId: number | null;
   asemakaavanNumero: string;
   asemakaavanKasittelyvaihe: string;
   vahvistamisHyvaksymisPvm: string;
@@ -70,13 +77,6 @@ interface LandUseSummaryProps {
   form: FormApi<LandUseSummaryFormValues>;
   isEditMode: boolean;
 }
-
-const maankayttosopimusTypeOptions = [
-  {
-    label: "Maankäyttösopimus",
-    value: "Maankäyttösopimus",
-  },
-];
 
 const SUMMARY_STEP_KEYS = {
   general: "yleiset-tiedot",
@@ -114,7 +114,18 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
   form,
   isEditMode,
 }) => {
-  const [asemakaavat, setAsemakaavat] = useState<AsemakaavaListItem[]>([]);
+  const [asemakaavat, setAsemakaavat] = useState<DetailedPlanResponse[]>([]);
+  const metadataQuery = useLandUseMetadata();
+  const signatoriesQuery = useQuery({
+    queryKey: ["land-use", "authorized-signatories"],
+    queryFn: getAuthorizedSignatories,
+    staleTime: 60 * 60 * 1000,
+  });
+  const preparersQuery = useQuery({
+    queryKey: ["land-use", "preparers"],
+    queryFn: getPreparers,
+    staleTime: 60 * 60 * 1000, // Preparers are actual officer users not created very often, call fetches all pages
+  });
 
   const tocEntries = useMemo(
     () =>
@@ -148,8 +159,8 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
   const asemakaavaNumberOptions = useMemo(
     () =>
       asemakaavat.map((item) => ({
-        label: item.asemakaavanNumero,
-        value: item.asemakaavanNumero,
+        label: item.plan_number,
+        value: String(item.id),
       })),
     [asemakaavat],
   );
@@ -157,32 +168,30 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
   const handleAsemakaavaNumberChange = (
     selectedOptions: { label: string; value: string }[],
   ) => {
-    const selectedNumber = selectedOptions[0]?.value ?? "";
+    const selectedId = selectedOptions[0]?.value;
     const selectedAsemakaava = asemakaavat.find(
-      (item) => item.asemakaavanNumero === selectedNumber,
+      (item) => String(item.id) === selectedId,
     );
 
     form.batch(() => {
-      form.change("asemakaavanNumero", selectedNumber);
+      form.change("detailedPlanId", selectedAsemakaava?.id ?? null);
+      form.change("asemakaavanNumero", selectedAsemakaava?.plan_number ?? "");
       form.change(
         "asemakaavanKasittelyvaihe",
-        selectedAsemakaava?.asemakaavanKasittelyvaihe ?? "",
+        selectedAsemakaava?.processing_stage ?? "",
       );
       form.change(
         "vahvistamisHyvaksymisPvm",
-        selectedAsemakaava?.vahvistamisHyvaksymisPvm ?? "",
+        parseIsoDateToFinnishDate(selectedAsemakaava?.approval_date),
       );
       form.change(
         "asemakaavanLainvoimaisuusPvm",
-        selectedAsemakaava?.asemakaavanLainvoimaisuusPvm ?? "",
+        parseIsoDateToFinnishDate(selectedAsemakaava?.effective_date),
       );
-      form.change(
-        "asemakaavanHyvaksyjä",
-        selectedAsemakaava?.asemakaavanHyvaksyjä ?? "",
-      );
+      form.change("asemakaavanHyvaksyjä", selectedAsemakaava?.approver ?? "");
       form.change(
         "asemakaavanDiaarinumero",
-        selectedAsemakaava?.asemakaavanDiaarinumero ?? "",
+        selectedAsemakaava?.diary_number ?? "",
       );
     });
   };
@@ -204,38 +213,6 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                     <div id={getSummaryStepId(SUMMARY_STEP_KEYS.general)}>
                       <Fieldset heading="" className="full-width">
                         <div className="landuse-grid">
-                          <div className="landuse-grid__column-6">
-                            <Field name="maankayttosopimusType">
-                              {({ input }) =>
-                                isEditMode ? (
-                                  <Select
-                                    id="summary-maankayttosopimus-type"
-                                    options={maankayttosopimusTypeOptions}
-                                    value={normalizeSelectValue(input.value)}
-                                    onChange={(selectedOptions) =>
-                                      handleSelectChange(
-                                        selectedOptions,
-                                        input.onChange,
-                                      )
-                                    }
-                                    texts={{
-                                      label: "Maankäyttösopimuksen tyyppi",
-                                      placeholder: "Valitse",
-                                    }}
-                                    disabled={!isEditMode}
-                                  />
-                                ) : (
-                                  <TextInput
-                                    id="summary-maankayttosopimus-type"
-                                    label="Maankäyttösopimuksen tyyppi"
-                                    value={readOnlyTextValue(input.value)}
-                                    readOnly
-                                  />
-                                )
-                              }
-                            </Field>
-                          </div>
-
                           <div className="landuse-grid__column-6">
                             <Field name="kaupunginosa">
                               {({ input }) => (
@@ -284,7 +261,11 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                                 isEditMode ? (
                                   <Select
                                     id="summary-tila"
-                                    options={landUseNegotiationPhaseOptions}
+                                    clearable
+                                    options={
+                                      metadataQuery.data?.agreement_statuses ??
+                                      []
+                                    }
                                     value={normalizeSelectValue(input.value)}
                                     onChange={(selectedOptions) =>
                                       handleSelectChange(
@@ -295,6 +276,7 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                                     texts={{
                                       label: "Maankäyttösopimuksen tila",
                                       placeholder: "Valitse",
+                                      clearButtonAriaLabel_one: "Tyhjennä tila",
                                     }}
                                     disabled={!isEditMode}
                                   />
@@ -302,7 +284,13 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                                   <TextInput
                                     id="summary-tila"
                                     label="Maankäyttösopimuksen tila"
-                                    value={readOnlyTextValue(input.value)}
+                                    value={
+                                      getOptionsDisplayValue(
+                                        input.value,
+                                        metadataQuery.data?.agreement_statuses ??
+                                          [],
+                                      )
+                                    }
                                     readOnly
                                   />
                                 )
@@ -412,7 +400,15 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                                 isEditMode ? (
                                   <Select
                                     id="toimivaltainen-paattaja"
-                                    options={landUseDecisionMakerOptions}
+                                    clearable
+                                    options={
+                                      signatoriesQuery.data?.map(
+                                        ({ id, name }) => ({
+                                          label: name,
+                                          value: String(id),
+                                        }),
+                                      ) ?? []
+                                    }
                                     value={normalizeSelectValue(input.value)}
                                     onChange={(selectedOptions) =>
                                       handleSelectChange(
@@ -430,7 +426,12 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                                   <TextInput
                                     id="toimivaltainen-paattaja"
                                     label="Toimivaltainen päättäjä"
-                                    value={readOnlyTextValue(input.value)}
+                                    value={
+                                      signatoriesQuery.data?.find(
+                                        (signatory) =>
+                                          String(signatory.id) === input.value,
+                                      )?.name ?? readOnlyTextValue(input.value)
+                                    }
                                     readOnly
                                   />
                                 )
@@ -450,18 +451,25 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                       <Fieldset heading="" className="full-width">
                         <div className="landuse-grid">
                           <div className="landuse-grid__column-6">
-                            <Field name="asemakaavanNumero">
+                            <Field name="detailedPlanId">
                               {({ input }) =>
                                 isEditMode ? (
                                   <Select
                                     id="asemakaavan-numero"
+                                    clearable
                                     options={asemakaavaNumberOptions}
-                                    value={normalizeSelectValue(input.value)}
+                                    value={
+                                      input.value
+                                        ? String(input.value)
+                                        : undefined
+                                    }
                                     onChange={handleAsemakaavaNumberChange}
                                     filter={selectLabelIncludesFilter}
                                     texts={{
                                       label: "Asemakaavan numero",
                                       placeholder: "Valitse",
+                                      clearButtonAriaLabel_one:
+                                        "Tyhjennä asemakaava",
                                     }}
                                     disabled={!isEditMode}
                                   />
@@ -469,7 +477,9 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                                   <TextInput
                                     id="asemakaavan-numero"
                                     label="Asemakaavan numero"
-                                    value={readOnlyTextValue(input.value)}
+                                    value={readOnlyTextValue(
+                                      values.asemakaavanNumero,
+                                    )}
                                     readOnly
                                   />
                                 )
@@ -479,18 +489,27 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
 
                           <div className="landuse-grid__column-6">
                             <Field name="asemakaavanKasittelyvaihe">
-                              {({ input }) => (
-                                <TextInput
-                                  id="asemakaavan-kasittelyvaihe"
-                                  label="Asemakaavan käsittelyvaihe"
-                                  value={getFieldTextValue(
-                                    isEditMode,
-                                    input.value,
-                                  )}
-                                  onChange={input.onChange}
-                                  readOnly
-                                />
-                              )}
+                              {({ input }) => {
+                                const displayValue = getOptionsDisplayValue(
+                                  input.value,
+                                  metadataQuery.data
+                                    ?.detailed_plan_processing_stages ?? [],
+                                );
+                                return (
+                                  <TextInput
+                                    id="asemakaavan-kasittelyvaihe"
+                                    label="Asemakaavan käsittelyvaihe"
+                                    value={getFieldTextValue(
+                                      isEditMode,
+                                      displayValue === "-"
+                                        ? input.value
+                                        : displayValue,
+                                    )}
+                                    onChange={input.onChange}
+                                    readOnly
+                                  />
+                                );
+                              }}
                             </Field>
                           </div>
 
@@ -582,17 +601,19 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                                   <div key={name} className="landuse-grid">
                                     <div className="landuse-grid__column-6">
                                       <Field name={`${name}.value`}>
-                                        {({ input }) =>
-                                            <TextInput
-                                              id={`suunnittelun-kohde-${index}`}
-                                              label={`Kohde ${index + 1}`}
-                                              value={isEditMode ? input.value : readOnlyTextValue(
-                                                input.value,
-                                              )}
-                                              onChange={input.onChange}
-                                              readOnly={!isEditMode}
-                                            />
-                                        }
+                                        {({ input }) => (
+                                          <TextInput
+                                            id={`suunnittelun-kohde-${index}`}
+                                            label={`Kohde ${index + 1}`}
+                                            value={
+                                              isEditMode
+                                                ? input.value
+                                                : readOnlyTextValue(input.value)
+                                            }
+                                            onChange={input.onChange}
+                                            readOnly={!isEditMode}
+                                          />
+                                        )}
                                       </Field>
                                     </div>
 
@@ -790,20 +811,15 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                                           isEditMode ? (
                                             <Select
                                               id={`valmistelija-${index}`}
-                                              options={[
-                                                {
-                                                  label: "Valmistelija 1",
-                                                  value: "valmistelija1",
-                                                },
-                                                {
-                                                  label: "Valmistelija 2",
-                                                  value: "valmistelija2",
-                                                },
-                                                {
-                                                  label: "Valmistelija 3",
-                                                  value: "valmistelija3",
-                                                },
-                                              ]}
+                                              clearable
+                                              options={
+                                                preparersQuery.data?.map(
+                                                  ({ id, name }) => ({
+                                                    label: name,
+                                                    value: String(id),
+                                                  }),
+                                                ) ?? []
+                                              }
                                               value={normalizeSelectValue(
                                                 input.value,
                                               )}
@@ -813,6 +829,7 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                                                   input.onChange,
                                                 )
                                               }
+                                              filter={selectLabelIncludesFilter}
                                               texts={{
                                                 label: "Valmistelija",
                                                 placeholder: "Valitse",
@@ -823,9 +840,14 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                                             <TextInput
                                               id={`valmistelija-${index}`}
                                               label="Valmistelija"
-                                              value={readOnlyTextValue(
-                                                input.value,
-                                              )}
+                                              value={
+                                                preparersQuery.data?.find(
+                                                  (preparer) =>
+                                                    String(preparer.id) ===
+                                                    input.value,
+                                                )?.name ??
+                                                readOnlyTextValue(input.value)
+                                              }
                                               readOnly
                                             />
                                           )

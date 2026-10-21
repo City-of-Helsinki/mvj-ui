@@ -9,6 +9,7 @@ import { OmavelkainenTakausForm } from "@/landUse/components/collateralForms/Oma
 import { TilivarojenPanttausForm } from "@/landUse/components/collateralForms/TilivarojenPanttausForm";
 import { MuuVakuusForm } from "@/landUse/components/collateralForms/MuuVakuusForm";
 import type { CollateralFormProps } from "@/landUse/components/collateralForms/types";
+import { useLandUseMetadata } from "@/landUse/api/useLandUseMetadata";
 
 export { PanttikirjaForm } from "@/landUse/components/collateralForms/PanttikirjaForm";
 export { RahavakuusForm } from "@/landUse/components/collateralForms/RahavakuusForm";
@@ -31,6 +32,8 @@ export const CollateralFormByType: React.FC<CollateralFormByTypeProps> = ({
   isEditMode,
   partyOptions,
 }) => {
+  const metadataQuery = useLandUseMetadata();
+  const metadata = metadataQuery.data;
   switch (type) {
     case LAND_USE_GUARANTEE_TYPES.PANTTIKIRJA:
       return (
@@ -38,6 +41,7 @@ export const CollateralFormByType: React.FC<CollateralFormByTypeProps> = ({
           namePrefix={namePrefix}
           isEditMode={isEditMode}
           partyOptions={partyOptions}
+          metadata={metadata}
         />
       );
     case LAND_USE_GUARANTEE_TYPES.RAHAVAKUUS:
@@ -46,6 +50,7 @@ export const CollateralFormByType: React.FC<CollateralFormByTypeProps> = ({
           namePrefix={namePrefix}
           isEditMode={isEditMode}
           partyOptions={partyOptions}
+          metadata={metadata}
         />
       );
     case LAND_USE_GUARANTEE_TYPES.OMAVELKAINEN_TAKAUS:
@@ -54,6 +59,7 @@ export const CollateralFormByType: React.FC<CollateralFormByTypeProps> = ({
           namePrefix={namePrefix}
           isEditMode={isEditMode}
           partyOptions={partyOptions}
+          metadata={metadata}
         />
       );
     case LAND_USE_GUARANTEE_TYPES.TILIVAROJEN_PANTTAUS:
@@ -62,6 +68,7 @@ export const CollateralFormByType: React.FC<CollateralFormByTypeProps> = ({
           namePrefix={namePrefix}
           isEditMode={isEditMode}
           partyOptions={partyOptions}
+          metadata={metadata}
         />
       );
     case LAND_USE_GUARANTEE_TYPES.MUU_VAKUUS:
@@ -70,6 +77,7 @@ export const CollateralFormByType: React.FC<CollateralFormByTypeProps> = ({
           namePrefix={namePrefix}
           isEditMode={isEditMode}
           partyOptions={partyOptions}
+          metadata={metadata}
         />
       );
     default:

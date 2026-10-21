@@ -20,10 +20,9 @@ import {
 import React, { useState } from "react";
 import { Field, Form } from "react-final-form";
 import { FieldArray } from "react-final-form-arrays";
+import { useLandUseMetadata } from "@/landUse/api/useLandUseMetadata";
 import {
   LAND_USE_INVOICE_STATUSES,
-  landUseInvoiceItemTypeSelectOptions,
-  landUseInvoiceTypeSelectOptions,
   type LandUseInvoice,
   type LandUseInvoiceItem,
   type LandUseInvoiceStatus,
@@ -54,6 +53,7 @@ type BillingPartyDetails = Pick<
 > & { businessId?: CompanyPartyDetails["businessId"] };
 
 export interface LandUseBillingParty {
+  id?: string;
   party: { details: BillingPartyDetails };
   invoiceRecipient?: { details: BillingPartyDetails };
   billingDetails: Pick<
@@ -83,6 +83,7 @@ export interface LandUseBillingFormValues {
 
 export interface LandUseBillingInvoice extends Pick<
   LandUseInvoice,
+  | "id"
   | "recipientPartyIndex"
   | "installmentNumber"
   | "installmentTotal"
@@ -94,9 +95,10 @@ export interface LandUseBillingInvoice extends Pick<
   | "billedAmount"
   | "remainingAmount"
   | "invoiceItems"
+  | "payments"
 > {
-  sourcePaymentScheduleId?: string;
-  sourceInstallmentIndex?: number;
+  sourceInstallmentId?: string;
+  recipientSnapshot?: SelectedPartyInvoiceData;
 }
 
 interface LandUseBillingProps {
@@ -113,6 +115,8 @@ interface LandUseBillingProps {
 }
 
 interface SelectedPartyInvoiceData {
+  name?: string;
+  partyType?: string;
   streetAddress: string;
   city: string;
   postalCode: string;
@@ -144,7 +148,7 @@ function isInvoiceEditableBasedOnStatus(
 export const isInvoiceContentEditableInBilling = (
   invoice: LandUseBillingInvoice,
 ): boolean =>
-  !invoice.sourcePaymentScheduleId && isInvoiceEditableBasedOnStatus(invoice);
+  !invoice.sourceInstallmentId && isInvoiceEditableBasedOnStatus(invoice);
 
 const getPartyName = (value: string | undefined): string => value?.trim() ?? "";
 
@@ -170,17 +174,18 @@ const getInvoiceRecipientLabel = (
 const createInvoiceRecipientOptions = (
   parties: LandUseBillingParty[],
 ): SelectOption[] =>
-  parties.map((party, index) => ({
-    label: getInvoiceRecipientLabel(party, index),
-    value: String(index),
-  }));
+  parties
+    .filter((party) => party.id)
+    .map((party, index) => ({
+      label: getInvoiceRecipientLabel(party, index),
+      value: party.id!,
+    }));
 
 const getSelectedPartyInvoiceData = (
   recipientPartyIndex: string | undefined,
   parties: LandUseBillingParty[],
 ): SelectedPartyInvoiceData => {
-  const selectedIndex = Number(recipientPartyIndex);
-  if (!Number.isInteger(selectedIndex) || selectedIndex < 0) {
+  if (!recipientPartyIndex) {
     return {
       streetAddress: "",
       city: "",
@@ -193,7 +198,9 @@ const getSelectedPartyInvoiceData = (
     };
   }
 
-  const selectedParty = parties[selectedIndex];
+  const selectedParty = parties.find(
+    (party) => party.id === recipientPartyIndex,
+  );
   if (!selectedParty) {
     return {
       streetAddress: "",
@@ -209,7 +216,7 @@ const getSelectedPartyInvoiceData = (
 
   const recipientDetails =
     selectedParty.invoiceRecipient?.details ?? selectedParty.party?.details;
-  const isCompany = recipientDetails?.partyType === "yritys";
+  const isCompany = recipientDetails?.partyType === "COMPANY";
 
   return {
     streetAddress: recipientDetails?.streetAddress ?? "",
@@ -225,6 +232,13 @@ const getSelectedPartyInvoiceData = (
     isCompany,
   };
 };
+
+const getInvoiceRecipientData = (
+  invoice: LandUseBillingInvoice,
+  parties: LandUseBillingParty[],
+): SelectedPartyInvoiceData =>
+  invoice.recipientSnapshot ??
+  getSelectedPartyInvoiceData(invoice.recipientPartyIndex, parties);
 
 const createEmptyInvoiceTableRow = (
   recipientPartyIndex: string | undefined,
@@ -296,6 +310,9 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
   onRemove,
   onToggle,
 }) => {
+  const metadataQuery = useLandUseMetadata();
+  const invoiceTypeOptions = metadataQuery.data?.invoice_types ?? [];
+  const invoiceItemTypeOptions = metadataQuery.data?.invoice_item_types ?? [];
   return (
     <Field name={fieldName} subscription={{ value: true }}>
       {({ input }) => {
@@ -304,10 +321,7 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
           invoice.installmentNumber && invoice.installmentTotal
             ? `${invoice.installmentNumber}/${invoice.installmentTotal}`
             : "-";
-        const selectedPartyData = getSelectedPartyInvoiceData(
-          invoice.recipientPartyIndex,
-          parties,
-        );
+        const selectedPartyData = getInvoiceRecipientData(invoice, parties);
         const canEditInvoiceContent =
           isEditMode && isInvoiceContentEditableInBilling(invoice);
 
@@ -342,8 +356,15 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
               <td>{readOnlyTextValue(installmentDisplayValue)}</td>
               <td>{readOnlyTextValue(invoice.dueDate)}</td>
               <td>{readOnlyTextValue(invoice.invoiceNumber)}</td>
-              <td>{readOnlyTextValue(invoice.type)}</td>
-              <td>{readOnlyTextValue(invoice.status)}</td>
+              <td>
+                {getOptionsDisplayValue(invoice.type, invoiceTypeOptions)}
+              </td>
+              <td>
+                {getOptionsDisplayValue(
+                  invoice.status,
+                  metadataQuery.data?.invoice_statuses ?? [],
+                )}
+              </td>
               <td>{formatLandUseEuroDisplayValue(invoice.billedAmount)}</td>
               <td>{formatLandUseEuroDisplayValue(invoice.remainingAmount)}</td>
             </tr>
@@ -361,7 +382,7 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
                             canEditInvoiceContent ? (
                               <Select
                                 id={`landuse-billing-type-${index}`}
-                                options={landUseInvoiceTypeSelectOptions}
+                                options={invoiceTypeOptions}
                                 value={normalizeSelectValue(typeInput.value)}
                                 onChange={(selectedOptions) =>
                                   handleSelectChange(
@@ -378,7 +399,10 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
                               <TextInput
                                 id={`landuse-billing-type-${index}`}
                                 label="Laskun tyyppi"
-                                value={readOnlyTextValue(typeInput.value)}
+                                value={getOptionsDisplayValue(
+                                  typeInput.value,
+                                  invoiceTypeOptions,
+                                )}
                                 readOnly
                               />
                             )
@@ -585,7 +609,11 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
                                   <TextInput
                                     id={`landuse-billing-status-${index}`}
                                     label="Laskun tila"
-                                    value={readOnlyTextValue(statusInput.value)}
+                                    value={getOptionsDisplayValue(
+                                      statusInput.value,
+                                      metadataQuery.data?.invoice_statuses ??
+                                        [],
+                                    )}
                                     readOnly
                                   />
                                   {isEditMode && statusAction && (
@@ -703,6 +731,34 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
                         </div>
                       </div>
                     </Fieldset>
+                    {(invoice.payments?.length ?? 0) > 0 && (
+                      <Fieldset heading="Maksusuoritukset">
+                        <div className="landuse-detail__sites-table-wrapper">
+                          <table className="landuse-compensations-table">
+                            <thead>
+                              <tr>
+                                <th>Maksupäivä</th>
+                                <th>Maksettu</th>
+                                <th>Arkistointitunnus</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {invoice.payments?.map((payment) => (
+                                <tr key={payment.id}>
+                                  <td>{payment.paidDate}</td>
+                                  <td>
+                                    {formatLandUseEuroDisplayValue(
+                                      payment.paidAmount,
+                                    )}
+                                  </td>
+                                  <td>{payment.filingCode}</td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </Fieldset>
+                    )}
                     <div className="landuse-grid">
                       <div className="landuse-grid__column-12">
                         <Fieldset heading="Laskurivit">
@@ -767,7 +823,7 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
                                                       placeholder: "Valitse",
                                                     }}
                                                     options={
-                                                      landUseInvoiceItemTypeSelectOptions
+                                                      invoiceItemTypeOptions
                                                     }
                                                     value={itemTypeInput.value}
                                                     onChange={(selected) => {
@@ -782,8 +838,9 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
                                                   <TextInput
                                                     id={`landuse-billing-invoice-row-item-type-${index}-${invoiceItemIndex}`}
                                                     label="Laskurivin tyyppi"
-                                                    value={readOnlyTextValue(
+                                                    value={getOptionsDisplayValue(
                                                       itemTypeInput.value,
+                                                      invoiceItemTypeOptions,
                                                     )}
                                                     readOnly
                                                   />
@@ -906,6 +963,7 @@ const InvoiceReviewTable: React.FC<InvoiceReviewTableProps> = ({
   onAccept,
   onDecline,
 }) => {
+  const metadataQuery = useLandUseMetadata();
   const [openInvoice, setOpenInvoice] = useState<string | null>(null);
   const [scheduleToAccept, setScheduleToAccept] =
     useState<LandUseBillingSchedule | null>(null);
@@ -1039,8 +1097,10 @@ const InvoiceReviewTable: React.FC<InvoiceReviewTableProps> = ({
                                       <TextInput
                                         id={`landuse-billing-review-type-${scheduleIndex}-${index}`}
                                         label="Laskun tyyppi"
-                                        value={readOnlyTextValue(
+                                        value={getOptionsDisplayValue(
                                           installment.type,
+                                          metadataQuery.data?.invoice_types ??
+                                            [],
                                         )}
                                         readOnly
                                       />
@@ -1186,8 +1246,11 @@ const InvoiceReviewTable: React.FC<InvoiceReviewTableProps> = ({
                                                 <TextInput
                                                   id={`landuse-billing-review-item-type-${scheduleIndex}-${index}-${invoiceItemIndex}`}
                                                   label="Laskurivin tyyppi"
-                                                  value={readOnlyTextValue(
+                                                  value={getOptionsDisplayValue(
                                                     invoiceItem.itemType,
+                                                    metadataQuery.data
+                                                      ?.invoice_item_types ??
+                                                      [],
                                                   )}
                                                   readOnly
                                                 />

@@ -35,31 +35,8 @@ Land Use follows a layered feature architecture under `apps/landuse/src/landUse/
   - Tabs should consume form state via provided APIs, not create parallel global state.
 3. **Domain/data access layer (`api/landUseApi.ts`)**
   - All backend interactions go through `landUseApi.ts` functions.
-4. **Local persistence layer (`api/landUseDb.ts`, `api/migrations/`)**
-  - IndexedDB access is centralized in `landUseDb.ts`.
-  - Schema/data evolution happens only via numbered migrations.
-5. **Shared domain config (`options.ts`, `constants.tsx`, `routes.tsx`, `urlParams.ts`)**
-  - Select option values belong in `options.ts`.
+5. **Shared domain config (`constants.tsx`, `routes.tsx`, `urlParams.ts`)**
   - Route and URL parameter contracts belong in dedicated route/url modules.
-
-## Data flow expectations
-
-- Preferred flow: `UI -> form/hook -> landUseApi/landUseDb -> UI update`.
-- Keep data transformation close to API boundaries (mapping backend payloads into UI-safe shapes once), not repeated across components. Do not create normalization (or fallback) functions for data model changes that should be covered by migrations.
-- For async UI state, prefer local React state/hooks and query caches already in use; avoid introducing new app-wide state containers.
-
-## Change strategy
-
-When implementing changes, apply this order:
-
-1. Update domain contract first (API/db/options/constants).
-2. Update form wiring in `LandUseDetailPage.tsx` if fields/tabs are affected.
-3. Update tab/component rendering.
-4. Update mocks in `mockData/` and tests.
-5. Create new migration files for any schema/data changes, and ensure `landUseDb.ts` is updated to use them. Never edit existing migration files.
-
-This minimizes regressions where UI changes land before data contracts.
-
 
 # Coding guidelines
 
