@@ -99,10 +99,11 @@ const LeaseListMap = ({ isLoading, onViewportChanged }: Props) => {
   ]);
   const bounds = useMemo(() => {
     const searchQuery = getUrlParams(location.search);
-    return searchQuery?.search?.length > 6
-      ? (getBoundsFromFeatures(leasesGeoJson) as unknown as
-          LatLngBounds | undefined)
-      : getMapBounds(location.search);
+    if (!searchQuery.in_bbox) {
+      return getBoundsFromFeatures(leasesGeoJson) as unknown as
+        LatLngBounds | undefined;
+    }
+    return undefined;
   }, [leasesGeoJson, location.search]);
   const handleViewportChanged = useCallback(
     (mapOptions: Record<string, any>) => {
