@@ -1553,6 +1553,9 @@ describe("utils", () => {
         type: "MultiPolygon",
       };
       expect(getCoordinatesOfGeometry(null)).to.deep.equal([]);
+      expect(
+        getCoordinatesOfGeometry({ coordinates: [], type: "Polygon" }),
+      ).to.deep.equal([]);
       expect(getCoordinatesOfGeometry(geometry)).to.deep.equal(coordinates);
     });
     const center = [60.1783025, 24.9513505];

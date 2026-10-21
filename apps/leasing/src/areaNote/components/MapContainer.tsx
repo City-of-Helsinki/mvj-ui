@@ -1,25 +1,19 @@
-import React, { useCallback, useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import L from "leaflet";
-import {
-  LayersControl,
-  LayerGroup,
-  Map,
-  WMSTileLayer,
-  ZoomControl,
-} from "react-leaflet";
-
-const { BaseLayer, Overlay } = LayersControl;
-
-import FullscreenControl from "react-leaflet-fullscreen";
 import proj4 from "proj4";
 import "proj4leaflet";
-import GeoSearch from "@/components/map/GeoSearch";
 import Loader from "@/components/loader/Loader";
 import LoaderWrapper from "@/components/loader/LoaderWrapper";
-import ZoomBox from "@/components/map/ZoomBox";
+import LeafletAddressSearchControl from "@/components/map/LeafletAddressSearchControl";
+import LeafletFullscreenControl from "@/components/map/LeafletFullscreenControl";
+import { LeafletMapContext } from "@/components/map/LeafletMapContext";
 import { MIN_ZOOM, MAX_ZOOM } from "@/util/constants";
 
 const projectionBounds = L.bounds([25440000, 6630000], [25571072, 6761072]);
+
+const toLatLngBounds = (bounds: L.LatLngBoundsExpression) =>
+  bounds instanceof L.LatLngBounds ? bounds : L.latLngBounds(bounds);
+
 const CRS = new L.Proj.CRS(
   "EPSG:3879",
   "+proj=tmerc +lat_0=0 +lon_0=25 +k=1 +x_0=25500000 +y_0=0 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs",
@@ -41,127 +35,234 @@ proj4.defs(
 );
 
 type Props = {
-  bounds?: Record<string, any>;
-  center: Record<string, any>;
-  children: React.ReactNode;
+  bounds?: L.LatLngBoundsExpression;
+  center: L.LatLngExpression;
   isLoading?: boolean;
-  onMapDidMount?: (...args: Array<any>) => any;
-  onViewportChanged?: (...args: Array<any>) => any;
-  overlayLayers?: Array<Record<string, any>>;
+  onMapDidMount?: (viewport: MapViewport) => void;
+  onViewportChanged?: (viewport: MapViewport) => void;
+  overlayLayers?: Array<{
+    checked: boolean;
+    name: string;
+    component: React.ReactNode;
+  }>;
   zoom: number;
   enableSearch?: boolean;
-  onMapRefAvailable?: (...args: Array<any>) => any;
+  onMapReady?: (map: L.Map) => void;
+  children?: React.ReactNode;
+};
+
+export type MapViewport = {
+  bBox: string;
+  zoom: number;
+};
+
+type OverlayLayerProps = Props["overlayLayers"][number] & {
+  layerControl: L.Control.Layers;
+  map: L.Map;
+};
+
+const OverlayLayer: React.FC<OverlayLayerProps> = ({
+  checked,
+  component,
+  layerControl,
+  map,
+  name,
+}) => {
+  const layerRef = useRef<L.LayerGroup | null>(null);
+
+  if (!layerRef.current) {
+    layerRef.current = L.layerGroup();
+  }
+
+  const layer = layerRef.current;
+
+  useEffect(() => {
+    layerControl.addOverlay(layer, name);
+
+    return () => {
+      layerControl.removeLayer(layer);
+      layer.removeFrom(map);
+    };
+  }, [layer, layerControl, map, name]);
+
+  useEffect(() => {
+    if (checked) {
+      layer.addTo(map);
+    } else {
+      layer.removeFrom(map);
+    }
+  }, [checked, layer, map]);
+
+  return (
+    <LeafletMapContext.Provider value={layer}>
+      {component}
+    </LeafletMapContext.Provider>
+  );
 };
 
 const MapContainer: React.FC<Props> = ({
   bounds,
   center,
-  children,
   isLoading,
   onMapDidMount,
   onViewportChanged,
   overlayLayers,
   zoom,
   enableSearch = true,
-  onMapRefAvailable,
+  onMapReady,
+  children,
 }) => {
-  const mapRef = useRef<any>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const [map, setMap] = useState<L.Map | null>(null);
+  const onMapDidMountRef = useRef(onMapDidMount);
+  const onViewportChangedRef = useRef(onViewportChanged);
+  const onMapReadyRef = useRef(onMapReady);
+  const layerControlRef = useRef<L.Control.Layers | null>(null);
+  const mapConfigurationRef = useRef({
+    bounds,
+    center,
+    enableSearch,
+    zoom,
+  });
+  const viewportRef = useRef({ bounds, center });
 
-  const setMapRef = useCallback(
-    (el: any) => {
-      mapRef.current = el;
-      onMapRefAvailable?.(el);
-    },
-    [onMapRefAvailable],
-  );
+  onMapDidMountRef.current = onMapDidMount;
+  onViewportChangedRef.current = onViewportChanged;
+  onMapReadyRef.current = onMapReady;
+  mapConfigurationRef.current = {
+    bounds,
+    center,
+    enableSearch,
+    zoom,
+  };
 
-  const getMapValues = useCallback((): Record<string, any> => {
-    return {
-      bBox: mapRef.current.leafletElement.getBounds().toBBoxString(),
-      zoom: mapRef.current.leafletElement.getZoom(),
+  useEffect(() => {
+    if (!containerRef.current) {
+      return;
+    }
+
+    const configuration = mapConfigurationRef.current;
+    const map = L.map(containerRef.current, {
+      attributionControl: false,
+      center: configuration.center,
+      maxBoundsViscosity: 0,
+      minZoom: MIN_ZOOM,
+      maxZoom: MAX_ZOOM,
+      zoom: configuration.zoom,
+      zoomControl: false,
+      crs: CRS,
+      boxZoom: false,
+    });
+    if (configuration.bounds) {
+      map.fitBounds(configuration.bounds);
+    }
+    const getMapValues = () => ({
+      bBox: map.getBounds().toBBoxString(),
+      zoom: map.getZoom(),
+    });
+    const handleViewportChanged = () => {
+      onViewportChangedRef.current?.(getMapValues());
+    };
+    const baseLayers = {
+      Karttasarja: L.tileLayer.wms(
+        "https://kartta.hel.fi/ws/geoserver/avoindata/wms?",
+        {
+          layers: "avoindata:Karttasarja",
+          format: "image/png",
+          transparent: true,
+        },
+      ),
+      Ortoilmakuva: L.tileLayer.wms(
+        "https://kartta.hel.fi/ws/geoserver/avoindata/wms?",
+        {
+          layers: "avoindata:Ortoilmakuva",
+          format: "image/png",
+          transparent: true,
+        },
+      ),
+      Asemakaava: L.tileLayer.wms(
+        "https://kartta.hel.fi/ws/geoserver/avoindata/wms?",
+        {
+          layers: "avoindata:Ajantasa_asemakaava",
+          format: "image/png",
+          transparent: true,
+        },
+      ),
+    };
+    baseLayers.Karttasarja.addTo(map);
+    layerControlRef.current = L.control
+      .layers(baseLayers, undefined, { position: "topright" })
+      .addTo(map);
+    if (configuration.enableSearch) {
+      map.addControl(new LeafletAddressSearchControl({ position: "topright" }));
+    }
+    map.addControl(new LeafletFullscreenControl({ position: "topright" }));
+    L.control
+      .zoom({
+        position: "topright",
+        zoomInTitle: "Lähennä",
+        zoomOutTitle: "Loitonna",
+      })
+      .addTo(map);
+    map.on("moveend", handleViewportChanged);
+    setMap(map);
+    onMapReadyRef.current?.(map);
+    onMapDidMountRef.current?.(getMapValues());
+
+    return () => {
+      layerControlRef.current = null;
+      setMap(null);
+      map.remove();
     };
   }, []);
 
   useEffect(() => {
-    if (mapRef.current && onMapDidMount) {
-      onMapDidMount(getMapValues());
+    if (!map) {
+      return;
     }
-  }, [getMapValues, onMapDidMount]);
 
-  const handleViewportChanged = useCallback(() => {
-    if (mapRef.current && onViewportChanged) {
-      onViewportChanged(getMapValues());
+    const previousViewport = viewportRef.current;
+    const boundsChanged =
+      Boolean(previousViewport.bounds) !== Boolean(bounds) ||
+      (previousViewport.bounds &&
+        bounds &&
+        !toLatLngBounds(previousViewport.bounds).equals(
+          toLatLngBounds(bounds),
+        ));
+    const centerChanged = !L.latLng(previousViewport.center).equals(center);
+
+    if (boundsChanged && bounds) {
+      map.fitBounds(bounds);
+    } else if (boundsChanged || centerChanged) {
+      map.setView(center);
     }
-  }, [getMapValues, onViewportChanged]);
+
+    viewportRef.current = { bounds, center };
+  }, [bounds, center, map]);
 
   return (
-    <Map
-      ref={setMapRef}
-      attributionControl={false}
-      center={center || undefined}
-      bounds={bounds || undefined}
-      maxBoundsViscosity={0}
-      minZoom={MIN_ZOOM}
-      maxZoom={MAX_ZOOM}
-      zoom={zoom}
-      zoomControl={false}
-      crs={CRS}
-      boxZoom={false}
-      onViewportChanged={handleViewportChanged}
-    >
-      {isLoading && (
-        <LoaderWrapper className="relative-overlay-wrapper">
-          <Loader isLoading={true} />
-        </LoaderWrapper>
-      )}
-      <LayersControl position="topright">
-        <BaseLayer checked name="Karttasarja">
-          <WMSTileLayer
-            url={"https://kartta.hel.fi/ws/geoserver/avoindata/wms?"}
-            layers={"avoindata:Karttasarja"}
-            format={"image/png"}
-            transparent={true}
+    <LeafletMapContext.Provider value={map}>
+      <div ref={containerRef}>
+        {isLoading && (
+          <LoaderWrapper className="relative-overlay-wrapper">
+            <Loader isLoading={true} />
+          </LoaderWrapper>
+        )}
+      </div>
+      {map &&
+        layerControlRef.current &&
+        overlayLayers?.map(({ checked, component, name }) => (
+          <OverlayLayer
+            key={name}
+            checked={checked}
+            component={component}
+            layerControl={layerControlRef.current}
+            map={map}
+            name={name}
           />
-        </BaseLayer>
-        <BaseLayer name="Ortoilmakuva">
-          <WMSTileLayer
-            url={"https://kartta.hel.fi/ws/geoserver/avoindata/wms?"}
-            layers={"avoindata:Ortoilmakuva"}
-            format={"image/png"}
-            transparent={true}
-          />
-        </BaseLayer>
-        <BaseLayer name="Asemakaava">
-          <WMSTileLayer
-            url={"https://kartta.hel.fi/ws/geoserver/avoindata/wms?"}
-            layers={"avoindata:Ajantasa_asemakaava"}
-            format={"image/png"}
-            transparent={true}
-          />
-        </BaseLayer>
-        {!!overlayLayers &&
-          overlayLayers.length &&
-          overlayLayers.map((layer, index) => (
-            <Overlay checked={layer.checked} name={layer.name} key={index}>
-              <LayerGroup>{layer.component}</LayerGroup>
-            </Overlay>
-          ))}
-      </LayersControl>
-
-      {enableSearch && <GeoSearch />}
-      <FullscreenControl position="topright" title="Koko näytön tila" />
-      <ZoomControl
-        position="topright"
-        zoomInTitle="Lähennä"
-        zoomOutTitle="Loitonna"
-      />
-      <ZoomBox
-        position="topright"
-        modal={true}
-        title="Tarkenna valittuun alueeseen"
-      />
+        ))}
       {children}
-    </Map>
+    </LeafletMapContext.Provider>
   );
 };
 

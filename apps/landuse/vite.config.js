@@ -3,7 +3,6 @@ import react from '@vitejs/plugin-react';
 import commonjs from 'vite-plugin-commonjs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import postcssUrl from 'postcss-url';
 import babel from '@rollup/plugin-babel';
 import { LANDUSE_BASE_PATH } from './constants';
 
@@ -35,30 +34,9 @@ export default defineConfig({
       },
     },
   },
-  css: {
-    preprocessorOptions: {
-      scss: {
-        api: 'modern-compiler',
-        quietDeps: true,
-      },
-    },
-    postcss: {
-      plugins: [
-        postcssUrl({
-          url: (asset) => {
-            if (asset.relativePath && asset.relativePath.startsWith('images/')) {
-              return `${LANDUSE_BASE_PATH}/assets/${asset.url}`;
-            }
-            return asset.url;
-          },
-        }),
-      ],
-    },
-  },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src'),
-      '@leasing': path.resolve(workspaceRoot, 'apps/leasing/src'),
     },
   },
   define: {
@@ -80,7 +58,6 @@ export default defineConfig({
     environment: 'jsdom',
     alias: {
       '@': path.resolve(__dirname, 'src'),
-      '@leasing': path.resolve(workspaceRoot, 'apps/leasing/src'),
     },
   },
 });

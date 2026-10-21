@@ -1,10 +1,7 @@
-import React, { PureComponent } from "react";
-import { connect } from "react-redux";
-import {
-  withRouterLegacy,
-  type WithRouterProps,
-} from "@/root/withRouterLegacy";
-import { flowRight, isEmpty } from "lodash-es";
+import React, { useEffect, useMemo } from "react";
+import { useLocation } from "react-router";
+import { isEmpty } from "lodash-es";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import AreaNotesLayer from "@/areaNote/components/AreaNotesLayer";
 import AreaNotesEditMap from "@/areaNote/components/AreaNotesEditMap";
 import AreasLayer from "./AreasLayer";
@@ -13,7 +10,7 @@ import PlanUnitsLayer from "./PlanUnitsLayer";
 import PlotsLayer from "./PlotsLayer";
 import Title from "@/components/content/Title";
 import { fetchAreaNoteList } from "@/areaNote/slice";
-import { MAP_COLORS } from "@/util/constants";
+import { MAP_LAYER_COLORS } from "@/components/map/mapStyles";
 import {
   LeaseAreasFieldPaths,
   LeaseFieldPaths,
@@ -44,169 +41,99 @@ import {
   getIsEditMode,
 } from "@/leases/selectors";
 import { getUsersPermissions } from "@/usersPermissions/selectors";
-import type { Attributes, LeafletGeoJson } from "@/types";
-import type { Lease } from "@/leases/types";
-import type { AreaNoteList } from "@/areaNote/types";
-import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
+const SingleLeaseMap = () => {
+  const dispatch = useAppDispatch();
+  const location = useLocation();
+  const areaNotes = useAppSelector(getAreaNoteList);
+  const currentLease = useAppSelector(getCurrentLease);
+  const isEditMode = useAppSelector(getIsEditMode);
+  const leaseAttributes = useAppSelector(getLeaseAttributes);
+  const usersPermissions = useAppSelector(getUsersPermissions);
 
-type Props = {
-  areaNotes: AreaNoteList;
-  change: (...args: Array<any>) => any;
-  currentLease: Lease;
-  fetchAreaNoteList: (...args: Array<any>) => any;
-  isEditMode: boolean;
-  leaseAttributes: Attributes;
-  usersPermissions: UsersPermissionsType;
-};
-
-type State = {
-  areasGeoJson: LeafletGeoJson;
-  areaLocationOptions: Array<Record<string, any>>;
-  areaTypeOptions: Array<Record<string, any>>;
-  bounds: Record<string, any> | null | undefined;
-  center: Array<Record<string, any>> | null | undefined;
-  currentLease: Lease;
-  leaseAttributes: Attributes;
-  planUnitsGeoJson: LeafletGeoJson;
-  planUnitsContractGeoJson: LeafletGeoJson;
-  planUnitIntendedUseOptions: Array<Record<string, any>>;
-  planUnitStateOptions: Array<Record<string, any>>;
-  planUnitTypeOptions: Array<Record<string, any>>;
-  plotsGeoJson: LeafletGeoJson;
-  plotsContractGeoJson: LeafletGeoJson;
-  plotDivisionStateOptions: Array<Record<string, any>>;
-  plotTypeOptions: Array<Record<string, any>>;
-};
-
-class SingleLeaseMap extends PureComponent<Props & WithRouterProps, State> {
-  state = {
-    areasGeoJson: {
-      features: [],
-      type: "FeatureCollection",
-    },
-    areaLocationOptions: [],
-    areaTypeOptions: [],
-    bounds: null,
-    center: null,
-    currentLease: {},
-    leaseAttributes: null,
-    planUnitsGeoJson: {
-      features: [],
-      type: "FeatureCollection",
-    },
-    planUnitsContractGeoJson: {
-      features: [],
-      type: "FeatureCollection",
-    },
-    planUnitIntendedUseOptions: [],
-    planUnitStateOptions: [],
-    planUnitTypeOptions: [],
-    plotsGeoJson: {
-      features: [],
-      type: "FeatureCollection",
-    },
-    plotsContractGeoJson: {
-      features: [],
-      type: "FeatureCollection",
-    },
-    plotDivisionStateOptions: [],
-    plotTypeOptions: [],
-  };
-
-  componentDidMount() {
-    const { fetchAreaNoteList, usersPermissions } = this.props;
-
+  useEffect(() => {
     if (hasPermissions(usersPermissions, UsersPermissions.VIEW_AREANOTE)) {
-      fetchAreaNoteList({});
+      dispatch(fetchAreaNoteList({}));
     }
-  }
+  }, [dispatch, usersPermissions]);
 
-  static getDerivedStateFromProps(props: Props, state: State) {
-    const newState: any = {};
-
-    if (props.currentLease !== state.currentLease) {
-      const coordinates = getLeaseCoordinates(props.currentLease);
-      newState.bounds = coordinates.length
-        ? getBoundsFromCoordinates(coordinates)
-        : undefined;
-      newState.center = coordinates.length
-        ? getCenterFromCoordinates(coordinates)
-        : undefined;
-      newState.currentLease = props.currentLease;
-      newState.areasGeoJson = getContentAreasGeoJson(props.currentLease);
-      newState.planUnitsGeoJson = getContentPlanUnitsGeoJson(
-        props.currentLease,
-        false,
-      );
-      newState.planUnitsContractGeoJson = getContentPlanUnitsGeoJson(
-        props.currentLease,
-        true,
-      );
-      newState.plotsGeoJson = getContentPlotsGeoJson(props.currentLease, false);
-      newState.plotsContractGeoJson = getContentPlotsGeoJson(
-        props.currentLease,
-        true,
-      );
-    }
-
-    if (props.leaseAttributes !== state.leaseAttributes) {
-      newState.leaseAttributes = props.leaseAttributes;
-      newState.areaLocationOptions = getFieldOptions(
-        props.leaseAttributes,
-        LeaseAreasFieldPaths.LOCATION,
-      );
-      newState.areaTypeOptions = getFieldOptions(
-        props.leaseAttributes,
-        LeaseAreasFieldPaths.TYPE,
-      );
-      newState.plotTypeOptions = getFieldOptions(
-        props.leaseAttributes,
-        LeasePlotsFieldPaths.TYPE,
-      );
-      newState.plotDivisionStateOptions = getFieldOptions(
-        props.leaseAttributes,
+  const coordinates = useMemo(
+    () => getLeaseCoordinates(currentLease),
+    [currentLease],
+  );
+  const bounds = useMemo(
+    () =>
+      coordinates.length ? getBoundsFromCoordinates(coordinates) : undefined,
+    [coordinates],
+  );
+  const center = useMemo(
+    () =>
+      coordinates.length ? getCenterFromCoordinates(coordinates) : undefined,
+    [coordinates],
+  );
+  const areasGeoJson = useMemo(
+    () => getContentAreasGeoJson(currentLease),
+    [currentLease],
+  );
+  const planUnitsGeoJson = useMemo(
+    () => getContentPlanUnitsGeoJson(currentLease, false),
+    [currentLease],
+  );
+  const planUnitsContractGeoJson = useMemo(
+    () => getContentPlanUnitsGeoJson(currentLease, true),
+    [currentLease],
+  );
+  const plotsGeoJson = useMemo(
+    () => getContentPlotsGeoJson(currentLease, false),
+    [currentLease],
+  );
+  const plotsContractGeoJson = useMemo(
+    () => getContentPlotsGeoJson(currentLease, true),
+    [currentLease],
+  );
+  const areaLocationOptions = useMemo(
+    () => getFieldOptions(leaseAttributes, LeaseAreasFieldPaths.LOCATION),
+    [leaseAttributes],
+  );
+  const areaTypeOptions = useMemo(
+    () => getFieldOptions(leaseAttributes, LeaseAreasFieldPaths.TYPE),
+    [leaseAttributes],
+  );
+  const plotTypeOptions = useMemo(
+    () => getFieldOptions(leaseAttributes, LeasePlotsFieldPaths.TYPE),
+    [leaseAttributes],
+  );
+  const plotDivisionStateOptions = useMemo(
+    () =>
+      getFieldOptions(
+        leaseAttributes,
         LeasePlanUnitsFieldPaths.PLOT_DIVISION_STATE,
-      );
-      newState.planUnitTypeOptions = getFieldOptions(
-        props.leaseAttributes,
-        LeasePlanUnitsFieldPaths.PLAN_UNIT_TYPE,
-      );
-      newState.planUnitStateOptions = getFieldOptions(
-        props.leaseAttributes,
+      ),
+    [leaseAttributes],
+  );
+  const planUnitTypeOptions = useMemo(
+    () =>
+      getFieldOptions(leaseAttributes, LeasePlanUnitsFieldPaths.PLAN_UNIT_TYPE),
+    [leaseAttributes],
+  );
+  const planUnitStateOptions = useMemo(
+    () =>
+      getFieldOptions(
+        leaseAttributes,
         LeasePlanUnitsFieldPaths.PLAN_UNIT_STATE,
-      );
-      newState.planUnitIntendedUseOptions = getFieldOptions(
-        props.leaseAttributes,
+      ),
+    [leaseAttributes],
+  );
+  const planUnitIntendedUseOptions = useMemo(
+    () =>
+      getFieldOptions(
+        leaseAttributes,
         LeasePlanUnitsFieldPaths.PLAN_UNIT_INTENDED_USE,
-      );
-    }
-
-    return newState;
-  }
-
-  getOverlayLayers = () => {
+      ),
+    [leaseAttributes],
+  );
+  const overlayLayers = useMemo(() => {
     const layers = [];
-    const {
-      areaNotes,
-      leaseAttributes,
-      location: { search },
-      usersPermissions,
-    } = this.props;
-    const {
-      areasGeoJson,
-      areaLocationOptions,
-      areaTypeOptions,
-      planUnitsGeoJson,
-      planUnitsContractGeoJson,
-      planUnitIntendedUseOptions,
-      planUnitStateOptions,
-      planUnitTypeOptions,
-      plotDivisionStateOptions,
-      plotsGeoJson,
-      plotsContractGeoJson,
-      plotTypeOptions,
-    } = this.state;
-    const query = getUrlParams(search);
+    const query = getUrlParams(location.search);
 
     if (
       isFieldAllowedToRead(leaseAttributes, LeasePlanUnitsFieldPaths.GEOMETRY)
@@ -216,7 +143,7 @@ class SingleLeaseMap extends PureComponent<Props & WithRouterProps, State> {
         component: (
           <PlanUnitsLayer
             key="plan_units"
-            color={MAP_COLORS[0 % MAP_COLORS.length]}
+            color={MAP_LAYER_COLORS[0 % MAP_LAYER_COLORS.length]}
             defaultPlanUnit={
               query.plan_unit ? Number(query.plan_unit) : undefined
             }
@@ -234,7 +161,7 @@ class SingleLeaseMap extends PureComponent<Props & WithRouterProps, State> {
         component: (
           <PlanUnitsLayer
             key="plan_units"
-            color={MAP_COLORS[1 % MAP_COLORS.length]}
+            color={MAP_LAYER_COLORS[1 % MAP_LAYER_COLORS.length]}
             defaultPlanUnit={
               query.plan_unit ? Number(query.plan_unit) : undefined
             }
@@ -255,7 +182,7 @@ class SingleLeaseMap extends PureComponent<Props & WithRouterProps, State> {
         component: (
           <PlotsLayer
             key="plots"
-            color={MAP_COLORS[2 % MAP_COLORS.length]}
+            color={MAP_LAYER_COLORS[2 % MAP_LAYER_COLORS.length]}
             defaultPlot={query.plot ? Number(query.plot) : undefined}
             plotsGeoJson={plotsGeoJson}
             typeOptions={plotTypeOptions}
@@ -268,7 +195,7 @@ class SingleLeaseMap extends PureComponent<Props & WithRouterProps, State> {
         component: (
           <PlotsLayer
             key="plots"
-            color={MAP_COLORS[3 % MAP_COLORS.length]}
+            color={MAP_LAYER_COLORS[3 % MAP_LAYER_COLORS.length]}
             defaultPlot={query.plot ? Number(query.plot) : undefined}
             plotsGeoJson={plotsContractGeoJson}
             typeOptions={plotTypeOptions}
@@ -285,7 +212,7 @@ class SingleLeaseMap extends PureComponent<Props & WithRouterProps, State> {
           <AreasLayer
             key="areas"
             areasGeoJson={areasGeoJson}
-            color={MAP_COLORS[4 % MAP_COLORS.length]}
+            color={MAP_LAYER_COLORS[4 % MAP_LAYER_COLORS.length]}
             defaultArea={
               query.lease_area ? Number(query.lease_area) : undefined
             }
@@ -315,47 +242,42 @@ class SingleLeaseMap extends PureComponent<Props & WithRouterProps, State> {
     }
 
     return layers;
-  };
+  }, [
+    areaLocationOptions,
+    areaNotes,
+    areaTypeOptions,
+    areasGeoJson,
+    leaseAttributes,
+    location.search,
+    planUnitIntendedUseOptions,
+    planUnitStateOptions,
+    planUnitTypeOptions,
+    planUnitsContractGeoJson,
+    planUnitsGeoJson,
+    plotDivisionStateOptions,
+    plotTypeOptions,
+    plotsContractGeoJson,
+    plotsGeoJson,
+    usersPermissions,
+  ]);
 
-  render() {
-    const { isEditMode } = this.props;
-    const { bounds, center } = this.state;
-    const overlayLayers = this.getOverlayLayers();
+  return (
+    <>
+      <Title
+        enableUiDataEdit={isEditMode}
+        uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.MAP)}
+      >
+        {LeaseFieldTitles.MAP}
+      </Title>
+      <Divider />
+      <AreaNotesEditMap
+        allowToEdit={false}
+        bounds={bounds}
+        center={center}
+        overlayLayers={overlayLayers}
+      />
+    </>
+  );
+};
 
-    return (
-      <>
-        <Title
-          enableUiDataEdit={isEditMode}
-          uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.MAP)}
-        >
-          {LeaseFieldTitles.MAP}
-        </Title>
-        <Divider />
-        <AreaNotesEditMap
-          allowToEdit={false}
-          bounds={bounds}
-          center={center}
-          overlayLayers={overlayLayers}
-        />
-      </>
-    );
-  }
-}
-
-export default flowRight(
-  withRouterLegacy,
-  connect(
-    (state) => {
-      return {
-        areaNotes: getAreaNoteList(state),
-        currentLease: getCurrentLease(state),
-        isEditMode: getIsEditMode(state),
-        leaseAttributes: getLeaseAttributes(state),
-        usersPermissions: getUsersPermissions(state),
-      };
-    },
-    {
-      fetchAreaNoteList,
-    },
-  ),
-)(SingleLeaseMap) as React.ComponentType<Props>;
+export default SingleLeaseMap;

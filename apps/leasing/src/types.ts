@@ -42,20 +42,15 @@ export type QueryParams = {
   id?: number;
   limit?: number;
 };
-type Coordinate = Array<number>;
-export type LeafletFeatureGeometry = {
-  coordinates: Array<Coordinate>;
-  type: string;
-};
-export type LeafletFeature = {
-  geometry: LeafletFeatureGeometry;
-  properties: Record<string, any>;
-  type: string;
-};
-export type LeafletGeoJson = {
-  features: Array<LeafletFeature>;
-  type: string;
-};
+export type LeafletFeatureGeometry = GeoJSON.Geometry;
+export type LeafletFeature = GeoJSON.Feature<
+  LeafletFeatureGeometry,
+  Record<string, any>
+>;
+export type LeafletGeoJson = GeoJSON.FeatureCollection<
+  LeafletFeatureGeometry,
+  Record<string, any>
+>;
 export type User = {
   id: number;
   first_name?: string;

@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import { FeatureGroup, GeoJSON } from "react-leaflet";
+import React, { useCallback, useEffect, useRef } from "react";
+import L from "leaflet";
 import classNames from "classnames";
 import { DEFAULT_CENTER, DEFAULT_ZOOM } from "@/util/constants";
 import MapContainer from "@/areaNote/components/MapContainer";
@@ -15,27 +15,10 @@ type Props = {
   minimap?: boolean;
 };
 
-class SingleAreaSearchMap extends Component<Props> {
-  featureGroup: any = null;
-  mapInstance: any = null;
-  initialize: (arg0?: any) => void = () => {
-    if (!this.mapInstance || !this.featureGroup) {
-      return;
-    }
-
-    this.mapInstance.leafletElement.fitBounds(this.getMapBounds());
-    /* TODO: This doesn't work as expected, but should be pretty close to what we need.
-        It appears the function actually only exists on the polygon level, yet nothing
-        happens when it is called.
-    this.featureGroup.leafletElement.eachLayer((feature) => {
-      feature.showMeasurements?.();
-      feature.eachLayer((polygon) => {
-        polygon.showMeasurements?.();
-      });
-    }); */
-  };
-  getMapBounds: () => Record<string, any> = () => {
-    const { geometry } = this.props;
+const SingleAreaSearchMap = ({ geometry, minimap = false }: Props) => {
+  const mapRef = useRef<L.Map | null>(null);
+  const geoJsonLayerRef = useRef<L.GeoJSON | null>(null);
+  const getMapBounds = useCallback(() => {
     return getBoundsFromFeatures({
       features: getAreaSearchFeatures([
         {
@@ -43,51 +26,60 @@ class SingleAreaSearchMap extends Component<Props> {
         },
       ]),
     });
-  };
-  getMapCenter: () => Record<string, any> = () => {
-    const { geometry } = this.props;
+  }, [geometry]);
+  const getMapCenter = useCallback(() => {
     return getCenterFromCoordinates(getCoordinatesOfGeometry(geometry));
-  };
-  setMapInstanceRef: (arg0: any) => void = (mapInstance) => {
-    this.mapInstance = mapInstance;
-    this.initialize();
-  };
-  setFeatureGroupRef: (arg0: any) => void = (group) => {
-    this.featureGroup = group;
-    this.initialize();
-  };
+  }, [geometry]);
+  const handleMapReady = useCallback(
+    (map: L.Map) => {
+      mapRef.current = map;
+      geoJsonLayerRef.current = L.geoJSON(
+        geometry as GeoJSON.GeoJsonObject,
+      ).addTo(map);
+      const bounds = getMapBounds();
+      if (bounds) {
+        map.fitBounds(bounds as L.LatLngBoundsExpression);
+      }
+    },
+    [geometry, getMapBounds],
+  );
 
-  render(): JSX.Element {
-    const { geometry, minimap = false } = this.props;
+  useEffect(() => {
+    if (!geoJsonLayerRef.current) return;
 
-    if (!geometry) {
-      return <p>{"Ei geometriaa."}</p>;
+    geoJsonLayerRef.current.clearLayers();
+    if (!getCoordinatesOfGeometry(geometry).length) return;
+
+    geoJsonLayerRef.current.addData(geometry as GeoJSON.GeoJsonObject);
+    const bounds = getMapBounds();
+    if (bounds) {
+      mapRef.current?.fitBounds(bounds as L.LatLngBoundsExpression);
     }
+  }, [geometry, getMapBounds]);
 
-    const center = this.getMapCenter();
-    const bounds = this.getMapBounds();
-    return (
-      <div
-        className={classNames("SingleAreaSearchMap", {
-          map: !minimap,
-          "SingleAreaSearchMap--minimap": minimap,
-        })}
-      >
-        <MapContainer
-          bounds={bounds}
-          center={center ?? DEFAULT_CENTER}
-          overlayLayers={[]}
-          zoom={DEFAULT_ZOOM}
-          enableSearch={false}
-          onMapRefAvailable={this.setMapInstanceRef}
-        >
-          <FeatureGroup ref={this.setFeatureGroupRef}>
-            <GeoJSON data={geometry} />
-          </FeatureGroup>
-        </MapContainer>
-      </div>
-    );
+  if (!geometry || !getCoordinatesOfGeometry(geometry).length) {
+    return <p>{"Ei geometriaa."}</p>;
   }
-}
+
+  const center = getMapCenter() as L.LatLngExpression;
+  const bounds =
+    (getMapBounds() as L.LatLngBoundsExpression | null) ?? undefined;
+  return (
+    <div
+      className={classNames("SingleAreaSearchMap", {
+        map: !minimap,
+        "SingleAreaSearchMap--minimap": minimap,
+      })}
+    >
+      <MapContainer
+        bounds={bounds}
+        center={center ?? DEFAULT_CENTER}
+        zoom={DEFAULT_ZOOM}
+        enableSearch={false}
+        onMapReady={handleMapReady}
+      />
+    </div>
+  );
+};
 
 export default SingleAreaSearchMap;

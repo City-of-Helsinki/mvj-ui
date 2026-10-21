@@ -1,7 +1,8 @@
-import React from "react";
-import { FeatureGroup, GeoJSON, Popup } from "react-leaflet";
-import { Link } from "react-router";
+import React, { useCallback } from "react";
+import LeafletGeoJSONLayer from "@/components/map/LeafletGeoJSONLayer";
+import useGeoJsonFeatureInteractions from "@/components/map/useGeoJsonFeatureInteractions";
 import { getRouteById, Routes } from "@/root/routes";
+import { html } from "@/util/html";
 import type { LeafletGeoJson } from "types";
 
 type Props = {
@@ -11,49 +12,25 @@ type Props = {
 };
 
 const TargetListLayer: React.FC<Props> = ({ color, targetsGeoJson }) => {
-  const onMouseOver = (e) => {
-    const layer = e.target;
-    layer.setStyle({
-      fillOpacity: 0.7,
-    });
-  };
-
-  const onMouseOut = (e) => {
-    const layer = e.target;
-    layer.setStyle({
-      fillOpacity: 0.2,
-    });
-  };
-
   const getApplicationsLink = (identifier: string) => {
     return `${getRouteById(Routes.PLOT_APPLICATIONS)}/?visualization=table&identifier=${identifier}`;
   };
+  const getPopupContent = useCallback((feature: GeoJSON.Feature) => {
+    const target = feature.properties?.target;
+    if (!target) return;
+
+    return html`<a href="${getApplicationsLink(target.identifier)}"
+        >${target.identifier}</a
+      ><br /><strong>Osoite:</strong> ${target.address.address}`;
+  }, []);
+  const onEachFeature = useGeoJsonFeatureInteractions({ getPopupContent });
 
   return (
-    <>
-      {targetsGeoJson.features.map((feature) => {
-        const { target } = feature.properties;
-        return (
-          <FeatureGroup key={target.identifier}>
-            <GeoJSON
-              data={target.geometry}
-              style={{
-                color: color,
-              }}
-              onMouseOver={onMouseOver}
-              onMouseOut={onMouseOut}
-            />
-            <Popup>
-              <Link to={`${getApplicationsLink(target.identifier)}`}>
-                {target.identifier}
-              </Link>
-              <br />
-              <strong>Osoite:</strong> {target.address.address}
-            </Popup>
-          </FeatureGroup>
-        );
-      })}
-    </>
+    <LeafletGeoJSONLayer
+      data={targetsGeoJson}
+      style={{ color }}
+      onEachFeature={onEachFeature}
+    />
   );
 };
 

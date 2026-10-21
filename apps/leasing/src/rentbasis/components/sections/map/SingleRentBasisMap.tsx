@@ -5,7 +5,7 @@ import AreaNotesEditMap from "@/areaNote/components/AreaNotesEditMap";
 import AreaNotesLayer from "@/areaNote/components/AreaNotesLayer";
 import RentBasisLayer from "./RentBasisLayer";
 import { fetchAreaNoteList } from "@/areaNote/slice";
-import { MAP_COLORS } from "@/util/constants";
+import { MAP_LAYER_COLORS } from "@/components/map/mapStyles";
 import { RentBasisFieldPaths } from "@/rentbasis/enums";
 import { UsersPermissions } from "@/usersPermissions/enums";
 import { getContentRentBasisGeoJson } from "@/rentbasis/helpers";
@@ -95,7 +95,7 @@ const SingleRentBasisMap: React.FC = () => {
         checked: true,
         component: (
           <RentBasisLayer
-            color={MAP_COLORS[0]}
+            color={MAP_LAYER_COLORS[0]}
             financingOptions={financingOptions}
             geoJSON={geoJSON}
             indexOptions={indexOptions}

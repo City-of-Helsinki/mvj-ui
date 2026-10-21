@@ -3,12 +3,11 @@
 @use "./styles/foundation-reset";
 @use "./foundation-setup" as *;
 
-@use "react-leaflet-fullscreen/dist/styles" as *;
 @use "styles/mixins";
 
 // Vendor
 @use "react-datepicker/src/stylesheets/datepicker.scss";
-@use "leaflet-draw/dist/leaflet.draw" as *;
+@use "@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css";
 @use "react-dual-listbox/src/scss/react-dual-listbox.scss";
 
 // Components

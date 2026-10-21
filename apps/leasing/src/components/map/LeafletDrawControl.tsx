@@ -1,0 +1,125 @@
+import { useEffect } from "react";
+import L from "leaflet";
+import "@geoman-io/leaflet-geoman-free";
+import { DEFAULT_LEAFLET_PATH_OPTIONS } from "@/components/map/mapStyles";
+
+type Props = {
+  map: L.Map | null;
+  featureGroup: L.FeatureGroup | null;
+  draw: {
+    polygon?: L.PM.DrawModeOptions | false;
+    rectangle?: L.PM.DrawModeOptions | false;
+  };
+  onCreated?: (event: { layer: L.Layer }) => void;
+  onDeleted?: () => void;
+  onEdited?: () => void;
+  onNonCommittedChange?: () => void;
+};
+
+const LeafletDrawControl = ({
+  map,
+  featureGroup,
+  draw,
+  onCreated,
+  onDeleted,
+  onEdited,
+  onNonCommittedChange,
+}: Props) => {
+  useEffect(() => {
+    if (!map || !featureGroup) {
+      return;
+    }
+
+    map.pm.setGlobalOptions({
+      layerGroup: featureGroup,
+      allowSelfIntersection: false,
+      templineStyle: {
+        ...DEFAULT_LEAFLET_PATH_OPTIONS,
+      },
+      hintlineStyle: {
+        dashArray: [5, 5],
+        ...DEFAULT_LEAFLET_PATH_OPTIONS,
+      },
+      pathOptions: {
+        ...DEFAULT_LEAFLET_PATH_OPTIONS,
+      },
+    });
+    const polygonOptions = draw.polygon || undefined;
+    const rectangleOptions = draw.rectangle || undefined;
+    const pathOptions =
+      polygonOptions?.pathOptions ?? rectangleOptions?.pathOptions ?? {};
+    map.pm.setPathOptions({
+      ...DEFAULT_LEAFLET_PATH_OPTIONS,
+      ...pathOptions,
+    });
+    map.pm.addControls({
+      position: "topright",
+      drawMarker: false,
+      drawCircleMarker: false,
+      drawCircle: false,
+      drawPolyline: false,
+      drawPolygon: Boolean(draw.polygon),
+      drawRectangle: Boolean(draw.rectangle),
+      drawText: false,
+      editMode: true,
+      removalMode: true,
+      dragMode: false,
+      cutPolygon: false,
+      rotateMode: false,
+    });
+    const handleCreated = (event: { layer: L.Layer }) => onCreated?.(event);
+    const handleDeleted = () => {
+      map.pm.disableGlobalRemovalMode();
+      onDeleted?.();
+    };
+    const handleEdited = () => onEdited?.();
+    const handleNonCommittedChange = () => onNonCommittedChange?.();
+
+    map.on("pm:create", handleCreated);
+    map.on("pm:remove", handleDeleted);
+    featureGroup.on("pm:edit", handleEdited);
+    featureGroup.on("pm:change", handleNonCommittedChange);
+
+    return () => {
+      map.off("pm:create", handleCreated);
+      map.off("pm:remove", handleDeleted);
+      featureGroup.off("pm:edit", handleEdited);
+      featureGroup.off("pm:change", handleNonCommittedChange);
+      map.pm.removeControls();
+    };
+  }, [
+    draw,
+    featureGroup,
+    map,
+    onCreated,
+    onDeleted,
+    onEdited,
+    onNonCommittedChange,
+  ]);
+
+  // Separate from the effect above, which reruns whenever `draw` or the
+  // callback props change identity; disabling active modes there would
+  // cancel in-progress drawing/editing on those unrelated re-renders.
+  useEffect(() => {
+    if (!map) {
+      return;
+    }
+
+    const previousExitModeOnEscape = map.pm.getGlobalOptions().exitModeOnEscape;
+    map.pm.setGlobalOptions({ exitModeOnEscape: true });
+
+    return () => {
+      map.pm.setGlobalOptions({
+        exitModeOnEscape: previousExitModeOnEscape,
+      });
+      map.pm.disableDraw("Polygon");
+      map.pm.disableDraw("Rectangle");
+      map.pm.disableGlobalEditMode();
+      map.pm.disableGlobalRemovalMode();
+    };
+  }, [map]);
+
+  return null;
+};
+
+export default LeafletDrawControl;

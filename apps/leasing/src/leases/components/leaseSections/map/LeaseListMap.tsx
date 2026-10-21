@@ -1,14 +1,12 @@
-import React, { Fragment, PureComponent } from "react";
-import { connect } from "react-redux";
-import {
-  withRouterLegacy,
-  type WithRouterProps,
-} from "@/root/withRouterLegacy";
-import { flowRight, isEmpty } from "lodash-es";
+import React, { useCallback, useMemo, useState } from "react";
+import { useLocation } from "react-router";
+import type { LatLngBounds } from "leaflet";
+import { useAppSelector } from "@/root/hooks";
 import AreaNotesLayer from "@/areaNote/components/AreaNotesLayer";
 import AreaNotesEditMap from "@/areaNote/components/AreaNotesEditMap";
 import LeaseListLayer from "./LeaseListLayer";
-import { DEFAULT_ZOOM, MAP_COLORS } from "@/util/constants";
+import { DEFAULT_ZOOM } from "@/util/constants";
+import { MAP_LAYER_COLORS } from "@/components/map/mapStyles";
 import { MAX_ZOOM_LEVEL_TO_FETCH_LEASES } from "@/leases/constants";
 import { LeaseFieldPaths } from "@/leases/enums";
 import { UsersPermissions } from "@/usersPermissions/enums";
@@ -26,164 +24,108 @@ import {
   getLeasesByBBox,
 } from "@/leases/selectors";
 import { getUsersPermissions } from "@/usersPermissions/selectors";
-import type { Attributes, LeafletGeoJson } from "types";
-import type { AreaNoteList } from "@/areaNote/types";
-import type { LeaseList } from "@/leases/types";
-import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
+import type { Lease } from "@/leases/types";
 
-const getMapBounds = () => {
-  const { search } = location;
+const getMapBounds = (search: string): LatLngBounds | undefined => {
   const searchQuery = getUrlParams(search);
   return getBoundsFromBBox(searchQuery.in_bbox);
 };
 
-const getMapCenter = () => {
-  const bounds = getMapBounds();
+const getMapCenter = (search: string) => {
+  const bounds = getMapBounds(search);
   return bounds ? bounds.getCenter() : null;
 };
 
-const getMapZoom = () => {
-  const { search } = location;
+const getMapZoom = (search: string) => {
   const searchQuery = getUrlParams(search);
   return searchQuery.zoom || DEFAULT_ZOOM;
 };
 
 type Props = {
-  areaNotes: AreaNoteList;
-  isLoading: boolean;
-  leaseAttributes: Attributes;
-  leasesData: LeaseList;
+  isLoading?: boolean;
   onViewportChanged: (...args: Array<any>) => any;
-  usersPermissions: UsersPermissionsType;
 };
-type State = {
-  bounds: Record<string, any> | null | undefined;
-  center: Record<string, any> | null | undefined;
-  leaseAttributes: Attributes;
-  leasesData: LeaseList;
-  leasesGeoJson: LeafletGeoJson;
-  stateOptions: Array<Record<string, any>>;
-  zoom: number;
-};
-
-class LeaseListMap extends PureComponent<Props & WithRouterProps, State> {
-  state = {
-    bounds: getMapBounds(),
-    center: getMapCenter(),
-    leaseAttributes: null,
-    leasesData: null,
-    leasesGeoJson: {
-      features: [],
-      type: "FeatureCollection",
-    },
-    stateOptions: [],
-    zoom: getMapZoom(),
-  };
-
-  static getDerivedStateFromProps(props: Props, state: State) {
-    const newState: any = {};
-
-    if (props.leasesData !== state.leasesData) {
-      newState.leasesData = props.leasesData;
-      newState.leasesGeoJson = getContentLeasesGeoJson(
-        getApiResponseResults(props.leasesData),
-      );
-    }
-
-    if (props.leaseAttributes !== state.leaseAttributes) {
-      newState.leaseAttributes = props.leaseAttributes;
-      newState.stateOptions = getFieldOptions(
-        props.leaseAttributes,
-        LeaseFieldPaths.STATE,
-      );
-    }
-
-    return !isEmpty(newState) ? newState : null;
-  }
-
-  getOverlayLayers = () => {
+const LeaseListMap = ({ isLoading, onViewportChanged }: Props) => {
+  const location = useLocation();
+  const areaNotes = useAppSelector(getAreaNoteList);
+  const leaseAttributes = useAppSelector(getLeaseAttributes);
+  const leasesData = useAppSelector(getLeasesByBBox);
+  const usersPermissions = useAppSelector(getUsersPermissions);
+  const [zoom, setZoom] = useState(() => getMapZoom(location.search));
+  const leasesGeoJson = useMemo(
+    () => getContentLeasesGeoJson(getApiResponseResults(leasesData) as Lease[]),
+    [leasesData],
+  );
+  const stateOptions = useMemo(
+    () => getFieldOptions(leaseAttributes, LeaseFieldPaths.STATE),
+    [leaseAttributes],
+  );
+  const overlayLayers = useMemo(() => {
     const layers = [];
-    const { areaNotes, usersPermissions } = this.props;
-    const { leasesGeoJson, stateOptions } = this.state;
-    {
-      hasPermissions(usersPermissions, UsersPermissions.VIEW_AREANOTE) &&
-        layers.push({
-          checked: false,
-          component: (
-            <AreaNotesLayer
-              key="area_notes"
-              allowToEdit={false}
-              areaNotes={areaNotes}
-            />
-          ),
-          name: "Muistettavat ehdot",
-        });
+
+    if (hasPermissions(usersPermissions, UsersPermissions.VIEW_AREANOTE)) {
+      layers.push({
+        checked: false,
+        component: (
+          <AreaNotesLayer
+            key="area_notes"
+            allowToEdit={false}
+            areaNotes={areaNotes}
+          />
+        ),
+        name: "Muistettavat ehdot",
+      });
     }
     layers.push({
       checked: true,
       component: (
         <LeaseListLayer
           key="leases"
-          color={MAP_COLORS[0 % MAP_COLORS.length]}
+          color={MAP_LAYER_COLORS[0 % MAP_LAYER_COLORS.length]}
           leasesGeoJson={leasesGeoJson}
+          search={location.search}
           stateOptions={stateOptions}
         />
       ),
       name: "Vuokraukset",
     });
     return layers;
-  };
+  }, [
+    areaNotes,
+    leasesGeoJson,
+    location.search,
+    stateOptions,
+    usersPermissions,
+  ]);
+  const bounds = useMemo(() => {
+    const searchQuery = getUrlParams(location.search);
+    if (!searchQuery.in_bbox) {
+      return getBoundsFromFeatures(leasesGeoJson) as unknown as
+        LatLngBounds | undefined;
+    }
+    return undefined;
+  }, [leasesGeoJson, location.search]);
+  const handleViewportChanged = useCallback(
+    (mapOptions: Record<string, any>) => {
+      setZoom(mapOptions.zoom);
+      onViewportChanged(mapOptions);
+    },
+    [onViewportChanged],
+  );
 
-  getBounds() {
-    const { bounds, leasesGeoJson } = this.state;
-    const {
-      location: { search },
-    } = this.props;
-    const searchQuery = getUrlParams(search);
-    if (searchQuery && searchQuery.search && searchQuery.search.length > 6)
-      return getBoundsFromFeatures(leasesGeoJson);
-    else return bounds;
-  }
+  return (
+    <AreaNotesEditMap
+      allowToEdit={false}
+      bounds={bounds}
+      center={getMapCenter(location.search)}
+      isLoading={isLoading}
+      onViewportChanged={handleViewportChanged}
+      overlayLayers={overlayLayers}
+      showZoomLevelWarning={zoom < MAX_ZOOM_LEVEL_TO_FETCH_LEASES}
+      zoom={zoom}
+      zoomLevelWarningText="Tarkenna lähemmäksi kartalla hakeaksesi vuokraukset"
+    />
+  );
+};
 
-  handleViewportChanged = (mapOptions: Record<string, any>) => {
-    const { onViewportChanged } = this.props;
-    this.setState({
-      zoom: mapOptions.zoom,
-    });
-    onViewportChanged(mapOptions);
-  };
-
-  render() {
-    const { isLoading } = this.props;
-    const { center, zoom } = this.state;
-    const overlayLayers = this.getOverlayLayers();
-    const bounds = this.getBounds();
-    return (
-      <Fragment>
-        <AreaNotesEditMap
-          allowToEdit={false}
-          bounds={bounds}
-          center={center}
-          isLoading={isLoading}
-          onViewportChanged={this.handleViewportChanged}
-          overlayLayers={overlayLayers}
-          showZoomLevelWarning={zoom < MAX_ZOOM_LEVEL_TO_FETCH_LEASES}
-          zoom={zoom}
-          zoomLevelWarningText="Tarkenna lähemmäksi kartalla hakeaksesi vuokraukset"
-        />
-      </Fragment>
-    );
-  }
-}
-
-export default flowRight(
-  withRouterLegacy,
-  connect((state) => {
-    return {
-      areaNotes: getAreaNoteList(state),
-      leaseAttributes: getLeaseAttributes(state),
-      leasesData: getLeasesByBBox(state),
-      usersPermissions: getUsersPermissions(state),
-    };
-  }),
-)(LeaseListMap) as React.ComponentType<any>;
+export default LeaseListMap;
