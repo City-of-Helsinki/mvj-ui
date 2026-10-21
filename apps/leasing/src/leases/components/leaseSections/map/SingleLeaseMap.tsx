@@ -10,7 +10,7 @@ import PlanUnitsLayer from "./PlanUnitsLayer";
 import PlotsLayer from "./PlotsLayer";
 import Title from "@/components/content/Title";
 import { fetchAreaNoteList } from "@/areaNote/slice";
-import { MAP_COLORS } from "@/util/constants";
+import { MAP_LAYER_COLORS } from "@/components/map/mapStyles";
 import {
   LeaseAreasFieldPaths,
   LeaseFieldPaths,
@@ -143,7 +143,7 @@ const SingleLeaseMap = () => {
         component: (
           <PlanUnitsLayer
             key="plan_units"
-            color={MAP_COLORS[0 % MAP_COLORS.length]}
+            color={MAP_LAYER_COLORS[0 % MAP_LAYER_COLORS.length]}
             defaultPlanUnit={
               query.plan_unit ? Number(query.plan_unit) : undefined
             }
@@ -161,7 +161,7 @@ const SingleLeaseMap = () => {
         component: (
           <PlanUnitsLayer
             key="plan_units"
-            color={MAP_COLORS[1 % MAP_COLORS.length]}
+            color={MAP_LAYER_COLORS[1 % MAP_LAYER_COLORS.length]}
             defaultPlanUnit={
               query.plan_unit ? Number(query.plan_unit) : undefined
             }
@@ -182,7 +182,7 @@ const SingleLeaseMap = () => {
         component: (
           <PlotsLayer
             key="plots"
-            color={MAP_COLORS[2 % MAP_COLORS.length]}
+            color={MAP_LAYER_COLORS[2 % MAP_LAYER_COLORS.length]}
             defaultPlot={query.plot ? Number(query.plot) : undefined}
             plotsGeoJson={plotsGeoJson}
             typeOptions={plotTypeOptions}
@@ -195,7 +195,7 @@ const SingleLeaseMap = () => {
         component: (
           <PlotsLayer
             key="plots"
-            color={MAP_COLORS[3 % MAP_COLORS.length]}
+            color={MAP_LAYER_COLORS[3 % MAP_LAYER_COLORS.length]}
             defaultPlot={query.plot ? Number(query.plot) : undefined}
             plotsGeoJson={plotsContractGeoJson}
             typeOptions={plotTypeOptions}
@@ -212,7 +212,7 @@ const SingleLeaseMap = () => {
           <AreasLayer
             key="areas"
             areasGeoJson={areasGeoJson}
-            color={MAP_COLORS[4 % MAP_COLORS.length]}
+            color={MAP_LAYER_COLORS[4 % MAP_LAYER_COLORS.length]}
             defaultArea={
               query.lease_area ? Number(query.lease_area) : undefined
             }

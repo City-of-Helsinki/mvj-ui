@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import L from "leaflet";
 import "@geoman-io/leaflet-geoman-free";
+import { DEFAULT_LEAFLET_PATH_OPTIONS } from "@/components/map/mapStyles";
 
 type Props = {
   map: L.Map | null;
@@ -32,12 +33,25 @@ const LeafletDrawControl = ({
     map.pm.setGlobalOptions({
       layerGroup: featureGroup,
       allowSelfIntersection: false,
+      templineStyle: {
+        ...DEFAULT_LEAFLET_PATH_OPTIONS,
+      },
+      hintlineStyle: {
+        dashArray: [5, 5],
+        ...DEFAULT_LEAFLET_PATH_OPTIONS,
+      },
+      pathOptions: {
+        ...DEFAULT_LEAFLET_PATH_OPTIONS,
+      },
     });
     const polygonOptions = draw.polygon || undefined;
     const rectangleOptions = draw.rectangle || undefined;
-    map.pm.setPathOptions(
-      polygonOptions?.pathOptions ?? rectangleOptions?.pathOptions ?? {},
-    );
+    const pathOptions =
+      polygonOptions?.pathOptions ?? rectangleOptions?.pathOptions ?? {};
+    map.pm.setPathOptions({
+      ...DEFAULT_LEAFLET_PATH_OPTIONS,
+      ...pathOptions,
+    });
     map.pm.addControls({
       position: "topright",
       drawMarker: false,

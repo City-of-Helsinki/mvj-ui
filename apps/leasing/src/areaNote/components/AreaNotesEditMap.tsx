@@ -32,9 +32,11 @@ import {
   showMeasurements,
   updateMeasurements,
 } from "@/components/map/measurements";
-
-const SHAPE_COLOR = "#9c27b0";
-const SHAPE_FILL_OPACITY = 0.5;
+import {
+  DEFAULT_LEAFLET_PATH_OPTIONS,
+  DRAFT_GEOMETRY_COLOR,
+  DRAFT_GEOMETRY_FILL_OPACITY,
+} from "@/components/map/mapStyles";
 
 type Props = {
   allowToEdit: boolean;
@@ -109,8 +111,9 @@ const AreaNotesEditMap: React.FC<Props> = ({
             layer instanceof L.Circle
           ) {
             layer.setStyle({
-              color: SHAPE_COLOR,
-              fillOpacity: SHAPE_FILL_OPACITY,
+              ...DEFAULT_LEAFLET_PATH_OPTIONS,
+              color: DRAFT_GEOMETRY_COLOR,
+              fillOpacity: DRAFT_GEOMETRY_FILL_OPACITY,
             });
             featureGroupRef.current?.addLayer(layer);
             showMeasurements(layer);
@@ -252,14 +255,14 @@ const AreaNotesEditMap: React.FC<Props> = ({
             polygon: {
               allowSelfIntersection: false,
               pathOptions: {
-                color: SHAPE_COLOR,
-                fillOpacity: SHAPE_FILL_OPACITY,
+                color: DRAFT_GEOMETRY_COLOR,
+                fillOpacity: DRAFT_GEOMETRY_FILL_OPACITY,
               },
             },
             rectangle: {
               pathOptions: {
-                color: SHAPE_COLOR,
-                fillOpacity: SHAPE_FILL_OPACITY,
+                color: DRAFT_GEOMETRY_COLOR,
+                fillOpacity: DRAFT_GEOMETRY_FILL_OPACITY,
               },
             },
           }}

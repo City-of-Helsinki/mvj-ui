@@ -9,7 +9,7 @@ import Loader from "@/components/loader/Loader";
 import LoaderWrapper from "@/components/loader/LoaderWrapper";
 import { fetchAreaNoteList } from "@/areaNote/slice";
 import { fetchLeaseById } from "@/leases/slice";
-import { MAP_COLORS } from "@/util/constants";
+import { MAP_LAYER_COLORS } from "@/components/map/mapStyles";
 import {
   LeaseAreasFieldPaths,
   LeasePlanUnitsFieldPaths,
@@ -166,7 +166,7 @@ const SingleInfillDevelopmentMap: React.FC = () => {
           <InfillDevelopmentLeaseLayer
             areaLocationOptions={areaLocationOptions}
             areaTypeOptions={areaTypeOptions}
-            color={MAP_COLORS[index % MAP_COLORS.length]}
+            color={MAP_LAYER_COLORS[index % MAP_LAYER_COLORS.length]}
             geoJSONData={getContentInfillDevelopmentLeaseGeoJson(leaseData)}
             highlighted={Boolean(
               query.lease && Number(query.lease) === leaseId,

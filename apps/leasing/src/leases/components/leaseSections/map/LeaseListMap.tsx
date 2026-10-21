@@ -5,7 +5,8 @@ import { useAppSelector } from "@/root/hooks";
 import AreaNotesLayer from "@/areaNote/components/AreaNotesLayer";
 import AreaNotesEditMap from "@/areaNote/components/AreaNotesEditMap";
 import LeaseListLayer from "./LeaseListLayer";
-import { DEFAULT_ZOOM, MAP_COLORS } from "@/util/constants";
+import { DEFAULT_ZOOM } from "@/util/constants";
+import { MAP_LAYER_COLORS } from "@/components/map/mapStyles";
 import { MAX_ZOOM_LEVEL_TO_FETCH_LEASES } from "@/leases/constants";
 import { LeaseFieldPaths } from "@/leases/enums";
 import { UsersPermissions } from "@/usersPermissions/enums";
@@ -80,7 +81,7 @@ const LeaseListMap = ({ isLoading, onViewportChanged }: Props) => {
       component: (
         <LeaseListLayer
           key="leases"
-          color={MAP_COLORS[0 % MAP_COLORS.length]}
+          color={MAP_LAYER_COLORS[0 % MAP_LAYER_COLORS.length]}
           leasesGeoJson={leasesGeoJson}
           search={location.search}
           stateOptions={stateOptions}

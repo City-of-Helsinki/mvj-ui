@@ -30,28 +30,6 @@ export const MIN_ZOOM = 2;
 export const MAX_ZOOM = 12;
 
 /**
- * Map color palette
- * @readonly
- * @const {string[]}
- */
-export const MAP_COLORS = [
-  "#0078C0",
-  "#FF9800",
-  "#1976D2",
-  "#D32F2F",
-  "#E040FB",
-  "#FF4081",
-  "#512DA8",
-  "#536DFE",
-  "#F57C00",
-  "#E64A19",
-  "#8BC34A",
-  "#689F38",
-  "#FFC107",
-  "#CDDC39",
-];
-
-/**
  * Url of the ptp.hel.fi API
  * @readonly
  * @const {string}
