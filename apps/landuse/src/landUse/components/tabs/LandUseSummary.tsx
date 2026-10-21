@@ -21,10 +21,12 @@ import {
   getPreparers,
 } from "@/landUse/api/landUseApi";
 import { useLandUseMetadata } from "@/landUse/api/useLandUseMetadata";
-import type { AgreementStatusCode } from "@/landUse/api/landUseTypes";
+import type {
+  AgreementStatusCode,
+  DetailedPlanResponse,
+} from "@/landUse/api/landUseTypes";
 import { useQuery } from "@tanstack/react-query";
 import { useTocEntries } from "@/landUse/hooks/useTableOfContents";
-import { type AsemakaavaListItem } from "@/landUse/options";
 import {
   getFieldTextValue,
   selectLabelIncludesFilter,
@@ -61,6 +63,7 @@ export interface LandUseSummaryFormValues {
   toimivaltainenPaattaja: string;
   sisaltaaAmVelvoitteita: string;
   velvoitteidenMaaraika: string;
+  detailedPlanId: number | null;
   asemakaavanNumero: string;
   asemakaavanKasittelyvaihe: string;
   vahvistamisHyvaksymisPvm: string;
@@ -73,13 +76,6 @@ interface LandUseSummaryProps {
   form: FormApi<LandUseSummaryFormValues>;
   isEditMode: boolean;
 }
-
-const maankayttosopimusTypeOptions = [
-  {
-    label: "Maankäyttösopimus",
-    value: "Maankäyttösopimus",
-  },
-];
 
 const SUMMARY_STEP_KEYS = {
   general: "yleiset-tiedot",
@@ -117,7 +113,7 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
   form,
   isEditMode,
 }) => {
-  const [asemakaavat, setAsemakaavat] = useState<AsemakaavaListItem[]>([]);
+  const [asemakaavat, setAsemakaavat] = useState<DetailedPlanResponse[]>([]);
   const metadataQuery = useLandUseMetadata();
   const signatoriesQuery = useQuery({
     queryKey: ["land-use", "authorized-signatories"],
@@ -162,8 +158,8 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
   const asemakaavaNumberOptions = useMemo(
     () =>
       asemakaavat.map((item) => ({
-        label: item.asemakaavanNumero,
-        value: item.asemakaavanNumero,
+        label: item.plan_number,
+        value: String(item.id),
       })),
     [asemakaavat],
   );
@@ -171,32 +167,30 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
   const handleAsemakaavaNumberChange = (
     selectedOptions: { label: string; value: string }[],
   ) => {
-    const selectedNumber = selectedOptions[0]?.value ?? "";
+    const selectedId = selectedOptions[0]?.value;
     const selectedAsemakaava = asemakaavat.find(
-      (item) => item.asemakaavanNumero === selectedNumber,
+      (item) => String(item.id) === selectedId,
     );
 
     form.batch(() => {
-      form.change("asemakaavanNumero", selectedNumber);
+      form.change("detailedPlanId", selectedAsemakaava?.id ?? null);
+      form.change("asemakaavanNumero", selectedAsemakaava?.plan_number ?? "");
       form.change(
         "asemakaavanKasittelyvaihe",
-        selectedAsemakaava?.asemakaavanKasittelyvaihe ?? "",
+        selectedAsemakaava?.processing_stage ?? "",
       );
       form.change(
         "vahvistamisHyvaksymisPvm",
-        selectedAsemakaava?.vahvistamisHyvaksymisPvm ?? "",
+        selectedAsemakaava?.approval_date ?? "",
       );
       form.change(
         "asemakaavanLainvoimaisuusPvm",
-        selectedAsemakaava?.asemakaavanLainvoimaisuusPvm ?? "",
+        selectedAsemakaava?.effective_date ?? "",
       );
-      form.change(
-        "asemakaavanHyvaksyjä",
-        selectedAsemakaava?.asemakaavanHyvaksyjä ?? "",
-      );
+      form.change("asemakaavanHyvaksyjä", selectedAsemakaava?.approver ?? "");
       form.change(
         "asemakaavanDiaarinumero",
-        selectedAsemakaava?.asemakaavanDiaarinumero ?? "",
+        selectedAsemakaava?.diary_number ?? "",
       );
     });
   };
@@ -220,33 +214,18 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                         <div className="landuse-grid">
                           <div className="landuse-grid__column-6">
                             <Field name="maankayttosopimusType">
-                              {({ input }) =>
-                                isEditMode ? (
-                                  <Select
-                                    id="summary-maankayttosopimus-type"
-                                    options={maankayttosopimusTypeOptions}
-                                    value={normalizeSelectValue(input.value)}
-                                    onChange={(selectedOptions) =>
-                                      handleSelectChange(
-                                        selectedOptions,
-                                        input.onChange,
-                                      )
-                                    }
-                                    texts={{
-                                      label: "Maankäyttösopimuksen tyyppi",
-                                      placeholder: "Valitse",
-                                    }}
-                                    disabled={!isEditMode}
-                                  />
-                                ) : (
-                                  <TextInput
-                                    id="summary-maankayttosopimus-type"
-                                    label="Maankäyttösopimuksen tyyppi"
-                                    value={readOnlyTextValue(input.value)}
-                                    readOnly
-                                  />
-                                )
-                              }
+                              {({ input }) => (
+                                <TextInput
+                                  id="summary-maankayttosopimus-type"
+                                  label="Maankäyttösopimuksen tyyppi"
+                                  value={getFieldTextValue(
+                                    isEditMode,
+                                    input.value,
+                                  )}
+                                  onChange={input.onChange}
+                                  readOnly={!isEditMode}
+                                />
+                              )}
                             </Field>
                           </div>
 
@@ -436,6 +415,7 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                                 isEditMode ? (
                                   <Select
                                     id="toimivaltainen-paattaja"
+                                    clearable
                                     options={
                                       signatoriesQuery.data?.map(
                                         ({ id, name }) => ({
@@ -486,18 +466,25 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                       <Fieldset heading="" className="full-width">
                         <div className="landuse-grid">
                           <div className="landuse-grid__column-6">
-                            <Field name="asemakaavanNumero">
+                            <Field name="detailedPlanId">
                               {({ input }) =>
                                 isEditMode ? (
                                   <Select
                                     id="asemakaavan-numero"
+                                    clearable
                                     options={asemakaavaNumberOptions}
-                                    value={normalizeSelectValue(input.value)}
+                                    value={
+                                      input.value
+                                        ? String(input.value)
+                                        : undefined
+                                    }
                                     onChange={handleAsemakaavaNumberChange}
                                     filter={selectLabelIncludesFilter}
                                     texts={{
                                       label: "Asemakaavan numero",
                                       placeholder: "Valitse",
+                                      clearButtonAriaLabel_one:
+                                        "Tyhjennä asemakaava",
                                     }}
                                     disabled={!isEditMode}
                                   />
@@ -505,7 +492,9 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                                   <TextInput
                                     id="asemakaavan-numero"
                                     label="Asemakaavan numero"
-                                    value={readOnlyTextValue(input.value)}
+                                    value={readOnlyTextValue(
+                                      values.asemakaavanNumero,
+                                    )}
                                     readOnly
                                   />
                                 )
@@ -830,6 +819,7 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                                           isEditMode ? (
                                             <Select
                                               id={`valmistelija-${index}`}
+                                              clearable
                                               options={
                                                 preparersQuery.data?.map(
                                                   ({ id, name }) => ({

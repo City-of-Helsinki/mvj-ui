@@ -13,6 +13,8 @@ import {
   getSiteTenureTypes,
   getDecisions,
   getPreparers,
+  getAsemakaavat,
+  getAuthorizedSignatories,
   getSummary,
   updateSummary,
   updateCompensations,
@@ -37,6 +39,90 @@ const mockGetAllPages = vi.mocked(callApiGetAllPages);
 describe("land use API contract adapters", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+  });
+
+  it("retains summary lookup IDs and free-text agreement type through save and reload", async () => {
+    const plan = {
+      id: 73,
+      plan_number: "0012345",
+      processing_stage: "EFFECTIVE",
+      approval_date: "2026-01-10",
+      effective_date: "2026-02-15",
+      approver: "Plan approver",
+      diary_number: "HEL-73",
+    };
+    const signatory = { id: 42, name: "Actual signatory" };
+    const preparer = { preparer: 89, preparer_name: "Actual officer" };
+    const agreement = {
+      id: 1,
+      identifier: "091-01-1",
+      agreement_type: "Custom agreement type",
+      district: null,
+      is_promotion_area: false,
+      status: "DRAFT",
+      estimated_presentation_year: 2026,
+      estimated_payment_year: 2027,
+      detailed_plan_sites: [],
+      includes_housing_obligations: false,
+      obligations_deadline: null,
+      authorized_signatory: signatory,
+      detailed_plan: plan,
+      addresses: [],
+      preparers: [preparer],
+    };
+    mockGetAllPages
+      .mockResolvedValueOnce([plan])
+      .mockResolvedValueOnce([signatory]);
+    await expect(getAsemakaavat()).resolves.toEqual([plan]);
+    await expect(getAuthorizedSignatories()).resolves.toEqual([signatory]);
+    expect(mockGetAllPages).toHaveBeenNthCalledWith(1, "detailed-plans/");
+    expect(mockGetAllPages).toHaveBeenNthCalledWith(
+      2,
+      "authorized-signatories/",
+    );
+    mockGet.mockResolvedValueOnce(agreement);
+
+    const values = await getSummary("1");
+    expect(values).toMatchObject({
+      detailedPlanId: 73,
+      asemakaavanNumero: "0012345",
+      asemakaavanKasittelyvaihe: "EFFECTIVE",
+      toimivaltainenPaattaja: "42",
+      valmistelijat: [{ value: "89" }],
+      maankayttosopimusType: "Custom agreement type",
+    });
+    await updateSummary("1", values);
+    const payload = vi.mocked(callApiPatch).mock.lastCall?.[1];
+    expect(payload).toMatchObject({
+      detailed_plan: 73,
+      authorized_signatory: 42,
+      preparers: [{ preparer: 89 }],
+      agreement_type: "Custom agreement type",
+    });
+    expect(payload).not.toHaveProperty("processing_stage");
+    expect(payload).not.toHaveProperty("approval_date");
+    if (typeof payload !== "object" || payload === null) {
+      throw new Error("Expected an agreement update payload");
+    }
+    mockGet.mockResolvedValueOnce({
+      ...agreement,
+      ...payload,
+      detailed_plan: plan,
+      authorized_signatory: signatory,
+      preparers: [preparer],
+    });
+    await expect(getSummary("1")).resolves.toEqual(values);
+
+    await updateSummary("1", createEmptySummaryFormValues());
+    expect(callApiPatch).toHaveBeenLastCalledWith(
+      "agreements/1/",
+      expect.objectContaining({
+        detailed_plan: null,
+        authorized_signatory: null,
+        preparers: [],
+        agreement_type: "",
+      }),
+    );
   });
 
   it.each<AgreementStatusCode | "">([

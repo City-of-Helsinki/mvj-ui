@@ -8,7 +8,6 @@ import type { LandUseMonitoringFormValues } from "@/landUse/components/tabs/Land
 import type { LandUsePartiesFormValues } from "@/landUse/components/tabs/LandUseParties";
 import type { LandUseSummaryFormValues } from "@/landUse/components/tabs/LandUseSummary";
 import type { Guarantee } from "@/landUse/components/collateralForms";
-import { type AsemakaavaListItem } from "@/landUse/options";
 import {
   createLandUseIdentifier,
   getNextLandUseSequence,
@@ -69,6 +68,7 @@ type AgreementCreateResponse = {
 };
 
 type AgreementUpdateRequest = {
+  detailed_plan: number | null;
   authorized_signatory: number | null;
   addresses: AgreementOverviewResponse["addresses"];
   preparers: { preparer: number }[];
@@ -350,20 +350,8 @@ const mapPartyDetails = (
     : { ...details, businessId: party.business_id };
 };
 
-export const getAsemakaavat = async (): Promise<AsemakaavaListItem[]> => {
-  const plans =
-    await callApiGetAllPages<DetailedPlanResponse>("detailed-plans/");
-
-  return plans.map((plan) => ({
-    asemakaavanNumero: plan.plan_number,
-    asemakaavanKasittelyvaihe:
-      plan.processing_stage as AsemakaavaListItem["asemakaavanKasittelyvaihe"],
-    vahvistamisHyvaksymisPvm: plan.approval_date ?? "",
-    asemakaavanLainvoimaisuusPvm: plan.effective_date ?? undefined,
-    asemakaavanHyvaksyjä: plan.approver,
-    asemakaavanDiaarinumero: plan.diary_number,
-  }));
-};
+export const getAsemakaavat = (): Promise<DetailedPlanResponse[]> =>
+  callApiGetAllPages<DetailedPlanResponse>("detailed-plans/");
 
 const mapAgreementOverviewToSummary = (
   agreement: AgreementOverviewResponse,
@@ -394,6 +382,7 @@ const mapAgreementOverviewToSummary = (
     ? "kyllä"
     : "ei",
   velvoitteidenMaaraika: agreement.obligations_deadline ?? "",
+  detailedPlanId: agreement.detailed_plan?.id ?? null,
   asemakaavanNumero: agreement.detailed_plan?.plan_number ?? "",
   asemakaavanKasittelyvaihe: agreement.detailed_plan?.processing_stage ?? "",
   vahvistamisHyvaksymisPvm: agreement.detailed_plan?.approval_date ?? "",
@@ -468,6 +457,7 @@ export const updateSummary = async (
   await callApiPatch<AgreementOverviewResponse, AgreementUpdateRequest>(
     `agreements/${agreementId}/`,
     {
+      detailed_plan: values.detailedPlanId,
       authorized_signatory: values.toimivaltainenPaattaja
         ? Number(values.toimivaltainenPaattaja)
         : null,

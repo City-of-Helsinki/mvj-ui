@@ -27,14 +27,37 @@ vi.mock("@/landUse/api/fetchClient", () => ({
           { id: 17, name: "First signatory" },
           { id: 42, name: "Second signatory" },
         ]
-      : [],
+      : path === "detailed-plans/"
+        ? [
+            {
+              id: 73,
+              plan_number: "0012345",
+              processing_stage: "EFFECTIVE",
+              approval_date: "2026-01-10",
+              effective_date: "2026-02-15",
+              approver: "Plan approver",
+              diary_number: "HEL-73",
+            },
+          ]
+        : path === "officer/"
+          ? [
+              {
+                id: 89,
+                username: "officer",
+                first_name: "Actual",
+                last_name: "Officer",
+              },
+            ]
+          : [],
   ),
 }));
 
 vi.mock("@/landUse/api/useLandUseMetadata", () => ({
   useLandUseMetadata: () => ({
     data: {
-      detailed_plan_processing_stages: [],
+      detailed_plan_processing_stages: [
+        { value: "EFFECTIVE", label: "Lainvoimainen" },
+      ],
       agreement_statuses: [
         { value: "DRAFT", label: "Luonnos" },
         { value: "IN_PROGRESS", label: "Vireillä" },
@@ -161,5 +184,93 @@ it("saves the selected signatory API ID rather than its option index", async () 
   expect(callApiPatch).toHaveBeenCalledWith(
     "agreements/1/",
     expect.objectContaining({ authorized_signatory: 42 }),
+  );
+});
+
+it("selects a plan by database ID, derives read-only fields, and clears the relationship", async () => {
+  const form = createForm<LandUseSummaryFormValues>({
+    onSubmit: () => {},
+    initialValues: createEmptySummaryFormValues(),
+    mutators: { ...arrayMutators },
+  });
+  render(
+    <QueryClientProvider client={new QueryClient()}>
+      <LandUseSummary form={form} isEditMode />
+    </QueryClientProvider>,
+  );
+
+  fireEvent.click(
+    await screen.findByRole("button", { name: /Asemakaavan numero/ }),
+  );
+  fireEvent.click(await screen.findByRole("option", { name: "0012345" }));
+  expect(form.getState().values).toMatchObject({
+    detailedPlanId: 73,
+    asemakaavanNumero: "0012345",
+    asemakaavanKasittelyvaihe: "EFFECTIVE",
+    vahvistamisHyvaksymisPvm: "2026-01-10",
+    asemakaavanLainvoimaisuusPvm: "2026-02-15",
+    asemakaavanHyvaksyjä: "Plan approver",
+    asemakaavanDiaarinumero: "HEL-73",
+  });
+  for (const [label, value] of [
+    ["Asemakaavan käsittelyvaihe", "Lainvoimainen"],
+    ["Vahvistamis/hyväksymispäivä", "2026-01-10"],
+    ["Lainvoimaisuuspäivä", "2026-02-15"],
+    ["Asemakaavan hyväksyjä", "Plan approver"],
+    ["Asemakaavan diaarinumero", "HEL-73"],
+  ]) {
+    const field = screen.getByLabelText(label) as HTMLInputElement;
+    expect(field.value).toBe(value);
+    expect(field.readOnly).toBe(true);
+  }
+  await updateSummary("1", form.getState().values);
+  expect(callApiPatch).toHaveBeenLastCalledWith(
+    "agreements/1/",
+    expect.objectContaining({ detailed_plan: 73 }),
+  );
+
+  fireEvent.click(screen.getByRole("button", { name: "Tyhjennä asemakaava" }));
+  expect(form.getState().values).toMatchObject({
+    detailedPlanId: null,
+    asemakaavanNumero: "",
+    asemakaavanKasittelyvaihe: "",
+    vahvistamisHyvaksymisPvm: "",
+    asemakaavanLainvoimaisuusPvm: "",
+    asemakaavanHyvaksyjä: "",
+    asemakaavanDiaarinumero: "",
+  });
+  await updateSummary("1", form.getState().values);
+  expect(callApiPatch).toHaveBeenLastCalledWith(
+    "agreements/1/",
+    expect.objectContaining({ detailed_plan: null }),
+  );
+});
+
+it("saves free-text agreement types and preparers selected from real officer IDs", async () => {
+  const form = createForm<LandUseSummaryFormValues>({
+    onSubmit: () => {},
+    initialValues: createEmptySummaryFormValues(),
+    mutators: { ...arrayMutators },
+  });
+  render(
+    <QueryClientProvider client={new QueryClient()}>
+      <LandUseSummary form={form} isEditMode />
+    </QueryClientProvider>,
+  );
+  fireEvent.change(screen.getByLabelText("Maankäyttösopimuksen tyyppi"), {
+    target: { value: "Custom agreement type" },
+  });
+  fireEvent.click(await screen.findByRole("button", { name: /Valmistelija/ }));
+  fireEvent.click(
+    await screen.findByRole("option", { name: "Actual Officer" }),
+  );
+  expect(form.getState().values.valmistelijat).toEqual([{ value: "89" }]);
+  await updateSummary("1", form.getState().values);
+  expect(callApiPatch).toHaveBeenLastCalledWith(
+    "agreements/1/",
+    expect.objectContaining({
+      agreement_type: "Custom agreement type",
+      preparers: [{ preparer: 89 }],
+    }),
   );
 });
