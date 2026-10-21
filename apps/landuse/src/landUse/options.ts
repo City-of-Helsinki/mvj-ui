@@ -1,18 +1,14 @@
-/**
- * Options for all Select elements.
- * This data will eventually be fetched from the backend, but for now it is hardcoded here
- * during UI mocking phase.
- */
+/** Shared form types and legacy fixture constants; live backend choices come from landuse metadata/lookups. */
 
 export const MUNICIPALITY_OPTIONS = [{ label: "Helsinki", value: "1" }];
 
 export const LAND_USE_NEGOTIATION_PHASES = {
-  DRAFT: "Luonnos",
-  IN_PROGRESS: "Vireillä",
-  NEGOTIATION: "Neuvottelu",
-  DECISION: "Päätös",
-  SIGNATURE: "Allekirjoitus",
-  NO_AGREEMENT: "Ei sopimusta",
+  DRAFT: "DRAFT",
+  IN_PROGRESS: "IN_PROGRESS",
+  NEGOTIATION: "NEGOTIATION",
+  DECISION: "DECISION",
+  SIGNATURE: "SIGNATURE",
+  NO_AGREEMENT: "NO_AGREEMENT",
 } as const;
 
 export type LandUseNegotiationPhase =
@@ -25,52 +21,12 @@ export const landUseNegotiationPhaseOptions = Object.values(
   value,
 }));
 
-export const landUseDecisionMakerOptions = [
-  {
-    label: "Tonttipäällikkö",
-    value: "Tonttipäällikkö",
-  },
-  {
-    label: "Kaupunkiympäristölautakunta",
-    value: "Kaupunkiympäristölautakunta",
-  },
-  { label: "Kaupunginhallitus", value: "Kaupunginhallitus" },
-];
-
-export const landUseDecisionTypeOptions = [
-  {
-    label: "Rasite- ja/tai rasitteenluont.ehdon lis. (1 ehto)",
-    value: "Rasite- ja/tai rasitteenluont.ehdon lis. (1 ehto)",
-  },
-  {
-    label: "Maankäyttösopimuksen hyväksyntä",
-    value: "Maankäyttösopimuksen hyväksyntä",
-  },
-];
-
-export const landUseConditionTypeOptions = [
-  {
-    label: "Rasite - ja/tai rasitteenluont.ehto",
-    value: "Rasite - ja/tai rasitteenluont.ehto",
-  },
-  { label: "Muu ehto", value: "Muu ehto" },
-];
-
-export const landUseAgreementTypeOptions = [
-  { label: "Maankäyttösopimus", value: "Maankäyttösopimus" },
-  {
-    label: "Kiinteistökaupan esitietosopimus",
-    value: "Kiinteistökaupan esitietosopimus",
-  },
-  { label: "Muu", value: "Muu" },
-];
-
 export const LAND_USE_GUARANTEE_TYPES = {
-  PANTTIKIRJA: "Panttikirja",
-  RAHAVAKUUS: "Rahavakuus",
-  OMAVELKAINEN_TAKAUS: "Omavelkainen takaus",
-  TILIVAROJEN_PANTTAUS: "Tilivarojen panttaus",
-  MUU_VAKUUS: "Muu vakuus",
+  PANTTIKIRJA: "MORTGAGE_DEED",
+  RAHAVAKUUS: "CASH_DEPOSIT",
+  OMAVELKAINEN_TAKAUS: "PERSONAL_GUARANTEE",
+  TILIVAROJEN_PANTTAUS: "DEPOSIT_PLEDGE",
+  MUU_VAKUUS: "OTHER",
 } as const;
 
 export type LandUseGuaranteeType =
@@ -84,29 +40,18 @@ export const landUseGuaranteeTypeOptions: {
   value,
 }));
 
-export const landUseGuaranteeCategoryOptions = [
-  { label: "Sähköinen", value: "Sähköinen" },
-  { label: "Paperinen", value: "Paperinen" },
-];
-
-export const landUseGuaranteeTargetOptions = [
-  { label: "Kiinteistö", value: "Kiinteistö" },
-  { label: "Laitos", value: "Laitos" },
-];
-
 export const landUseGuaranteeVierasvelkapanttausOptions = [
   { label: "Kyllä", value: "Kyllä" },
   { label: "Ei", value: "Ei" },
 ];
 
 export const ASEMAKAAVA_KASITTELYVAIHE_OPTIONS = [
-  "Vireillä",
-  "Lainvoimainen",
-  "Kumottu",
+  "DRAFT",
+  "EFFECTIVE",
+  "REVOKED",
 ] as const;
 
-export type AsemakaavaKasittelyvaihe =
-  (typeof ASEMAKAAVA_KASITTELYVAIHE_OPTIONS)[number];
+export type AsemakaavaKasittelyvaihe = string;
 
 export interface AsemakaavaListItem {
   asemakaavanNumero: string;
@@ -144,47 +89,21 @@ export const landUseAsemakaavaListItems: AsemakaavaListItem[] = [
   },
 ];
 
-export const landUseMaapoliittinenOhjelmaOptions = [
-  { label: "MAPO1", value: "MAPO1", defaultHuojennusProsentti: "1" },
-  { label: "MAPO2", value: "MAPO2", defaultHuojennusProsentti: "25" },
-  { label: "MAPO3", value: "MAPO3", defaultHuojennusProsentti: "3" },
-  { label: "MAPO4", value: "MAPO4", defaultHuojennusProsentti: "4" },
-];
-
-export const landUseKayttotarkoitusOptions = [
-  "Asuinkerrostalojen korttelialue",
-  "Asuinkerrostalojen, liike- ja toimistorakennusten korttelialue",
-  "Toimitilat",
-].map((value) => ({ label: value, value }));
-
-export const landUseHallintamuotoOptions = [
-  "Vapaarahoitteinen omistus",
-  "Vapaarahoitteinen vuokra",
-  "Lyhyt korkotuki (ARA 10)",
-  "Pitkä korkotuki (ARA)",
-  "ASO",
-].map((value) => ({ label: value, value }));
-
-export const landUseSuojeltuOptions = ["-", "SR1", "SR2"].map((value) => ({
-  label: value,
-  value,
-}));
-
 export const LAND_USE_INVOICE_STATUSES = {
-  DRAFT: "Luonnos",
-  OPEN: "Avoin",
-  PAID: "Maksettu",
-  CREDITED: "Hyvitetty",
+  DRAFT: "DRAFT",
+  OPEN: "OPEN",
+  PAID: "PAID",
+  CREDITED: "CREDITED",
 } as const;
 
 export type LandUseInvoiceStatus =
   (typeof LAND_USE_INVOICE_STATUSES)[keyof typeof LAND_USE_INVOICE_STATUSES];
 
 export const LAND_USE_PAYMENT_SCHEDULE_STATUSES = {
-  DRAFT: "Luonnos",
-  PENDING_APPROVAL: "Odottaa hyväksyntää",
-  APPROVED: "Hyväksytty",
-  REJECTED: "Hylätty",
+  DRAFT: "DRAFT",
+  PENDING_APPROVAL: "PENDING_APPROVAL",
+  APPROVED: "APPROVED",
+  REJECTED: "REJECTED",
 } as const;
 
 export type LandUsePaymentScheduleStatus =
@@ -197,8 +116,8 @@ export interface LandUseInvoiceItem {
 }
 
 export const LAND_USE_INVOICE_TYPES = {
-  MAANKAYTTOKORVAUS: "Maankäyttökorvaus",
-  SAKKO: "Sakko",
+  MAANKAYTTOKORVAUS: "LAND_USE_COMPENSATION",
+  SAKKO: "PENALTY",
 } as const;
 
 export type LandUseInvoiceType =
@@ -223,35 +142,15 @@ export interface LandUseInvoice {
   invoiceItems?: LandUseInvoiceItem[];
 }
 
-export const landUseInvoiceTypeSelectOptions: {
-  label: string;
-  value: LandUseInvoiceType;
-}[] = Object.values(LAND_USE_INVOICE_TYPES).map((value) => ({
-  label: value,
-  value,
-}));
-
-export const landUseInvoiceStatusSelectOptions = Object.values(
-  LAND_USE_INVOICE_STATUSES,
-).map((status) => ({ label: status, value: status }));
-
 export const LAND_USE_INVOICE_ITEM_TYPES = {
-  MAANKAYTTOKORVAUS: "Maankäyttökorvaus",
-  KOROTUS: "Korotus",
-  KORKO: "Korko",
-  SAKKO: "Sakko",
+  MAANKAYTTOKORVAUS: "LAND_USE_COMPENSATION",
+  KOROTUS: "INCREASE",
+  KORKO: "INTEREST",
+  SAKKO: "PENALTY",
 } as const;
 
 export type LandUseInvoiceItemType =
   (typeof LAND_USE_INVOICE_ITEM_TYPES)[keyof typeof LAND_USE_INVOICE_ITEM_TYPES];
-
-export const landUseInvoiceItemTypeSelectOptions: {
-  label: string;
-  value: LandUseInvoiceItemType;
-}[] = Object.values(LAND_USE_INVOICE_ITEM_TYPES).map((value) => ({
-  label: value,
-  value,
-}));
 
 // Only 365 is supported for now; additional entries can be added later without
 // requiring further changes to the payment schedule UI.
@@ -266,24 +165,3 @@ export const interestCalculationDaysInYearOptions = Object.values(
   INTEREST_CALCULATION_DAYS_IN_YEAR,
 ).map((value) => ({ label: value, value }));
 
-export const partyRoleOptions = [
-  { label: "Maanomistaja", value: "maanomistaja" },
-  { label: "Toteuttaja", value: "toteuttaja" },
-];
-
-export const partyTypeOptions = [
-  { label: "Yritys", value: "yritys" },
-  { label: "Yksityishenkilö", value: "yksityishenkilo" },
-];
-
-export const languageOptions = [
-  { label: "suomi", value: "suomi" },
-  { label: "ruotsi", value: "ruotsi" },
-  { label: "englanti", value: "englanti" },
-];
-
-export const countryOptions = [
-  { label: "Suomi", value: "suomi" },
-  { label: "Ruotsi", value: "ruotsi" },
-  { label: "Norja", value: "norja" },
-];

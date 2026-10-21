@@ -20,10 +20,9 @@ import {
 import React, { useState } from "react";
 import { Field, Form } from "react-final-form";
 import { FieldArray } from "react-final-form-arrays";
+import { useLandUseMetadata } from "@/landUse/api/useLandUseMetadata";
 import {
   LAND_USE_INVOICE_STATUSES,
-  landUseInvoiceItemTypeSelectOptions,
-  landUseInvoiceTypeSelectOptions,
   type LandUseInvoice,
   type LandUseInvoiceItem,
   type LandUseInvoiceStatus,
@@ -209,7 +208,7 @@ const getSelectedPartyInvoiceData = (
 
   const recipientDetails =
     selectedParty.invoiceRecipient?.details ?? selectedParty.party?.details;
-  const isCompany = recipientDetails?.partyType === "yritys";
+  const isCompany = recipientDetails?.partyType === "COMPANY";
 
   return {
     streetAddress: recipientDetails?.streetAddress ?? "",
@@ -296,6 +295,9 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
   onRemove,
   onToggle,
 }) => {
+  const metadataQuery = useLandUseMetadata();
+  const invoiceTypeOptions = metadataQuery.data?.invoice_types ?? [];
+  const invoiceItemTypeOptions = metadataQuery.data?.invoice_item_types ?? [];
   return (
     <Field name={fieldName} subscription={{ value: true }}>
       {({ input }) => {
@@ -361,7 +363,7 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
                             canEditInvoiceContent ? (
                               <Select
                                 id={`landuse-billing-type-${index}`}
-                                options={landUseInvoiceTypeSelectOptions}
+                                options={invoiceTypeOptions}
                                 value={normalizeSelectValue(typeInput.value)}
                                 onChange={(selectedOptions) =>
                                   handleSelectChange(
@@ -767,7 +769,7 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
                                                       placeholder: "Valitse",
                                                     }}
                                                     options={
-                                                      landUseInvoiceItemTypeSelectOptions
+                                                      invoiceItemTypeOptions
                                                     }
                                                     value={itemTypeInput.value}
                                                     onChange={(selected) => {

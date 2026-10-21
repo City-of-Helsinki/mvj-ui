@@ -1,9 +1,10 @@
 import { ConfirmDeleteButton } from "@/landUse/components/ConfirmDeleteButton";
 import type { FormKey } from "@/landUse/components/LandUseDetailPage";
 import type { LandUseSite } from "@/landUse/components/tabs/LandUseCompensations";
+import { getSiteTenureTypes } from "@/landUse/api/landUseApi";
 import { INITIAL_SAKKOKERROIN } from "@/landUse/constants";
 import { useTocEntries } from "@/landUse/hooks/useTableOfContents";
-import { landUseHallintamuotoOptions } from "@/landUse/options";
+import { useQuery } from "@tanstack/react-query";
 import {
   filterOptionsByValues,
   normalizeSelectValue,
@@ -212,6 +213,15 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
   maankayttokorvausYhteensa,
   onSetTabDirty,
 }) => {
+  const tenureTypesQuery = useQuery({
+    queryKey: ["land-use", "site-tenure-types"],
+    queryFn: getSiteTenureTypes,
+    staleTime: 60 * 60 * 1000,
+  });
+  const tenureTypeOptions = (tenureTypesQuery.data ?? []).map(({ name }) => ({
+    label: name,
+    value: name,
+  }));
   const tocEntries = useMemo(
     () =>
       MONITORING_STEPS.map((step) => ({
@@ -338,7 +348,7 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
                     <Select
                       id={`monitoring-parent-toteutunut-hallintamuoto-${site.id}`}
                       options={filterOptionsByValues(
-                        landUseHallintamuotoOptions,
+                        tenureTypeOptions,
                         site.hallintamuoto,
                       )}
                       value={normalizeSelectValue(input.value)}
@@ -457,7 +467,7 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
                       <Select
                         id={`monitoring-plot-division-toteutunut-hallintamuoto-${site.id}-${childIndex}`}
                         options={filterOptionsByValues(
-                          landUseHallintamuotoOptions,
+                          tenureTypeOptions,
                           site.hallintamuoto,
                         )}
                         value={normalizeSelectValue(input.value)}

@@ -13,11 +13,7 @@ import {
 import React, { useEffect, useMemo, useState } from "react";
 import { Field, Form } from "react-final-form";
 import { useTocEntries } from "@/landUse/hooks/useTableOfContents";
-import {
-  landUseConditionTypeOptions,
-  landUseDecisionMakerOptions,
-  landUseDecisionTypeOptions,
-} from "@/landUse/options";
+import { useLandUseMetadata } from "@/landUse/api/useLandUseMetadata";
 import {
   getFieldTextValue,
   normalizeSelectValue,
@@ -106,6 +102,8 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
   form,
   isEditMode,
 }) => {
+  const metadataQuery = useLandUseMetadata();
+  const metadata = metadataQuery.data;
   const [decisions, setDecisions] = useState<DecisionItem[]>(
     () => form.getState().values.decisions ?? [],
   );
@@ -194,7 +192,9 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                             label: "Päättäjä",
                                             placeholder: "Valitse",
                                           }}
-                                          options={landUseDecisionMakerOptions}
+                                          options={
+                                            metadata?.decision_makers ?? []
+                                          }
                                           value={normalizeSelectValue(
                                             input.value,
                                           )}
@@ -209,7 +209,13 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                         <TextInput
                                           id={`decision-paattaja-${decisionIndex}`}
                                           label="Päättäjä"
-                                          value={readOnlyTextValue(input.value)}
+                                          value={
+                                            metadata?.decision_makers.find(
+                                              (choice) =>
+                                                choice.value === input.value,
+                                            )?.label ??
+                                            readOnlyTextValue(input.value)
+                                          }
                                           readOnly
                                         />
                                       )
@@ -274,7 +280,9 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                             label: "Päätöksen tyyppi",
                                             placeholder: "Valitse",
                                           }}
-                                          options={landUseDecisionTypeOptions}
+                                          options={
+                                            metadata?.decision_types ?? []
+                                          }
                                           value={normalizeSelectValue(
                                             input.value,
                                           )}
@@ -289,7 +297,13 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                         <TextInput
                                           id={`decision-paatoksen-tyyppi-${decisionIndex}`}
                                           label="Päätöksen tyyppi"
-                                          value={readOnlyTextValue(input.value)}
+                                          value={
+                                            metadata?.decision_types.find(
+                                              (choice) =>
+                                                choice.value === input.value,
+                                            )?.label ??
+                                            readOnlyTextValue(input.value)
+                                          }
                                           readOnly
                                         />
                                       )
@@ -360,7 +374,8 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                                 placeholder: "Valitse",
                                               }}
                                               options={
-                                                landUseConditionTypeOptions
+                                                metadata?.decision_condition_types ??
+                                                []
                                               }
                                               value={normalizeSelectValue(
                                                 input.value,
@@ -376,9 +391,14 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                             <TextInput
                                               id={`decision-ehto-tyyppi-${decisionIndex}-${conditionIndex}`}
                                               label="Ehtotyyppi"
-                                              value={readOnlyTextValue(
-                                                input.value,
-                                              )}
+                                              value={
+                                                metadata?.decision_condition_types.find(
+                                                  (choice) =>
+                                                    choice.value ===
+                                                    input.value,
+                                                )?.label ??
+                                                readOnlyTextValue(input.value)
+                                              }
                                               readOnly
                                             />
                                           )

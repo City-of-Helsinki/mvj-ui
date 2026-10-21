@@ -13,6 +13,7 @@ export type LanduseApiQuery = Record<
 export type LanduseApiRequestOptions = {
   query?: LanduseApiQuery;
   headers?: HeadersInit;
+  apiNamespace?: "landuse" | "";
 };
 
 export type PaginatedResponse<T> = {
@@ -44,9 +45,14 @@ const getQueryString = (query?: LanduseApiQuery): string => {
   return searchParams.toString();
 };
 
-const getLanduseApiUrl = (path: string, query?: LanduseApiQuery): string => {
+const getLanduseApiUrl = (
+  path: string,
+  query?: LanduseApiQuery,
+  apiNamespace = "landuse",
+): string => {
   const apiHost = (import.meta.env.VITE_API_URL || "").replace(/\/$/, "");
-  const url = `${apiHost}/landuse/${path.replace(/^\//, "")}`;
+  const prefix = apiNamespace ? `/${apiNamespace}` : "";
+  const url = `${apiHost}${prefix}/${path.replace(/^\//, "")}`;
   const search = getQueryString(query);
   return search ? `${url}?${search}` : url;
 };
@@ -77,7 +83,7 @@ const requestLanduseApi = async <T>(
   }
 
   const response = await landUseTokenizedFetchModule.tokenizedFetch(
-    getLanduseApiUrl(path, options.query),
+    getLanduseApiUrl(path, options.query, options.apiNamespace),
     {
       method,
       headers,

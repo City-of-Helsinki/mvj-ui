@@ -833,7 +833,7 @@ const LandUseDetailPage: React.FC = () => {
         streetAddress: party.party.details?.streetAddress,
         city: party.party.details?.city,
         postalCode: party.party.details?.postalCode,
-        ...(party.party.details?.partyType === "yritys" &&
+        ...(party.party.details?.partyType === "COMPANY" &&
         "businessId" in party.party.details
           ? { businessId: party.party.details?.businessId }
           : {}),
@@ -853,7 +853,7 @@ const LandUseDetailPage: React.FC = () => {
               streetAddress: party.invoiceRecipient?.details?.streetAddress,
               city: party.invoiceRecipient?.details?.city,
               postalCode: party.invoiceRecipient?.details?.postalCode,
-              ...(party.invoiceRecipient?.details?.partyType === "yritys" &&
+              ...(party.invoiceRecipient?.details?.partyType === "COMPANY" &&
               "businessId" in party.invoiceRecipient.details
                 ? { businessId: party.invoiceRecipient?.details?.businessId }
                 : {}),

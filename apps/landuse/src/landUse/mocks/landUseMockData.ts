@@ -191,7 +191,7 @@ const ma113Agreements: LandUseContractsFormValues = {
       ],
       vakuudet: [
         {
-          tyyppi: "Rahavakuus",
+          tyyppi: "CASH_DEPOSIT",
           vierasvelkapanttaus: false,
           vierasvelkapanttauksenAntajanNimi: "",
           vierasvelkapanttauksenAntajanYTunnus: "",

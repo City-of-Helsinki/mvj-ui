@@ -1,4 +1,11 @@
 import { NumericDecimalInput } from "@/landUse/components/NumericDecimalInput";
+import { useLandUseMetadata } from "@/landUse/api/useLandUseMetadata";
+import { useQuery } from "@tanstack/react-query";
+import {
+  getLandPolicyPrograms,
+  getSiteIntendedUses,
+  getSiteTenureTypes,
+} from "@/landUse/api/landUseApi";
 import { Decorator, FormApi } from "final-form";
 import createDecorator from "final-form-calculate";
 import {
@@ -20,12 +27,6 @@ import {
 import React, { useMemo } from "react";
 import { Field, Form } from "react-final-form";
 import { useTocEntries } from "@/landUse/hooks/useTableOfContents";
-import {
-  landUseHallintamuotoOptions,
-  landUseKayttotarkoitusOptions,
-  landUseMaapoliittinenOhjelmaOptions,
-  landUseSuojeltuOptions,
-} from "@/landUse/options";
 import {
   normalizeMultiSelectValue,
   normalizeSelectValue,
@@ -182,6 +183,9 @@ interface SiteRowProps {
   site: LandUseSite;
   siteIndex: number;
   rowValues: PerustietotaulukkoRowValues | undefined;
+  intendedUseOptions: SelectOption[];
+  tenureTypeOptions: SelectOption[];
+  preservationOptions: SelectOption[];
   isEditMode: boolean;
   onSetTabDirty: () => void;
   onRemove: (siteId: string) => void;
@@ -194,6 +198,9 @@ const SiteRow: React.FC<SiteRowProps> = ({
   site,
   siteIndex,
   rowValues,
+  intendedUseOptions,
+  tenureTypeOptions,
+  preservationOptions,
   isEditMode,
   onSetTabDirty,
   onRemove,
@@ -282,7 +289,7 @@ const SiteRow: React.FC<SiteRowProps> = ({
                       ) : (
                         <Select
                           id={`landuse-compensations-kayttotarkoitus-${site.id}`}
-                          options={landUseKayttotarkoitusOptions}
+                          options={intendedUseOptions}
                           value={normalizeSelectValue(input.value)}
                           onChange={(selectedOptions) => {
                             handleSelectChange(selectedOptions, input.onChange);
@@ -315,7 +322,7 @@ const SiteRow: React.FC<SiteRowProps> = ({
                       ) : (
                         <Select
                           id={`landuse-compensations-hallintamuoto-${site.id}`}
-                          options={landUseHallintamuotoOptions}
+                          options={tenureTypeOptions}
                           value={normalizeMultiSelectValue(input.value)}
                           onChange={(selectedOptions) => {
                             handleMultiSelectChange(
@@ -348,7 +355,7 @@ const SiteRow: React.FC<SiteRowProps> = ({
                       ) : (
                         <Select
                           id={`landuse-compensations-suojeltu-${site.id}`}
-                          options={landUseSuojeltuOptions}
+                          options={preservationOptions}
                           value={normalizeSelectValue(input.value)}
                           onChange={(selectedOptions) =>
                             handleSelectChange(selectedOptions, input.onChange)
@@ -454,6 +461,35 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
   isEditMode,
   onSetTabDirty,
 }) => {
+  const metadataQuery = useLandUseMetadata();
+  const intendedUsesQuery = useQuery({
+    queryKey: ["land-use", "site-intended-uses"],
+    queryFn: getSiteIntendedUses,
+    staleTime: 60 * 60 * 1000,
+  });
+  const tenureTypesQuery = useQuery({
+    queryKey: ["land-use", "site-tenure-types"],
+    queryFn: getSiteTenureTypes,
+    staleTime: 60 * 60 * 1000,
+  });
+  const landPolicyProgramsQuery = useQuery({
+    queryKey: ["land-use", "land-policy-programs"],
+    queryFn: getLandPolicyPrograms,
+    staleTime: 60 * 60 * 1000,
+  });
+  const intendedUseOptions = (intendedUsesQuery.data ?? []).map(({ name }) => ({
+    label: name,
+    value: name,
+  }));
+  const tenureTypeOptions = (tenureTypesQuery.data ?? []).map(({ name }) => ({
+    label: name,
+    value: name,
+  }));
+  const preservationOptions =
+    metadataQuery.data?.preservation_designations ?? [];
+  const landPolicyProgramOptions = (landPolicyProgramsQuery.data ?? []).map(
+    ({ name }) => ({ label: name, value: name }),
+  );
   const [openSiteId, setOpenSiteId] = React.useState<string | null>(null);
 
   const tocEntries = useMemo(
@@ -527,14 +563,14 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
           selectedOptions: SelectOption[],
         ) => {
           const selectedValue = selectedOptions[0]?.value;
-          const selectedOption = landUseMaapoliittinenOhjelmaOptions.find(
-            (option) => option.value === selectedValue,
+          const selectedOption = landPolicyProgramsQuery.data?.find(
+            (option) => option.name === selectedValue,
           );
 
-          form.change("maapoliittinenOhjelma", selectedOption?.value ?? "");
+          form.change("maapoliittinenOhjelma", selectedOption?.name ?? "");
           form.change(
             "huojennusProsentti",
-            selectedOption?.defaultHuojennusProsentti ?? "",
+            selectedOption?.default_discount_percentage ?? "",
           );
           onSetTabDirty?.("compensations");
         };
@@ -777,6 +813,9 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                       site={site}
                       siteIndex={index}
                       rowValues={rowsBySiteId[site.id]}
+                      intendedUseOptions={intendedUseOptions}
+                      tenureTypeOptions={tenureTypeOptions}
+                      preservationOptions={preservationOptions}
                       isEditMode={isEditMode}
                       onSetTabDirty={() => onSetTabDirty?.("compensations")}
                       onRemove={handleRemoveSite}
@@ -847,7 +886,7 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                       ) : (
                         <Select
                           id="landuse-compensations-maapoliittinen-ohjelma"
-                          options={landUseMaapoliittinenOhjelmaOptions}
+                          options={landPolicyProgramOptions}
                           value={normalizeSelectValue(input.value)}
                           onChange={handleMaapoliittinenOhjelmaChange}
                           clearable

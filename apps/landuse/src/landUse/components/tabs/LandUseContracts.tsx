@@ -13,12 +13,8 @@ import {
 import React, { useEffect, useMemo, useState } from "react";
 import { Field, Form } from "react-final-form";
 import { useTocEntries } from "@/landUse/hooks/useTableOfContents";
-import {
-  landUseAgreementTypeOptions,
-  landUseDecisionTypeOptions,
-  landUseGuaranteeTypeOptions,
-  type LandUseGuaranteeType,
-} from "@/landUse/options";
+import { useLandUseMetadata } from "@/landUse/api/useLandUseMetadata";
+import { type LandUseGuaranteeType } from "@/landUse/options";
 import {
   getFieldTextValue,
   normalizeSelectValue,
@@ -124,6 +120,10 @@ export const LandUseContracts: React.FC<LandUseContractsProps> = ({
   isEditMode,
   parties,
 }) => {
+  const metadataQuery = useLandUseMetadata();
+  const contractTypeOptions = metadataQuery.data?.contract_types ?? [];
+  const decisionTypeOptions = metadataQuery.data?.decision_types ?? [];
+  const guaranteeTypeOptions = metadataQuery.data?.collateral_types ?? [];
   const [contracts, setContracts] = useState<ContractItem[]>(
     () => form.getState().values.contracts ?? [],
   );
@@ -229,7 +229,7 @@ export const LandUseContracts: React.FC<LandUseContractsProps> = ({
                                             label: "Sopimuksen tyyppi",
                                             placeholder: "Valitse",
                                           }}
-                                          options={landUseAgreementTypeOptions}
+                                          options={contractTypeOptions}
                                           value={normalizeSelectValue(
                                             input.value,
                                           )}
@@ -415,7 +415,7 @@ export const LandUseContracts: React.FC<LandUseContractsProps> = ({
                                             label: "Päätös",
                                             placeholder: "Valitse",
                                           }}
-                                          options={landUseDecisionTypeOptions}
+                                          options={decisionTypeOptions}
                                           value={normalizeSelectValue(
                                             input.value,
                                           )}
@@ -657,9 +657,7 @@ export const LandUseContracts: React.FC<LandUseContractsProps> = ({
                                                   label: "Päätös",
                                                   placeholder: "Valitse",
                                                 }}
-                                                options={
-                                                  landUseDecisionTypeOptions
-                                                }
+                                                options={decisionTypeOptions}
                                                 value={normalizeSelectValue(
                                                   input.value,
                                                 )}
@@ -838,7 +836,7 @@ export const LandUseContracts: React.FC<LandUseContractsProps> = ({
                                             label: "Vakuuden tyyppi",
                                             placeholder: "Valitse",
                                           }}
-                                          options={landUseGuaranteeTypeOptions}
+                                          options={guaranteeTypeOptions}
                                           value={normalizeSelectValue(
                                             pendingGuaranteeTypeByContract[
                                               contractIndex

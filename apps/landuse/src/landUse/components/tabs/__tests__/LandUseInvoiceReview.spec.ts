@@ -30,7 +30,7 @@ const createInvoice = (installmentNumber: string): LandUseInvoice => ({
   laskentajaksonAlkupvm: "",
   laskentajaksonLoppupvm: "",
   invoiceNumber: "",
-  type: "Maankäyttökorvaus",
+  type: "LAND_USE_COMPENSATION",
   status: LAND_USE_INVOICE_STATUSES.DRAFT,
   billedAmount: "",
   remainingAmount: "",

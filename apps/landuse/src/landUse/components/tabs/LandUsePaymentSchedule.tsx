@@ -32,7 +32,6 @@ import {
   LAND_USE_INVOICE_ITEM_TYPES,
   LAND_USE_INVOICE_TYPES,
   LAND_USE_PAYMENT_SCHEDULE_STATUSES,
-  landUseInvoiceItemTypeSelectOptions,
 } from "@/landUse/options";
 import {
   normalizeSelectValue,
@@ -45,6 +44,7 @@ import {
   parseLandUseNumericValueOrZero,
 } from "@/landUse/utils/number";
 import { ConfirmDeleteButton } from "@/landUse/components/ConfirmDeleteButton";
+import { useLandUseMetadata } from "@/landUse/api/useLandUseMetadata";
 import {
   LAND_USE_INVOICE_STATUSES,
   type LandUseInvoice,
@@ -250,7 +250,7 @@ const getSelectedPartyInvoiceData = (
 
   const recipientDetails =
     selectedParty.invoiceRecipient?.details ?? selectedParty.party?.details;
-  const isCompany = recipientDetails?.partyType === "yritys";
+  const isCompany = recipientDetails?.partyType === "COMPANY";
 
   return {
     name: recipientDetails?.name ?? "",
@@ -363,6 +363,9 @@ const InvoiceItemRow: React.FC<InvoiceItemRowProps> = ({
   periodDays,
   validateInstallments,
 }) => {
+  const metadataQuery = useLandUseMetadata();
+  const scheduleItemTypeOptions =
+    metadataQuery.data?.payment_schedule_item_types ?? [];
   const { input: itemTypeInput, meta: itemTypeMeta } = useField<string>(
     `${itemFieldName}.itemType`,
     {
@@ -419,7 +422,7 @@ const InvoiceItemRow: React.FC<InvoiceItemRowProps> = ({
           <Select
             id={`landuse-payment-schedule-invoice-row-item-type-${scheduleIndex}-${installmentIndex}-${itemIndex}`}
             texts={{ label: "Maksun tyyppi", placeholder: "Valitse" }}
-            options={landUseInvoiceItemTypeSelectOptions}
+            options={scheduleItemTypeOptions}
             value={itemTypeInput.value}
             invalid={Boolean(itemTypeMeta.error)}
             required

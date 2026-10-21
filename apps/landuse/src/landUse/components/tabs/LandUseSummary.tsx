@@ -15,13 +15,15 @@ import {
 import React, { useEffect, useMemo, useState } from "react";
 import { Field, Form } from "react-final-form";
 import { FieldArray } from "react-final-form-arrays";
-import { getAsemakaavat } from "@/landUse/api/landUseApi";
-import { useTocEntries } from "@/landUse/hooks/useTableOfContents";
 import {
-  type AsemakaavaListItem,
-  landUseDecisionMakerOptions,
-  landUseNegotiationPhaseOptions,
-} from "@/landUse/options";
+  getAsemakaavat,
+  getAuthorizedSignatories,
+  getPreparers,
+} from "@/landUse/api/landUseApi";
+import { useLandUseMetadata } from "@/landUse/api/useLandUseMetadata";
+import { useQuery } from "@tanstack/react-query";
+import { useTocEntries } from "@/landUse/hooks/useTableOfContents";
+import { type AsemakaavaListItem } from "@/landUse/options";
 import {
   getFieldTextValue,
   selectLabelIncludesFilter,
@@ -115,6 +117,17 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
   isEditMode,
 }) => {
   const [asemakaavat, setAsemakaavat] = useState<AsemakaavaListItem[]>([]);
+  const metadataQuery = useLandUseMetadata();
+  const signatoriesQuery = useQuery({
+    queryKey: ["land-use", "authorized-signatories"],
+    queryFn: getAuthorizedSignatories,
+    staleTime: 60 * 60 * 1000,
+  });
+  const preparersQuery = useQuery({
+    queryKey: ["land-use", "preparers"],
+    queryFn: getPreparers,
+    staleTime: 60 * 60 * 1000, // Preparers are actual officer users not created very often, call fetches all pages
+  });
 
   const tocEntries = useMemo(
     () =>
@@ -284,7 +297,10 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                                 isEditMode ? (
                                   <Select
                                     id="summary-tila"
-                                    options={landUseNegotiationPhaseOptions}
+                                    options={
+                                      metadataQuery.data?.agreement_statuses ??
+                                      []
+                                    }
                                     value={normalizeSelectValue(input.value)}
                                     onChange={(selectedOptions) =>
                                       handleSelectChange(
@@ -302,7 +318,12 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                                   <TextInput
                                     id="summary-tila"
                                     label="Maankäyttösopimuksen tila"
-                                    value={readOnlyTextValue(input.value)}
+                                    value={
+                                      metadataQuery.data?.agreement_statuses.find(
+                                        (choice) =>
+                                          choice.value === input.value,
+                                      )?.label ?? readOnlyTextValue(input.value)
+                                    }
                                     readOnly
                                   />
                                 )
@@ -412,7 +433,14 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                                 isEditMode ? (
                                   <Select
                                     id="toimivaltainen-paattaja"
-                                    options={landUseDecisionMakerOptions}
+                                    options={
+                                      signatoriesQuery.data?.map(
+                                        ({ id, name }) => ({
+                                          label: name,
+                                          value: String(id),
+                                        }),
+                                      ) ?? []
+                                    }
                                     value={normalizeSelectValue(input.value)}
                                     onChange={(selectedOptions) =>
                                       handleSelectChange(
@@ -430,7 +458,12 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                                   <TextInput
                                     id="toimivaltainen-paattaja"
                                     label="Toimivaltainen päättäjä"
-                                    value={readOnlyTextValue(input.value)}
+                                    value={
+                                      signatoriesQuery.data?.find(
+                                        (signatory) =>
+                                          String(signatory.id) === input.value,
+                                      )?.name ?? readOnlyTextValue(input.value)
+                                    }
                                     readOnly
                                   />
                                 )
@@ -485,7 +518,9 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                                   label="Asemakaavan käsittelyvaihe"
                                   value={getFieldTextValue(
                                     isEditMode,
-                                    input.value,
+                                    metadataQuery.data?.detailed_plan_processing_stages.find(
+                                      (choice) => choice.value === input.value,
+                                    )?.label ?? input.value,
                                   )}
                                   onChange={input.onChange}
                                   readOnly
@@ -582,17 +617,19 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                                   <div key={name} className="landuse-grid">
                                     <div className="landuse-grid__column-6">
                                       <Field name={`${name}.value`}>
-                                        {({ input }) =>
-                                            <TextInput
-                                              id={`suunnittelun-kohde-${index}`}
-                                              label={`Kohde ${index + 1}`}
-                                              value={isEditMode ? input.value : readOnlyTextValue(
-                                                input.value,
-                                              )}
-                                              onChange={input.onChange}
-                                              readOnly={!isEditMode}
-                                            />
-                                        }
+                                        {({ input }) => (
+                                          <TextInput
+                                            id={`suunnittelun-kohde-${index}`}
+                                            label={`Kohde ${index + 1}`}
+                                            value={
+                                              isEditMode
+                                                ? input.value
+                                                : readOnlyTextValue(input.value)
+                                            }
+                                            onChange={input.onChange}
+                                            readOnly={!isEditMode}
+                                          />
+                                        )}
                                       </Field>
                                     </div>
 
@@ -790,20 +827,14 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                                           isEditMode ? (
                                             <Select
                                               id={`valmistelija-${index}`}
-                                              options={[
-                                                {
-                                                  label: "Valmistelija 1",
-                                                  value: "valmistelija1",
-                                                },
-                                                {
-                                                  label: "Valmistelija 2",
-                                                  value: "valmistelija2",
-                                                },
-                                                {
-                                                  label: "Valmistelija 3",
-                                                  value: "valmistelija3",
-                                                },
-                                              ]}
+                                              options={
+                                                preparersQuery.data?.map(
+                                                  ({ id, name }) => ({
+                                                    label: name,
+                                                    value: String(id),
+                                                  }),
+                                                ) ?? []
+                                              }
                                               value={normalizeSelectValue(
                                                 input.value,
                                               )}
@@ -813,6 +844,7 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                                                   input.onChange,
                                                 )
                                               }
+                                              filter={selectLabelIncludesFilter}
                                               texts={{
                                                 label: "Valmistelija",
                                                 placeholder: "Valitse",
@@ -823,9 +855,14 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                                             <TextInput
                                               id={`valmistelija-${index}`}
                                               label="Valmistelija"
-                                              value={readOnlyTextValue(
-                                                input.value,
-                                              )}
+                                              value={
+                                                preparersQuery.data?.find(
+                                                  (preparer) =>
+                                                    String(preparer.id) ===
+                                                    input.value,
+                                                )?.name ??
+                                                readOnlyTextValue(input.value)
+                                              }
                                               readOnly
                                             />
                                           )

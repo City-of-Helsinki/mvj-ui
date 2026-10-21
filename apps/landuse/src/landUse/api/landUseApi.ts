@@ -21,24 +21,23 @@ import {
   callApiPost,
   callApiPut,
 } from "@/landUse/api/fetchClient";
-import type { District } from "@/landUse/api/landUseTypes";
-import {
-  LAND_USE_GUARANTEE_TYPES,
-  LAND_USE_INVOICE_STATUSES,
-  LAND_USE_INVOICE_TYPES,
-  LAND_USE_NEGOTIATION_PHASES,
-  LAND_USE_PAYMENT_SCHEDULE_STATUSES,
-} from "@/landUse/options";
-
-type DetailedPlanResponse = {
-  id: number;
-  plan_number: string;
-  processing_stage: string;
-  approval_date: string | null;
-  effective_date: string | null;
-  approver: string;
-  diary_number: string;
-};
+import type {
+  DecisionResponse,
+  DetailedPlanResponse,
+  District,
+  CollateralTypeCode,
+  ContractTypeCode,
+  AgreementStatusCode,
+  InvoiceItemTypeCode,
+  InvoiceStatusCode,
+  InvoiceTypeCode,
+  LandPolicyProgramLookup,
+  LandUseNamedLookup,
+  LandUseUiMetadata,
+  NullableLandUseDecimalString,
+  PaymentScheduleItemTypeCode,
+  PaymentScheduleStatusCode,
+} from "@/landUse/api/landUseTypes";
 
 type AgreementOverviewResponse = AgreementListResponse & {
   detailed_plan_sites: string[];
@@ -60,7 +59,7 @@ type AgreementListResponse = {
   agreement_type: string;
   district: District | null;
   is_promotion_area: boolean;
-  status: string;
+  status: AgreementStatusCode | "";
   estimated_presentation_year: number | null;
   estimated_payment_year: number | null;
 };
@@ -70,10 +69,13 @@ type AgreementCreateResponse = {
 };
 
 type AgreementUpdateRequest = {
+  authorized_signatory: number | null;
+  addresses: AgreementOverviewResponse["addresses"];
+  preparers: { preparer: number }[];
   detailed_plan_sites: string[];
   agreement_type: string;
   is_promotion_area: boolean;
-  status: string;
+  status: AgreementStatusCode | "";
   estimated_presentation_year: number | null;
   estimated_payment_year: number | null;
   includes_housing_obligations: boolean;
@@ -82,7 +84,7 @@ type AgreementUpdateRequest = {
 
 type PartyResponse = {
   id: number;
-  party_type: string;
+  party_type: LandUseUiMetadata["party_types"][number]["value"] | "";
   name: string;
   national_identification_number: string;
   business_id: string;
@@ -95,7 +97,7 @@ type PartyResponse = {
   phone: string;
   email: string;
   note: string;
-  role: string;
+  role: LandUseUiMetadata["agreement_party_roles"][number]["value"] | "";
   contact_persons: { name: string; phone: string; email: string }[];
   billing_details: {
     ovt_code: string;
@@ -110,49 +112,62 @@ type PartyResponse = {
 
 type CompensationResponse = {
   excel_calculation_url: string | null;
-  monetary_compensation: string | null;
-  land_compensation: string | null;
-  other_compensation: string | null;
-  total_compensation: string | null;
-  base_price: string | null;
+  monetary_compensation: NullableLandUseDecimalString;
+  land_compensation: NullableLandUseDecimalString;
+  other_compensation: NullableLandUseDecimalString;
+  total_compensation: NullableLandUseDecimalString;
+  base_price: NullableLandUseDecimalString;
   land_compensation_description: string;
   other_compensation_description: string;
-  value_before_detailed_plan_proposal: string | null;
-  demolition_or_other_deduction: string | null;
-  land_use_compensation: string | null;
+  value_before_detailed_plan_proposal: NullableLandUseDecimalString;
+  demolition_or_other_deduction: NullableLandUseDecimalString;
+  land_use_compensation: NullableLandUseDecimalString;
   land_policy_program: { id: number; name: string } | null;
-  land_policy_program_discount_percentage: string | null;
-  public_areas_m2: string | null;
-  public_areas_acquisition_value: string | null;
+  land_policy_program_discount_percentage: NullableLandUseDecimalString;
+  public_areas_m2: NullableLandUseDecimalString;
+  public_areas_acquisition_value: NullableLandUseDecimalString;
+};
+
+type CompensationWriteRequest = {
+  excel_calculation_url: string | null;
+  monetary_compensation: NullableLandUseDecimalString;
+  land_compensation: NullableLandUseDecimalString;
+  other_compensation: NullableLandUseDecimalString;
+  total_compensation: NullableLandUseDecimalString;
+  base_price: NullableLandUseDecimalString;
+  land_compensation_description: string;
+  other_compensation_description: string;
+  value_before_detailed_plan_proposal: NullableLandUseDecimalString;
+  demolition_or_other_deduction: NullableLandUseDecimalString;
+  land_use_compensation: NullableLandUseDecimalString;
+  land_policy_program: number | null;
+  land_policy_program_discount_percentage: NullableLandUseDecimalString;
+  public_areas_m2: NullableLandUseDecimalString;
+  public_areas_acquisition_value: NullableLandUseDecimalString;
+};
+
+type AgreementSiteWriteRequest = {
+  id?: number;
+  identifier: string;
+  area_m2: NullableLandUseDecimalString;
+  floor_area_kem2: NullableLandUseDecimalString;
+  intended_use: number | null;
+  tenure_types: number[];
+  preservation_designation: string | null;
+  has_housing_obligation: boolean;
+  unit_price_euro_per_kem2: NullableLandUseDecimalString;
 };
 
 type AgreementSiteResponse = {
   id: number;
   identifier: string;
-  area_m2: string | null;
-  floor_area_kem2: string | null;
+  area_m2: NullableLandUseDecimalString;
+  floor_area_kem2: NullableLandUseDecimalString;
   intended_use: { id: number; name: string } | null;
   tenure_types: { id: number; name: string }[];
   preservation_designation: string;
   has_housing_obligation: boolean;
-  unit_price_euro_per_kem2: string | null;
-};
-
-const DECISION_MAKER_CODES: Record<string, string> = {
-  Tonttipäällikkö: "LAND_MANAGER",
-  Kaupunkiympäristölautakunta: "URBAN_ENVIRONMENT_COMMITTEE",
-  Kaupunginhallitus: "CITY_BOARD",
-};
-
-const DECISION_TYPE_CODES: Record<string, string> = {
-  "Rasite- ja/tai rasitteenluont.ehdon lis. (1 ehto)":
-    "EASEMENT_CONDITION_ADDITION",
-  "Maankäyttösopimuksen hyväksyntä": "LAND_USE_AGREEMENT_APPROVAL",
-};
-
-const CONDITION_TYPE_CODES: Record<string, string> = {
-  "Rasite - ja/tai rasitteenluont.ehto": "EASEMENT_OR_EASEMENT_LIKE_CONDITION",
-  "Muu ehto": "OTHER",
+  unit_price_euro_per_kem2: NullableLandUseDecimalString;
 };
 
 const toIsoDate = (value: string): string | null => {
@@ -164,25 +179,39 @@ const toIsoDate = (value: string): string | null => {
     : value;
 };
 
-type DecisionResponse = {
-  id: number;
-  title: string;
-  decision_maker: string;
-  decision_date: string | null;
-  section: string;
-  decision_type: string;
-  diary_number: string;
-  note: string;
-  conditions: {
-    condition_type: string;
-    supervision_date: string | null;
-    supervised_date: string | null;
-    note: string;
-  }[];
+export const getLandUseUiMetadata = (): Promise<LandUseUiMetadata> =>
+  callApiGet<LandUseUiMetadata>("ui-metadata/");
+
+export const getAuthorizedSignatories = (): Promise<LandUseNamedLookup[]> =>
+  callApiGetAllPages<LandUseNamedLookup>("authorized-signatories/");
+
+export const getPreparers = async (): Promise<LandUseNamedLookup[]> => {
+  const users = await callApiGetAllPages<{
+    id: number;
+    username: string;
+    first_name: string;
+    last_name: string;
+  }>("officer/", { apiNamespace: "" });
+
+  return users.map((user) => ({
+    id: user.id,
+    name:
+      [user.first_name, user.last_name].filter(Boolean).join(" ") ||
+      user.username,
+  }));
 };
 
+export const getLandPolicyPrograms = (): Promise<LandPolicyProgramLookup[]> =>
+  callApiGetAllPages<LandPolicyProgramLookup>("land-policy-programs/");
+
+export const getSiteIntendedUses = (): Promise<LandUseNamedLookup[]> =>
+  callApiGetAllPages<LandUseNamedLookup>("site-intended-uses/");
+
+export const getSiteTenureTypes = (): Promise<LandUseNamedLookup[]> =>
+  callApiGetAllPages<LandUseNamedLookup>("site-tenure-types/");
+
 type CollateralResponse = {
-  guarantee_type: string;
+  guarantee_type: CollateralTypeCode;
   parties: number[];
   document_category?: string;
   target?: string;
@@ -220,7 +249,7 @@ type ContractResponse = {
   decision: number | null;
   note: string;
   title: string;
-  contract_type: string;
+  contract_type: ContractTypeCode | "";
   changes: Omit<
     ContractResponse,
     | "title"
@@ -243,7 +272,7 @@ type PaymentScheduleResponse = {
   id: number;
   recipient_party: number;
   contract: number;
-  status: string;
+  status: PaymentScheduleStatusCode;
   rejected_reason: string;
   signing_date: string | null;
   increase_percentage: string | null;
@@ -255,7 +284,11 @@ type PaymentScheduleResponse = {
     due_date: string | null;
     interest_calculation_period_start_date: string | null;
     interest_calculation_period_end_date: string | null;
-    items: { item_type: string; description: string; amount: string }[];
+    items: {
+      item_type: PaymentScheduleItemTypeCode;
+      description: string;
+      amount: string;
+    }[];
   }[];
 };
 
@@ -267,28 +300,22 @@ type InvoiceResponse = {
   installment_count_total: number;
   due_date: string | null;
   invoice_identifier: string;
-  invoice_type: string;
-  status: string;
+  invoice_type: InvoiceTypeCode;
+  status: InvoiceStatusCode;
   sent_at: string | null;
   billed_amount: string | null;
   remaining_amount: string | null;
-  items: { item_type: string; description: string; amount: string }[];
+  items: {
+    item_type: InvoiceItemTypeCode;
+    description: string;
+    amount: string;
+  }[];
 };
-
-const getAgreementStatusValue = (status: string | undefined): string =>
-  Object.entries(LAND_USE_NEGOTIATION_PHASES).find(
-    ([, label]) => label === status,
-  )?.[0] ?? "";
 
 const getOptionalYear = (value: string): number | null => {
   const year = Number(value);
   return Number.isInteger(year) ? year : null;
 };
-
-const getLabelForCode = <T extends Record<string, string>>(
-  options: T,
-  code: string,
-): T[keyof T] | undefined => options[code as keyof T];
 
 const toText = (value: string | number | null | undefined): string =>
   value == null ? "" : String(value);
@@ -301,18 +328,8 @@ const mapPartyDetails = (
     Partial<Pick<PartyResponse, "role">>,
 ) => {
   const details = {
-    partyRole:
-      party.role === "LAND_OWNER"
-        ? "maanomistaja"
-        : party.role === "DEVELOPER"
-          ? "toteuttaja"
-          : undefined,
-    partyType:
-      party.party_type === "COMPANY"
-        ? "yritys"
-        : party.party_type === "PERSON"
-          ? "yksityishenkilo"
-          : undefined,
+    partyRole: party.role || undefined,
+    partyType: party.party_type || undefined,
     name: party.name,
     language: party.language || undefined,
     streetAddress: party.street_address,
@@ -370,7 +387,9 @@ const mapAgreementOverviewToSummary = (
   })),
   arvioituEsittelyvuosi: String(agreement.estimated_presentation_year ?? ""),
   arvioituMaksuvuosi: String(agreement.estimated_payment_year ?? ""),
-  toimivaltainenPaattaja: agreement.authorized_signatory?.name ?? "",
+  toimivaltainenPaattaja: agreement.authorized_signatory
+    ? String(agreement.authorized_signatory.id)
+    : "",
   sisaltaaAmVelvoitteita: agreement.includes_housing_obligations
     ? "kyllä"
     : "ei",
@@ -449,12 +468,27 @@ export const updateSummary = async (
   await callApiPatch<AgreementOverviewResponse, AgreementUpdateRequest>(
     `agreements/${agreementId}/`,
     {
+      authorized_signatory: values.toimivaltainenPaattaja
+        ? Number(values.toimivaltainenPaattaja)
+        : null,
+      addresses: values.osoitteet
+        .filter(({ katuosoite, postinumero, kaupunki }) =>
+          [katuosoite, postinumero, kaupunki].some((value) => value.trim()),
+        )
+        .map(({ katuosoite, postinumero, kaupunki }) => ({
+          street_address: katuosoite.trim(),
+          postal_code: postinumero.trim(),
+          city: kaupunki.trim(),
+        })),
+      preparers: values.valmistelijat
+        .filter(({ value }) => value?.trim())
+        .map(({ value }) => ({ preparer: Number(value) })),
       detailed_plan_sites: values.suunnittelunPerusteenaOlevatKohteet
         .map(({ value }) => value?.trim() ?? "")
         .filter(Boolean),
       agreement_type: values.maankayttosopimusType ?? "",
       is_promotion_area: values.edistamisalue,
-      status: getAgreementStatusValue(values.tila),
+      status: (values.tila ?? "") as AgreementUpdateRequest["status"],
       estimated_presentation_year: getOptionalYear(
         values.arvioituEsittelyvuosi,
       ),
@@ -515,12 +549,8 @@ type PartyWriteRequest = PartyDetailsWriteRequest & {
 const mapPartyDetailsToRequest = (
   details: LandUsePartiesFormValues["parties"][number]["party"]["details"],
 ) => ({
-  party_type:
-    details.partyType === "yritys"
-      ? "COMPANY"
-      : details.partyType === "yksityishenkilo"
-        ? "PERSON"
-        : "",
+  party_type: (details.partyType ??
+    "") as PartyDetailsWriteRequest["party_type"],
   name: details.name,
   national_identification_number:
     "nationalIdentificationNumber" in details
@@ -545,12 +575,7 @@ export const updateParties = async (
   const payload: PartyWriteRequest[] = values.parties.map((entry) => ({
     ...(entry.id ? { id: Number(entry.id) } : {}),
     ...mapPartyDetailsToRequest(entry.party.details),
-    role:
-      entry.party.details.partyRole === "maanomistaja"
-        ? "LAND_OWNER"
-        : entry.party.details.partyRole === "toteuttaja"
-          ? "DEVELOPER"
-          : "",
+    role: entry.party.details.partyRole ?? "",
     contact_persons: entry.contactPersons.map((person) => ({
       name: person.name ?? "",
       phone: person.phone,
@@ -657,9 +682,13 @@ export const getCompensations = async (
   };
 };
 
-const parseOptionalNumber = (value: string | undefined): number | null => {
-  const parsed = Number(value?.replace(",", "."));
-  return value?.trim() && Number.isFinite(parsed) ? parsed : null;
+const parseOptionalDecimal = (
+  value: string | number | undefined,
+): NullableLandUseDecimalString => {
+  if (value === undefined || value === "") return null;
+  const normalized = String(value).trim().replace(",", ".");
+  if (!normalized) return null;
+  return /^-?(?:\d+|\d*\.\d+)$/.test(normalized) ? normalized : null;
 };
 
 export const updateCompensations = async (
@@ -667,41 +696,48 @@ export const updateCompensations = async (
   values: LandUseCompensationsFormValues,
 ): Promise<LandUseCompensationsFormValues> => {
   await Promise.all([
-    callApiPut("agreements/" + agreementId + "/compensation/", {
-      excel_calculation_url: values.excelLaskelmaUrl || null,
-      monetary_compensation: parseOptionalNumber(values.rahakorvaus),
-      land_compensation: parseOptionalNumber(values.maakorvaus),
-      other_compensation: parseOptionalNumber(values.muuKorvaus),
-      total_compensation: parseOptionalNumber(values.maankayttokorvausYhteensa),
-      base_price: parseOptionalNumber(values.perushinta),
-      land_compensation_description: values.maakorvausSelite,
-      other_compensation_description: values.muuSelite,
-      value_before_detailed_plan_proposal: parseOptionalNumber(
-        values.kaavaehdotustaEdeltavaArvo,
-      ),
-      demolition_or_other_deduction: values.purkuTaiMuuVahennys,
-      land_use_compensation: parseOptionalNumber(values.maankayttokorvaus),
-      land_policy_program: values.maapoliittinenOhjelmaId ?? null,
-      land_policy_program_discount_percentage: parseOptionalNumber(
-        values.huojennusProsentti,
-      ),
-      public_areas_m2: parseOptionalNumber(values.yleisetAlueetNeliot),
-      public_areas_acquisition_value: parseOptionalNumber(
-        values.yleisetAlueetHankinnanArvo,
-      ),
-    }),
+    callApiPut<void, CompensationWriteRequest>(
+      "agreements/" + agreementId + "/compensation/",
+      {
+        excel_calculation_url: values.excelLaskelmaUrl || null,
+        monetary_compensation: parseOptionalDecimal(values.rahakorvaus),
+        land_compensation: parseOptionalDecimal(values.maakorvaus),
+        other_compensation: parseOptionalDecimal(values.muuKorvaus),
+        total_compensation: parseOptionalDecimal(
+          values.maankayttokorvausYhteensa,
+        ),
+        base_price: parseOptionalDecimal(values.perushinta),
+        land_compensation_description: values.maakorvausSelite,
+        other_compensation_description: values.muuSelite,
+        value_before_detailed_plan_proposal: parseOptionalDecimal(
+          values.kaavaehdotustaEdeltavaArvo,
+        ),
+        demolition_or_other_deduction: parseOptionalDecimal(
+          values.purkuTaiMuuVahennys,
+        ),
+        land_use_compensation: parseOptionalDecimal(values.maankayttokorvaus),
+        land_policy_program: values.maapoliittinenOhjelmaId ?? null,
+        land_policy_program_discount_percentage: parseOptionalDecimal(
+          values.huojennusProsentti,
+        ),
+        public_areas_m2: parseOptionalDecimal(values.yleisetAlueetNeliot),
+        public_areas_acquisition_value: parseOptionalDecimal(
+          values.yleisetAlueetHankinnanArvo,
+        ),
+      },
+    ),
     callApiPut(
       "agreements/" + agreementId + "/sites/",
-      values.sites.map((site) => ({
+      values.sites.map((site): AgreementSiteWriteRequest => ({
         ...(Number.isInteger(Number(site.id)) ? { id: Number(site.id) } : {}),
         identifier: site.kohteenTunnus,
-        area_m2: parseOptionalNumber(site.pintaAlaM2),
-        floor_area_kem2: parseOptionalNumber(site.kem2),
+        area_m2: parseOptionalDecimal(site.pintaAlaM2),
+        floor_area_kem2: parseOptionalDecimal(site.kem2),
         intended_use: site.kayttotarkoitusId ?? null,
         tenure_types: site.hallintamuotoIds ?? [],
         preservation_designation: site.suojeltu || null,
         has_housing_obligation: site.amVelvoite,
-        unit_price_euro_per_kem2: parseOptionalNumber(
+        unit_price_euro_per_kem2: parseOptionalDecimal(
           values.perustietotaulukkoRowsBySiteId[site.id]?.yksikkohinta,
         ),
       })),
@@ -725,8 +761,11 @@ export const updateCollaterals = async (
   agreementId: string,
   values: LandUseCollateralsFormValues,
 ): Promise<LandUseCollateralsFormValues> => {
-  await callApiPatch(`agreements/${agreementId}/`, {
-    collateral_multiplier: parseOptionalNumber(
+  await callApiPatch<
+    void,
+    { collateral_multiplier: NullableLandUseDecimalString }
+  >(`agreements/${agreementId}/`, {
+    collateral_multiplier: parseOptionalDecimal(
       values.korotuskerroin?.toString(),
     ),
   });
@@ -751,7 +790,7 @@ export const getDecisions = async (
       title: decision.title,
       paattaja: decision.decision_maker || undefined,
       paatospvm: decision.decision_date ?? "",
-      pykala: decision.section || undefined,
+      pykala: decision.section == null ? undefined : String(decision.section),
       paatoksenTyyppi: decision.decision_type || undefined,
       diaarinumero: decision.diary_number,
       huomautus: decision.note,
@@ -774,22 +813,14 @@ export const updateDecisions = async (
     (values.decisions ?? []).map((decision) => ({
       ...(decision.id ? { id: Number(decision.id) } : {}),
       title: decision.title,
-      decision_maker: decision.paattaja
-        ? (DECISION_MAKER_CODES[decision.paattaja] ?? decision.paattaja)
-        : "",
+      decision_maker: decision.paattaja ?? "",
       decision_date: toIsoDate(decision.paatospvm),
       section: decision.pykala ? Number(decision.pykala) : null,
-      decision_type: decision.paatoksenTyyppi
-        ? (DECISION_TYPE_CODES[decision.paatoksenTyyppi] ??
-          decision.paatoksenTyyppi)
-        : "",
+      decision_type: decision.paatoksenTyyppi ?? "",
       diary_number: decision.diaarinumero,
       note: decision.huomautus,
       conditions: (decision.ehdot ?? []).map((condition) => ({
-        condition_type: condition.conditionType
-          ? (CONDITION_TYPE_CODES[condition.conditionType] ??
-            condition.conditionType)
-          : "",
+        condition_type: condition.conditionType ?? "",
         supervision_date: toIsoDate(condition.valvontapvm),
         supervised_date: toIsoDate(condition.valvottuPvm),
         note: condition.note,
@@ -807,10 +838,7 @@ export const getContracts = async (
   );
 
   const mapCollateral = (collateral: CollateralResponse): Guarantee => ({
-    tyyppi: getLabelForCode(
-      LAND_USE_GUARANTEE_TYPES,
-      collateral.guarantee_type,
-    ),
+    tyyppi: collateral.guarantee_type as Guarantee["tyyppi"],
     osapuolet: collateral.parties.map(String),
     vakuusasiakirjanLaji: collateral.document_category,
     kiinteistoVaiLaitos: collateral.target,
@@ -912,10 +940,9 @@ export const getPaymentSchedule = async (
       contractIndex: contractIndexes.has(schedule.contract)
         ? String(contractIndexes.get(schedule.contract))
         : undefined,
-      status: getLabelForCode(
-        LAND_USE_PAYMENT_SCHEDULE_STATUSES,
-        schedule.status,
-      ),
+      status: schedule.status as NonNullable<
+        LandUsePaymentScheduleFormValues["paymentSchedules"]
+      >[number]["status"],
       rejectedReason: schedule.rejected_reason || null,
       signedDate: schedule.signing_date ?? "",
       korotusProsentti: toText(schedule.increase_percentage),
@@ -973,8 +1000,12 @@ export const getBilling = async (
       installmentTotal: String(invoice.installment_count_total),
       dueDate: invoice.due_date ?? "",
       invoiceNumber: invoice.invoice_identifier,
-      type: getLabelForCode(LAND_USE_INVOICE_TYPES, invoice.invoice_type),
-      status: getLabelForCode(LAND_USE_INVOICE_STATUSES, invoice.status),
+      type: invoice.invoice_type as NonNullable<
+        LandUseBillingFormValues["invoices"]
+      >[number]["type"],
+      status: invoice.status as NonNullable<
+        LandUseBillingFormValues["invoices"]
+      >[number]["status"],
       sentAt: invoice.sent_at ?? undefined,
       billedAmount: toText(invoice.billed_amount),
       remainingAmount: toText(invoice.remaining_amount),
