@@ -11,6 +11,7 @@ import type { LandUseMonitoringFormValues } from "@/landUse/components/tabs/Land
 import type { LandUsePartiesFormValues } from "@/landUse/components/tabs/LandUseParties";
 import { DEFAULT_KOROTUSKERROIN } from "@/landUse/constants";
 import { createEmptyPartiesFormValues } from "@/landUse/api/landUseFormValues";
+import type { AgreementStatusCode } from "@/landUse/api/landUseTypes";
 import {
   ASEMAKAAVA_KASITTELYVAIHE_OPTIONS,
   LAND_USE_INVOICE_ITEM_TYPES,
@@ -25,7 +26,7 @@ export interface MockLandUseData {
   maankayttosopimusType: string;
   kaupunginosa: string;
   edistamisalue: boolean;
-  tila: string;
+  tila: AgreementStatusCode;
   suunnittelunPerusteenaOlevatKohteet: string[];
   kohteet: Array<{
     kohteenTunnus: string;
@@ -382,7 +383,7 @@ export const mockLandUseTabStore: Record<string, LandUseAgreementMockTabs> = {
       maankayttosopimusType: "Maankäyttösopimus",
       kaupunginosa: "Kruununhaka",
       edistamisalue: true,
-      tila: "Vireillä",
+      tila: "IN_PROGRESS",
       suunnittelunPerusteenaOlevatKohteet: ["91-10-100-1"],
       kohteet: [
         {

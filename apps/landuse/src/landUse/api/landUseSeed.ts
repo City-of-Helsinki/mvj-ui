@@ -88,7 +88,7 @@ export const mapMockToSummaryFormValues = (
     maankayttosopimusType: normalizeSelectValue(mockData.maankayttosopimusType),
     kaupunginosa: mockData.kaupunginosa ?? "",
     edistamisalue: normalizeProjectAreaBoolean(mockData.edistamisalue),
-    tila: normalizeSelectValue(mockData.tila),
+    tila: mockData.tila,
     suunnittelunPerusteenaOlevatKohteet:
       mockData.suunnittelunPerusteenaOlevatKohteet.map((kohde) => ({
         value: normalizeSelectValue(kohde),

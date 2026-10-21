@@ -32,7 +32,19 @@ vi.mock("@/landUse/api/fetchClient", () => ({
 }));
 
 vi.mock("@/landUse/api/useLandUseMetadata", () => ({
-  useLandUseMetadata: () => ({ data: undefined }),
+  useLandUseMetadata: () => ({
+    data: {
+      detailed_plan_processing_stages: [],
+      agreement_statuses: [
+        { value: "DRAFT", label: "Luonnos" },
+        { value: "IN_PROGRESS", label: "Vireillä" },
+        { value: "NEGOTIATION", label: "Neuvottelu" },
+        { value: "DECISION", label: "Päätös" },
+        { value: "SIGNATURE", label: "Allekirjoitus" },
+        { value: "NO_AGREEMENT", label: "Ei sopimusta" },
+      ],
+    },
+  }),
 }));
 
 vi.mock("@/landUse/hooks/useTableOfContents", () => ({
@@ -54,6 +66,61 @@ afterEach(() => {
   cleanup();
   vi.unstubAllGlobals();
   vi.clearAllMocks();
+});
+
+it("displays the status label without changing the stored backend code", () => {
+  const form = createForm<LandUseSummaryFormValues>({
+    onSubmit: () => {},
+    initialValues: { ...createEmptySummaryFormValues(), tila: "DRAFT" },
+    mutators: { ...arrayMutators },
+  });
+  render(
+    <QueryClientProvider client={new QueryClient()}>
+      <LandUseSummary form={form} isEditMode={false} />
+    </QueryClientProvider>,
+  );
+
+  expect(
+    (screen.getByLabelText("Maankäyttösopimuksen tila") as HTMLInputElement)
+      .value,
+  ).toBe("Luonnos");
+  expect(form.getState().values.tila).toBe("DRAFT");
+});
+
+it("selects and clears summary status using backend codes rather than labels", async () => {
+  const form = createForm<LandUseSummaryFormValues>({
+    onSubmit: () => {},
+    initialValues: { ...createEmptySummaryFormValues(), tila: "DRAFT" },
+    mutators: { ...arrayMutators },
+  });
+  render(
+    <QueryClientProvider client={new QueryClient()}>
+      <LandUseSummary form={form} isEditMode />
+    </QueryClientProvider>,
+  );
+
+  const statusSelect = screen.getByRole("combobox", {
+    name: /Maankäyttösopimuksen tila/,
+  });
+  expect(statusSelect.textContent).toContain("Luonnos");
+  fireEvent.click(statusSelect);
+  fireEvent.click(await screen.findByRole("option", { name: "Ei sopimusta" }));
+
+  expect(form.getState().values.tila).toBe("NO_AGREEMENT");
+  await updateSummary("1", form.getState().values);
+  expect(callApiPatch).toHaveBeenLastCalledWith(
+    "agreements/1/",
+    expect.objectContaining({ status: "NO_AGREEMENT" }),
+  );
+
+  fireEvent.click(screen.getByRole("button", { name: "Tyhjennä tila" }));
+
+  expect(form.getState().values.tila).toBeUndefined();
+  await updateSummary("1", form.getState().values);
+  expect(callApiPatch).toHaveBeenLastCalledWith(
+    "agreements/1/",
+    expect.objectContaining({ status: "" }),
+  );
 });
 
 it("saves the selected signatory API ID rather than its option index", async () => {

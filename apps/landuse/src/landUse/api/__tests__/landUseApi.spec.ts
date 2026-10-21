@@ -13,10 +13,14 @@ import {
   getSiteTenureTypes,
   getDecisions,
   getPreparers,
+  getSummary,
   updateSummary,
   updateCompensations,
 } from "@/landUse/api/landUseApi";
-import type { LandUseUiMetadata } from "@/landUse/api/landUseTypes";
+import type {
+  AgreementStatusCode,
+  LandUseUiMetadata,
+} from "@/landUse/api/landUseTypes";
 import type { LandUseCompensationsFormValues } from "@/landUse/components/tabs/LandUseCompensations";
 import { createEmptySummaryFormValues } from "@/landUse/api/landUseFormValues";
 
@@ -34,6 +38,57 @@ describe("land use API contract adapters", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
+
+  it.each<AgreementStatusCode | "">([
+    "DRAFT",
+    "IN_PROGRESS",
+    "NEGOTIATION",
+    "DECISION",
+    "SIGNATURE",
+    "NO_AGREEMENT",
+    "",
+  ])(
+    "preserves summary status '%s' through GET, unchanged save, and GET",
+    async (status) => {
+      const agreement = {
+        id: 1,
+        identifier: "091-01-1",
+        agreement_type: "Maankäyttösopimus",
+        district: { id: 1, name: "Kruununhaka", identifier: "01" },
+        is_promotion_area: false,
+        status,
+        estimated_presentation_year: null,
+        estimated_payment_year: null,
+        detailed_plan_sites: [],
+        includes_housing_obligations: false,
+        obligations_deadline: null,
+        authorized_signatory: null,
+        detailed_plan: null,
+        addresses: [],
+        preparers: [],
+      };
+      mockGet.mockResolvedValueOnce(agreement);
+
+      const values = await getSummary("1");
+      expect(values.tila).toBe(status || undefined);
+
+      await updateSummary("1", values);
+
+      expect(callApiPatch).toHaveBeenLastCalledWith(
+        "agreements/1/",
+        expect.objectContaining({ status }),
+      );
+      const savedPayload = vi.mocked(callApiPatch).mock.lastCall?.[1];
+      if (typeof savedPayload !== "object" || savedPayload === null) {
+        throw new Error("Expected an agreement update payload");
+      }
+      mockGet.mockResolvedValueOnce({ ...agreement, ...savedPayload });
+
+      expect((await getSummary("1")).tila).toBe(status || undefined);
+      expect(mockGet).toHaveBeenNthCalledWith(1, "agreements/1/overview/");
+      expect(mockGet).toHaveBeenNthCalledWith(2, "agreements/1/overview/");
+    },
+  );
 
   it("saves signatory, addresses, and preparers using backend field names and IDs", async () => {
     const values = {

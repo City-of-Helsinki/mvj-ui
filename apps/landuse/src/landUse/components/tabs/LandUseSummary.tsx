@@ -21,6 +21,7 @@ import {
   getPreparers,
 } from "@/landUse/api/landUseApi";
 import { useLandUseMetadata } from "@/landUse/api/useLandUseMetadata";
+import type { AgreementStatusCode } from "@/landUse/api/landUseTypes";
 import { useQuery } from "@tanstack/react-query";
 import { useTocEntries } from "@/landUse/hooks/useTableOfContents";
 import { type AsemakaavaListItem } from "@/landUse/options";
@@ -51,7 +52,7 @@ export interface LandUseSummaryFormValues {
   maankayttosopimusType: string | undefined;
   kaupunginosa: string;
   edistamisalue: boolean;
-  tila: string | undefined;
+  tila: AgreementStatusCode | undefined;
   suunnittelunPerusteenaOlevatKohteet: KohdeEntry[];
   valmistelijat: ValmistelijaEntry[];
   osoitteet: OsoiteEntry[];
@@ -297,6 +298,7 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                                 isEditMode ? (
                                   <Select
                                     id="summary-tila"
+                                    clearable
                                     options={
                                       metadataQuery.data?.agreement_statuses ??
                                       []
@@ -311,6 +313,7 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                                     texts={{
                                       label: "Maankäyttösopimuksen tila",
                                       placeholder: "Valitse",
+                                      clearButtonAriaLabel_one: "Tyhjennä tila",
                                     }}
                                     disabled={!isEditMode}
                                   />

@@ -488,7 +488,7 @@ export const updateSummary = async (
         .filter(Boolean),
       agreement_type: values.maankayttosopimusType ?? "",
       is_promotion_area: values.edistamisalue,
-      status: (values.tila ?? "") as AgreementUpdateRequest["status"],
+      status: values.tila ?? "",
       estimated_presentation_year: getOptionalYear(
         values.arvioituEsittelyvuosi,
       ),
