@@ -26,7 +26,6 @@ import { getDecisionById, getDecisionOptions } from "@/leases/helpers";
 import { getUiDataLeaseKey } from "@/uiData/helpers";
 import {
   formatDate,
-  getFieldOptions,
   getLabelOfOption,
   isFieldAllowedToRead,
 } from "@/util/helpers";
@@ -106,10 +105,6 @@ const ContractItem: React.FC<Props> = ({
 
   const decisionOptions = getDecisionOptions(currentLease);
   const decision = getDecisionById(currentLease, contract.decision);
-  const collateralTypeOptions = getFieldOptions(
-    attributes,
-    LeaseContractCollateralsFieldPaths.TYPE,
-  );
   const executorName =
     contract.executor?.last_name && contract.executor?.first_name
       ? `${contract.executor.last_name} ${contract.executor.first_name}`
@@ -690,11 +685,7 @@ const ContractItem: React.FC<Props> = ({
             <BoxItemContainer>
               {contract.collaterals.map((collateral) => {
                 return (
-                  <Collateral
-                    key={collateral.id}
-                    collateral={collateral}
-                    typeOptions={collateralTypeOptions}
-                  />
+                  <Collateral key={collateral.id} collateral={collateral} />
                 );
               })}
             </BoxItemContainer>
