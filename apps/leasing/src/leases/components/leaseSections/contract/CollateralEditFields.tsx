@@ -539,7 +539,6 @@ const PledgorIdentificationNumberField = ({
   isSaveClicked,
   required = false,
 }: CollateralEditFieldProps) => {
-  console.log("rendered PledgorIdentificationNumberField");
   const validate = useFieldPairValidator(
     `${field}.pledgor_business_id`,
     required,
