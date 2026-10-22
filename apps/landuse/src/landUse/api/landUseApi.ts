@@ -9,10 +9,6 @@ import type { LandUsePartiesFormValues } from "@/landUse/components/tabs/LandUse
 import type { LandUseSummaryFormValues } from "@/landUse/components/tabs/LandUseSummary";
 import type { Guarantee } from "@/landUse/components/collateralForms";
 import { LAND_USE_INVOICE_TYPES} from "@/landUse/options";
-import {
-  createLandUseIdentifier,
-  getNextLandUseSequence,
-} from "@/landUse/utils/landUseIdentifier";
 import type { LandUseListItem } from "@/landUse/api/landUseListTypes";
 import {
   parseIsoDateToFinnishDate,
@@ -62,8 +58,12 @@ type AgreementListResponse = {
   identifier: string;
   agreement_type: string;
   district: District | null;
+  party: string;
+  zoning_plan_number: string;
+  site: string;
   is_promotion_area: boolean;
   status: AgreementStatusCode | "";
+  status_label: string;
   estimated_presentation_year: number | null;
   estimated_payment_year: number | null;
 };
@@ -304,10 +304,28 @@ type InvoiceResponse = {
   sent_at: string | null;
   billed_amount: string | null;
   remaining_amount: string | null;
+  recipient_snapshot: {
+    name: string;
+    party_type: string;
+    business_id: string;
+    street_address: string;
+    postal_code: string;
+    city: string;
+    ovt_code: string;
+    sap_customer_number: string;
+    customer_reference: string;
+  };
   items: {
+    id: number;
     item_type: InvoiceItemTypeCode;
     description: string;
     amount: string;
+  }[];
+  payments: {
+    id: number;
+    paid_amount: string;
+    paid_date: string;
+    filing_code: string;
   }[];
 };
 
@@ -410,13 +428,6 @@ export const getSummary = async (
   return mapAgreementOverviewToSummary(agreement);
 };
 
-export const getAgreementIdentifiers = async (): Promise<string[]> => {
-  const agreements =
-    await callApiGetAllPages<AgreementListResponse>("agreements/");
-
-  return agreements.map((agreement) => agreement.identifier);
-};
-
 export const getLandUseList = async (): Promise<LandUseListItem[]> => {
   const agreements =
     await callApiGetAllPages<AgreementListResponse>("agreements/");
@@ -424,35 +435,22 @@ export const getLandUseList = async (): Promise<LandUseListItem[]> => {
   return agreements.map((agreement) => ({
     id: agreement.id,
     identifier: agreement.identifier,
-    party: "",
-    zoningPlanNumber: "",
-    site: "",
+    party: agreement.party,
+    zoningPlanNumber: agreement.zoning_plan_number,
+    site: agreement.site,
     projectArea: agreement.is_promotion_area,
     negotiationPhase: agreement.status,
+    negotiationPhaseLabel: agreement.status_label,
   }));
 };
 
 export const createLandUseAgreement = async (
-  municipalityId: string,
   districtId: string,
 ): Promise<string> => {
-  const existingIdentifiers = await getAgreementIdentifiers();
-  const sequence = getNextLandUseSequence(
-    existingIdentifiers,
-    municipalityId,
-    districtId,
-  );
-  const identifier = createLandUseIdentifier(
-    municipalityId,
-    districtId,
-    sequence,
-  );
-
   const agreement = await callApiPost<
     AgreementCreateResponse,
-    { identifier: string; district: number }
+    { district: number }
   >("agreements/", {
-    identifier,
     district: Number(districtId),
   });
 
@@ -1095,7 +1093,12 @@ export const getBilling = async (
 
   return {
     invoices: invoices.map((invoice) => ({
+      id: String(invoice.id),
       recipientPartyIndex: String(invoice.recipient_party),
+      sourceInstallmentId:
+        invoice.source_payment_schedule_installment == null
+          ? undefined
+          : String(invoice.source_payment_schedule_installment),
       installmentNumber: String(invoice.installment_sequence_number),
       installmentTotal: String(invoice.installment_count_total),
       dueDate: parseIsoDateToFinnishDate(invoice.due_date),
@@ -1105,10 +1108,29 @@ export const getBilling = async (
       sentAt: invoice.sent_at ?? undefined,
       billedAmount: toText(invoice.billed_amount),
       remainingAmount: toText(invoice.remaining_amount),
+      recipientSnapshot: {
+        name: invoice.recipient_snapshot.name,
+        partyType: invoice.recipient_snapshot.party_type,
+        businessId: invoice.recipient_snapshot.business_id,
+        streetAddress: invoice.recipient_snapshot.street_address,
+        city: invoice.recipient_snapshot.city,
+        postalCode: invoice.recipient_snapshot.postal_code,
+        ovtCode: invoice.recipient_snapshot.ovt_code,
+        sapCustomerNumber: invoice.recipient_snapshot.sap_customer_number,
+        reference: invoice.recipient_snapshot.customer_reference,
+        isCompany: invoice.recipient_snapshot.party_type === "COMPANY",
+      },
       invoiceItems: invoice.items.map((item) => ({
+        id: String(item.id),
         itemType: item.item_type,
         description: item.description,
         amountExcludingVat: item.amount,
+      })),
+      payments: invoice.payments.map((payment) => ({
+        id: String(payment.id),
+        paidAmount: payment.paid_amount,
+        paidDate: parseIsoDateToFinnishDate(payment.paid_date),
+        filingCode: payment.filing_code,
       })),
     })),
   };

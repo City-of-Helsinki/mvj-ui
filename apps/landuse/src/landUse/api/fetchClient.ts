@@ -33,6 +33,29 @@ export class LanduseApiError extends Error {
   }
 }
 
+export const getLanduseApiErrorMessage = (error: unknown): string => {
+  if (!(error instanceof LanduseApiError)) {
+    return "Toiminto epäonnistui. Yritä uudelleen.";
+  }
+
+  if (!error.body) {
+    return error.message;
+  }
+
+  const messages = Object.entries(error.body).flatMap(([field, value]) => {
+    const prefix = field === "detail" ? "" : `${field}: `;
+    if (Array.isArray(value)) {
+      return value.map((item) => `${prefix}${String(item)}`);
+    }
+    if (typeof value === "string") {
+      return [`${prefix}${value}`];
+    }
+    return [];
+  });
+
+  return messages.join(" ") || error.message;
+};
+
 const getQueryString = (query?: LanduseApiQuery): string => {
   const searchParams = new URLSearchParams();
 

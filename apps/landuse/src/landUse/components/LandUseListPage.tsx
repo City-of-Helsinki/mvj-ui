@@ -15,19 +15,14 @@ import {
 } from "hds-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { parseUrlParams, buildQueryString } from "@/landUse/urlParams";
-import {
-  createLandUseIdentifier,
-  getNextLandUseSequence,
-} from "@/landUse/utils/landUseIdentifier";
 import { selectLabelIncludesFilter } from "@/landUse/utils/fieldUtils";
 import {
   createLandUseAgreement,
-  getAgreementIdentifiers,
   getLandUseList,
   getDistricts,
 } from "@/landUse/api/landUseApi";
+import { getLanduseApiErrorMessage } from "@/landUse/api/fetchClient";
 import {
-  MUNICIPALITY_OPTIONS,
   LAND_USE_NEGOTIATION_PHASES,
   type LandUseNegotiationPhase,
 } from "@/landUse/options";
@@ -66,24 +61,14 @@ const LandUseListPage: React.FC = () => {
   const queryClient = useQueryClient();
 
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
-  const [selectedMunicipality, setSelectedMunicipality] = useState<
-    string | undefined
-  >(undefined);
   const [selectedDistrict, setSelectedDistrict] = useState<string | undefined>(
     undefined,
   );
 
   const resetCreateDialog = () => {
-    setSelectedMunicipality(undefined);
     setSelectedDistrict(undefined);
     setIsCreateDialogOpen(false);
   };
-
-  const agreementIdentifiersQuery = useQuery({
-    queryKey: ["land-use", "identifiers"],
-    queryFn: getAgreementIdentifiers,
-    refetchOnWindowFocus: false,
-  });
 
   const landUseListQuery = useQuery({
     queryKey: ["land-use", "list"],
@@ -96,14 +81,11 @@ const LandUseListPage: React.FC = () => {
 
   const createAgreementMutation = useMutation({
     mutationFn: ({
-      municipalityId,
       districtId,
     }: {
-      municipalityId: string;
       districtId: string;
-    }) => createLandUseAgreement(municipalityId, districtId),
+    }) => createLandUseAgreement(districtId),
     onSuccess: (identifier) => {
-      queryClient.invalidateQueries({ queryKey: ["land-use", "identifiers"] });
       queryClient.invalidateQueries({ queryKey: ["land-use", "list"] });
       resetCreateDialog();
       navigate(identifier);
@@ -213,24 +195,6 @@ const LandUseListPage: React.FC = () => {
   ]);
   const isLoading = landUseListQuery.isLoading || landUseListQuery.isFetching;
 
-  const existingIdentifiers = agreementIdentifiersQuery.data ?? [];
-  const sequenceNumber =
-    selectedMunicipality && selectedDistrict
-      ? getNextLandUseSequence(
-          existingIdentifiers,
-          selectedMunicipality,
-          selectedDistrict,
-        )
-      : undefined;
-  const newIdentifier =
-    selectedMunicipality && selectedDistrict && sequenceNumber
-      ? createLandUseIdentifier(
-          selectedMunicipality,
-          selectedDistrict,
-          sequenceNumber,
-        )
-      : "";
-
   const districtOptions = useMemo(() => {
     return (districtsQuery.data ?? []).map(({ name, identifier, id }) => ({
       value: id.toString(),
@@ -240,12 +204,11 @@ const LandUseListPage: React.FC = () => {
   console.log(districtOptions);
 
   const handleCreate = () => {
-    if (!selectedMunicipality || !selectedDistrict) {
+    if (!selectedDistrict) {
       return;
     }
 
     createAgreementMutation.mutate({
-      municipalityId: selectedMunicipality,
       districtId: selectedDistrict,
     });
   };
@@ -294,6 +257,17 @@ const LandUseListPage: React.FC = () => {
           )}
         </div>
       </div>
+
+      {landUseListQuery.isError && (
+        <div role="alert">
+          {getLanduseApiErrorMessage(landUseListQuery.error)}
+        </div>
+      )}
+      {createAgreementMutation.isError && (
+        <div role="alert">
+          {getLanduseApiErrorMessage(createAgreementMutation.error)}
+        </div>
+      )}
 
       <div className="landuse-list__filters">
         <div className="landuse-list__filters-content">
@@ -354,7 +328,7 @@ const LandUseListPage: React.FC = () => {
               { key: "zoningPlanNumber", headerName: "Asemakaavan numero" },
               { key: "site", headerName: "Kohde" },
               { key: "projectArea", headerName: "Hankealue" },
-              { key: "negotiationPhase", headerName: "Neuvotteluvaihe" },
+              { key: "negotiationPhaseLabel", headerName: "Neuvotteluvaihe" },
             ]}
             indexKey="id"
             rows={landUseData.map((item) => ({
@@ -393,19 +367,6 @@ const LandUseListPage: React.FC = () => {
         <Dialog.Content>
           <div>
             <Select
-              id="landuse-municipality"
-              options={MUNICIPALITY_OPTIONS}
-              value={selectedMunicipality}
-              onChange={(selected) =>
-                handleSelectChange(selected, setSelectedMunicipality)
-              }
-              texts={{
-                label: "Kaupunki",
-                placeholder: "Valitse",
-              }}
-              required
-            />
-            <Select
               id="landuse-district"
               options={districtOptions}
               value={selectedDistrict}
@@ -431,7 +392,7 @@ const LandUseListPage: React.FC = () => {
           <Button
             variant={ButtonVariant.Primary}
             onClick={handleCreate}
-            disabled={!newIdentifier || createAgreementMutation.isPending}
+            disabled={!selectedDistrict || createAgreementMutation.isPending}
           >
             Luo tunnus
           </Button>

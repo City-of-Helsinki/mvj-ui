@@ -45,6 +45,7 @@ import {
   type LandUseInvoiceItem,
 } from "@/landUse/options";
 import { parseLandUseNumericValueOrZero } from "@/landUse/utils/number";
+import { getLanduseApiErrorMessage } from "@/landUse/api/fetchClient";
 import type {
   SectionEntry,
   SideNavigationTab,
@@ -236,6 +237,8 @@ const LandUseDetailPage: React.FC = () => {
   );
   const [isEditMode, setIsEditMode] = useState(false);
   const [isSaveClicked, setIsSaveClicked] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
   const [sectionEntries, setSectionEntries] = useState<SectionEntry[]>([]);
   const [activeSectionId, setActiveSectionId] = useState<string | null>(null);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -274,6 +277,13 @@ const LandUseDetailPage: React.FC = () => {
       });
       return newState;
     });
+  };
+
+  const markFormSaved = (formKey: FormKey) => {
+    setFormStates((previous) => ({
+      ...previous,
+      [formKey]: { ...initialFormState },
+    }));
   };
 
   const summaryQuery = useQuery({
@@ -629,6 +639,7 @@ const LandUseDetailPage: React.FC = () => {
   }, [isAnyFormDirty]);
 
   const handleEditClick = () => {
+    setSaveError(null);
     setIsEditMode(true);
   };
 
@@ -706,7 +717,11 @@ const LandUseDetailPage: React.FC = () => {
   });
 
   const handleSaveClick = async () => {
+    if (isSaving) {
+      return;
+    }
     setIsSaveClicked(true);
+    setSaveError(null);
 
     if (!agreementId) {
       return;
@@ -718,49 +733,58 @@ const LandUseDetailPage: React.FC = () => {
       return;
     }
 
+    setIsSaving(true);
     try {
       if (formStates.summary?.dirty) {
         await summaryMutation.mutateAsync(
           summaryFormApi.getState().values as LandUseSummaryFormValues,
         );
+        markFormSaved("summary");
       }
       if (formStates.parties?.dirty) {
         await partiesMutation.mutateAsync(
           partiesFormApi.getState().values as LandUsePartiesFormValues,
         );
+        markFormSaved("parties");
       }
       if (formStates.compensations?.dirty) {
         await compensationsMutation.mutateAsync(
           compensationsFormApi.getState()
             .values as LandUseCompensationsFormValues,
         );
+        markFormSaved("compensations");
       }
       if (formStates.decisions?.dirty) {
         await decisionsMutation.mutateAsync(
           decisionsFormApi.getState().values as LandUseDecisionsFormValues,
         );
+        markFormSaved("decisions");
       }
       if (formStates.contracts?.dirty) {
         await contractsMutation.mutateAsync(
           contractsFormApi.getState().values as LandUseContractsFormValues,
         );
+        markFormSaved("contracts");
       }
       if (formStates.paymentSchedule?.dirty) {
         await paymentScheduleMutation.mutateAsync(
           paymentScheduleFormApi.getState()
             .values as LandUsePaymentScheduleFormValues,
         );
+        markFormSaved("paymentSchedule");
       }
       if (formStates.collaterals?.dirty) {
         await collateralsMutation.mutateAsync(
           collateralsFormApi.getState().values as LandUseCollateralsFormValues,
         );
+        markFormSaved("collaterals");
       }
       setIsSaveClicked(false);
       setIsEditMode(false);
-      resetFormStates();
     } catch (error) {
-      console.error("Failed to save agreement data", error);
+      setSaveError(getLanduseApiErrorMessage(error));
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -848,6 +872,16 @@ const LandUseDetailPage: React.FC = () => {
     );
   }
 
+  if (summaryQuery.isError) {
+    return (
+      <div className="landuse-detail">
+        <div className="landuse-detail__content" role="alert">
+          {getLanduseApiErrorMessage(summaryQuery.error)}
+        </div>
+      </div>
+    );
+  }
+
   const sitesWithAmVelvoite = (compensationsQuery.data?.sites ?? []).filter(
     (site) => site.amVelvoite === true,
   );
@@ -906,44 +940,69 @@ const LandUseDetailPage: React.FC = () => {
   const handleSendToInvoicing = async (
     schedule: LandUsePaymentScheduleEntry,
   ) => {
-    const values = paymentScheduleFormApi.getState()
-      .values as LandUsePaymentScheduleFormValues;
-    const scheduleIndex = values.paymentSchedules?.indexOf(schedule) ?? -1;
-    const savedValues = await paymentScheduleMutation.mutateAsync(
-      values,
-    );
-    const savedSchedule = savedValues.paymentSchedules?.[scheduleIndex];
-    if (!savedSchedule) {
-      throw new Error("The payment schedule could not be persisted.");
+    if (isSaving) return;
+    setSaveError(null);
+    setIsSaving(true);
+    try {
+      const values = paymentScheduleFormApi.getState()
+        .values as LandUsePaymentScheduleFormValues;
+      const scheduleIndex = values.paymentSchedules?.indexOf(schedule) ?? -1;
+      const savedValues = await paymentScheduleMutation.mutateAsync(values);
+      const savedSchedule = savedValues.paymentSchedules?.[scheduleIndex];
+      if (!savedSchedule) {
+        throw new Error("The payment schedule could not be persisted.");
+      }
+      await submitPaymentSchedule(savedSchedule.id);
+      await queryClient.invalidateQueries({
+        queryKey: ["land-use", agreementId, "paymentSchedule"],
+      });
+    } catch (error) {
+      setSaveError(getLanduseApiErrorMessage(error));
+    } finally {
+      setIsSaving(false);
     }
-    await submitPaymentSchedule(savedSchedule.id);
-    await queryClient.invalidateQueries({
-      queryKey: ["land-use", agreementId, "paymentSchedule"],
-    });
   };
 
   const handleDeclineSchedule = async (
     schedule: LandUsePaymentScheduleEntry,
     rejectedReason: string,
   ) => {
-    await rejectPaymentSchedule(schedule.id, rejectedReason);
-    await queryClient.invalidateQueries({
-      queryKey: ["land-use", agreementId, "paymentSchedule"],
-    });
+    if (isSaving) return;
+    setSaveError(null);
+    setIsSaving(true);
+    try {
+      await rejectPaymentSchedule(schedule.id, rejectedReason);
+      await queryClient.invalidateQueries({
+        queryKey: ["land-use", agreementId, "paymentSchedule"],
+      });
+    } catch (error) {
+      setSaveError(getLanduseApiErrorMessage(error));
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const handleAcceptSchedule = async (
     schedule: LandUsePaymentScheduleEntry,
   ) => {
-    await approvePaymentSchedule(schedule.id);
-    await Promise.all([
-      queryClient.invalidateQueries({
-        queryKey: ["land-use", agreementId, "paymentSchedule"],
-      }),
-      queryClient.invalidateQueries({
-        queryKey: ["land-use", agreementId, "billing"],
-      }),
-    ]);
+    if (isSaving) return;
+    setSaveError(null);
+    setIsSaving(true);
+    try {
+      await approvePaymentSchedule(schedule.id);
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: ["land-use", agreementId, "paymentSchedule"],
+        }),
+        queryClient.invalidateQueries({
+          queryKey: ["land-use", agreementId, "billing"],
+        }),
+      ]);
+    } catch (error) {
+      setSaveError(getLanduseApiErrorMessage(error));
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const renderActiveTabPanel = () => {
@@ -1122,6 +1181,7 @@ const LandUseDetailPage: React.FC = () => {
           activeTocId={activeSectionId}
           onTocClick={handleTocClick}
           isEditMode={isEditMode}
+          isSaving={isSaving}
           onEditClick={handleEditClick}
           onSaveClick={handleSaveClick}
           onDiscardClick={handleDiscardClick}
@@ -1136,6 +1196,7 @@ const LandUseDetailPage: React.FC = () => {
               { title: summaryQuery?.data?.identifier, path: "" },
             ]}
           />
+          {saveError && <div role="alert">{saveError}</div>}
           <TableOfContentsProvider setEntries={setSectionEntries}>
             <div ref={contentRef}>{renderActiveTabPanel()}</div>
           </TableOfContentsProvider>

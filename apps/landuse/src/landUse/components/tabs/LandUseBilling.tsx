@@ -83,6 +83,7 @@ export interface LandUseBillingFormValues {
 
 export interface LandUseBillingInvoice extends Pick<
   LandUseInvoice,
+  | "id"
   | "recipientPartyIndex"
   | "installmentNumber"
   | "installmentTotal"
@@ -94,9 +95,10 @@ export interface LandUseBillingInvoice extends Pick<
   | "billedAmount"
   | "remainingAmount"
   | "invoiceItems"
+  | "payments"
 > {
-  sourcePaymentScheduleId?: string;
-  sourceInstallmentIndex?: number;
+  sourceInstallmentId?: string;
+  recipientSnapshot?: SelectedPartyInvoiceData;
 }
 
 interface LandUseBillingProps {
@@ -113,6 +115,8 @@ interface LandUseBillingProps {
 }
 
 interface SelectedPartyInvoiceData {
+  name?: string;
+  partyType?: string;
   streetAddress: string;
   city: string;
   postalCode: string;
@@ -144,7 +148,7 @@ function isInvoiceEditableBasedOnStatus(
 export const isInvoiceContentEditableInBilling = (
   invoice: LandUseBillingInvoice,
 ): boolean =>
-  !invoice.sourcePaymentScheduleId && isInvoiceEditableBasedOnStatus(invoice);
+  !invoice.sourceInstallmentId && isInvoiceEditableBasedOnStatus(invoice);
 
 const getPartyName = (value: string | undefined): string => value?.trim() ?? "";
 
@@ -229,6 +233,13 @@ const getSelectedPartyInvoiceData = (
   };
 };
 
+const getInvoiceRecipientData = (
+  invoice: LandUseBillingInvoice,
+  parties: LandUseBillingParty[],
+): SelectedPartyInvoiceData =>
+  invoice.recipientSnapshot ??
+  getSelectedPartyInvoiceData(invoice.recipientPartyIndex, parties);
+
 const createEmptyInvoiceTableRow = (
   recipientPartyIndex: string | undefined,
 ): LandUseBillingInvoice => ({
@@ -310,10 +321,7 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
           invoice.installmentNumber && invoice.installmentTotal
             ? `${invoice.installmentNumber}/${invoice.installmentTotal}`
             : "-";
-        const selectedPartyData = getSelectedPartyInvoiceData(
-          invoice.recipientPartyIndex,
-          parties,
-        );
+        const selectedPartyData = getInvoiceRecipientData(invoice, parties);
         const canEditInvoiceContent =
           isEditMode && isInvoiceContentEditableInBilling(invoice);
 
@@ -719,6 +727,34 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
                         </div>
                       </div>
                     </Fieldset>
+                    {(invoice.payments?.length ?? 0) > 0 && (
+                      <Fieldset heading="Maksusuoritukset">
+                        <div className="landuse-detail__sites-table-wrapper">
+                          <table className="landuse-compensations-table">
+                            <thead>
+                              <tr>
+                                <th>Maksupäivä</th>
+                                <th>Maksettu</th>
+                                <th>Arkistointitunnus</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {invoice.payments?.map((payment) => (
+                                <tr key={payment.id}>
+                                  <td>{payment.paidDate}</td>
+                                  <td>
+                                    {formatLandUseEuroDisplayValue(
+                                      payment.paidAmount,
+                                    )}
+                                  </td>
+                                  <td>{payment.filingCode}</td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </Fieldset>
+                    )}
                     <div className="landuse-grid">
                       <div className="landuse-grid__column-12">
                         <Fieldset heading="Laskurivit">

@@ -116,6 +116,13 @@ export interface LandUseInvoiceItem {
   amountExcludingVat: string;
 }
 
+export interface LandUseInvoicePayment {
+  id: string;
+  paidAmount: string;
+  paidDate: string;
+  filingCode: string;
+}
+
 export const LAND_USE_INVOICE_TYPES = {
   MAANKAYTTOKORVAUS: "LAND_USE_COMPENSATION",
   SAKKO: "PENALTY",
@@ -142,6 +149,7 @@ export interface LandUseInvoice {
   billedAmount: string;
   remainingAmount: string;
   invoiceItems?: LandUseInvoiceItem[];
+  payments?: LandUseInvoicePayment[];
 }
 
 export const LAND_USE_INVOICE_ITEM_TYPES = {

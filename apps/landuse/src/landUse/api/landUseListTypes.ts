@@ -6,4 +6,5 @@ export type LandUseListItem = {
   site: string;
   projectArea: boolean;
   negotiationPhase: string;
+  negotiationPhaseLabel: string;
 };

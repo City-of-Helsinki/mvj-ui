@@ -31,6 +31,7 @@ interface SideNavigationProps {
   activeTocId: string | null;
   onTocClick: (id: string) => void;
   isEditMode: boolean;
+  isSaving: boolean;
   onEditClick: () => void;
   onSaveClick: () => void;
   onDiscardClick: () => void;
@@ -53,6 +54,7 @@ export const SideNavigation: React.FC<SideNavigationProps> = ({
   activeTocId,
   onTocClick,
   isEditMode,
+  isSaving,
   onEditClick,
   onSaveClick,
   onDiscardClick,
@@ -136,6 +138,7 @@ export const SideNavigation: React.FC<SideNavigationProps> = ({
             <Button
               variant={ButtonVariant.Secondary}
               onClick={onDiscardClick}
+              disabled={isSaving}
               iconStart={<IconCross />}
             >
               Hylkää muutokset
@@ -143,6 +146,7 @@ export const SideNavigation: React.FC<SideNavigationProps> = ({
             <Button
               variant={ButtonVariant.Primary}
               onClick={onSaveClick}
+              disabled={isSaving}
               iconStart={<IconCheckCircle />}
             >
               Tallenna
@@ -152,6 +156,7 @@ export const SideNavigation: React.FC<SideNavigationProps> = ({
           <Button
             variant={ButtonVariant.Primary}
             onClick={onEditClick}
+            disabled={isSaving}
             iconStart={<IconPen />}
           >
             Muokkaa

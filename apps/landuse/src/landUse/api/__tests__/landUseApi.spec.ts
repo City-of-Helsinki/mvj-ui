@@ -15,6 +15,7 @@ import {
   getPreparers,
   getAsemakaavat,
   getAuthorizedSignatories,
+  getLandUseList,
   getSummary,
   getParties,
   updateParties,
@@ -65,6 +66,38 @@ describe("land use API contract adapters", () => {
       addresses: [],
       preparers: [],
     });
+  });
+
+  it("maps list status codes separately from status labels", async () => {
+    mockGetAllPages.mockResolvedValue([
+      {
+        id: 1,
+        identifier: "M-2026-1",
+        agreement_type: "",
+        district: null,
+        party: "List party",
+        zoning_plan_number: "12345",
+        site: "List site",
+        is_promotion_area: true,
+        status: "IN_PROGRESS",
+        status_label: "Vireillä",
+        estimated_presentation_year: null,
+        estimated_payment_year: null,
+      },
+    ]);
+
+    await expect(getLandUseList()).resolves.toEqual([
+      {
+        id: 1,
+        identifier: "M-2026-1",
+        party: "List party",
+        zoningPlanNumber: "12345",
+        site: "List site",
+        projectArea: true,
+        negotiationPhase: "IN_PROGRESS",
+        negotiationPhaseLabel: "Vireillä",
+      },
+    ]);
   });
 
   it("keeps client row keys out of party and decision write payloads", async () => {
@@ -240,6 +273,7 @@ describe("land use API contract adapters", () => {
         "INTEREST",
         "PENALTY",
       ].map((item_type) => ({
+        id: 10,
         item_type,
         description: item_type,
         amount: "0.10",
@@ -256,15 +290,44 @@ describe("land use API contract adapters", () => {
           installment_count_total: 1,
           billed_amount: "0.40",
           remaining_amount: "0.00",
+          source_payment_schedule_installment: 42,
+          recipient_snapshot: {
+            name: "Historical recipient",
+            party_type: "COMPANY",
+            business_id: "1234567-8",
+            street_address: "Historic street 1",
+            postal_code: "00100",
+            city: "Helsinki",
+            ovt_code: "OVT-1",
+            sap_customer_number: "SAP-1",
+            customer_reference: "REF-1",
+          },
           items,
+          payments: [
+            {
+              id: 20,
+              paid_amount: "0.40",
+              paid_date: "2024-03-01",
+              filing_code: "LEDGER-1",
+            },
+          ],
         },
       ]);
       const invoice = (await getBilling("1")).invoices?.[0];
       expect(invoice).toMatchObject({
+        id: "1",
+        sourceInstallmentId: "42",
         recipientPartyIndex: "73",
         type: invoice_type,
         status: "PAID",
         dueDate: "29.02.2024",
+        recipientSnapshot: {
+          name: "Historical recipient",
+          streetAddress: "Historic street 1",
+        },
+        payments: [
+          { id: "20", paidAmount: "0.40", paidDate: "01.03.2024" },
+        ],
       });
       expect(invoice?.invoiceItems?.map((item) => item.itemType)).toEqual(
         items.map((item) => item.item_type),
