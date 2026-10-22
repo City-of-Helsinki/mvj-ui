@@ -94,7 +94,7 @@ interface LandUsePaymentScheduleProps {
   asemakaavanNumero: AsemakaavaListItem["asemakaavanNumero"];
   asemakaavanLainvoimaisuusPvm: AsemakaavaListItem["asemakaavanLainvoimaisuusPvm"];
   agreementIdentifier: string;
-  onSendToInvoicing: (schedule: LandUsePaymentScheduleEntry) => void;
+  onSendToInvoicing: (schedule: LandUsePaymentScheduleEntry) => Promise<void>;
 }
 
 type SelectedPartyInvoiceData = Pick<
@@ -1043,7 +1043,7 @@ interface PartyGroupSectionProps {
   parties: PartyEntry[];
   contractOptions: ContractOption[];
   onRemoveSchedule: (index: number) => void;
-  onSendToInvoicing: (schedule: LandUsePaymentScheduleEntry) => void;
+  onSendToInvoicing: (schedule: LandUsePaymentScheduleEntry) => Promise<void>;
 }
 
 const getPartyGroupHeadingId = (partyValue: string): string =>
@@ -1068,10 +1068,10 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
     setScheduleToSend(null);
   };
 
-  const handleSendConfirm = () => {
+  const handleSendConfirm = async () => {
     if (!scheduleToSend) return;
 
-    onSendToInvoicing(scheduleToSend);
+    await onSendToInvoicing(scheduleToSend);
     closeSendDialog();
   };
 

@@ -26,7 +26,9 @@ import {
   submitPaymentSchedule,
   updateCompensations,
   updateCollaterals,
+  updateContracts,
   updateDecisions,
+  updatePaymentSchedule,
   updateParties,
   updateSummary,
 } from "@/landUse/api/landUseApi";
@@ -676,6 +678,25 @@ const LandUseDetailPage: React.FC = () => {
     },
   });
 
+  const contractsMutation = useMutation({
+    mutationFn: (values: LandUseContractsFormValues) =>
+      updateContracts(agreementId, values),
+    onSuccess: (data) => {
+      queryClient.setQueryData(["land-use", agreementId, "contracts"], data);
+    },
+  });
+
+  const paymentScheduleMutation = useMutation({
+    mutationFn: (values: LandUsePaymentScheduleFormValues) =>
+      updatePaymentSchedule(agreementId, values),
+    onSuccess: (data) => {
+      queryClient.setQueryData(
+        ["land-use", agreementId, "paymentSchedule"],
+        data,
+      );
+    },
+  });
+
   const collateralsMutation = useMutation({
     mutationFn: (values: LandUseCollateralsFormValues) =>
       updateCollaterals(agreementId, values),
@@ -717,6 +738,17 @@ const LandUseDetailPage: React.FC = () => {
       if (formStates.decisions?.dirty) {
         await decisionsMutation.mutateAsync(
           decisionsFormApi.getState().values as LandUseDecisionsFormValues,
+        );
+      }
+      if (formStates.contracts?.dirty) {
+        await contractsMutation.mutateAsync(
+          contractsFormApi.getState().values as LandUseContractsFormValues,
+        );
+      }
+      if (formStates.paymentSchedule?.dirty) {
+        await paymentScheduleMutation.mutateAsync(
+          paymentScheduleFormApi.getState()
+            .values as LandUsePaymentScheduleFormValues,
         );
       }
       if (formStates.collaterals?.dirty) {
@@ -874,7 +906,17 @@ const LandUseDetailPage: React.FC = () => {
   const handleSendToInvoicing = async (
     schedule: LandUsePaymentScheduleEntry,
   ) => {
-    await submitPaymentSchedule(schedule.id);
+    const values = paymentScheduleFormApi.getState()
+      .values as LandUsePaymentScheduleFormValues;
+    const scheduleIndex = values.paymentSchedules?.indexOf(schedule) ?? -1;
+    const savedValues = await paymentScheduleMutation.mutateAsync(
+      values,
+    );
+    const savedSchedule = savedValues.paymentSchedules?.[scheduleIndex];
+    if (!savedSchedule) {
+      throw new Error("The payment schedule could not be persisted.");
+    }
+    await submitPaymentSchedule(savedSchedule.id);
     await queryClient.invalidateQueries({
       queryKey: ["land-use", agreementId, "paymentSchedule"],
     });
@@ -912,7 +954,9 @@ const LandUseDetailPage: React.FC = () => {
         activeTabKey === "parties" ||
         activeTabKey === "compensations" ||
         activeTabKey === "decisions" ||
-        activeTabKey === "collaterals");
+        activeTabKey === "collaterals" ||
+        activeTabKey === "contracts" ||
+        activeTabKey === "paymentSchedule");
     switch (activeTabKey) {
       case "summary":
         return (
@@ -971,7 +1015,7 @@ const LandUseDetailPage: React.FC = () => {
         return (
           <LandUseContracts
             form={contractsFormApi}
-            isEditMode={false}
+            isEditMode={isCurrentTabEditable}
             parties={activeParties}
             decisions={decisionsQuery.data?.decisions}
           />
@@ -1012,8 +1056,8 @@ const LandUseDetailPage: React.FC = () => {
         return (
           <LandUsePaymentSchedule
             form={paymentScheduleFormApi}
-            isEditMode={false}
-            canSubmitSchedules={isEditMode}
+            isEditMode={isCurrentTabEditable}
+            canSubmitSchedules={isCurrentTabEditable}
             parties={activeParties}
             contracts={
               (contractsFormApi.getState().values as LandUseContractsFormValues)

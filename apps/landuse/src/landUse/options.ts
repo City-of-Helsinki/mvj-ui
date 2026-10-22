@@ -110,6 +110,7 @@ export type LandUsePaymentScheduleStatus =
   (typeof LAND_USE_PAYMENT_SCHEDULE_STATUSES)[keyof typeof LAND_USE_PAYMENT_SCHEDULE_STATUSES];
 
 export interface LandUseInvoiceItem {
+  id?: string;
   description: string;
   itemType: string;
   amountExcludingVat: string;
@@ -124,6 +125,7 @@ export type LandUseInvoiceType =
   (typeof LAND_USE_INVOICE_TYPES)[keyof typeof LAND_USE_INVOICE_TYPES];
 
 export interface LandUseInvoice {
+  id?: string;
   recipientPartyIndex: string | undefined;
   contractIndex: string | undefined;
   installmentNumber: string;

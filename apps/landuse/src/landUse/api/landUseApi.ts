@@ -276,12 +276,14 @@ type PaymentScheduleResponse = {
   base_interest_rate: string | null;
   interest_margin: string | null;
   installments: {
+    id: number;
     installment_sequence_number: number;
     installment_count_total: number;
     due_date: string | null;
     interest_calculation_period_start_date: string | null;
     interest_calculation_period_end_date: string | null;
     items: {
+      id: number;
       item_type: PaymentScheduleItemTypeCode;
       description: string;
       amount: string;
@@ -938,6 +940,69 @@ export const getContracts = async (
   };
 };
 
+export const updateContracts = async (
+  agreementId: string,
+  values: LandUseContractsFormValues,
+): Promise<LandUseContractsFormValues> => {
+  await callApiPut(
+    `agreements/${agreementId}/contracts/`,
+    (values.contracts ?? []).map((contract) => ({
+      ...(Number.isInteger(Number(contract.id)) ? { id: Number(contract.id) } : {}),
+      identifier: contract.sopimusnumero,
+      signing_date: parseFinnishDateToIsoDate(contract.allekirjoituspvm),
+      signing_deadline: parseFinnishDateToIsoDate(contract.allekirjoitettavaMennessa),
+      first_invitation_sent_date: parseFinnishDateToIsoDate(contract.ensimmainenKutsuLahetetty),
+      second_invitation_sent_date: parseFinnishDateToIsoDate(contract.toinenKutsuLahetetty),
+      third_invitation_sent_date: parseFinnishDateToIsoDate(contract.kolmasKutsuLahetetty),
+      executor: contract.toimeenpanija,
+      decision: contract.paatos ? Number(contract.paatos) : null,
+      note: contract.huomautus,
+      title: contract.title,
+      contract_type: contract.sopimuksenTyyppi ?? "",
+      changes: contract.muutokset.map((change) => ({
+        ...(Number.isInteger(Number(change.id)) ? { id: Number(change.id) } : {}),
+        identifier: change.sopimusnumero,
+        signing_date: parseFinnishDateToIsoDate(change.allekirjoituspvm),
+        signing_deadline: parseFinnishDateToIsoDate(change.allekirjoitettavaMennessa),
+        first_invitation_sent_date: parseFinnishDateToIsoDate(change.ensimmainenKutsuLahetetty),
+        second_invitation_sent_date: parseFinnishDateToIsoDate(change.toinenKutsuLahetetty),
+        third_invitation_sent_date: parseFinnishDateToIsoDate(change.kolmasKutsuLahetetty),
+        executor: change.toimeenpanija,
+        decision: change.paatos ? Number(change.paatos) : null,
+        note: change.huomautus,
+      })),
+      collaterals: contract.vakuudet.map((collateral) => ({
+        ...(Number.isInteger(Number(collateral.id)) ? { id: Number(collateral.id) } : {}),
+        guarantee_type: collateral.tyyppi,
+        parties: (collateral.osapuolet ?? []).map(Number),
+        document_category: collateral.vakuusasiakirjanLaji ?? "",
+        target: collateral.kiinteistoVaiLaitos ?? "",
+        property_identifiers: collateral.kiinteistotunnukset ?? [],
+        facility_identifier: collateral.laitostunnus ?? null,
+        mortgage_deed_number: collateral.panttikirjanNumero ?? "",
+        mortgage_deed_date: parseFinnishDateToIsoDate(collateral.panttikirjanPaivays),
+        subsequent_pledgee_name: collateral.jalkipantinSaajanNimi ?? null,
+        subsequent_pledgee_business_id: collateral.jalkipantinSaajanYTunnus ?? null,
+        guarantor_name: collateral.antajanNimi ?? "",
+        guarantor_business_id: collateral.antajanYTunnus ?? "",
+        guarantor_national_identification_number: collateral.antajanHenkilotunnus ?? "",
+        guarantee_identifier: collateral.takausnumero ?? "",
+        account_number: collateral.tilinumero ?? "",
+        paid_at_date: parseFinnishDateToIsoDate(collateral.maksettuPvm),
+        third_party_pledger_name: collateral.vierasvelkapanttauksenAntajanNimi ?? null,
+        third_party_pledger_business_id: collateral.vierasvelkapanttauksenAntajanYTunnus ?? null,
+        start_date: parseFinnishDateToIsoDate(collateral.alkupvm),
+        end_date: parseFinnishDateToIsoDate(collateral.loppupvm),
+        amount: parseOptionalDecimal(collateral.maara),
+        returned_date: parseFinnishDateToIsoDate(collateral.palautettuPvm),
+        marked_returned_by: collateral.merkitsijaPalautus ?? null,
+        additional_information: collateral.lisatiedot ?? "",
+      })),
+    })),
+  );
+  return getContracts(agreementId);
+};
+
 export const getPaymentSchedule = async (
   agreementId: string,
 ): Promise<LandUsePaymentScheduleFormValues> => {
@@ -958,6 +1023,7 @@ export const getPaymentSchedule = async (
       korkoMarginaali: toText(schedule.interest_margin),
       daysInYear: "365",
       installments: schedule.installments.map((installment) => ({
+        id: String(installment.id),
         recipientPartyIndex: String(schedule.recipient_party),
         contractIndex: String(schedule.contract),
         installmentNumber: String(installment.installment_sequence_number),
@@ -977,6 +1043,7 @@ export const getPaymentSchedule = async (
         billedAmount: "",
         remainingAmount: "",
         invoiceItems: installment.items.map((item) => ({
+          id: String(item.id),
           itemType: item.item_type,
           description: item.description,
           amountExcludingVat: item.amount,
@@ -984,6 +1051,39 @@ export const getPaymentSchedule = async (
       })),
     })),
   };
+};
+
+export const updatePaymentSchedule = async (
+  agreementId: string,
+  values: LandUsePaymentScheduleFormValues,
+): Promise<LandUsePaymentScheduleFormValues> => {
+  await callApiPut(
+    `agreements/${agreementId}/payment-schedules/`,
+    (values.paymentSchedules ?? []).map((schedule) => ({
+      ...(Number.isInteger(Number(schedule.id)) ? { id: Number(schedule.id) } : {}),
+      recipient_party: Number(schedule.recipientPartyIndex),
+      contract: Number(schedule.contractIndex),
+      signing_date: parseFinnishDateToIsoDate(schedule.signedDate),
+      increase_percentage: parseOptionalDecimal(schedule.korotusProsentti),
+      base_interest_rate: parseOptionalDecimal(schedule.korkoPeruskorko),
+      interest_margin: parseOptionalDecimal(schedule.korkoMarginaali),
+      installments: schedule.installments.map((installment) => ({
+        ...(Number.isInteger(Number(installment.id)) ? { id: Number(installment.id) } : {}),
+        installment_sequence_number: Number(installment.installmentNumber),
+        installment_count_total: Number(installment.installmentTotal),
+        due_date: parseFinnishDateToIsoDate(installment.dueDate),
+        interest_calculation_period_start_date: parseFinnishDateToIsoDate(installment.laskentajaksonAlkupvm),
+        interest_calculation_period_end_date: parseFinnishDateToIsoDate(installment.laskentajaksonLoppupvm),
+        items: (installment.invoiceItems ?? []).map((item) => ({
+          ...(Number.isInteger(Number(item.id)) ? { id: Number(item.id) } : {}),
+          item_type: item.itemType,
+          description: item.description,
+          amount: parseOptionalDecimal(item.amountExcludingVat),
+        })),
+      })),
+    })),
+  );
+  return getPaymentSchedule(agreementId);
 };
 
 export const getBilling = async (
