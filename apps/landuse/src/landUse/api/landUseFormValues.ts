@@ -30,6 +30,7 @@ export const createEmptySummaryFormValues = (): LandUseSummaryFormValues => ({
 });
 
 export const createEmptyPartyEntry = (): PartyEntry => ({
+  clientKey: crypto.randomUUID(),
   party: {
     details: {
       partyRole: undefined,

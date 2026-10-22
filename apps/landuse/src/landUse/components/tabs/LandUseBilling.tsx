@@ -53,6 +53,7 @@ type BillingPartyDetails = Pick<
 > & { businessId?: CompanyPartyDetails["businessId"] };
 
 export interface LandUseBillingParty {
+  id?: string;
   party: { details: BillingPartyDetails };
   invoiceRecipient?: { details: BillingPartyDetails };
   billingDetails: Pick<
@@ -169,17 +170,18 @@ const getInvoiceRecipientLabel = (
 const createInvoiceRecipientOptions = (
   parties: LandUseBillingParty[],
 ): SelectOption[] =>
-  parties.map((party, index) => ({
-    label: getInvoiceRecipientLabel(party, index),
-    value: String(index),
-  }));
+  parties
+    .filter((party) => party.id)
+    .map((party, index) => ({
+      label: getInvoiceRecipientLabel(party, index),
+      value: party.id!,
+    }));
 
 const getSelectedPartyInvoiceData = (
   recipientPartyIndex: string | undefined,
   parties: LandUseBillingParty[],
 ): SelectedPartyInvoiceData => {
-  const selectedIndex = Number(recipientPartyIndex);
-  if (!Number.isInteger(selectedIndex) || selectedIndex < 0) {
+  if (!recipientPartyIndex) {
     return {
       streetAddress: "",
       city: "",
@@ -192,7 +194,9 @@ const getSelectedPartyInvoiceData = (
     };
   }
 
-  const selectedParty = parties[selectedIndex];
+  const selectedParty = parties.find(
+    (party) => party.id === recipientPartyIndex,
+  );
   if (!selectedParty) {
     return {
       streetAddress: "",
@@ -344,8 +348,15 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
               <td>{readOnlyTextValue(installmentDisplayValue)}</td>
               <td>{readOnlyTextValue(invoice.dueDate)}</td>
               <td>{readOnlyTextValue(invoice.invoiceNumber)}</td>
-              <td>{readOnlyTextValue(invoice.type)}</td>
-              <td>{readOnlyTextValue(invoice.status)}</td>
+              <td>
+                {getOptionsDisplayValue(invoice.type, invoiceTypeOptions)}
+              </td>
+              <td>
+                {getOptionsDisplayValue(
+                  invoice.status,
+                  metadataQuery.data?.invoice_statuses ?? [],
+                )}
+              </td>
               <td>{formatLandUseEuroDisplayValue(invoice.billedAmount)}</td>
               <td>{formatLandUseEuroDisplayValue(invoice.remainingAmount)}</td>
             </tr>
@@ -380,7 +391,10 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
                               <TextInput
                                 id={`landuse-billing-type-${index}`}
                                 label="Laskun tyyppi"
-                                value={readOnlyTextValue(typeInput.value)}
+                                value={getOptionsDisplayValue(
+                                  typeInput.value,
+                                  invoiceTypeOptions,
+                                )}
                                 readOnly
                               />
                             )
@@ -784,8 +798,9 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
                                                   <TextInput
                                                     id={`landuse-billing-invoice-row-item-type-${index}-${invoiceItemIndex}`}
                                                     label="Laskurivin tyyppi"
-                                                    value={readOnlyTextValue(
+                                                    value={getOptionsDisplayValue(
                                                       itemTypeInput.value,
+                                                      invoiceItemTypeOptions,
                                                     )}
                                                     readOnly
                                                   />
@@ -908,6 +923,7 @@ const InvoiceReviewTable: React.FC<InvoiceReviewTableProps> = ({
   onAccept,
   onDecline,
 }) => {
+  const metadataQuery = useLandUseMetadata();
   const [openInvoice, setOpenInvoice] = useState<string | null>(null);
   const [scheduleToAccept, setScheduleToAccept] =
     useState<LandUseBillingSchedule | null>(null);
@@ -1188,8 +1204,11 @@ const InvoiceReviewTable: React.FC<InvoiceReviewTableProps> = ({
                                                 <TextInput
                                                   id={`landuse-billing-review-item-type-${scheduleIndex}-${index}-${invoiceItemIndex}`}
                                                   label="Laskurivin tyyppi"
-                                                  value={readOnlyTextValue(
+                                                  value={getOptionsDisplayValue(
                                                     invoiceItem.itemType,
+                                                    metadataQuery.data
+                                                      ?.invoice_item_types ??
+                                                      [],
                                                   )}
                                                   readOnly
                                                 />

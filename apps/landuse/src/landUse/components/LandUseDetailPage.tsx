@@ -204,7 +204,7 @@ const getActiveTabFromSearch = (search: string): number => {
   return 0;
 };
 
-const calculatePaidMaankayttokorvaus = (
+export const calculatePaidMaankayttokorvaus = (
   invoices: Pick<LandUseInvoice, "status" | "invoiceItems">[],
 ) => {
   const isMaankayttokorvausItem = (item: LandUseInvoiceItem) =>
@@ -973,6 +973,7 @@ const LandUseDetailPage: React.FC = () => {
             form={contractsFormApi}
             isEditMode={false}
             parties={activeParties}
+            decisions={decisionsQuery.data?.decisions}
           />
         );
       case "monitoring":

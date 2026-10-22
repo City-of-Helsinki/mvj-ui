@@ -32,6 +32,7 @@ interface DecisionCondition {
 
 interface DecisionItem {
   id?: string;
+  clientKey?: string;
   title: string;
   paattaja?: string;
   paatospvm: string;
@@ -72,6 +73,7 @@ const createNewDecisionCondition = (): DecisionCondition => ({
 });
 
 const createNewDecision = (): DecisionItem => ({
+  clientKey: crypto.randomUUID(),
   title: "",
   paattaja: undefined,
   paatospvm: "",
@@ -147,7 +149,11 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                 return (
                   <div
                     className="landuse-detail__party-entry"
-                    key={`decision-${decisionIndex}`}
+                    key={
+                      decision.id ??
+                      decision.clientKey ??
+                      `decision-${decisionIndex}`
+                    }
                   >
                     <div className="landuse-detail__heading-with-delete">
                       <h2 id={getDecisionHeadingId(decisionIndex)}>
@@ -195,6 +201,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                           options={
                                             metadata?.decision_makers ?? []
                                           }
+                                          clearable
                                           value={normalizeSelectValue(
                                             input.value,
                                           )}
@@ -283,6 +290,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                           options={
                                             metadata?.decision_types ?? []
                                           }
+                                          clearable
                                           value={normalizeSelectValue(
                                             input.value,
                                           )}

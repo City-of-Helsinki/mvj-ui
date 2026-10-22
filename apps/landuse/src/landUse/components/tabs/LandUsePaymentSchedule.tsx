@@ -192,34 +192,37 @@ const getSchedulePartyName = (party: PartyEntry, index: number): string => {
 };
 
 const createPartyOptions = (parties: PartyEntry[]): SelectOption[] =>
-  parties.map((party, index) => ({
-    label: getSchedulePartyName(party, index),
-    value: String(index),
-  }));
+  parties
+    .filter((party) => party.id)
+    .map((party, index) => ({
+      label: getSchedulePartyName(party, index),
+      value: party.id!,
+    }));
 
 const createInvoiceContractOptions = (
   contracts: ContractItem[],
 ): ContractOption[] =>
-  contracts.map((agreement, index) => {
-    const contractType = agreement.sopimuksenTyyppi?.trim();
-    const contractNumber = agreement.sopimusnumero?.trim() ?? "";
-    const parts = [contractType, contractNumber].filter(
-      (part): part is string => Boolean(part),
-    );
+  contracts
+    .filter((agreement) => agreement.id)
+    .map((agreement, index) => {
+      const contractType = agreement.sopimuksenTyyppi?.trim();
+      const contractNumber = agreement.sopimusnumero?.trim() ?? "";
+      const parts = [contractType, contractNumber].filter(
+        (part): part is string => Boolean(part),
+      );
 
-    return {
-      label: parts.join(" ") || `Sopimus ${index + 1}`,
-      value: String(index),
-      sopimusnumero: contractNumber,
-    };
-  });
+      return {
+        label: parts.join(" ") || `Sopimus ${index + 1}`,
+        value: agreement.id!,
+        sopimusnumero: contractNumber,
+      };
+    });
 
 const getSelectedPartyInvoiceData = (
   recipientPartyIndex: string | undefined,
   parties: PartyEntry[],
 ): SelectedPartyInvoiceData => {
-  const selectedIndex = Number(recipientPartyIndex);
-  if (!Number.isInteger(selectedIndex) || selectedIndex < 0) {
+  if (!recipientPartyIndex) {
     return {
       name: "",
       streetAddress: "",
@@ -233,7 +236,9 @@ const getSelectedPartyInvoiceData = (
     };
   }
 
-  const selectedParty = parties[selectedIndex];
+  const selectedParty = parties.find(
+    (party) => party.id === recipientPartyIndex,
+  );
   if (!selectedParty) {
     return {
       name: "",
@@ -436,7 +441,11 @@ const InvoiceItemRow: React.FC<InvoiceItemRowProps> = ({
           <TextInput
             id={`landuse-payment-schedule-invoice-row-item-type-${scheduleIndex}-${installmentIndex}-${itemIndex}`}
             label="Maksun tyyppi"
-            value={readOnlyTextValue(itemTypeInput.value)}
+            value={
+              scheduleItemTypeOptions.find(
+                (option) => option.value === itemTypeInput.value,
+              )?.label ?? readOnlyTextValue(itemTypeInput.value)
+            }
             invalid={Boolean(itemTypeMeta.error)}
             errorText={itemTypeMeta.error}
             required
@@ -1516,7 +1525,9 @@ export const LandUsePaymentSchedule: React.FC<LandUsePaymentScheduleProps> = ({
       return;
     }
 
-    const selectedContract = contracts[Number(values.contractIndex)];
+    const selectedContract = contracts.find(
+      (contract) => contract.id === values.contractIndex,
+    );
     const signedDate = selectedContract?.allekirjoituspvm ?? "";
     const sopimusnumero =
       contractOptions.find((option) => option.value === values.contractIndex)

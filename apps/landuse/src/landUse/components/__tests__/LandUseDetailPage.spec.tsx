@@ -10,13 +10,73 @@ import {
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Form, Field } from "react-final-form";
 import createDecorator from "final-form-calculate";
-import LandUseDetailPage from "@/landUse/components/LandUseDetailPage";
+import LandUseDetailPage, {
+  calculatePaidMaankayttokorvaus,
+} from "@/landUse/components/LandUseDetailPage";
 import * as landUseApi from "@/landUse/api/landUseApi";
 import { LanduseApiError } from "@/landUse/api/fetchClient";
 import { LAND_USE_NEGOTIATION_PHASES } from "@/landUse/options";
 
 const mockNavigate = vi.fn();
 let mockLocationSearch = "";
+
+it("counts only paid backend-coded compensation items", () => {
+  expect(
+    calculatePaidMaankayttokorvaus([
+      {
+        status: "PAID",
+        invoiceItems: [
+          {
+            itemType: "LAND_USE_COMPENSATION",
+            amountExcludingVat: "100.25",
+            description: "",
+          },
+          {
+            itemType: "INTEREST",
+            amountExcludingVat: "20.00",
+            description: "",
+          },
+          {
+            itemType: "INCREASE",
+            amountExcludingVat: "30.00",
+            description: "",
+          },
+          { itemType: "PENALTY", amountExcludingVat: "40.00", description: "" },
+        ],
+      },
+      {
+        status: "OPEN",
+        invoiceItems: [
+          {
+            itemType: "LAND_USE_COMPENSATION",
+            amountExcludingVat: "999",
+            description: "",
+          },
+        ],
+      },
+      {
+        status: "CREDITED",
+        invoiceItems: [
+          {
+            itemType: "LAND_USE_COMPENSATION",
+            amountExcludingVat: "999",
+            description: "",
+          },
+        ],
+      },
+      {
+        status: "PAID",
+        invoiceItems: [
+          {
+            itemType: "LAND_USE_COMPENSATION",
+            amountExcludingVat: "0.10",
+            description: "",
+          },
+        ],
+      },
+    ]),
+  ).toBeCloseTo(100.35);
+});
 
 vi.mock("react-router", () => ({
   useParams: () => ({ id: "1" }),

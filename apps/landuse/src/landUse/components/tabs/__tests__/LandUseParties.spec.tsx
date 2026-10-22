@@ -1,7 +1,13 @@
 import React from "react";
 import { createForm } from "final-form";
 import arrayMutators from "final-form-arrays";
-import { act, cleanup, render, screen } from "@testing-library/react";
+import {
+  act,
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+} from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { createEmptyPartiesFormValues } from "@/landUse/api/landUseFormValues";
 import {
@@ -17,6 +23,11 @@ vi.mock("@/landUse/api/useLandUseMetadata", () => ({
         { value: "PERSON", label: "Yksityishenkilö" },
       ],
       countries: [{ value: "DE", label: "Saksa" }],
+      languages: [
+        { value: "fi", label: "suomi" },
+        { value: "sv", label: "ruotsi" },
+        { value: "en", label: "englanti" },
+      ],
     },
   }),
 }));
@@ -42,6 +53,50 @@ afterEach(() => {
 });
 
 describe("LandUseParties", () => {
+  it.each(["COMPANY", "PERSON"])(
+    "selects and clears code-valued language/country for both %s recipients",
+    async (partyType) => {
+      const initialValues = createEmptyPartiesFormValues();
+      const details = { ...initialValues.parties[0].party.details, partyType };
+      initialValues.parties[0].party.details = details;
+      initialValues.parties[0].invoiceRecipient = { details: { ...details } };
+      const form = createForm<LandUsePartiesFormValues>({
+        onSubmit: () => {},
+        initialValues,
+        mutators: { ...arrayMutators },
+      });
+      render(<LandUseParties form={form} isEditMode />);
+      for (const language of ["suomi", "ruotsi", "englanti"]) {
+        for (const control of screen.getAllByRole("combobox", {
+          name: /Kieli/,
+        })) {
+          fireEvent.click(control);
+          fireEvent.click(
+            await screen.findByRole("option", { name: language }),
+          );
+        }
+      }
+      for (const control of screen.getAllByRole("combobox", { name: /Maa/ })) {
+        fireEvent.click(control);
+        fireEvent.click(await screen.findByRole("option", { name: "Saksa" }));
+      }
+      expect(form.getState().values.parties[0]).toMatchObject({
+        party: { details: { language: "en", country: "DE" } },
+        invoiceRecipient: { details: { language: "en", country: "DE" } },
+      });
+      for (const control of screen.getAllByRole("button", {
+        name: /Poista nykyinen valinta/,
+      })) {
+        fireEvent.click(control);
+      }
+      const cleared = form.getState().values.parties[0];
+      expect(cleared.party.details.language).toBeUndefined();
+      expect(cleared.party.details.country).toBeUndefined();
+      expect(cleared.invoiceRecipient?.details.language).toBeUndefined();
+      expect(cleared.invoiceRecipient?.details.country).toBeUndefined();
+    },
+  );
+
   it.each([
     ["COMPANY", "Y-tunnus", "Henkilötunnus"],
     ["PERSON", "Henkilötunnus", "Y-tunnus"],

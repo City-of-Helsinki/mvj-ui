@@ -58,6 +58,7 @@ export interface ContactPerson {
 
 export interface PartyEntry {
   id?: string;
+  clientKey?: string;
   party: {
     details: PersonPartyDetails | CompanyPartyDetails;
   };
@@ -147,6 +148,7 @@ const CompanyPartyForm: React.FC<PartyFormProps> = ({
                   placeholder: "Valitse kieli",
                 }}
                 options={languageOptions}
+                clearable
                 value={normalizeSelectValue(input.value)}
                 onChange={(selected) =>
                   handleSelectChange(selected, input.onChange)
@@ -223,6 +225,7 @@ const CompanyPartyForm: React.FC<PartyFormProps> = ({
                   placeholder: "Valitse maa",
                 }}
                 options={countryOptions}
+                clearable
                 value={normalizeSelectValue(input.value)}
                 onChange={(selected) =>
                   handleSelectChange(selected, input.onChange)
@@ -359,6 +362,7 @@ const PersonPartyForm: React.FC<PartyFormProps> = ({
                   placeholder: "Valitse kieli",
                 }}
                 options={languageOptions}
+                clearable
                 value={normalizeSelectValue(input.value)}
                 onChange={(selected) =>
                   handleSelectChange(selected, input.onChange)
@@ -435,6 +439,7 @@ const PersonPartyForm: React.FC<PartyFormProps> = ({
                   placeholder: "Valitse maa",
                 }}
                 options={countryOptions}
+                clearable
                 value={normalizeSelectValue(input.value)}
                 onChange={(selected) =>
                   handleSelectChange(selected, input.onChange)
@@ -575,7 +580,11 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                       return (
                         <div
                           className="landuse-detail__party-entry"
-                          key={`${fieldName}-${index}`}
+                          key={
+                            fields.value[index].id ??
+                            fields.value[index].clientKey ??
+                            fieldName
+                          }
                         >
                           <div className="landuse-detail__heading-with-delete">
                             <h2 id={getPartyHeadingId(index)}>{partyName}</h2>

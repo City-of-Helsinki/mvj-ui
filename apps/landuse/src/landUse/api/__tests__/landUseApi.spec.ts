@@ -16,6 +16,12 @@ import {
   getAsemakaavat,
   getAuthorizedSignatories,
   getSummary,
+  getParties,
+  updateParties,
+  getContracts,
+  getBilling,
+  getPaymentSchedule,
+  updateDecisions,
   updateSummary,
   updateCompensations,
 } from "@/landUse/api/landUseApi";
@@ -24,7 +30,10 @@ import type {
   LandUseUiMetadata,
 } from "@/landUse/api/landUseTypes";
 import type { LandUseCompensationsFormValues } from "@/landUse/components/tabs/LandUseCompensations";
-import { createEmptySummaryFormValues } from "@/landUse/api/landUseFormValues";
+import {
+  createEmptySummaryFormValues,
+  createEmptyPartyEntry,
+} from "@/landUse/api/landUseFormValues";
 
 vi.mock("@/landUse/api/fetchClient", () => ({
   callApiGet: vi.fn(),
@@ -40,6 +49,392 @@ describe("land use API contract adapters", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
+
+  it("keeps client row keys out of party and decision write payloads", async () => {
+    const party = createEmptyPartyEntry();
+    expect(party.id).toBeUndefined();
+    expect(party.clientKey).toBeTruthy();
+    expect(createEmptyPartyEntry().clientKey).not.toBe(party.clientKey);
+    vi.mocked(callApiPut).mockResolvedValue([]);
+    await updateParties("1", { parties: [party] });
+    const partyPayload = vi.mocked(callApiPut).mock.lastCall?.[1] as object[];
+    expect(partyPayload[0]).not.toHaveProperty("id");
+    expect(partyPayload[0]).not.toHaveProperty("clientKey");
+
+    mockGetAllPages.mockResolvedValue([]);
+    await updateDecisions("1", {
+      decisions: [
+        {
+          clientKey: crypto.randomUUID(),
+          title: "New decision",
+          paatospvm: "",
+          diaarinumero: "",
+          huomautus: "",
+          ehdot: [],
+        },
+      ],
+    });
+    const decisionPayload = vi.mocked(callApiPut).mock
+      .lastCall?.[1] as object[];
+    expect(decisionPayload[0]).not.toHaveProperty("id");
+    expect(decisionPayload[0]).not.toHaveProperty("clientKey");
+  });
+
+  it.each(["fi", "sv", "en", ""])(
+    "preserves language %j and country codes for both recipients",
+    async (language) => {
+      const details = {
+        id: 73,
+        party_type: "COMPANY",
+        name: "Actual party",
+        national_identification_number: "",
+        business_id: "1234567-1",
+        language,
+        country: language ? "DE" : "",
+        street_address: "",
+        postal_code: "",
+        city: "",
+        care_of: "",
+        phone: "",
+        email: "",
+        note: "",
+      };
+      const party = {
+        ...details,
+        role: "LAND_OWNER",
+        contact_persons: [],
+        billing_details: null,
+        invoice_recipient: { ...details, id: 89 },
+      };
+      mockGetAllPages.mockResolvedValue([party]);
+      vi.mocked(callApiPut).mockResolvedValue([party]);
+      const values = await getParties("1");
+      expect(values.parties[0].party.details.language).toBe(
+        language || undefined,
+      );
+      await expect(updateParties("1", values)).resolves.toMatchObject(values);
+      expect(callApiPut).toHaveBeenCalledWith("agreements/1/parties/", [
+        expect.objectContaining({
+          id: 73,
+          language,
+          country: language ? "DE" : "",
+          invoice_recipient: expect.objectContaining({
+            language,
+            country: language ? "DE" : "",
+          }),
+        }),
+      ]);
+    },
+  );
+
+  it("retains all collateral subtype details and contract/change identities", async () => {
+    const codes = [
+      "MORTGAGE_DEED",
+      "CASH_DEPOSIT",
+      "PERSONAL_GUARANTEE",
+      "DEPOSIT_PLEDGE",
+      "OTHER",
+    ];
+    const collaterals = codes.map((guarantee_type, index) => ({
+      id: 80 + index,
+      guarantee_type,
+      parties: [73],
+      document_category: "ELECTRONIC",
+      target: "PROPERTY",
+      property_identifiers: [{ identifier: "91-1-1-1" }],
+      facility_identifier: "FAC-1",
+      mortgage_deed_number: "DEED-1",
+      mortgage_deed_date: "2024-02-29",
+      subsequent_pledgee_name: "Pledgee",
+      subsequent_pledgee_business_id: "123",
+      guarantor_name: "Guarantor",
+      guarantor_business_id: "456",
+      guarantor_national_identification_number: "ID-1",
+      guarantee_identifier: "G-1",
+      account_number: "FI123",
+      paid_at_date: "2026-01-01",
+      third_party_pledger_name: "Third party",
+      third_party_pledger_business_id: "789",
+      start_date: "2026-01-01",
+      end_date: null,
+      amount: "123.45",
+      returned_date: "2026-02-01",
+      marked_returned_by: "Actual officer",
+      additional_information: "Details",
+    }));
+    mockGetAllPages.mockResolvedValue([
+      {
+        id: 91,
+        title: "Contract",
+        identifier: "C-91",
+        contract_type: "OTHER",
+        signing_date: "2026-01-01",
+        signing_deadline: null,
+        first_invitation_sent_date: null,
+        second_invitation_sent_date: null,
+        third_invitation_sent_date: null,
+        executor: null,
+        decision: 51,
+        note: "",
+        changes: [{ id: 92, identifier: "Change", decision: 52 }],
+        mortgage_deed_collaterals: [collaterals[0]],
+        cash_deposit_collaterals: [collaterals[1]],
+        personal_guarantee_collaterals: [collaterals[2]],
+        deposit_pledge_collaterals: [collaterals[3]],
+        other_collaterals: [collaterals[4]],
+      },
+    ]);
+    const contract = (await getContracts("1")).contracts?.[0];
+    expect(contract).toMatchObject({
+      id: "91",
+      paatos: "51",
+      muutokset: [{ id: "92", paatos: "52" }],
+    });
+    expect(contract?.vakuudet.map((collateral) => collateral.tyyppi)).toEqual(
+      codes,
+    );
+    expect(contract?.vakuudet[0]).toMatchObject({
+      id: "80",
+      osapuolet: ["73"],
+      vakuusasiakirjanLaji: "ELECTRONIC",
+      kiinteistoVaiLaitos: "PROPERTY",
+      kiinteistotunnukset: ["91-1-1-1"],
+      laitostunnus: "FAC-1",
+      panttikirjanNumero: "DEED-1",
+      panttikirjanPaivays: "29.02.2024",
+      jalkipanttaus: true,
+      jalkipantinSaajanNimi: "Pledgee",
+      vierasvelkapanttaus: true,
+      antajanNimi: "Guarantor",
+      takausnumero: "G-1",
+      tilinumero: "FI123",
+      maara: "123.45",
+      palautettuPvm: "01.02.2026",
+      merkitsijaPalautus: "Actual officer",
+    });
+  });
+
+  it.each(["LAND_USE_COMPENSATION", "PENALTY"])(
+    "keeps invoice type %s and all item codes",
+    async (invoice_type) => {
+      const items = [
+        "LAND_USE_COMPENSATION",
+        "INCREASE",
+        "INTEREST",
+        "PENALTY",
+      ].map((item_type) => ({
+        item_type,
+        description: item_type,
+        amount: "0.10",
+      }));
+      mockGetAllPages.mockResolvedValue([
+        {
+          id: 1,
+          recipient_party: 73,
+          invoice_type,
+          status: "PAID",
+          due_date: "2024-02-29",
+          invoice_identifier: "INV-1",
+          installment_sequence_number: 1,
+          installment_count_total: 1,
+          billed_amount: "0.40",
+          remaining_amount: "0.00",
+          items,
+        },
+      ]);
+      const invoice = (await getBilling("1")).invoices?.[0];
+      expect(invoice).toMatchObject({
+        recipientPartyIndex: "73",
+        type: invoice_type,
+        status: "PAID",
+        dueDate: "29.02.2024",
+      });
+      expect(invoice?.invoiceItems?.map((item) => item.itemType)).toEqual(
+        items.map((item) => item.item_type),
+      );
+    },
+  );
+
+  it("keeps schedule relationship IDs and normalizes installment API dates", async () => {
+    const items = ["LAND_USE_COMPENSATION", "INCREASE", "INTEREST"].map(
+      (item_type) => ({ item_type, description: "", amount: "100.00" }),
+    );
+    mockGetAllPages.mockResolvedValue([
+      {
+        id: 1,
+        recipient_party: 73,
+        contract: 91,
+        status: "DRAFT",
+        rejected_reason: "",
+        signing_date: "2024-02-28",
+        increase_percentage: null,
+        base_interest_rate: null,
+        interest_margin: null,
+        installments: [
+          {
+            installment_sequence_number: 1,
+            installment_count_total: 1,
+            due_date: "2024-03-01",
+            interest_calculation_period_start_date: "2024-02-28",
+            interest_calculation_period_end_date: "2024-03-01",
+            items,
+          },
+        ],
+      },
+    ]);
+    const schedule = (await getPaymentSchedule("1")).paymentSchedules?.[0];
+    expect(schedule).toMatchObject({
+      recipientPartyIndex: "73",
+      contractIndex: "91",
+      installments: [
+        {
+          recipientPartyIndex: "73",
+          contractIndex: "91",
+          dueDate: "01.03.2024",
+          laskentajaksonAlkupvm: "28.02.2024",
+          laskentajaksonLoppupvm: "01.03.2024",
+          type: "LAND_USE_COMPENSATION",
+        },
+      ],
+    });
+    expect(mockGetAllPages).toHaveBeenCalledTimes(1);
+    expect(
+      schedule?.installments[0].invoiceItems?.map((item) => item.itemType),
+    ).toEqual(items.map((item) => item.item_type));
+  });
+
+  it("converts edited decision dates and clears them without changing codes", async () => {
+    const decision = {
+      id: 51,
+      title: "Decision",
+      decision_maker: "CITY_BOARD",
+      decision_type: "LAND_USE_AGREEMENT_APPROVAL",
+      decision_date: "2024-02-29",
+      section: null,
+      diary_number: "",
+      note: "",
+      conditions: [
+        {
+          id: 1,
+          condition_type: "OTHER",
+          supervision_date: "2026-01-01",
+          supervised_date: null,
+          note: "",
+        },
+      ],
+    };
+    mockGetAllPages.mockResolvedValue([decision]);
+    const values = await getDecisions("1");
+    expect(values.decisions?.[0].paatospvm).toBe("29.02.2024");
+    await updateDecisions("1", values);
+    expect(callApiPut).toHaveBeenLastCalledWith("agreements/1/decisions/", [
+      expect.objectContaining({
+        decision_date: "2024-02-29",
+        decision_maker: "CITY_BOARD",
+        decision_type: "LAND_USE_AGREEMENT_APPROVAL",
+        conditions: [
+          expect.objectContaining({
+            condition_type: "OTHER",
+            supervision_date: "2026-01-01",
+            supervised_date: null,
+          }),
+        ],
+      }),
+    ]);
+    values.decisions![0].paatospvm = "";
+    await updateDecisions("1", values);
+    expect(callApiPut).toHaveBeenLastCalledWith("agreements/1/decisions/", [
+      expect.objectContaining({ decision_date: null }),
+    ]);
+    values.decisions![0].paatospvm = "31.02.2026";
+    vi.mocked(callApiPut).mockClear();
+    await updateDecisions("1", values);
+    expect(callApiPut).toHaveBeenCalledWith("agreements/1/decisions/", [
+      expect.objectContaining({ decision_date: "2026-02-31" }),
+    ]);
+  });
+
+  it.each(["SR1", "SR2", "SR3", ""])(
+    "round-trips preservation designation %j",
+    async (designation) => {
+      const site = {
+        id: 41,
+        identifier: "SITE-41",
+        area_m2: null,
+        floor_area_kem2: null,
+        intended_use: null,
+        tenure_types: [],
+        preservation_designation: designation || null,
+        has_housing_obligation: false,
+        unit_price_euro_per_kem2: null,
+      };
+      mockGet.mockImplementation(async (path) =>
+        path.endsWith("sites/") ? { agreement_sites: [site] } : null,
+      );
+      const values = await getCompensations("1");
+      expect(values.sites[0].suojeltu).toBe(designation || undefined);
+      await updateCompensations("1", values);
+      expect(callApiPut).toHaveBeenCalledWith("agreements/1/sites/", [
+        expect.objectContaining({
+          preservation_designation: designation || null,
+        }),
+      ]);
+      expect((await getCompensations("1")).sites[0].suojeltu).toBe(
+        designation || undefined,
+      );
+    },
+  );
+
+  it("rejects prototype preservation codes before any write", async () => {
+    mockGet
+      .mockResolvedValueOnce(null)
+      .mockResolvedValueOnce({ agreement_sites: [] });
+    const values = await getCompensations("1");
+    values.sites = [
+      {
+        id: "41",
+        kohteenTunnus: "",
+        pintaAlaM2: "",
+        kem2: "",
+        kayttotarkoitus: undefined,
+        hallintamuoto: [],
+        suojeltu: "-",
+        amVelvoite: false,
+      },
+    ];
+    await expect(updateCompensations("1", values)).rejects.toThrow(
+      "Invalid preservation designation",
+    );
+    expect(callApiPut).not.toHaveBeenCalled();
+  });
+
+  it.each(["", "   ", "\t"])("writes blank years %j as null", async (year) => {
+    await updateSummary("1", {
+      ...createEmptySummaryFormValues(),
+      arvioituEsittelyvuosi: year,
+      arvioituMaksuvuosi: year,
+    });
+    expect(callApiPatch).toHaveBeenCalledWith(
+      "agreements/1/",
+      expect.objectContaining({
+        estimated_presentation_year: null,
+        estimated_payment_year: null,
+      }),
+    );
+  });
+
+  it.each(["2026x", "2e3", "2026.5", "-2026"])(
+    "rejects malformed year %j before writing",
+    async (year) => {
+      await expect(
+        updateSummary("1", {
+          ...createEmptySummaryFormValues(),
+          arvioituMaksuvuosi: year,
+        }),
+      ).rejects.toThrow("Invalid year");
+      expect(callApiPatch).not.toHaveBeenCalled();
+    },
+  );
 
   it("retains summary lookup IDs and free-text agreement type through save and reload", async () => {
     const plan = {
@@ -157,12 +552,18 @@ describe("land use API contract adapters", () => {
 
       const values = await getSummary("1");
       expect(values.tila).toBe(status || undefined);
+      expect(values.arvioituEsittelyvuosi).toBe("");
+      expect(values.arvioituMaksuvuosi).toBe("");
 
       await updateSummary("1", values);
 
       expect(callApiPatch).toHaveBeenLastCalledWith(
         "agreements/1/",
-        expect.objectContaining({ status }),
+        expect.objectContaining({
+          status,
+          estimated_presentation_year: null,
+          estimated_payment_year: null,
+        }),
       );
       const savedPayload = vi.mocked(callApiPatch).mock.lastCall?.[1];
       if (typeof savedPayload !== "object" || savedPayload === null) {

@@ -356,6 +356,7 @@ const SiteRow: React.FC<SiteRowProps> = ({
                         <Select
                           id={`landuse-compensations-suojeltu-${site.id}`}
                           options={preservationOptions}
+                          clearable
                           value={normalizeSelectValue(input.value)}
                           onChange={(selectedOptions) =>
                             handleSelectChange(selectedOptions, input.onChange)

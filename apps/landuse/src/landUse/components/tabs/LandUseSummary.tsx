@@ -1,4 +1,5 @@
 import { FormApi } from "final-form";
+import { parseIsoDateToFinnishDate } from "@/landUse/utils/date";
 import {
   Button,
   ButtonVariant,
@@ -181,11 +182,11 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
       );
       form.change(
         "vahvistamisHyvaksymisPvm",
-        selectedAsemakaava?.approval_date ?? "",
+        parseIsoDateToFinnishDate(selectedAsemakaava?.approval_date),
       );
       form.change(
         "asemakaavanLainvoimaisuusPvm",
-        selectedAsemakaava?.effective_date ?? "",
+        parseIsoDateToFinnishDate(selectedAsemakaava?.effective_date),
       );
       form.change("asemakaavanHyvaksyjä", selectedAsemakaava?.approver ?? "");
       form.change(

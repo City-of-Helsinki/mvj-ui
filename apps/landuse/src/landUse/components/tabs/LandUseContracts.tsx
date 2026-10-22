@@ -26,8 +26,11 @@ import {
   type Guarantee,
 } from "@/landUse/components/collateralForms";
 import type { PartyEntry } from "@/landUse/components/tabs/LandUseParties";
+import type { LandUseDecisionsFormValues } from "@/landUse/components/tabs/LandUseDecisions";
 
 interface ContractChange {
+  id?: string;
+  clientKey?: string;
   sopimusnumero: string;
   allekirjoituspvm: string;
   allekirjoitettavaMennessa: string;
@@ -40,6 +43,8 @@ interface ContractChange {
 }
 
 interface ContractItem {
+  id?: string;
+  clientKey?: string;
   title: string;
   sopimuksenTyyppi?: string;
   sopimusnumero: string;
@@ -63,6 +68,7 @@ interface LandUseContractsProps {
   form: FormApi<LandUseContractsFormValues>;
   isEditMode: boolean;
   parties: PartyEntry[];
+  decisions?: LandUseDecisionsFormValues["decisions"];
 }
 
 const handleSelectChange = (
@@ -77,6 +83,7 @@ const handleSelectChange = (
 };
 
 const createNewContractChange = (): ContractChange => ({
+  clientKey: crypto.randomUUID(),
   sopimusnumero: "",
   allekirjoituspvm: "",
   allekirjoitettavaMennessa: "",
@@ -89,10 +96,12 @@ const createNewContractChange = (): ContractChange => ({
 });
 
 const createNewGuarantee = (): Guarantee => ({
+  clientKey: crypto.randomUUID(),
   tyyppi: undefined,
 });
 
 const createNewContract = (): ContractItem => ({
+  clientKey: crypto.randomUUID(),
   title: "",
   sopimuksenTyyppi: undefined,
   sopimusnumero: "",
@@ -119,10 +128,16 @@ export const LandUseContracts: React.FC<LandUseContractsProps> = ({
   form,
   isEditMode,
   parties,
+  decisions = [],
 }) => {
   const metadataQuery = useLandUseMetadata();
   const contractTypeOptions = metadataQuery.data?.contract_types ?? [];
-  const decisionTypeOptions = metadataQuery.data?.decision_types ?? [];
+  const decisionTypeOptions = decisions
+    .filter((decision) => decision.id)
+    .map((decision) => ({
+      value: decision.id!,
+      label: decision.title || decision.diaarinumero || decision.id!,
+    }));
   const guaranteeTypeOptions = metadataQuery.data?.collateral_types ?? [];
   const [contracts, setContracts] = useState<ContractItem[]>(
     () => form.getState().values.contracts ?? [],
@@ -148,10 +163,12 @@ export const LandUseContracts: React.FC<LandUseContractsProps> = ({
 
   useTocEntries(tocEntries);
 
-  const partyOptions = parties.map((entry) => ({
-    label: entry.party.details.name,
-    value: entry.party.details.name,
-  }));
+  const partyOptions = parties
+    .filter((entry) => entry.id)
+    .map((entry) => ({
+      label: entry.party.details.name,
+      value: entry.id!,
+    }));
   const [pendingGuaranteeTypeByContract, setPendingGuaranteeTypeByContract] =
     React.useState<Record<number, LandUseGuaranteeType | undefined>>({});
 
@@ -181,7 +198,11 @@ export const LandUseContracts: React.FC<LandUseContractsProps> = ({
                 return (
                   <div
                     className="landuse-detail__party-entry"
-                    key={`contract-${contractIndex}`}
+                    key={
+                      contract.id ??
+                      contract.clientKey ??
+                      `contract-${contractIndex}`
+                    }
                   >
                     <div className="landuse-detail__heading-with-delete">
                       <h2 id={getContractHeadingId(contractIndex)}>
@@ -244,7 +265,13 @@ export const LandUseContracts: React.FC<LandUseContractsProps> = ({
                                         <TextInput
                                           id={`contract-tyyppi-${contractIndex}`}
                                           label="Sopimuksen tyyppi"
-                                          value={readOnlyTextValue(input.value)}
+                                          value={
+                                            contractTypeOptions.find(
+                                              (option) =>
+                                                option.value === input.value,
+                                            )?.label ??
+                                            readOnlyTextValue(input.value)
+                                          }
                                           readOnly
                                         />
                                       )
@@ -430,7 +457,13 @@ export const LandUseContracts: React.FC<LandUseContractsProps> = ({
                                         <TextInput
                                           id={`contract-paatos-${contractIndex}`}
                                           label="Päätös"
-                                          value={readOnlyTextValue(input.value)}
+                                          value={
+                                            decisionTypeOptions.find(
+                                              (option) =>
+                                                option.value === input.value,
+                                            )?.label ??
+                                            readOnlyTextValue(input.value)
+                                          }
                                           readOnly
                                         />
                                       )
@@ -480,12 +513,16 @@ export const LandUseContracts: React.FC<LandUseContractsProps> = ({
                           description: (
                             <Fieldset heading="" className="full-width">
                               {(contract.muutokset ?? []).map(
-                                (_, changeIndex) => {
+                                (change, changeIndex) => {
                                   const changeName = `${contractName}.muutokset.${changeIndex}`;
                                   return (
                                     <div
                                       className="landuse-grid landuse-grid__bottom-separator"
-                                      key={`${changeName}-${changeIndex}`}
+                                      key={
+                                        change.id ??
+                                        change.clientKey ??
+                                        `${changeName}-${changeIndex}`
+                                      }
                                     >
                                       {" "}
                                       <div className="landuse-grid__column-6">
@@ -672,9 +709,14 @@ export const LandUseContracts: React.FC<LandUseContractsProps> = ({
                                               <TextInput
                                                 id={`contract-change-paatos-${contractIndex}-${changeIndex}`}
                                                 label="Päätös"
-                                                value={readOnlyTextValue(
-                                                  input.value,
-                                                )}
+                                                value={
+                                                  decisionTypeOptions.find(
+                                                    (option) =>
+                                                      option.value ===
+                                                      input.value,
+                                                  )?.label ??
+                                                  readOnlyTextValue(input.value)
+                                                }
                                                 readOnly
                                               />
                                             )
@@ -764,7 +806,10 @@ export const LandUseContracts: React.FC<LandUseContractsProps> = ({
                                             ? ` (palautettu ${savedVakuus?.palautettuPvm})`
                                             : ""
                                         }`,
-                                        key: `vakuus-${vakuusIndex}`,
+                                        key:
+                                          vakuus.id ??
+                                          vakuus.clientKey ??
+                                          `vakuus-${vakuusIndex}`,
                                         description: (
                                           <div className="landuse-detail__nested-stepbystep ">
                                             {/* NOTE! Hidden field for vakuuden tyyppi for form data. */}

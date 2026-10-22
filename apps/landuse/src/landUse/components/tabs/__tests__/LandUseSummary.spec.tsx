@@ -207,15 +207,15 @@ it("selects a plan by database ID, derives read-only fields, and clears the rela
     detailedPlanId: 73,
     asemakaavanNumero: "0012345",
     asemakaavanKasittelyvaihe: "EFFECTIVE",
-    vahvistamisHyvaksymisPvm: "2026-01-10",
-    asemakaavanLainvoimaisuusPvm: "2026-02-15",
+    vahvistamisHyvaksymisPvm: "10.01.2026",
+    asemakaavanLainvoimaisuusPvm: "15.02.2026",
     asemakaavanHyvaksyjä: "Plan approver",
     asemakaavanDiaarinumero: "HEL-73",
   });
   for (const [label, value] of [
     ["Asemakaavan käsittelyvaihe", "Lainvoimainen"],
-    ["Vahvistamis/hyväksymispäivä", "2026-01-10"],
-    ["Lainvoimaisuuspäivä", "2026-02-15"],
+    ["Vahvistamis/hyväksymispäivä", "10.01.2026"],
+    ["Lainvoimaisuuspäivä", "15.02.2026"],
     ["Asemakaavan hyväksyjä", "Plan approver"],
     ["Asemakaavan diaarinumero", "HEL-73"],
   ]) {

@@ -8,11 +8,16 @@ import type { LandUseMonitoringFormValues } from "@/landUse/components/tabs/Land
 import type { LandUsePartiesFormValues } from "@/landUse/components/tabs/LandUseParties";
 import type { LandUseSummaryFormValues } from "@/landUse/components/tabs/LandUseSummary";
 import type { Guarantee } from "@/landUse/components/collateralForms";
+import { LAND_USE_INVOICE_TYPES} from "@/landUse/options";
 import {
   createLandUseIdentifier,
   getNextLandUseSequence,
 } from "@/landUse/utils/landUseIdentifier";
 import type { LandUseListItem } from "@/landUse/api/landUseListTypes";
+import {
+  parseIsoDateToFinnishDate,
+  parseFinnishDateToIsoDate,
+} from "@/landUse/utils/date";
 import {
   callApiGetAllPages,
   callApiGet,
@@ -170,15 +175,6 @@ type AgreementSiteResponse = {
   unit_price_euro_per_kem2: NullableLandUseDecimalString;
 };
 
-const toIsoDate = (value: string): string | null => {
-  if (!value) return null;
-  if (!value.trim()) return null;
-  const [day, month, year] = value.split(".");
-  return day && month && year
-    ? `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`
-    : value;
-};
-
 export const getLandUseUiMetadata = (): Promise<LandUseUiMetadata> =>
   callApiGet<LandUseUiMetadata>("ui-metadata/");
 
@@ -211,6 +207,7 @@ export const getSiteTenureTypes = (): Promise<LandUseNamedLookup[]> =>
   callApiGetAllPages<LandUseNamedLookup>("site-tenure-types/");
 
 type CollateralResponse = {
+  id: number;
   guarantee_type: CollateralTypeCode;
   parties: number[];
   document_category?: string;
@@ -313,8 +310,12 @@ type InvoiceResponse = {
 };
 
 const getOptionalYear = (value: string): number | null => {
-  const year = Number(value);
-  return Number.isInteger(year) ? year : null;
+  const normalized = value.trim();
+  if (!normalized) return null;
+  if (!/^\d{4}$/.test(normalized)) {
+    throw new Error("Invalid year");
+  }
+  return Number(normalized);
 };
 
 const toText = (value: string | number | null | undefined): string =>
@@ -381,12 +382,18 @@ const mapAgreementOverviewToSummary = (
   sisaltaaAmVelvoitteita: agreement.includes_housing_obligations
     ? "kyllä"
     : "ei",
-  velvoitteidenMaaraika: agreement.obligations_deadline ?? "",
+  velvoitteidenMaaraika: parseIsoDateToFinnishDate(
+    agreement.obligations_deadline,
+  ),
   detailedPlanId: agreement.detailed_plan?.id ?? null,
   asemakaavanNumero: agreement.detailed_plan?.plan_number ?? "",
   asemakaavanKasittelyvaihe: agreement.detailed_plan?.processing_stage ?? "",
-  vahvistamisHyvaksymisPvm: agreement.detailed_plan?.approval_date ?? "",
-  asemakaavanLainvoimaisuusPvm: agreement.detailed_plan?.effective_date ?? "",
+  vahvistamisHyvaksymisPvm: parseIsoDateToFinnishDate(
+    agreement.detailed_plan?.approval_date,
+  ),
+  asemakaavanLainvoimaisuusPvm: parseIsoDateToFinnishDate(
+    agreement.detailed_plan?.effective_date,
+  ),
   asemakaavanHyvaksyjä: agreement.detailed_plan?.approver ?? "",
   asemakaavanDiaarinumero: agreement.detailed_plan?.diary_number ?? "",
 });
@@ -484,7 +491,9 @@ export const updateSummary = async (
       ),
       estimated_payment_year: getOptionalYear(values.arvioituMaksuvuosi),
       includes_housing_obligations: values.sisaltaaAmVelvoitteita === "kyllä",
-      obligations_deadline: toIsoDate(values.velvoitteidenMaaraika),
+      obligations_deadline: parseFinnishDateToIsoDate(
+        values.velvoitteidenMaaraika,
+      ),
     },
   );
 
@@ -779,15 +788,15 @@ export const getDecisions = async (
       id: String(decision.id),
       title: decision.title,
       paattaja: decision.decision_maker || undefined,
-      paatospvm: decision.decision_date ?? "",
+      paatospvm: parseIsoDateToFinnishDate(decision.decision_date),
       pykala: decision.section == null ? undefined : String(decision.section),
       paatoksenTyyppi: decision.decision_type || undefined,
       diaarinumero: decision.diary_number,
       huomautus: decision.note,
       ehdot: decision.conditions.map((condition) => ({
         conditionType: condition.condition_type || undefined,
-        valvontapvm: condition.supervision_date ?? "",
-        valvottuPvm: condition.supervised_date ?? "",
+        valvontapvm: parseIsoDateToFinnishDate(condition.supervision_date),
+        valvottuPvm: parseIsoDateToFinnishDate(condition.supervised_date),
         note: condition.note,
       })),
     })),
@@ -804,15 +813,15 @@ export const updateDecisions = async (
       ...(decision.id ? { id: Number(decision.id) } : {}),
       title: decision.title,
       decision_maker: decision.paattaja ?? "",
-      decision_date: toIsoDate(decision.paatospvm),
+      decision_date: parseFinnishDateToIsoDate(decision.paatospvm),
       section: decision.pykala ? Number(decision.pykala) : null,
       decision_type: decision.paatoksenTyyppi ?? "",
       diary_number: decision.diaarinumero,
       note: decision.huomautus,
       conditions: (decision.ehdot ?? []).map((condition) => ({
         condition_type: condition.conditionType ?? "",
-        supervision_date: toIsoDate(condition.valvontapvm),
-        supervised_date: toIsoDate(condition.valvottuPvm),
+        supervision_date: parseFinnishDateToIsoDate(condition.valvontapvm),
+        supervised_date: parseFinnishDateToIsoDate(condition.valvottuPvm),
         note: condition.note,
       })),
     })),
@@ -828,7 +837,8 @@ export const getContracts = async (
   );
 
   const mapCollateral = (collateral: CollateralResponse): Guarantee => ({
-    tyyppi: collateral.guarantee_type as Guarantee["tyyppi"],
+    id: String(collateral.id),
+    tyyppi: collateral.guarantee_type,
     osapuolet: collateral.parties.map(String),
     vakuusasiakirjanLaji: collateral.document_category,
     kiinteistoVaiLaitos: collateral.target,
@@ -855,38 +865,59 @@ export const getContracts = async (
     antajanYTunnus: collateral.guarantor_business_id,
     antajanHenkilotunnus: collateral.guarantor_national_identification_number,
     panttikirjanNumero: collateral.mortgage_deed_number,
-    panttikirjanPaivays: collateral.mortgage_deed_date ?? undefined,
+    panttikirjanPaivays:
+      parseIsoDateToFinnishDate(collateral.mortgage_deed_date) || undefined,
     takausnumero: collateral.guarantee_identifier,
     tilinumero: collateral.account_number,
-    alkupvm: collateral.start_date ?? undefined,
-    loppupvm: collateral.end_date ?? undefined,
+    alkupvm: parseIsoDateToFinnishDate(collateral.start_date) || undefined,
+    loppupvm: parseIsoDateToFinnishDate(collateral.end_date) || undefined,
     maara: toText(collateral.amount),
-    maksettuPvm: collateral.paid_at_date ?? undefined,
-    palautettuPvm: collateral.returned_date ?? undefined,
+    maksettuPvm:
+      parseIsoDateToFinnishDate(collateral.paid_at_date) || undefined,
+    palautettuPvm:
+      parseIsoDateToFinnishDate(collateral.returned_date) || undefined,
     merkitsijaPalautus: collateral.marked_returned_by ?? undefined,
     lisatiedot: collateral.additional_information,
   });
 
   return {
     contracts: contracts.map((contract) => ({
+      id: String(contract.id),
       title: contract.title,
       sopimuksenTyyppi: contract.contract_type || undefined,
       sopimusnumero: contract.identifier,
-      allekirjoituspvm: contract.signing_date ?? "",
+      allekirjoituspvm: parseIsoDateToFinnishDate(contract.signing_date),
       huomautus: contract.note,
-      allekirjoitettavaMennessa: contract.signing_deadline ?? "",
-      ensimmainenKutsuLahetetty: contract.first_invitation_sent_date ?? "",
-      toinenKutsuLahetetty: contract.second_invitation_sent_date ?? "",
-      kolmasKutsuLahetetty: contract.third_invitation_sent_date ?? "",
+      allekirjoitettavaMennessa: parseIsoDateToFinnishDate(
+        contract.signing_deadline,
+      ),
+      ensimmainenKutsuLahetetty: parseIsoDateToFinnishDate(
+        contract.first_invitation_sent_date,
+      ),
+      toinenKutsuLahetetty: parseIsoDateToFinnishDate(
+        contract.second_invitation_sent_date,
+      ),
+      kolmasKutsuLahetetty: parseIsoDateToFinnishDate(
+        contract.third_invitation_sent_date,
+      ),
       paatos: contract.decision ? String(contract.decision) : undefined,
       toimeenpanija: contract.executor ?? "",
       muutokset: contract.changes.map((change) => ({
+        id: String(change.id),
         sopimusnumero: change.identifier,
-        allekirjoituspvm: change.signing_date ?? "",
-        allekirjoitettavaMennessa: change.signing_deadline ?? "",
-        ensimmainenKutsuLahetetty: change.first_invitation_sent_date ?? "",
-        toinenKutsuLahetetty: change.second_invitation_sent_date ?? "",
-        kolmasKutsuLahetetty: change.third_invitation_sent_date ?? "",
+        allekirjoituspvm: parseIsoDateToFinnishDate(change.signing_date),
+        allekirjoitettavaMennessa: parseIsoDateToFinnishDate(
+          change.signing_deadline,
+        ),
+        ensimmainenKutsuLahetetty: parseIsoDateToFinnishDate(
+          change.first_invitation_sent_date,
+        ),
+        toinenKutsuLahetetty: parseIsoDateToFinnishDate(
+          change.second_invitation_sent_date,
+        ),
+        kolmasKutsuLahetetty: parseIsoDateToFinnishDate(
+          change.third_invitation_sent_date,
+        ),
         paatos: change.decision ? String(change.decision) : undefined,
         huomautus: change.note,
         toimeenpanija: change.executor ?? "",
@@ -905,58 +936,38 @@ export const getContracts = async (
 export const getPaymentSchedule = async (
   agreementId: string,
 ): Promise<LandUsePaymentScheduleFormValues> => {
-  const [schedules, parties, contracts] = await Promise.all([
-    callApiGetAllPages<PaymentScheduleResponse>(
-      `agreements/${agreementId}/payment-schedules/`,
-    ),
-    callApiGetAllPages<PartyResponse>(`agreements/${agreementId}/parties/`),
-    callApiGetAllPages<ContractResponse>(
-      `agreements/${agreementId}/contracts/`,
-    ),
-  ]);
-  const partyIndexes = new Map(
-    parties.map((party, index) => [party.id, index]),
-  );
-  const contractIndexes = new Map(
-    contracts.map((contract, index) => [contract.id, index]),
+  const schedules = await callApiGetAllPages<PaymentScheduleResponse>(
+    `agreements/${agreementId}/payment-schedules/`,
   );
 
   return {
     paymentSchedules: schedules.map((schedule) => ({
       id: String(schedule.id),
-      recipientPartyIndex: partyIndexes.has(schedule.recipient_party)
-        ? String(partyIndexes.get(schedule.recipient_party))
-        : undefined,
-      contractIndex: contractIndexes.has(schedule.contract)
-        ? String(contractIndexes.get(schedule.contract))
-        : undefined,
-      status: schedule.status as NonNullable<
-        LandUsePaymentScheduleFormValues["paymentSchedules"]
-      >[number]["status"],
+      recipientPartyIndex: String(schedule.recipient_party),
+      contractIndex: String(schedule.contract),
+      status: schedule.status,
       rejectedReason: schedule.rejected_reason || null,
-      signedDate: schedule.signing_date ?? "",
+      signedDate: parseIsoDateToFinnishDate(schedule.signing_date),
       korotusProsentti: toText(schedule.increase_percentage),
       korkoPeruskorko: toText(schedule.base_interest_rate),
       korkoMarginaali: toText(schedule.interest_margin),
       daysInYear: "365",
       installments: schedule.installments.map((installment) => ({
-        recipientPartyIndex: partyIndexes.has(schedule.recipient_party)
-          ? String(partyIndexes.get(schedule.recipient_party))
-          : undefined,
-        contractIndex: contractIndexes.has(schedule.contract)
-          ? String(contractIndexes.get(schedule.contract))
-          : undefined,
+        recipientPartyIndex: String(schedule.recipient_party),
+        contractIndex: String(schedule.contract),
         installmentNumber: String(installment.installment_sequence_number),
         installmentTotal: String(installment.installment_count_total),
-        signedDate: schedule.signing_date ?? "",
+        signedDate: parseIsoDateToFinnishDate(schedule.signing_date),
         asemakaavanLainvoimaisuusPvm: undefined,
-        dueDate: installment.due_date ?? "",
-        laskentajaksonAlkupvm:
-          installment.interest_calculation_period_start_date ?? "",
-        laskentajaksonLoppupvm:
-          installment.interest_calculation_period_end_date ?? "",
+        dueDate: parseIsoDateToFinnishDate(installment.due_date),
+        laskentajaksonAlkupvm: parseIsoDateToFinnishDate(
+          installment.interest_calculation_period_start_date,
+        ),
+        laskentajaksonLoppupvm: parseIsoDateToFinnishDate(
+          installment.interest_calculation_period_end_date,
+        ),
         invoiceNumber: "",
-        type: undefined,
+        type: LAND_USE_INVOICE_TYPES.MAANKAYTTOKORVAUS,
         status: undefined,
         billedAmount: "",
         remainingAmount: "",
@@ -973,29 +984,19 @@ export const getPaymentSchedule = async (
 export const getBilling = async (
   agreementId: string,
 ): Promise<LandUseBillingFormValues> => {
-  const [invoices, parties] = await Promise.all([
-    callApiGetAllPages<InvoiceResponse>(`agreements/${agreementId}/invoices/`),
-    callApiGetAllPages<PartyResponse>(`agreements/${agreementId}/parties/`),
-  ]);
-  const partyIndexes = new Map(
-    parties.map((party, index) => [party.id, index]),
+  const invoices = await callApiGetAllPages<InvoiceResponse>(
+    `agreements/${agreementId}/invoices/`,
   );
 
   return {
     invoices: invoices.map((invoice) => ({
-      recipientPartyIndex: partyIndexes.has(invoice.recipient_party)
-        ? String(partyIndexes.get(invoice.recipient_party))
-        : undefined,
+      recipientPartyIndex: String(invoice.recipient_party),
       installmentNumber: String(invoice.installment_sequence_number),
       installmentTotal: String(invoice.installment_count_total),
-      dueDate: invoice.due_date ?? "",
+      dueDate: parseIsoDateToFinnishDate(invoice.due_date),
       invoiceNumber: invoice.invoice_identifier,
-      type: invoice.invoice_type as NonNullable<
-        LandUseBillingFormValues["invoices"]
-      >[number]["type"],
-      status: invoice.status as NonNullable<
-        LandUseBillingFormValues["invoices"]
-      >[number]["status"],
+      type: invoice.invoice_type,
+      status: invoice.status,
       sentAt: invoice.sent_at ?? undefined,
       billedAmount: toText(invoice.billed_amount),
       remainingAmount: toText(invoice.remaining_amount),
