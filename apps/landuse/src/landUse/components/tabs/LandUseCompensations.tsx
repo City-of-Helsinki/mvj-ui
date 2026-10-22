@@ -277,13 +277,13 @@ const SiteRow: React.FC<SiteRowProps> = ({
                 </div>
 
                 <div className="landuse-grid__column-4">
-                  <Field name={`sites.${siteIndex}.kayttotarkoitus`}>
+                  <Field name={`sites.${siteIndex}.kayttotarkoitusId`}>
                     {({ input }) =>
                       !isEditMode ? (
                         <TextInput
                           id={`landuse-compensations-kayttotarkoitus-${site.id}`}
                           label="Käyttötarkoitus"
-                          value={readOnlyTextValue(input.value)}
+                          value={readOnlyTextValue(site.kayttotarkoitus)}
                           readOnly
                         />
                       ) : (
@@ -292,7 +292,11 @@ const SiteRow: React.FC<SiteRowProps> = ({
                           options={intendedUseOptions}
                           value={normalizeSelectValue(input.value)}
                           onChange={(selectedOptions) => {
-                            handleSelectChange(selectedOptions, input.onChange);
+                            input.onChange(
+                              selectedOptions[0]
+                                ? Number(selectedOptions[0].value)
+                                : null,
+                            );
                             onSetTabDirty();
                           }}
                           texts={{
@@ -306,15 +310,15 @@ const SiteRow: React.FC<SiteRowProps> = ({
                 </div>
 
                 <div className="landuse-grid__column-4">
-                  <Field name={`sites.${siteIndex}.hallintamuoto`}>
+                  <Field name={`sites.${siteIndex}.hallintamuotoIds`}>
                     {({ input }) =>
                       !isEditMode ? (
                         <TextInput
                           id={`landuse-compensations-hallintamuoto-${site.id}`}
                           label="Hallintamuoto"
                           value={
-                            Array.isArray(input.value) && input.value.length > 0
-                              ? input.value.join(", ")
+                            site.hallintamuoto && site.hallintamuoto.length > 0
+                              ? site.hallintamuoto.join(", ")
                               : "-"
                           }
                           readOnly
@@ -323,11 +327,14 @@ const SiteRow: React.FC<SiteRowProps> = ({
                         <Select
                           id={`landuse-compensations-hallintamuoto-${site.id}`}
                           options={tenureTypeOptions}
-                          value={normalizeMultiSelectValue(input.value)}
+                          value={normalizeMultiSelectValue(
+                            (input.value ?? []).map(String),
+                          )}
                           onChange={(selectedOptions) => {
-                            handleMultiSelectChange(
-                              selectedOptions,
-                              input.onChange,
+                            input.onChange(
+                              selectedOptions.map((option) =>
+                                Number(option.value),
+                              ),
                             );
                             onSetTabDirty();
                           }}
@@ -478,18 +485,18 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
     queryFn: getLandPolicyPrograms,
     staleTime: 60 * 60 * 1000,
   });
-  const intendedUseOptions = (intendedUsesQuery.data ?? []).map(({ name }) => ({
+  const intendedUseOptions = (intendedUsesQuery.data ?? []).map(({ id, name }) => ({
     label: name,
-    value: name,
+    value: String(id),
   }));
-  const tenureTypeOptions = (tenureTypesQuery.data ?? []).map(({ name }) => ({
+  const tenureTypeOptions = (tenureTypesQuery.data ?? []).map(({ id, name }) => ({
     label: name,
-    value: name,
+    value: String(id),
   }));
   const preservationOptions =
     metadataQuery.data?.preservation_designations ?? [];
   const landPolicyProgramOptions = (landPolicyProgramsQuery.data ?? []).map(
-    ({ name }) => ({ label: name, value: name }),
+    ({ id, name }) => ({ label: name, value: String(id) }),
   );
   const [openSiteId, setOpenSiteId] = React.useState<string | null>(null);
 
@@ -565,9 +572,10 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
         ) => {
           const selectedValue = selectedOptions[0]?.value;
           const selectedOption = landPolicyProgramsQuery.data?.find(
-            (option) => option.name === selectedValue,
+            (option) => String(option.id) === selectedValue,
           );
 
+          form.change("maapoliittinenOhjelmaId", selectedOption?.id ?? null);
           form.change("maapoliittinenOhjelma", selectedOption?.name ?? "");
           form.change(
             "huojennusProsentti",
@@ -875,7 +883,7 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
             <Fieldset heading="" className="full-width">
               <div className="landuse-grid">
                 <div className="landuse-grid__column-6">
-                  <Field name="maapoliittinenOhjelma">
+                  <Field name="maapoliittinenOhjelmaId">
                     {({ input }) =>
                       !isEditMode ? (
                         <TextInput
@@ -888,7 +896,9 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                         <Select
                           id="landuse-compensations-maapoliittinen-ohjelma"
                           options={landPolicyProgramOptions}
-                          value={normalizeSelectValue(input.value)}
+                          value={normalizeSelectValue(
+                            input.value == null ? undefined : String(input.value),
+                          )}
                           onChange={handleMaapoliittinenOhjelmaChange}
                           clearable
                           texts={{

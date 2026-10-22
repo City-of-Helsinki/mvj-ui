@@ -461,7 +461,7 @@ export const updateSummary = async (
   agreementId: string,
   values: LandUseSummaryFormValues,
 ): Promise<LandUseSummaryFormValues> => {
-  await callApiPatch<AgreementOverviewResponse, AgreementUpdateRequest>(
+  await callApiPatch<void, AgreementUpdateRequest>(
     `agreements/${agreementId}/`,
     {
       detailed_plan: values.detailedPlanId,
@@ -497,7 +497,7 @@ export const updateSummary = async (
     },
   );
 
-  return values;
+  return getSummary(agreementId);
 };
 
 export const getParties = async (
@@ -690,14 +690,23 @@ const parseOptionalDecimal = (
   return /^-?(?:\d+|\d*\.\d+)$/.test(normalized) ? normalized : null;
 };
 
+const parsePreservationDesignation = (value: string | undefined): string | null => {
+  if (!value) return null;
+  if (!new Set(["SR1", "SR2", "SR3"]).has(value)) {
+    throw new Error("Invalid preservation designation");
+  }
+  return value;
+};
+
 export const updateCompensations = async (
   agreementId: string,
   values: LandUseCompensationsFormValues,
 ): Promise<LandUseCompensationsFormValues> => {
-  await Promise.all([
-    callApiPut<void, CompensationWriteRequest>(
-      "agreements/" + agreementId + "/compensation/",
-      {
+  await callApiPut<
+    unknown,
+    { compensation: CompensationWriteRequest; sites: AgreementSiteWriteRequest[] }
+  >(`agreements/${agreementId}/compensation-with-sites/`, {
+    compensation: {
         excel_calculation_url: values.excelLaskelmaUrl || null,
         monetary_compensation: parseOptionalDecimal(values.rahakorvaus),
         land_compensation: parseOptionalDecimal(values.maakorvaus),
@@ -723,25 +732,21 @@ export const updateCompensations = async (
         public_areas_acquisition_value: parseOptionalDecimal(
           values.yleisetAlueetHankinnanArvo,
         ),
-      },
-    ),
-    callApiPut(
-      "agreements/" + agreementId + "/sites/",
-      values.sites.map((site): AgreementSiteWriteRequest => ({
+    },
+    sites: values.sites.map((site): AgreementSiteWriteRequest => ({
         ...(Number.isInteger(Number(site.id)) ? { id: Number(site.id) } : {}),
         identifier: site.kohteenTunnus,
         area_m2: parseOptionalDecimal(site.pintaAlaM2),
         floor_area_kem2: parseOptionalDecimal(site.kem2),
         intended_use: site.kayttotarkoitusId ?? null,
-        tenure_types: site.hallintamuotoIds ?? [],
-        preservation_designation: site.suojeltu || null,
+        tenure_types: (site.hallintamuotoIds ?? []).map(Number),
+        preservation_designation: parsePreservationDesignation(site.suojeltu),
         has_housing_obligation: site.amVelvoite,
         unit_price_euro_per_kem2: parseOptionalDecimal(
           values.perustietotaulukkoRowsBySiteId[site.id]?.yksikkohinta,
         ),
-      })),
-    ),
-  ]);
+    })),
+  });
 
   return getCompensations(agreementId);
 };

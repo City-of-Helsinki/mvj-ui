@@ -48,6 +48,23 @@ const mockGetAllPages = vi.mocked(callApiGetAllPages);
 describe("land use API contract adapters", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mockGet.mockResolvedValue({
+      id: 1,
+      identifier: "M-2026-1",
+      agreement_type: "",
+      district: null,
+      is_promotion_area: false,
+      status: "",
+      estimated_presentation_year: null,
+      estimated_payment_year: null,
+      detailed_plan_sites: [],
+      includes_housing_obligations: false,
+      obligations_deadline: null,
+      authorized_signatory: null,
+      detailed_plan: null,
+      addresses: [],
+      preparers: [],
+    });
   });
 
   it("keeps client row keys out of party and decision write payloads", async () => {
@@ -374,11 +391,14 @@ describe("land use API contract adapters", () => {
       const values = await getCompensations("1");
       expect(values.sites[0].suojeltu).toBe(designation || undefined);
       await updateCompensations("1", values);
-      expect(callApiPut).toHaveBeenCalledWith("agreements/1/sites/", [
+      expect(callApiPut).toHaveBeenCalledWith(
+        "agreements/1/compensation-with-sites/",
         expect.objectContaining({
+          sites: [expect.objectContaining({
           preservation_designation: designation || null,
+          })],
         }),
-      ]);
+      );
       expect((await getCompensations("1")).sites[0].suojeltu).toBe(
         designation || undefined,
       );
@@ -829,10 +849,10 @@ describe("land use API contract adapters", () => {
 
     await updateCompensations("agreement-1", values);
 
-    expect(callApiPut).toHaveBeenNthCalledWith(
-      1,
-      "agreements/agreement-1/compensation/",
+    expect(callApiPut).toHaveBeenCalledWith(
+      "agreements/agreement-1/compensation-with-sites/",
       expect.objectContaining({
+        compensation: expect.objectContaining({
         monetary_compensation: "999999999999999999.99",
         land_compensation: null,
         other_compensation: "0.10",
@@ -843,12 +863,9 @@ describe("land use API contract adapters", () => {
         land_policy_program_discount_percentage: "12.50",
         public_areas_m2: null,
         public_areas_acquisition_value: "0.01",
+        }),
+        sites: [],
       }),
-    );
-    expect(callApiPut).toHaveBeenNthCalledWith(
-      2,
-      "agreements/agreement-1/sites/",
-      [],
     );
   });
 });
