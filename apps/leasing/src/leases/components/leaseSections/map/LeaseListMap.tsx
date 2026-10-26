@@ -1,26 +1,19 @@
 import React, { useMemo } from "react";
 import { useLocation } from "react-router";
 import { useAppSelector } from "@/root/hooks";
-import AreaNotesLayer from "@/areaNote/components/AreaNotesLayer";
 import AreaNotesEditMap from "@/areaNote/components/AreaNotesEditMap";
 import LeaseListLayer from "./LeaseListLayer";
+import useAreaNotesOverlay from "@/components/map/useAreaNotesOverlay";
 import useMapViewport from "@/components/map/useMapViewport";
 import { MAP_LAYER_COLORS } from "@/components/map/mapStyles";
 import { MAX_ZOOM_LEVEL_TO_FETCH_LEASES } from "@/leases/constants";
 import { LeaseFieldPaths } from "@/leases/enums";
-import { UsersPermissions } from "@/usersPermissions/enums";
 import { getContentLeasesGeoJson } from "@/leases/helpers";
-import {
-  getApiResponseResults,
-  getFieldOptions,
-  hasPermissions,
-} from "@/util/helpers";
-import { getAreaNoteList } from "@/areaNote/selectors";
+import { getApiResponseResults, getFieldOptions } from "@/util/helpers";
 import {
   getAttributes as getLeaseAttributes,
   getLeasesByBBox,
 } from "@/leases/selectors";
-import { getUsersPermissions } from "@/usersPermissions/selectors";
 import type { Lease } from "@/leases/types";
 
 const fitToResultsUntilViewportKnown = (searchQuery: Record<string, any>) =>
@@ -32,10 +25,9 @@ type Props = {
 };
 const LeaseListMap = ({ isLoading, onViewportChanged }: Props) => {
   const location = useLocation();
-  const areaNotes = useAppSelector(getAreaNoteList);
+  const areaNotesOverlay = useAreaNotesOverlay({ showWhenEmpty: true });
   const leaseAttributes = useAppSelector(getLeaseAttributes);
   const leasesData = useAppSelector(getLeasesByBBox);
-  const usersPermissions = useAppSelector(getUsersPermissions);
   const leasesGeoJson = useMemo(
     () => getContentLeasesGeoJson(getApiResponseResults(leasesData) as Lease[]),
     [leasesData],
@@ -52,18 +44,8 @@ const LeaseListMap = ({ isLoading, onViewportChanged }: Props) => {
   const overlayLayers = useMemo(() => {
     const layers = [];
 
-    if (hasPermissions(usersPermissions, UsersPermissions.VIEW_AREANOTE)) {
-      layers.push({
-        checked: false,
-        component: (
-          <AreaNotesLayer
-            key="area_notes"
-            allowToEdit={false}
-            areaNotes={areaNotes}
-          />
-        ),
-        name: "Muistettavat ehdot",
-      });
+    if (areaNotesOverlay) {
+      layers.push(areaNotesOverlay);
     }
     layers.push({
       checked: true,
@@ -79,13 +61,7 @@ const LeaseListMap = ({ isLoading, onViewportChanged }: Props) => {
       name: "Vuokraukset",
     });
     return layers;
-  }, [
-    areaNotes,
-    leasesGeoJson,
-    location.search,
-    stateOptions,
-    usersPermissions,
-  ]);
+  }, [areaNotesOverlay, leasesGeoJson, location.search, stateOptions]);
 
   return (
     <AreaNotesEditMap

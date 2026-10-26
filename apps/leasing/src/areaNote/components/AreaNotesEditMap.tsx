@@ -1,17 +1,12 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import L from "leaflet";
-import { isEmpty, throttle } from "lodash-es";
+import { isEmpty } from "lodash-es";
 import MapContainer from "./MapContainer";
 import LeafletDrawControl, {
   DRAFT_DRAW_OPTIONS,
 } from "@/components/map/LeafletDrawControl";
+import useDrawnFeatureGroup from "@/components/map/useDrawnFeatureGroup";
 import SaveConditionPanel, {
   type SaveConditionPanelHandle,
 } from "./SaveConditionPanel";
@@ -24,16 +19,8 @@ import {
 } from "@/areaNote/slice";
 import { DEFAULT_CENTER, DEFAULT_ZOOM } from "@/util/constants";
 import { convertDrawnFeaturesToAreaNotePayload } from "@/areaNote/helpers";
-import type {
-  DrawnPolygonFeature,
-  GeoJsonPolygonLayer,
-} from "@/components/map/geojson";
-import { localizeMap } from "@/util/map";
 import { getInitialAreaNote, getIsEditMode } from "@/areaNote/selectors";
-import {
-  showMeasurements,
-  updateMeasurements,
-} from "@/components/map/measurements";
+import { showMeasurements } from "@/components/map/measurements";
 import {
   DEFAULT_LEAFLET_PATH_OPTIONS,
   DRAFT_GEOMETRY_COLOR,
@@ -71,12 +58,17 @@ const AreaNotesEditMap: React.FC<Props> = ({
   const initialValues = useAppSelector(getInitialAreaNote);
   const isEditMode = useAppSelector(getIsEditMode);
 
-  const featureGroupRef = useRef<L.FeatureGroup | null>(null);
+  const {
+    featureGroup,
+    featureGroupRef,
+    getDrawnFeatures,
+    handleMapReady,
+    handleNonCommittedChange,
+    map,
+  } = useDrawnFeatureGroup();
   const saveConditionPanelRef = useRef<SaveConditionPanelHandle | null>(null);
   const previousIsEditModeRef = useRef(isEditMode);
 
-  const [map, setMap] = useState<L.Map | null>(null);
-  const [featureGroup, setFeatureGroup] = useState<L.FeatureGroup | null>(null);
   const [id, setId] = useState<number>(-1);
   const [isNew, setIsNew] = useState(true);
   const [isValid, setIsValid] = useState(false);
@@ -88,15 +80,7 @@ const AreaNotesEditMap: React.FC<Props> = ({
     }
 
     return featureGroupRef.current.getLayers().length;
-  }, []);
-
-  const handleMapReady = useCallback((leafletMap: L.Map) => {
-    const group = L.featureGroup().addTo(leafletMap);
-    localizeMap(leafletMap);
-    featureGroupRef.current = group;
-    setMap(leafletMap);
-    setFeatureGroup(group);
-  }, []);
+  }, [featureGroupRef]);
 
   useEffect(() => {
     if (isEditMode && !previousIsEditModeRef.current) {
@@ -136,31 +120,7 @@ const AreaNotesEditMap: React.FC<Props> = ({
     }
 
     previousIsEditModeRef.current = isEditMode;
-  }, [initialValues, isEditMode]);
-
-  const updateAllFeatures = useMemo(
-    () =>
-      throttle(
-        () => {
-          featureGroupRef.current?.eachLayer((layer: any) => {
-            showMeasurements(layer);
-            updateMeasurements(layer);
-          });
-        },
-        1000 / 60,
-        {
-          leading: true,
-          trailing: true,
-        },
-      ),
-    [],
-  );
-
-  useEffect(() => {
-    return () => {
-      updateAllFeatures.cancel();
-    };
-  }, [updateAllFeatures]);
+  }, [featureGroupRef, initialValues, isEditMode]);
 
   useEffect(() => {
     if (!isEditMode) {
@@ -190,41 +150,27 @@ const AreaNotesEditMap: React.FC<Props> = ({
     [getLayerCount],
   );
 
-  const handleNonCommittedChange = useCallback(() => {
-    updateAllFeatures();
-  }, [updateAllFeatures]);
-
   const cancelChanges = useCallback(() => {
     dispatch(hideEditMode());
   }, [dispatch]);
 
   const handleCreate = useCallback(
     (note: string) => {
-      const features: Array<DrawnPolygonFeature> = [];
-      featureGroupRef.current?.eachLayer((layer: GeoJsonPolygonLayer) =>
-        features.push(layer.toGeoJSON()),
-      );
-
-      const payload = convertDrawnFeaturesToAreaNotePayload(features);
+      const payload = convertDrawnFeaturesToAreaNotePayload(getDrawnFeatures());
       payload.note = note;
       dispatch(createAreaNote(payload));
     },
-    [dispatch],
+    [dispatch, getDrawnFeatures],
   );
 
   const handleEdit = useCallback(
     (note: string) => {
-      const features: Array<DrawnPolygonFeature> = [];
-      featureGroupRef.current?.eachLayer((layer: GeoJsonPolygonLayer) =>
-        features.push(layer.toGeoJSON()),
-      );
-
-      const payload = convertDrawnFeaturesToAreaNotePayload(features);
+      const payload = convertDrawnFeaturesToAreaNotePayload(getDrawnFeatures());
       payload.note = note;
       payload.id = id;
       dispatch(editAreaNote(payload));
     },
-    [dispatch, id],
+    [dispatch, getDrawnFeatures, id],
   );
 
   const handleDelete = useCallback(() => {
