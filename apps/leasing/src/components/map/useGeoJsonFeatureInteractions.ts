@@ -41,7 +41,8 @@ const useGeoJsonFeatureInteractions = ({
       if (isHighlighted?.(feature) && layer instanceof L.Path) {
         layer.setStyle({ fillOpacity: FEATURE_HIGHLIGHT_FILL_OPACITY });
         if (openHighlightedPopup) {
-          window.setTimeout(() => layer.openPopup(), 100);
+          const timer = window.setTimeout(() => layer.openPopup(), 100);
+          layer.once("remove", () => window.clearTimeout(timer));
         }
       }
 

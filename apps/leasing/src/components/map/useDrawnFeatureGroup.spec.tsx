@@ -59,13 +59,14 @@ describe("useDrawnFeatureGroup", () => {
 
   it("updates measurements of drawn layers when a change is not yet committed", () => {
     const { result } = renderHook(() => useDrawnFeatureGroup());
-    act(() => result.current.handleMapReady(createMap()));
+    const map = createMap();
+    act(() => result.current.handleMapReady(map));
     const layer = createPolygon();
     result.current.featureGroup!.addLayer(layer);
 
     result.current.handleNonCommittedChange();
 
-    expect(showMeasurements).toHaveBeenCalledWith(layer);
+    expect(showMeasurements).toHaveBeenCalledWith(layer, map);
     expect(updateMeasurements).toHaveBeenCalledWith(layer);
   });
 

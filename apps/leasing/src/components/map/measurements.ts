@@ -5,9 +5,14 @@ const MIN_SEGMENT_PIXEL_DISTANCE = 30;
 
 type MeasurableLayer = L.Polyline | L.Circle;
 
-const measurementLayers = new WeakMap<MeasurableLayer, L.LayerGroup>();
-const zoomHandlers = new WeakMap<MeasurableLayer, () => void>();
-const removeHandlers = new WeakMap<MeasurableLayer, L.LeafletEventHandlerFn>();
+type Measurement = {
+  map: L.Map;
+  layerGroup: L.LayerGroup;
+  handleZoom: () => void;
+  handleRemove: () => void;
+};
+
+const measurements = new WeakMap<MeasurableLayer, Measurement>();
 
 const formatDistance = (meters: number): string => {
   const value = meters > 1000 ? meters / 1000 : meters;
@@ -51,28 +56,17 @@ const createMeasurementMarker = (
     snapIgnore: true,
   });
 
-const getMap = (layer: MeasurableLayer): L.Map | undefined =>
-  (layer as MeasurableLayer & { _map?: L.Map })._map;
-
 const hideMeasurements = (layer: MeasurableLayer): void => {
-  const map = getMap(layer);
-  const layerGroup = measurementLayers.get(layer);
-  const handleZoom = zoomHandlers.get(layer);
-  const handleRemove = removeHandlers.get(layer);
-
-  if (map && handleZoom) {
-    map.off("zoomend", handleZoom);
-  }
-  if (map && layerGroup) {
-    map.removeLayer(layerGroup);
+  const measurement = measurements.get(layer);
+  if (!measurement) {
+    return;
   }
 
-  measurementLayers.delete(layer);
-  zoomHandlers.delete(layer);
-  removeHandlers.delete(layer);
-  if (handleRemove) {
-    layer.off("remove", handleRemove);
-  }
+  const { map, layerGroup, handleZoom, handleRemove } = measurement;
+  map.off("zoomend", handleZoom);
+  map.removeLayer(layerGroup);
+  layer.off("remove", handleRemove);
+  measurements.delete(layer);
 };
 
 const addSegmentMeasurements = (
@@ -109,22 +103,19 @@ const addSegmentMeasurements = (
   }
 };
 
-export const showMeasurements = (layer: L.Layer): void => {
+export const showMeasurements = (layer: L.Layer, map: L.Map | null): void => {
   if (!(layer instanceof L.Polyline) && !(layer instanceof L.Circle)) {
     return;
   }
 
-  const map = getMap(layer);
-  if (!map || measurementLayers.has(layer)) {
+  if (!map?.hasLayer(layer) || measurements.has(layer)) {
     return;
   }
 
   const layerGroup = L.layerGroup().addTo(map);
   const handleZoom = () => updateMeasurements(layer);
   const handleRemove = () => hideMeasurements(layer);
-  measurementLayers.set(layer, layerGroup);
-  zoomHandlers.set(layer, handleZoom);
-  removeHandlers.set(layer, handleRemove);
+  measurements.set(layer, { map, layerGroup, handleZoom, handleRemove });
   map.on("zoomend", handleZoom);
   layer.on("remove", handleRemove);
   updateMeasurements(layer);
@@ -135,12 +126,12 @@ export const updateMeasurements = (layer: L.Layer): void => {
     return;
   }
 
-  const map = getMap(layer);
-  const layerGroup = measurementLayers.get(layer);
-  if (!map || !layerGroup) {
+  const measurement = measurements.get(layer);
+  if (!measurement) {
     return;
   }
 
+  const { map, layerGroup } = measurement;
   layerGroup.clearLayers();
 
   if (layer instanceof L.Circle) {

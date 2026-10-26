@@ -14,6 +14,7 @@ import { localizeMap } from "@/util/map";
 /** Shared state for maps where the user draws polygons into a feature group. */
 const useDrawnFeatureGroup = () => {
   const featureGroupRef = useRef<L.FeatureGroup | null>(null);
+  const mapRef = useRef<L.Map | null>(null);
   const [map, setMap] = useState<L.Map | null>(null);
   const [featureGroup, setFeatureGroup] = useState<L.FeatureGroup | null>(null);
 
@@ -21,6 +22,7 @@ const useDrawnFeatureGroup = () => {
     const group = L.featureGroup().addTo(leafletMap);
     localizeMap(leafletMap);
     featureGroupRef.current = group;
+    mapRef.current = leafletMap;
     setMap(leafletMap);
     setFeatureGroup(group);
   }, []);
@@ -30,7 +32,7 @@ const useDrawnFeatureGroup = () => {
       throttle(
         () => {
           featureGroupRef.current?.eachLayer((layer: any) => {
-            showMeasurements(layer);
+            showMeasurements(layer, mapRef.current);
             updateMeasurements(layer);
           });
         },

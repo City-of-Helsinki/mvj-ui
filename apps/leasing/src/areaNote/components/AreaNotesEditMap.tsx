@@ -100,7 +100,7 @@ const AreaNotesEditMap: React.FC<Props> = ({
               fillOpacity: DRAFT_GEOMETRY_FILL_OPACITY,
             });
             featureGroupRef.current?.addLayer(layer);
-            showMeasurements(layer);
+            showMeasurements(layer, map);
           }
         });
         setIsValid(true);
@@ -120,7 +120,7 @@ const AreaNotesEditMap: React.FC<Props> = ({
     }
 
     previousIsEditModeRef.current = isEditMode;
-  }, [featureGroupRef, initialValues, isEditMode]);
+  }, [featureGroupRef, initialValues, isEditMode, map]);
 
   useEffect(() => {
     if (!isEditMode) {
@@ -144,10 +144,10 @@ const AreaNotesEditMap: React.FC<Props> = ({
   const handleCreated = useCallback(
     (e: Record<string, any>) => {
       const { layer } = e;
-      showMeasurements(layer);
+      showMeasurements(layer, map);
       setIsValid(getLayerCount() > 0);
     },
-    [getLayerCount],
+    [getLayerCount, map],
   );
 
   const cancelChanges = useCallback(() => {

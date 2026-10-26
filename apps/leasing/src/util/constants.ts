@@ -37,6 +37,14 @@ export const MAX_ZOOM = 12;
 export const PAIKKATIETOPALVELU_URL = "https://ptp.hel.fi";
 
 /**
+ * Url of the City of Helsinki map WMS service
+ * @readonly
+ * @const {string}
+ */
+export const HELSINKI_WMS_URL =
+  "https://kartta.hel.fi/ws/geoserver/avoindata/wms?";
+
+/**
  * Delete modal button text
  * @readonly
  * @const {string}
