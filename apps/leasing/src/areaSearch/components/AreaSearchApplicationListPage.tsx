@@ -587,6 +587,7 @@ class AreaSearchApplicationListPage extends PureComponent<
 
   componentWillUnmount() {
     window.removeEventListener("popstate", this.handlePopState);
+    this.handleMapViewportChanged.cancel();
     this._isMounted = false;
     this._hasFetchedAreaSearches = false;
   }

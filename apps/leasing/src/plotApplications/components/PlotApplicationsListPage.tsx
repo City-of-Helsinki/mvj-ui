@@ -196,6 +196,7 @@ class PlotApplicationsListPage extends PureComponent<
   }
 
   componentWillUnmount() {
+    this.handleMapViewportChanged.cancel();
     this._isMounted = false;
   }
 
