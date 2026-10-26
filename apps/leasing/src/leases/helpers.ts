@@ -3723,11 +3723,6 @@ export const mapLeaseSearchFilters = (
     delete searchQuery.sort_order;
   }
 
-  if (searchQuery.has_not_geometry === "true") {
-    searchQuery.has_geometry = false;
-  }
-
-  delete searchQuery.has_not_geometry;
   searchQuery.lease_state.forEach((state) => {
     if (state === LeaseState.RESERVE) {
       searchQuery.lease_state.push(LeaseState.FREE);
