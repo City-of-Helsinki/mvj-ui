@@ -38,7 +38,7 @@ const SingleAreaSearchMap = ({ geometry, minimap = false }: Props) => {
       ).addTo(map);
       const bounds = getMapBounds();
       if (bounds) {
-        map.fitBounds(bounds as L.LatLngBoundsExpression);
+        map.fitBounds(bounds);
       }
     },
     [geometry, getMapBounds],
@@ -53,7 +53,7 @@ const SingleAreaSearchMap = ({ geometry, minimap = false }: Props) => {
     geoJsonLayerRef.current.addData(geometry as GeoJSON.GeoJsonObject);
     const bounds = getMapBounds();
     if (bounds) {
-      mapRef.current?.fitBounds(bounds as L.LatLngBoundsExpression);
+      mapRef.current?.fitBounds(bounds);
     }
   }, [geometry, getMapBounds]);
 
@@ -61,9 +61,8 @@ const SingleAreaSearchMap = ({ geometry, minimap = false }: Props) => {
     return <p>{"Ei geometriaa."}</p>;
   }
 
-  const center = getMapCenter() as L.LatLngExpression;
-  const bounds =
-    (getMapBounds() as L.LatLngBoundsExpression | null) ?? undefined;
+  const center = getMapCenter();
+  const bounds = getMapBounds() ?? undefined;
   return (
     <div
       className={classNames("SingleAreaSearchMap", {
