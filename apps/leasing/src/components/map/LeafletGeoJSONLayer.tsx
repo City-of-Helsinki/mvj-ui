@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import L from "leaflet";
+import { isEqual } from "lodash-es";
 import { useLeafletMap } from "./LeafletMapContext";
 import { DEFAULT_LEAFLET_PATH_OPTIONS } from "./mapStyles";
 
@@ -11,9 +12,12 @@ type Props = {
 
 const LeafletGeoJSONLayer = ({ data, style, onEachFeature }: Props) => {
   const layerContainer = useLeafletMap();
-  const onEachFeatureRef = useRef(onEachFeature);
-
-  onEachFeatureRef.current = onEachFeature;
+  // Callers pass inline style objects; keep the previous one while the value is equal.
+  const styleRef = useRef(style);
+  if (!isEqual(styleRef.current, style)) {
+    styleRef.current = style;
+  }
+  const stableStyle = styleRef.current;
 
   useEffect(() => {
     if (!layerContainer) {
@@ -21,9 +25,9 @@ const LeafletGeoJSONLayer = ({ data, style, onEachFeature }: Props) => {
     }
 
     const layer = L.geoJSON(data, {
-      style: { ...DEFAULT_LEAFLET_PATH_OPTIONS, ...style },
+      style: { ...DEFAULT_LEAFLET_PATH_OPTIONS, ...stableStyle },
       onEachFeature: (feature, featureLayer) => {
-        onEachFeatureRef.current?.(feature, featureLayer);
+        onEachFeature?.(feature, featureLayer);
       },
     });
 
@@ -32,7 +36,7 @@ const LeafletGeoJSONLayer = ({ data, style, onEachFeature }: Props) => {
     return () => {
       layerContainer.removeLayer(layer);
     };
-  }, [data, layerContainer, style]);
+  }, [data, layerContainer, onEachFeature, stableStyle]);
 
   return null;
 };

@@ -60,7 +60,6 @@ const LeaseListLayer: React.FC<Props> = ({
 
   return (
     <LeafletGeoJSONLayer
-      key={JSON.stringify(leasesGeoJson)}
       data={leasesGeoJson}
       onEachFeature={onEachFeature}
       style={{

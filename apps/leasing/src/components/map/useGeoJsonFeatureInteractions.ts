@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useRef } from "react";
 import L from "leaflet";
 import type { EscapedHtml } from "@/util/html";
 import {
@@ -25,14 +25,17 @@ const useGeoJsonFeatureInteractions = ({
   onClick,
   openHighlightedPopup = true,
 }: Options) => {
+  // Read when events fire, so changing these doesn't rebuild the layer.
+  const latest = useRef({ getPopupContent, isHoverEnabled, onClick });
+  latest.current = { getPopupContent, isHoverEnabled, onClick };
+
   return useCallback(
     (feature: GeoJSON.Feature, layer: L.Layer) => {
-      const popupContent = getPopupContent?.(feature);
       const defaultFillOpacity =
         layer instanceof L.Path ? layer.options.fillOpacity : undefined;
 
-      if (popupContent) {
-        layer.bindPopup(popupContent);
+      if (latest.current.getPopupContent?.(feature)) {
+        layer.bindPopup(() => latest.current.getPopupContent?.(feature) ?? "");
       }
 
       if (isHighlighted?.(feature) && layer instanceof L.Path) {
@@ -43,14 +46,21 @@ const useGeoJsonFeatureInteractions = ({
       }
 
       layer.on({
-        click: (event: L.LeafletMouseEvent) => onClick?.(feature, event),
+        click: (event: L.LeafletMouseEvent) =>
+          latest.current.onClick?.(feature, event),
         mouseover: () => {
-          if (isHoverEnabled(feature) && layer instanceof L.Path) {
+          if (
+            latest.current.isHoverEnabled(feature) &&
+            layer instanceof L.Path
+          ) {
             layer.setStyle({ fillOpacity: FEATURE_HOVER_FILL_OPACITY });
           }
         },
         mouseout: () => {
-          if (isHoverEnabled(feature) && layer instanceof L.Path) {
+          if (
+            latest.current.isHoverEnabled(feature) &&
+            layer instanceof L.Path
+          ) {
             layer.setStyle({
               fillOpacity: isHighlighted?.(feature)
                 ? FEATURE_HIGHLIGHT_FILL_OPACITY
@@ -61,13 +71,7 @@ const useGeoJsonFeatureInteractions = ({
         },
       });
     },
-    [
-      getPopupContent,
-      isHighlighted,
-      isHoverEnabled,
-      onClick,
-      openHighlightedPopup,
-    ],
+    [isHighlighted, openHighlightedPopup],
   );
 };
 
