@@ -98,5 +98,5 @@ export const getAreaNoteById = (
  */
 export const getAreaNoteCoordinates = (
   areaNote: AreaNote | null | undefined,
-): Array<Record<string, any>> =>
+): Array<[number, number]> =>
   areaNote ? getCoordinatesOfGeometry(areaNote.geometry) : [];

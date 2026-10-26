@@ -1,6 +1,5 @@
 import { useCallback, useMemo, useState } from "react";
 import { useLocation } from "react-router";
-import type { LatLngBounds } from "leaflet";
 import { DEFAULT_ZOOM } from "@/util/constants";
 import { getUrlParams } from "@/util/helpers";
 import { getBoundsFromBBox, getBoundsFromFeatures } from "@/util/map";
@@ -29,11 +28,7 @@ const useMapViewport = ({
   );
   const shouldFitToResults = fitToResults(getUrlParams(location.search));
   const bounds = useMemo(
-    () =>
-      shouldFitToResults
-        ? (getBoundsFromFeatures(geoJson) as unknown as
-            LatLngBounds | undefined)
-        : undefined,
+    () => (shouldFitToResults ? getBoundsFromFeatures(geoJson) : undefined),
     [geoJson, shouldFitToResults],
   );
   const handleViewportChanged = useCallback(

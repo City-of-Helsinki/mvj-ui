@@ -2659,10 +2659,8 @@ export const getContentPlanUnitsGeoJson = (
  * @param {Object} lease
  * @returns {Object[]}
  */
-export const getLeaseCoordinates = (
-  lease: Lease,
-): Array<Record<string, any>> => {
-  const coordinates = [];
+export const getLeaseCoordinates = (lease: Lease): Array<[number, number]> => {
+  const coordinates: Array<[number, number]> = [];
   const areas = get(lease, "lease_areas", []).filter(
     (area) => !area.archived_at,
   );

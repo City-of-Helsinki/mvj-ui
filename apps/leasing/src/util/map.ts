@@ -27,126 +27,118 @@ export const localizeMap = (map: L.Map): void => {
   });
 };
 
+const collectPositions = (
+  items: unknown,
+  positions: Array<[number, number]>,
+): void => {
+  if (!isArray(items) || items.length === 0) {
+    return;
+  }
+
+  if (!isArray(items[0])) {
+    if (items.length >= 2) {
+      positions.push([items[0], items[1]]);
+    }
+    return;
+  }
+
+  items.forEach((item) => collectPositions(item, positions));
+};
+
 /**
- * Get coordinates array from geometry
- * @param  geometry
- * @returns {Object[]}
+ * Get the [longitude, latitude] positions of a geometry, whatever its nesting.
  */
 export const getCoordinatesOfGeometry = (
   geometry: any,
 ): Array<[number, number]> => {
-  if (!geometry) {
-    return [];
+  const positions: Array<[number, number]> = [];
+  collectPositions(geometry?.coordinates, positions);
+  return positions;
+};
+
+// Loops instead of Math.min(...values), which overflows the stack on large inputs.
+const getExtent = (positions: ReadonlyArray<GeoJSON.Position>) => {
+  let minLng = Infinity;
+  let maxLng = -Infinity;
+  let minLat = Infinity;
+  let maxLat = -Infinity;
+
+  for (const [lng, lat] of positions) {
+    if (lng < minLng) minLng = lng;
+    if (lng > maxLng) maxLng = lng;
+    if (lat < minLat) minLat = lat;
+    if (lat > maxLat) maxLat = lat;
   }
 
-  const getSingleArrayOfCoordinates = (items) => {
-    if (!isArray(items) || items.length === 0) {
-      return [];
-    }
+  // Not finite when there were no positions to measure.
+  return [minLng, maxLng, minLat, maxLat].every(Number.isFinite)
+    ? { minLng, maxLng, minLat, maxLat }
+    : null;
+};
 
-    if (isArray(items) && !isArray(items[0])) {
-      return items.length >= 2 ? [[items[0], items[1]]] : [];
-    }
+const toCoordinate = (value: unknown): number => {
+  if (typeof value === "number") {
+    return value;
+  }
 
-    let tempCoords = [];
-    items.forEach((item) => {
-      tempCoords = [...tempCoords, ...getSingleArrayOfCoordinates(item)];
-    });
-
-    return tempCoords;
-  };
-
-  return getSingleArrayOfCoordinates(geometry.coordinates);
+  return typeof value === "string" && value.trim() !== "" ? Number(value) : NaN;
 };
 
 /**
- * Get bounds for leaflet from bbox array
- * @param {Object[]} bbox
- * @returns {Object}
+ * Get bounds from a [west, south, east, north] bbox, as numbers or the numeric
+ * strings read from the URL. Returns null for anything else.
  */
-export const getBoundsFromBBox = (bbox: Array<number>): LatLngBounds => {
-  if (!bbox || !isArray(bbox) || bbox.length < 4) return null;
-  const maxBoundsSouthWest = new L.LatLng(bbox[3], bbox[2]),
-    maxBoundsNorthEast = new L.LatLng(bbox[1], bbox[0]);
-  return new L.LatLngBounds(maxBoundsSouthWest, maxBoundsNorthEast);
+export const getBoundsFromBBox = (bbox: unknown): LatLngBounds | null => {
+  if (!isArray(bbox) || bbox.length < 4) return null;
+
+  const [west, south, east, north] = bbox.slice(0, 4).map(toCoordinate);
+  if (![west, south, east, north].every(Number.isFinite)) return null;
+
+  return L.latLngBounds([south, west], [north, east]);
 };
 
 /**
- * Get bounds for leaflet from coordinates
- * @param {Object[]} coordinates
- * @returns Object
+ * Get bounds around [longitude, latitude] positions, or null if there are none.
  */
 export const getBoundsFromCoordinates = (
-  coordinates: Array<any>,
-): LatLngBounds => {
-  const lats = [],
-    lons = [];
-  coordinates.forEach((coordinate) => {
-    lats.push(coordinate[0]);
-    lons.push(coordinate[1]);
-  });
-  const minLat = Math.min(...lats),
-    maxLat = Math.max(...lats),
-    minLon = Math.min(...lons),
-    maxLon = Math.max(...lons),
-    maxBoundsSouthWest = new L.LatLng(minLon, minLat),
-    maxBoundsNorthEast = new L.LatLng(maxLon, maxLat);
-  return new L.LatLngBounds(maxBoundsSouthWest, maxBoundsNorthEast);
+  coordinates: ReadonlyArray<GeoJSON.Position>,
+): LatLngBounds | null => {
+  const extent = getExtent(coordinates);
+  if (!extent) return null;
+
+  return L.latLngBounds(
+    [extent.minLat, extent.minLng],
+    [extent.maxLat, extent.maxLng],
+  );
 };
 
 /**
- * Get bounds for leaflet from features object
- * @param {Object[]} leasesGeoJson
- * @returns Object
+ * Get bounds around the geometries of a feature collection, or null if there
+ * are none.
  */
 export const getBoundsFromFeatures = (
-  leasesGeoJson: Record<string, any>,
-): Record<string, any> => {
-  const lats = [],
-    lons = [];
-  if (leasesGeoJson && leasesGeoJson.features)
-    leasesGeoJson.features.forEach((feature) => {
-      if (feature.geometry && feature.geometry.coordinates)
-        feature.geometry.coordinates.forEach((points) =>
-          points.forEach((point) =>
-            point.forEach((coordinate) => {
-              lats.push(coordinate[0]);
-              lons.push(coordinate[1]);
-            }),
-          ),
-        );
-    });
-  if (lats.length < 1 || lons.length < 1) return null;
-  const minLat = Math.min(...lats),
-    maxLat = Math.max(...lats),
-    minLon = Math.min(...lons),
-    maxLon = Math.max(...lons),
-    maxBoundsSouthWest = new L.LatLng(minLon, minLat),
-    maxBoundsNorthEast = new L.LatLng(maxLon, maxLat);
-  return new L.LatLngBounds(maxBoundsSouthWest, maxBoundsNorthEast);
-};
+  featureCollection: {
+    features?: ReadonlyArray<{ geometry?: unknown }> | null;
+  } | null,
+): LatLngBounds | null =>
+  getBoundsFromCoordinates(
+    (featureCollection?.features ?? []).flatMap((feature) =>
+      getCoordinatesOfGeometry(feature?.geometry),
+    ),
+  );
 
 /**
- * Get center for leaflet from coordinates
- * @param {Object[]} coordinates
- * @returns Object
+ * Get the center of [longitude, latitude] positions as a Leaflet
+ * [latitude, longitude] tuple, or null if there are none.
  */
 export const getCenterFromCoordinates = (
-  coordinates: Array<any>,
-): [number, number] => {
-  const lats = [],
-    lons = [];
-  coordinates.forEach((coordinate) => {
-    lats.push(coordinate[0]);
-    lons.push(coordinate[1]);
-  });
-  const minLat = Math.min(...lats),
-    maxLat = Math.max(...lats),
-    minLon = Math.min(...lons),
-    maxLon = Math.max(...lons),
-    lat = maxLat - (maxLat - minLat) / 2,
-    lng = maxLon - (maxLon - minLon) / 2;
-  return [lng, lat];
+  coordinates: ReadonlyArray<GeoJSON.Position>,
+): [number, number] | null => {
+  const extent = getExtent(coordinates);
+  if (!extent) return null;
+
+  const { minLng, maxLng, minLat, maxLat } = extent;
+  return [maxLat - (maxLat - minLat) / 2, maxLng - (maxLng - minLng) / 2];
 };
 export const getAreaFromGeoJSON = (geometry: Record<string, any>): number => {
   let area = 0;
