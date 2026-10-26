@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { renderHook } from "@testing-library/react";
 import L from "leaflet";
 import useGeoJsonFeatureInteractions from "./useGeoJsonFeatureInteractions";
@@ -107,5 +107,93 @@ describe("useGeoJsonFeatureInteractions", () => {
     layer.fire("mouseover");
 
     expect(layer.options.fillOpacity).toBe(initialOpacity);
+  });
+
+  describe("highlighted popup", () => {
+    const features: GeoJSON.FeatureCollection = {
+      type: "FeatureCollection",
+      features: [
+        {
+          type: "Feature",
+          properties: {},
+          geometry: {
+            type: "Polygon",
+            coordinates: [
+              [
+                [0, 0],
+                [0, 1],
+                [1, 1],
+                [0, 0],
+              ],
+            ],
+          },
+        },
+      ],
+    };
+
+    const buildLayer = (
+      options: Parameters<typeof useGeoJsonFeatureInteractions>[0] = {},
+    ) => {
+      const { result } = renderHook(() =>
+        useGeoJsonFeatureInteractions({
+          getPopupContent: () => html`<p>popup</p>`,
+          isHighlighted: () => true,
+          ...options,
+        }),
+      );
+      return L.geoJSON(features, { onEachFeature: result.current });
+    };
+    const createMap = () =>
+      L.map(document.createElement("div")).setView([0, 0], 5);
+    const isPopupOpen = (geoJson: L.GeoJSON) =>
+      geoJson.getLayers()[0].isPopupOpen();
+
+    beforeEach(() => {
+      vi.useFakeTimers();
+    });
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
+    it("opens the popup of a highlighted feature shortly after the layer is shown", () => {
+      const geoJson = buildLayer().addTo(createMap());
+
+      expect(isPopupOpen(geoJson)).toBe(false);
+      vi.advanceTimersByTime(100);
+
+      expect(isPopupOpen(geoJson)).toBe(true);
+    });
+
+    it("does not open it when openHighlightedPopup is false", () => {
+      const geoJson = buildLayer({ openHighlightedPopup: false }).addTo(
+        createMap(),
+      );
+
+      vi.advanceTimersByTime(500);
+
+      expect(isPopupOpen(geoJson)).toBe(false);
+    });
+
+    it("does not open it for a feature that is not highlighted", () => {
+      const geoJson = buildLayer({ isHighlighted: () => false }).addTo(
+        createMap(),
+      );
+
+      vi.advanceTimersByTime(500);
+
+      expect(isPopupOpen(geoJson)).toBe(false);
+    });
+
+    it("does not try to open the popup of a layer removed before the timer fires", () => {
+      const openPopup = vi.spyOn(L.Layer.prototype, "openPopup");
+      const geoJson = buildLayer().addTo(createMap());
+
+      geoJson.remove();
+      vi.advanceTimersByTime(500);
+
+      expect(openPopup).not.toHaveBeenCalled();
+      expect(isPopupOpen(geoJson)).toBe(false);
+      openPopup.mockRestore();
+    });
   });
 });

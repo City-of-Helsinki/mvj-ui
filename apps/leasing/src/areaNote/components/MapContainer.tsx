@@ -7,7 +7,13 @@ import LoaderWrapper from "@/components/loader/LoaderWrapper";
 import LeafletAddressSearchControl from "@/components/map/LeafletAddressSearchControl";
 import LeafletFullscreenControl from "@/components/map/LeafletFullscreenControl";
 import { LeafletMapContext } from "@/components/map/LeafletMapContext";
-import { MIN_ZOOM, MAX_ZOOM } from "@/util/constants";
+import { HELSINKI_WMS_URL, MIN_ZOOM, MAX_ZOOM } from "@/util/constants";
+
+const BASE_LAYER_NAMES = {
+  Karttasarja: "avoindata:Karttasarja",
+  Ortoilmakuva: "avoindata:Ortoilmakuva",
+  Asemakaava: "avoindata:Ajantasa_asemakaava",
+};
 
 const projectionBounds = L.bounds([25440000, 6630000], [25571072, 6761072]);
 
@@ -159,32 +165,16 @@ const MapContainer: React.FC<Props> = ({
     const handleViewportChanged = () => {
       onViewportChangedRef.current?.(getMapValues());
     };
-    const baseLayers = {
-      Karttasarja: L.tileLayer.wms(
-        "https://kartta.hel.fi/ws/geoserver/avoindata/wms?",
-        {
-          layers: "avoindata:Karttasarja",
+    const baseLayers = Object.fromEntries(
+      Object.entries(BASE_LAYER_NAMES).map(([title, layers]) => [
+        title,
+        L.tileLayer.wms(HELSINKI_WMS_URL, {
+          layers,
           format: "image/png",
           transparent: true,
-        },
-      ),
-      Ortoilmakuva: L.tileLayer.wms(
-        "https://kartta.hel.fi/ws/geoserver/avoindata/wms?",
-        {
-          layers: "avoindata:Ortoilmakuva",
-          format: "image/png",
-          transparent: true,
-        },
-      ),
-      Asemakaava: L.tileLayer.wms(
-        "https://kartta.hel.fi/ws/geoserver/avoindata/wms?",
-        {
-          layers: "avoindata:Ajantasa_asemakaava",
-          format: "image/png",
-          transparent: true,
-        },
-      ),
-    };
+        }),
+      ]),
+    );
     baseLayers.Karttasarja.addTo(map);
     layerControlRef.current = L.control
       .layers(baseLayers, undefined, { position: "topright" })

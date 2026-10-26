@@ -25,10 +25,10 @@ const AreaSearchMap = ({ change, hasError }: Props) => {
   }, [change, getDrawnFeatures]);
   const handleCreated = useCallback(
     (e: Record<string, any>) => {
-      showMeasurements(e.layer);
+      showMeasurements(e.layer, map);
       handleAction();
     },
-    [handleAction],
+    [handleAction, map],
   );
 
   return (
