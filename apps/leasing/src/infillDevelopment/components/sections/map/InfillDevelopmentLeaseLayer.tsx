@@ -203,7 +203,6 @@ const InfillDevelopmentLeaseLayer = ({
 
   return (
     <LeafletGeoJSONLayer
-      key={JSON.stringify(geoJSONData)}
       data={geoJSONData}
       onEachFeature={onEachFeature}
       style={{
