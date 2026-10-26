@@ -7,38 +7,10 @@ import { stringifyQuery } from "@/api/createUrl";
 import { KeyCodes } from "@/enums";
 import { findFromOcdString } from "@/util/helpers";
 import { SERVICE_MAP_URL } from "@/util/constants";
+import type { ServiceMapAddress, ServiceMapResponse } from "./types";
 type Language = "fi" | "sv";
 const MINIMUM_SEARCH_STRING = 3;
 const DEBOUNCE_TIME_MILLISECONDS = 500;
-type Address = {
-  object_type: string;
-  name: {
-    fi: string;
-    sv: string;
-    en: string;
-  };
-  number: string;
-  number_end: string;
-  letter: string;
-  modified_at: string;
-  municipality: {
-    id: string;
-    name: {
-      fi: string;
-      sv: string;
-    };
-  };
-  street: {
-    name: {
-      fi: string;
-      sv: string;
-    };
-  };
-  location: {
-    type: string;
-    coordinates: Array<number>;
-  };
-};
 type Props = {
   addressDetailsCallBack?: (...args: Array<any>) => any;
   id?: string;
@@ -50,13 +22,13 @@ type Props = {
   disabled?: boolean;
 };
 type State = {
-  addresses: Array<Address>;
-  filteredAddresses: Array<Address>;
+  addresses: Array<ServiceMapAddress>;
+  filteredAddresses: Array<ServiceMapAddress>;
   focusedValue: Record<string, any> | null | undefined;
   hasFocus: boolean;
   isLoading: boolean;
   menuOpen: boolean;
-  selectedAddress: Address | null | undefined;
+  selectedAddress: ServiceMapAddress | null | undefined;
   value: string | null | undefined;
 };
 
@@ -247,7 +219,7 @@ class AddressSearchInput extends Component<Props, State> {
 
     const fetchResults = async () => {
       const fiResponse = await fetchByKeyword("fi");
-      const fiResults = await fiResponse.json();
+      const fiResults = (await fiResponse.json()) as ServiceMapResponse;
       return [
         ...fiResults.results.map((address) => ({ ...address, language: "fi" })),
       ];
@@ -302,7 +274,7 @@ class AddressSearchInput extends Component<Props, State> {
       onChange(newValue);
     }
   };
-  handleAddressItemClick = (address: Address) => {
+  handleAddressItemClick = (address: ServiceMapAddress) => {
     const { onChange } = this.props,
       newValue = address.name.fi;
     this.setState({
@@ -319,7 +291,7 @@ class AddressSearchInput extends Component<Props, State> {
       this.input.focus();
     }
   };
-  fetchAddressDetails = (address: Address) => {
+  fetchAddressDetails = (address: ServiceMapAddress) => {
     const { addressDetailsCallBack } = this.props;
     const coordinates = address.location.coordinates;
 

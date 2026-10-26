@@ -9,7 +9,9 @@ import L from "leaflet";
 import { throttle } from "lodash-es";
 import classNames from "classnames";
 import MapContainer from "@/areaNote/components/MapContainer";
-import LeafletDrawControl from "@/components/map/LeafletDrawControl";
+import LeafletDrawControl, {
+  DRAFT_DRAW_OPTIONS,
+} from "@/components/map/LeafletDrawControl";
 import {
   showMeasurements,
   updateMeasurements,
@@ -21,10 +23,6 @@ import {
   type GeoJsonPolygonLayer,
 } from "@/components/map/geojson";
 import { localizeMap } from "@/util/map";
-import {
-  DRAFT_GEOMETRY_COLOR,
-  DRAFT_GEOMETRY_FILL_OPACITY,
-} from "@/components/map/mapStyles";
 type Props = {
   change: (...args: Array<any>) => any;
   hasError: boolean;
@@ -105,21 +103,7 @@ const AreaSearchMap = ({ change, hasError }: Props) => {
           onDeleted={handleAction}
           onEdited={handleAction}
           onNonCommittedChange={handleNonCommittedChange}
-          draw={{
-            polygon: {
-              allowSelfIntersection: false,
-              pathOptions: {
-                color: DRAFT_GEOMETRY_COLOR,
-                fillOpacity: DRAFT_GEOMETRY_FILL_OPACITY,
-              },
-            },
-            rectangle: {
-              pathOptions: {
-                color: DRAFT_GEOMETRY_COLOR,
-                fillOpacity: DRAFT_GEOMETRY_FILL_OPACITY,
-              },
-            },
-          }}
+          draw={DRAFT_DRAW_OPTIONS}
         />
       </div>
     </div>
