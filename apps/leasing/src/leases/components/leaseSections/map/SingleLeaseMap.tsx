@@ -30,7 +30,6 @@ import {
   getFieldOptions,
   getUrlParams,
   hasPermissions,
-  isFieldAllowedToEdit,
   isFieldAllowedToRead,
 } from "@/util/helpers";
 import { getBoundsFromCoordinates, getCenterFromCoordinates } from "@/util/map";

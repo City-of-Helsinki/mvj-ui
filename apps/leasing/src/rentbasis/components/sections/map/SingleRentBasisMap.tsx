@@ -1,42 +1,30 @@
 import React, { useEffect, useState } from "react";
-import { useAppDispatch, useAppSelector } from "@/root/hooks";
-import { isEmpty } from "lodash-es";
+import { useAppSelector } from "@/root/hooks";
 import AreaNotesEditMap from "@/areaNote/components/AreaNotesEditMap";
-import AreaNotesLayer from "@/areaNote/components/AreaNotesLayer";
 import RentBasisLayer from "./RentBasisLayer";
-import { fetchAreaNoteList } from "@/areaNote/slice";
+import useAreaNotesOverlay from "@/components/map/useAreaNotesOverlay";
 import { MAP_LAYER_COLORS } from "@/components/map/mapStyles";
 import { RentBasisFieldPaths } from "@/rentbasis/enums";
-import { UsersPermissions } from "@/usersPermissions/enums";
 import { getContentRentBasisGeoJson } from "@/rentbasis/helpers";
-import {
-  getFieldOptions,
-  hasPermissions,
-  isFieldAllowedToRead,
-} from "@/util/helpers";
+import { getFieldOptions, isFieldAllowedToRead } from "@/util/helpers";
 import {
   getBoundsFromCoordinates,
   getCenterFromCoordinates,
   getCoordinatesOfGeometry,
 } from "@/util/map";
-import { getAreaNoteList } from "@/areaNote/selectors";
 import {
   getAttributes as getRentBasisAttributes,
   getRentBasis,
 } from "@/rentbasis/selectors";
-import { getUsersPermissions } from "@/usersPermissions/selectors";
 import type { Attributes, LeafletGeoJson } from "types";
 import type { LatLngBounds } from "leaflet";
 
 const SingleRentBasisMap: React.FC = () => {
-  const dispatch = useAppDispatch();
-
-  const areaNotes = useAppSelector(getAreaNoteList);
   const rentBasis = useAppSelector(getRentBasis);
   const rentBasisAttributes: Attributes = useAppSelector(
     getRentBasisAttributes,
   );
-  const usersPermissions = useAppSelector(getUsersPermissions);
+  const areaNotesOverlay = useAreaNotesOverlay({ fetchOnMount: true });
   const [bounds, setBounds] = useState<LatLngBounds>();
   const [center, setCenter] = useState<[number, number]>();
 
@@ -48,12 +36,6 @@ const SingleRentBasisMap: React.FC = () => {
   const [indexOptions, setIndexOptions] = useState([]);
   const [managementOptions, setManagementOptions] = useState([]);
   const [plotTypeOptions, setPlotTypeOptions] = useState([]);
-
-  useEffect(() => {
-    if (hasPermissions(usersPermissions, UsersPermissions.VIEW_AREANOTE)) {
-      dispatch(fetchAreaNoteList({}));
-    }
-  }, [dispatch, usersPermissions]);
 
   useEffect(() => {
     if (rentBasis) {
@@ -107,20 +89,8 @@ const SingleRentBasisMap: React.FC = () => {
       });
     }
 
-    {
-      hasPermissions(usersPermissions, UsersPermissions.VIEW_AREANOTE) &&
-        !isEmpty(areaNotes) &&
-        layers.push({
-          checked: false,
-          component: (
-            <AreaNotesLayer
-              key="area_notes"
-              allowToEdit={false}
-              areaNotes={areaNotes}
-            />
-          ),
-          name: "Muistettavat ehdot",
-        });
+    if (areaNotesOverlay) {
+      layers.push(areaNotesOverlay);
     }
     return layers;
   };

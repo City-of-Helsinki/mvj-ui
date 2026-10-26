@@ -3,11 +3,12 @@ import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { useLocation } from "react-router";
 import { get, isEmpty } from "lodash-es";
 import AreaNotesEditMap from "@/areaNote/components/AreaNotesEditMap";
-import AreaNotesLayer from "@/areaNote/components/AreaNotesLayer";
 import InfillDevelopmentLeaseLayer from "./InfillDevelopmentLeaseLayer";
 import Loader from "@/components/loader/Loader";
 import LoaderWrapper from "@/components/loader/LoaderWrapper";
-import { fetchAreaNoteList } from "@/areaNote/slice";
+import useAreaNotesOverlay, {
+  type MapOverlayLayer,
+} from "@/components/map/useAreaNotesOverlay";
 import { fetchLeaseById } from "@/leases/slice";
 import { MAP_LAYER_COLORS } from "@/components/map/mapStyles";
 import {
@@ -15,34 +16,28 @@ import {
   LeasePlanUnitsFieldPaths,
   LeasePlotsFieldPaths,
 } from "@/leases/enums";
-import { UsersPermissions } from "@/usersPermissions/enums";
 import {
   getContentLeaseIdentifier,
   getLeaseCoordinates,
 } from "@/leases/helpers";
 import { getContentInfillDevelopmentLeaseGeoJson } from "@/infillDevelopment/helpers";
-import { getFieldOptions, getUrlParams, hasPermissions } from "@/util/helpers";
+import { getFieldOptions, getUrlParams } from "@/util/helpers";
 import { getBoundsFromCoordinates, getCenterFromCoordinates } from "@/util/map";
-import { getAreaNoteList } from "@/areaNote/selectors";
 import { getCurrentInfillDevelopment } from "@/infillDevelopment/selectors";
 import {
   getAllLeases,
   getAttributes as getLeaseAttributes,
   getIsFetchingAllLeases,
 } from "@/leases/selectors";
-import { getUsersPermissions } from "@/usersPermissions/selectors";
 import type { Attributes } from "types";
-import type { AreaNoteList } from "@/areaNote/types";
 import type { InfillDevelopment } from "@/infillDevelopment/types";
 import type { Lease } from "@/leases/types";
-import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
-import type { MapOverlayLayer } from "@/components/map/useAreaNotesOverlay";
 const SingleInfillDevelopmentMap: React.FC = () => {
   const dispatch = useAppDispatch();
   const location = useLocation();
 
   const allLeases: Record<string, Lease> = useAppSelector(getAllLeases);
-  const areaNotes: AreaNoteList = useAppSelector(getAreaNoteList);
+  const areaNotesOverlay = useAreaNotesOverlay({ fetchOnMount: true });
   const currentInfillDevelopment: InfillDevelopment = useAppSelector(
     getCurrentInfillDevelopment,
   );
@@ -50,8 +45,6 @@ const SingleInfillDevelopmentMap: React.FC = () => {
     getIsFetchingAllLeases,
   );
   const leaseAttributes: Attributes = useAppSelector(getLeaseAttributes);
-  const usersPermissions: UsersPermissionsType =
-    useAppSelector(getUsersPermissions);
 
   const [bounds, setBounds] = useState<any>();
   const [center, setCenter] = useState<any>();
@@ -112,12 +105,6 @@ const SingleInfillDevelopmentMap: React.FC = () => {
       ),
     [leaseAttributes],
   );
-
-  useEffect(() => {
-    if (hasPermissions(usersPermissions, UsersPermissions.VIEW_AREANOTE)) {
-      dispatch(fetchAreaNoteList({}));
-    }
-  }, [dispatch, usersPermissions]);
 
   useEffect(() => {
     let allFetched = true;
@@ -183,20 +170,8 @@ const SingleInfillDevelopmentMap: React.FC = () => {
       };
     });
 
-    {
-      hasPermissions(usersPermissions, UsersPermissions.VIEW_AREANOTE) &&
-        !isEmpty(areaNotes) &&
-        nextLayers.push({
-          checked: false,
-          component: (
-            <AreaNotesLayer
-              key="area_notes"
-              allowToEdit={false}
-              areaNotes={areaNotes}
-            />
-          ),
-          name: "Muistettavat ehdot",
-        });
+    if (areaNotesOverlay) {
+      nextLayers.push(areaNotesOverlay);
     }
 
     setLayers(nextLayers);
@@ -204,7 +179,7 @@ const SingleInfillDevelopmentMap: React.FC = () => {
   }, [
     allLeases,
     areaLocationOptions,
-    areaNotes,
+    areaNotesOverlay,
     areaTypeOptions,
     dispatch,
     infillDevelopmentLeases,
@@ -215,7 +190,6 @@ const SingleInfillDevelopmentMap: React.FC = () => {
     planUnitTypeOptions,
     plotDivisionStateOptions,
     plotTypeOptions,
-    usersPermissions,
   ]);
 
   return (
