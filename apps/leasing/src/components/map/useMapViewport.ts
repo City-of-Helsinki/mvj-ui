@@ -6,50 +6,35 @@ import { getUrlParams } from "@/util/helpers";
 import { getBoundsFromBBox, getBoundsFromFeatures } from "@/util/map";
 
 type Options = {
-  fitToResults?: (searchQuery: Record<string, any>) => boolean;
+  fitToResults: (searchQuery: Record<string, any>) => boolean;
   geoJson: Record<string, any>;
   onViewportChanged: (mapOptions: Record<string, any>) => any;
 };
 
-type Viewport = {
-  bounds: LatLngBounds | undefined;
-  center: ReturnType<LatLngBounds["getCenter"]> | undefined;
-  handleViewportChanged: (mapOptions: Record<string, any>) => void;
-  zoom: number;
-};
-
-const getMapBounds = (search: string): LatLngBounds | undefined => {
-  const searchQuery = getUrlParams(search);
-  return getBoundsFromBBox(searchQuery.in_bbox);
-};
-
-const getMapCenter = (search: string) => {
-  const bounds = getMapBounds(search);
-  return bounds ? bounds.getCenter() : undefined;
-};
-
-const getMapZoom = (search: string) => {
-  const searchQuery = getUrlParams(search);
-  return searchQuery.zoom || DEFAULT_ZOOM;
-};
-
+/**
+ * The map owns its viewport after mount; the URL only seeds the initial view,
+ * so `center` is read once and `bounds` is only a request to fit to results.
+ */
 const useMapViewport = ({
-  fitToResults = (searchQuery) => Boolean(searchQuery.search),
+  fitToResults,
   geoJson,
   onViewportChanged,
-}: Options): Viewport => {
+}: Options) => {
   const location = useLocation();
-  const [zoom, setZoom] = useState(() => getMapZoom(location.search));
-  const bounds = useMemo<LatLngBounds | undefined>(() => {
-    const searchQuery = getUrlParams(location.search);
-
-    return fitToResults(searchQuery)
-      ? (getBoundsFromFeatures(geoJson) as unknown as LatLngBounds | undefined)
-      : getMapBounds(location.search);
-  }, [fitToResults, geoJson, location.search]);
-  const center = useMemo(
-    () => getMapCenter(location.search),
-    [location.search],
+  const [center] = useState(() =>
+    getBoundsFromBBox(getUrlParams(location.search).in_bbox)?.getCenter(),
+  );
+  const [zoom, setZoom] = useState(
+    () => getUrlParams(location.search).zoom || DEFAULT_ZOOM,
+  );
+  const shouldFitToResults = fitToResults(getUrlParams(location.search));
+  const bounds = useMemo(
+    () =>
+      shouldFitToResults
+        ? (getBoundsFromFeatures(geoJson) as unknown as
+            LatLngBounds | undefined)
+        : undefined,
+    [geoJson, shouldFitToResults],
   );
   const handleViewportChanged = useCallback(
     (mapOptions: Record<string, any>) => {
@@ -59,12 +44,7 @@ const useMapViewport = ({
     [onViewportChanged],
   );
 
-  return {
-    bounds,
-    center,
-    handleViewportChanged,
-    zoom,
-  };
+  return { bounds, center, handleViewportChanged, zoom };
 };
 
 export default useMapViewport;

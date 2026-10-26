@@ -443,10 +443,13 @@ class PlotApplicationsListPage extends PureComponent<
     const searchQuery = getUrlParams(search);
     searchQuery.in_bbox = mapOptions.bBox.split(",");
     searchQuery.zoom = mapOptions.zoom;
-    return navigate({
-      pathname: getRouteById(Routes.PLOT_APPLICATIONS),
-      search: getSearchQuery(searchQuery),
-    });
+    return navigate(
+      {
+        pathname: getRouteById(Routes.PLOT_APPLICATIONS),
+        search: getSearchQuery(searchQuery),
+      },
+      { replace: true },
+    );
   }, 1000);
   closeOpeningModal = () => {
     this.setState(() => ({

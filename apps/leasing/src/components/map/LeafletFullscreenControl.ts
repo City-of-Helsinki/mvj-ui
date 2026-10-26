@@ -71,6 +71,6 @@ export default class LeafletFullscreenControl extends L.Control {
     } else {
       await (map.getContainer() as FullscreenElement).requestFullscreen?.();
     }
-    map.invalidateSize();
+    map.invalidateSize({ pan: false });
   }
 }

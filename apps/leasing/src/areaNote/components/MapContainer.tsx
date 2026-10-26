@@ -233,7 +233,7 @@ const MapContainer: React.FC<Props> = ({
 
     if (boundsChanged && bounds) {
       map.fitBounds(bounds);
-    } else if (boundsChanged || centerChanged) {
+    } else if (centerChanged) {
       map.setView(center);
     }
 
