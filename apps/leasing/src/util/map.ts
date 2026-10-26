@@ -60,32 +60,6 @@ export const getCoordinatesOfGeometry = (
 };
 
 /**
- * Format geojson coordinates to leaflet understandable format
- * @param  {Object} geojson
- * @returns {Object}
- */
-export const formatCoordsToLatLng = (
-  geojson: Record<string, any> | null | undefined,
-): (Record<string, any> | null | undefined) | null => {
-  let crs;
-
-  if (geojson) {
-    if (geojson.crs && geojson.crs.type === "name") {
-      crs = new L.Proj.CRS(geojson.crs.properties.name);
-    } else if (geojson.crs && geojson.crs.type) {
-      crs = new L.Proj.CRS(geojson.crs.type, geojson.crs.properties.code);
-    }
-
-    if (crs !== undefined) {
-      return (coords: Array<number>) => {
-        const point = L.point(coords[0], coords[1]);
-        return crs ? crs.projection.unproject(point) : null;
-      };
-    }
-  }
-};
-
-/**
  * Get bounds for leaflet from bbox array
  * @param {Object[]} bbox
  * @returns {Object}
