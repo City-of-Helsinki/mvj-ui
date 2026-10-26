@@ -1,16 +1,10 @@
 import L from "leaflet";
 import { SERVICE_MAP_URL } from "@/util/constants";
+import type { ServiceMapResponse } from "@/components/address-search/types";
 
 type AddressResult = {
   label: string;
   coordinates: [number, number];
-};
-
-type ServiceMapResponse = {
-  results?: Array<{
-    name?: { fi?: string };
-    location?: { coordinates?: [number, number] };
-  }>;
 };
 
 const searchAddresses = async (query: string): Promise<AddressResult[]> => {

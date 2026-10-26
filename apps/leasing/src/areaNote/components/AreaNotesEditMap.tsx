@@ -9,7 +9,9 @@ import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import L from "leaflet";
 import { isEmpty, throttle } from "lodash-es";
 import MapContainer from "./MapContainer";
-import LeafletDrawControl from "@/components/map/LeafletDrawControl";
+import LeafletDrawControl, {
+  DRAFT_DRAW_OPTIONS,
+} from "@/components/map/LeafletDrawControl";
 import SaveConditionPanel, {
   type SaveConditionPanelHandle,
 } from "./SaveConditionPanel";
@@ -43,7 +45,6 @@ type Props = {
   bounds?: L.LatLngBoundsExpression;
   center?: L.LatLngExpression;
   isLoading?: boolean;
-  onMapDidMount?: (...args: Array<any>) => any;
   onViewportChanged?: (...args: Array<any>) => any;
   overlayLayers?: Array<{
     checked: boolean;
@@ -60,7 +61,6 @@ const AreaNotesEditMap: React.FC<Props> = ({
   bounds,
   center,
   isLoading,
-  onMapDidMount,
   onViewportChanged,
   overlayLayers,
   showZoomLevelWarning,
@@ -237,7 +237,6 @@ const AreaNotesEditMap: React.FC<Props> = ({
         bounds={bounds}
         center={center || DEFAULT_CENTER}
         isLoading={isLoading}
-        onMapDidMount={onMapDidMount}
         onViewportChanged={onViewportChanged}
         overlayLayers={overlayLayers}
         zoom={zoom || DEFAULT_ZOOM}
@@ -251,21 +250,7 @@ const AreaNotesEditMap: React.FC<Props> = ({
           onDeleted={handleAction}
           onEdited={handleAction}
           onNonCommittedChange={handleNonCommittedChange}
-          draw={{
-            polygon: {
-              allowSelfIntersection: false,
-              pathOptions: {
-                color: DRAFT_GEOMETRY_COLOR,
-                fillOpacity: DRAFT_GEOMETRY_FILL_OPACITY,
-              },
-            },
-            rectangle: {
-              pathOptions: {
-                color: DRAFT_GEOMETRY_COLOR,
-                fillOpacity: DRAFT_GEOMETRY_FILL_OPACITY,
-              },
-            },
-          }}
+          draw={DRAFT_DRAW_OPTIONS}
         />
       )}
       {allowToEdit && isEditMode && (

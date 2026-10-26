@@ -38,7 +38,6 @@ type Props = {
   bounds?: L.LatLngBoundsExpression;
   center: L.LatLngExpression;
   isLoading?: boolean;
-  onMapDidMount?: (viewport: MapViewport) => void;
   onViewportChanged?: (viewport: MapViewport) => void;
   overlayLayers?: Array<{
     checked: boolean;
@@ -104,7 +103,6 @@ const MapContainer: React.FC<Props> = ({
   bounds,
   center,
   isLoading,
-  onMapDidMount,
   onViewportChanged,
   overlayLayers,
   zoom,
@@ -114,7 +112,6 @@ const MapContainer: React.FC<Props> = ({
 }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [map, setMap] = useState<L.Map | null>(null);
-  const onMapDidMountRef = useRef(onMapDidMount);
   const onViewportChangedRef = useRef(onViewportChanged);
   const onMapReadyRef = useRef(onMapReady);
   const layerControlRef = useRef<L.Control.Layers | null>(null);
@@ -126,7 +123,6 @@ const MapContainer: React.FC<Props> = ({
   });
   const viewportRef = useRef({ bounds, center });
 
-  onMapDidMountRef.current = onMapDidMount;
   onViewportChangedRef.current = onViewportChanged;
   onMapReadyRef.current = onMapReady;
   mapConfigurationRef.current = {
@@ -207,7 +203,6 @@ const MapContainer: React.FC<Props> = ({
     map.on("moveend", handleViewportChanged);
     setMap(map);
     onMapReadyRef.current?.(map);
-    onMapDidMountRef.current?.(getMapValues());
 
     return () => {
       layerControlRef.current = null;

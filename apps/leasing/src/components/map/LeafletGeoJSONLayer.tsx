@@ -1,26 +1,16 @@
 import { useEffect, useRef } from "react";
 import L from "leaflet";
-import { useLeafletMap, type LeafletLayerContainer } from "./LeafletMapContext";
+import { useLeafletMap } from "./LeafletMapContext";
 import { DEFAULT_LEAFLET_PATH_OPTIONS } from "./mapStyles";
 
 type Props = {
-  layerContainer?: LeafletLayerContainer | null;
   data: GeoJSON.GeoJsonObject;
   style?: L.PathOptions;
   onEachFeature?: (feature: GeoJSON.Feature, layer: L.Layer) => void;
 };
 
-const LeafletGeoJSONLayer = ({
-  layerContainer: layerContainerProp,
-  data,
-  style,
-  onEachFeature,
-}: Props) => {
-  const contextLayerContainer = useLeafletMap();
-  const layerContainer =
-    layerContainerProp === undefined
-      ? contextLayerContainer
-      : layerContainerProp;
+const LeafletGeoJSONLayer = ({ data, style, onEachFeature }: Props) => {
+  const layerContainer = useLeafletMap();
   const onEachFeatureRef = useRef(onEachFeature);
 
   onEachFeatureRef.current = onEachFeature;

@@ -1,10 +1,4 @@
-export type ControlPosition =
-  | "topleft"
-  | "topright"
-  | "bottomleft"
-  | "bottomright";
-
-interface ServiceMapAddress {
+export interface ServiceMapAddress {
   object_type: "address";
   name: {
     fi: string;
@@ -40,28 +34,4 @@ export interface ServiceMapResponse {
   next: string | null;
   previous: string | null;
   results: Array<ServiceMapAddress>;
-}
-
-export interface AddressResult {
-  x: number;
-  y: number;
-  label: string;
-}
-
-export interface ParseArgument<TData> {
-  data: TData;
-}
-
-export interface SearchArgument {
-  query: string;
-}
-
-export declare type PointTuple = [number, number];
-export declare type BoundsTuple = [PointTuple, PointTuple];
-export interface SearchResult<TRawResult = any> {
-  x: number;
-  y: number;
-  label: string;
-  bounds: BoundsTuple | null;
-  raw: TRawResult;
 }

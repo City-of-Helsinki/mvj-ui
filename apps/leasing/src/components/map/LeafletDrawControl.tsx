@@ -1,7 +1,11 @@
 import { useEffect } from "react";
 import L from "leaflet";
 import "@geoman-io/leaflet-geoman-free";
-import { DEFAULT_LEAFLET_PATH_OPTIONS } from "@/components/map/mapStyles";
+import {
+  DEFAULT_LEAFLET_PATH_OPTIONS,
+  DRAFT_GEOMETRY_COLOR,
+  DRAFT_GEOMETRY_FILL_OPACITY,
+} from "@/components/map/mapStyles";
 
 type Props = {
   map: L.Map | null;
@@ -14,6 +18,22 @@ type Props = {
   onDeleted?: () => void;
   onEdited?: () => void;
   onNonCommittedChange?: () => void;
+};
+
+export const DRAFT_DRAW_OPTIONS: Props["draw"] = {
+  polygon: {
+    allowSelfIntersection: false,
+    pathOptions: {
+      color: DRAFT_GEOMETRY_COLOR,
+      fillOpacity: DRAFT_GEOMETRY_FILL_OPACITY,
+    },
+  },
+  rectangle: {
+    pathOptions: {
+      color: DRAFT_GEOMETRY_COLOR,
+      fillOpacity: DRAFT_GEOMETRY_FILL_OPACITY,
+    },
+  },
 };
 
 const LeafletDrawControl = ({
