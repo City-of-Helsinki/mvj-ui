@@ -602,10 +602,13 @@ class AreaSearchApplicationListPage extends PureComponent<
     const searchQuery = getUrlParams(search);
     searchQuery.in_bbox = mapOptions.bBox.split(",");
     searchQuery.zoom = mapOptions.zoom;
-    return navigate({
-      pathname: getRouteById(Routes.AREA_SEARCH),
-      search: getSearchQuery(searchQuery),
-    });
+    return navigate(
+      {
+        pathname: getRouteById(Routes.AREA_SEARCH),
+        search: getSearchQuery(searchQuery),
+      },
+      { replace: true },
+    );
   }, 1000);
   getSearchStates = (query: Record<string, any>) => {
     if (isArray(query.state)) {

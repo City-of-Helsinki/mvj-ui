@@ -1,6 +1,12 @@
 import { Column, Row } from "@/components/grid/Grid";
 import { debounce, isArray, isEmpty } from "lodash-es";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { Form } from "react-final-form";
 import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { fetchAreaNoteList } from "@/areaNote/slice";
@@ -872,25 +878,21 @@ const LeaseListPage: React.FC = () => {
     });
   };
 
-  const handleMapViewportChanged = useMemo(
-    () =>
-      debounce((mapOptions: Record<string, any>) => {
-        const searchQuery = getUrlParams(location.search);
-        searchQuery.in_bbox = mapOptions.bBox.split(",");
-        searchQuery.zoom = mapOptions.zoom;
-        return navigate({
+  const handleMapViewportChanged = useCallback(
+    (mapOptions: Record<string, any>) => {
+      const searchQuery = getUrlParams(location.search);
+      searchQuery.in_bbox = mapOptions.bBox.split(",");
+      searchQuery.zoom = mapOptions.zoom;
+      return navigate(
+        {
           pathname: getRouteById(Routes.LEASES),
           search: getSearchQuery(searchQuery),
-        });
-      }, 1000),
+        },
+        { replace: true },
+      );
+    },
     [location.search, navigate],
   );
-
-  useEffect(() => {
-    return () => {
-      handleMapViewportChanged.cancel();
-    };
-  }, [handleMapViewportChanged]);
 
   const leaseList = getContentLeaseListResults(leases, queryParams);
   const count = getApiResponseCount(leases);

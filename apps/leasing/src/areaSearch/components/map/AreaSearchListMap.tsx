@@ -1,40 +1,23 @@
-import React, { useCallback, useMemo, useState } from "react";
-import { useLocation } from "react-router";
-import type { LatLngBounds } from "leaflet";
+import React, { useMemo } from "react";
 import { useAppSelector } from "@/root/hooks";
 import AreaNotesEditMap from "@/areaNote/components/AreaNotesEditMap";
-import { DEFAULT_ZOOM } from "@/util/constants";
+import useMapViewport from "@/components/map/useMapViewport";
 import { MAP_LAYER_COLORS } from "@/components/map/mapStyles";
-import { getApiResponseResults, getUrlParams } from "@/util/helpers";
-import { getBoundsFromBBox, getBoundsFromFeatures } from "@/util/map";
+import { getApiResponseResults } from "@/util/helpers";
 import AreaSearchLayer from "@/areaSearch/components/map/AreaSearchLayer";
 import { getAreaSearchListByBBox } from "@/areaSearch/selectors";
 import { getAreaSearchGeoJson } from "@/areaSearch/helpers";
 import { MAX_ZOOM_LEVEL_TO_FETCH_AREA_SEARCHES } from "@/areaSearch/constants";
 
-const getMapBounds = (search: string): LatLngBounds | undefined => {
-  const searchQuery = getUrlParams(search);
-  return getBoundsFromBBox(searchQuery.in_bbox);
-};
-
-const getMapCenter = (search: string) => {
-  const bounds = getMapBounds(search);
-  return bounds ? bounds.getCenter() : null;
-};
-
-const getMapZoom = (search: string) => {
-  const searchQuery = getUrlParams(search);
-  return searchQuery.zoom || DEFAULT_ZOOM;
-};
+const hasSearch = (searchQuery: Record<string, any>) =>
+  Boolean(searchQuery.search);
 
 type OwnProps = {
   isLoading: boolean;
   onViewportChanged: (...args: Array<any>) => any;
 };
 const AreaSearchListMap = ({ isLoading, onViewportChanged }: OwnProps) => {
-  const location = useLocation();
   const searchData = useAppSelector(getAreaSearchListByBBox);
-  const [zoom, setZoom] = useState(() => getMapZoom(location.search));
   const searchGeoJson = useMemo(
     () => getAreaSearchGeoJson(getApiResponseResults(searchData) || []),
     [searchData],
@@ -56,26 +39,17 @@ const AreaSearchListMap = ({ isLoading, onViewportChanged }: OwnProps) => {
     ],
     [searchGeoJson],
   );
-  const bounds = useMemo(() => {
-    const searchQuery = getUrlParams(location.search);
-    return searchQuery?.search
-      ? (getBoundsFromFeatures(searchGeoJson) as unknown as
-          LatLngBounds | undefined)
-      : getMapBounds(location.search);
-  }, [location.search, searchGeoJson]);
-  const handleViewportChanged = useCallback(
-    (mapOptions: Record<string, any>) => {
-      setZoom(mapOptions.zoom);
-      onViewportChanged(mapOptions);
-    },
-    [onViewportChanged],
-  );
+  const { bounds, center, handleViewportChanged, zoom } = useMapViewport({
+    fitToResults: hasSearch,
+    geoJson: searchGeoJson,
+    onViewportChanged,
+  });
 
   return (
     <AreaNotesEditMap
       allowToEdit={false}
       bounds={bounds}
-      center={getMapCenter(location.search) || undefined}
+      center={center}
       isLoading={isLoading}
       onViewportChanged={handleViewportChanged}
       overlayLayers={overlayLayers}
