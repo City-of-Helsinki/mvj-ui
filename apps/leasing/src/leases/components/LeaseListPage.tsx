@@ -105,8 +105,8 @@ import {
 } from "hds-react";
 import { useLocation, useNavigate } from "react-router";
 import type { Attributes } from "types";
-import CreateLeaseModal from "./createLease/CreateLeaseModal";
-import Search from "./search/Search";
+import CreateLeaseModal from "@/leases/components/createLease/CreateLeaseModal";
+import Search from "@/leases/components/search/Search";
 
 const VisualizationTypes = {
   MAP: "map",

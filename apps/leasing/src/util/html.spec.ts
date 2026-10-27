@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { html } from "./html";
+import { html } from "@/util/html";
 
 describe("html", () => {
   it("escapes every interpolated value into text instead of executable markup", () => {

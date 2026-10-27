@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { cleanup, render } from "@testing-library/react";
 import L from "leaflet";
 import React from "react";
-import MapContainer from "./MapContainer";
+import MapContainer from "@/areaNote/components/MapContainer";
 
 const WMS_URL = "https://kartta.hel.fi/ws/geoserver/avoindata/wms?";
 

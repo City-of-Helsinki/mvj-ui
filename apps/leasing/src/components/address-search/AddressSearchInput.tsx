@@ -7,7 +7,10 @@ import { stringifyQuery } from "@/api/createUrl";
 import { KeyCodes } from "@/enums";
 import { findFromOcdString } from "@/util/helpers";
 import { SERVICE_MAP_URL } from "@/util/constants";
-import type { ServiceMapAddress, ServiceMapResponse } from "./types";
+import type {
+  ServiceMapAddress,
+  ServiceMapResponse,
+} from "@/components/address-search/types";
 type Language = "fi" | "sv";
 const MINIMUM_SEARCH_STRING = 3;
 const DEBOUNCE_TIME_MILLISECONDS = 500;

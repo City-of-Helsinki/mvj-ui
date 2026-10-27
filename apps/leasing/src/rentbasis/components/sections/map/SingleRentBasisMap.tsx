@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useAppSelector } from "@/root/hooks";
 import AreaNotesEditMap from "@/areaNote/components/AreaNotesEditMap";
-import RentBasisLayer from "./RentBasisLayer";
+import RentBasisLayer from "@/rentbasis/components/sections/map/RentBasisLayer";
 import useAreaNotesOverlay from "@/components/map/useAreaNotesOverlay";
 import { MAP_LAYER_COLORS } from "@/components/map/mapStyles";
 import { RentBasisFieldPaths } from "@/rentbasis/enums";

@@ -2,15 +2,15 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import L from "leaflet";
 import { isEmpty } from "lodash-es";
-import MapContainer from "./MapContainer";
+import MapContainer from "@/areaNote/components/MapContainer";
 import LeafletDrawControl, {
   DRAFT_DRAW_OPTIONS,
 } from "@/components/map/LeafletDrawControl";
 import useDrawnFeatureGroup from "@/components/map/useDrawnFeatureGroup";
 import SaveConditionPanel, {
   type SaveConditionPanelHandle,
-} from "./SaveConditionPanel";
-import ZoomLevelWarning from "./ZoomLevelWarning";
+} from "@/areaNote/components/SaveConditionPanel";
+import ZoomLevelWarning from "@/areaNote/components/ZoomLevelWarning";
 import {
   createAreaNote,
   deleteAreaNote,

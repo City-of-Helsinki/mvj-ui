@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { renderHook } from "@testing-library/react";
 import L from "leaflet";
-import useGeoJsonFeatureInteractions from "./useGeoJsonFeatureInteractions";
+import useGeoJsonFeatureInteractions from "@/components/map/useGeoJsonFeatureInteractions";
 import { html } from "@/util/html";
 
 const feature: GeoJSON.Feature = {

@@ -5,7 +5,7 @@ import {
   getBoundsFromFeatures,
   getCenterFromCoordinates,
   getCoordinatesOfGeometry,
-} from "./map";
+} from "@/util/map";
 
 // GeoJSON positions are [longitude, latitude].
 const ring: Array<[number, number]> = [

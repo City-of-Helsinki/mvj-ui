@@ -1,6 +1,6 @@
 import { mergePolygonFeaturesToMultiPolygon } from "@/components/map/geojson";
 import { getCoordinatesOfGeometry } from "@/util/map";
-import type { AreaNote } from "./types";
+import type { AreaNote } from "@/areaNote/types";
 
 type AreaNoteProperties = {
   id?: number;

@@ -8,7 +8,7 @@ vi.mock("@/components/map/measurements", () => ({
   updateMeasurements: vi.fn(),
 }));
 
-import useDrawnFeatureGroup from "./useDrawnFeatureGroup";
+import useDrawnFeatureGroup from "@/components/map/useDrawnFeatureGroup";
 import { localizeMap } from "@/util/map";
 import {
   showMeasurements,

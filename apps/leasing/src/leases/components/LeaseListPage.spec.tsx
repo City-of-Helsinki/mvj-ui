@@ -7,7 +7,7 @@ import { MemoryRouter, useLocation, useNavigate } from "react-router";
 import rootReducer from "@/root/rootReducer";
 import { receiveAttributes, receiveMethods } from "@/leases/slice";
 import { receiveUserServiceUnits } from "@/usersPermissions/slice";
-import LeaseListPage from "./LeaseListPage";
+import LeaseListPage from "@/leases/components/LeaseListPage";
 
 vi.mock("@/leases/components/leaseSections/map/LeaseListMap", () => ({
   default: () => <div data-testid="lease-map" />,

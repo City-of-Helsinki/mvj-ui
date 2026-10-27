@@ -21,7 +21,7 @@ import {
   SubventionTypes,
   TenantContactType,
   oldDwellingsInHousingCompaniesPriceIndexTypeOptions,
-} from "./enums";
+} from "@/leases/enums";
 import { CalculatorTypes } from "@/leases/enums";
 import { LeaseAreaAttachmentTypes } from "@/leaseAreaAttachment/enums";
 import { getContactFullName, getContentContact } from "@/contacts/helpers";
@@ -47,7 +47,7 @@ import {
   sortStringByKeyDesc,
 } from "@/util/helpers";
 import { getCoordinatesOfGeometry } from "@/util/map";
-import { getIsEditMode, getIsFormDirtyFlags } from "./selectors";
+import { getIsEditMode, getIsFormDirtyFlags } from "@/leases/selectors";
 import { removeSessionStorageItem } from "@/util/storage";
 import type {
   Lease,
@@ -57,7 +57,7 @@ import type {
   PeriodicRentAdjustmentType,
   CreateLeaseFormValues,
   BasisOfRent,
-} from "./types";
+} from "@/leases/types";
 import type { CommentList } from "@/comments/types";
 import type {
   ApiResponse,
