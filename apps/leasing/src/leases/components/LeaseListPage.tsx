@@ -3,6 +3,7 @@ import { debounce, isArray, isEmpty } from "lodash-es";
 import React, {
   useCallback,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -151,14 +152,25 @@ const LeaseListPage: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSearchInitialized, setIsSearchInitialized] = useState(false);
   const [expandedRows, setExpandedRows] = useState<Record<string, boolean>>({});
-  const [visualizationType, setVisualizationType] = useState(
-    VisualizationTypes.TABLE,
-  );
-
   const queryParams = useMemo(
     () => getUrlParams(location.search),
     [location.search],
   );
+  // Tabs reads its initial tab only on mount, so this must be right on first render.
+  const visualizationType =
+    queryParams.visualization === VisualizationTypes.MAP
+      ? VisualizationTypes.MAP
+      : VisualizationTypes.TABLE;
+  const shownTabRef = useRef(visualizationType);
+  const [tabsKey, setTabsKey] = useState(0);
+  // Tabs keeps its own selection, remount it when history or a link changes
+  // the visualization
+  useLayoutEffect(() => {
+    if (shownTabRef.current !== visualizationType) {
+      shownTabRef.current = visualizationType;
+      setTabsKey((key) => key + 1);
+    }
+  }, [visualizationType]);
   const sortKey = queryParams.sort_key || DEFAULT_SORT_KEY;
   const sortOrder = queryParams.sort_order || DEFAULT_SORT_ORDER;
   const activePage = queryParams.page ? Number(queryParams.page) : 1;
@@ -345,12 +357,6 @@ const LeaseListPage: React.FC = () => {
       }
     }
 
-    if (searchQuery.visualization === VisualizationTypes.MAP) {
-      setVisualizationType(VisualizationTypes.MAP);
-    } else {
-      setVisualizationType(VisualizationTypes.TABLE);
-    }
-
     const search = (isImmediate: boolean = false) => {
       const searchQuery = { ...queryParams };
       const page = searchQuery.page ? Number(searchQuery.page) : 1;
@@ -455,7 +461,6 @@ const LeaseListPage: React.FC = () => {
     const initializeSearch = () => {
       setSearchFormValues();
       if (queryParams.visualization === VisualizationTypes.MAP) {
-        setVisualizationType(VisualizationTypes.MAP);
         searchByBBox(true);
       } else {
         search(true);
@@ -846,12 +851,15 @@ const LeaseListPage: React.FC = () => {
 
   const handleVisualizationTypeChange = (value: string) => {
     const searchQuery = getUrlParams(location.search);
-    setVisualizationType(value);
+    shownTabRef.current = value;
 
     if (value === VisualizationTypes.MAP) {
       searchQuery.visualization = VisualizationTypes.MAP;
     } else {
       delete searchQuery.visualization;
+      // Only the map uses these, the table ignores them, so don't keep them in the url.
+      delete searchQuery.in_bbox;
+      delete searchQuery.zoom;
     }
 
     navigate({
@@ -939,6 +947,7 @@ const LeaseListPage: React.FC = () => {
             </Row>
 
             <Tabs
+              key={tabsKey}
               initiallyActiveTab={
                 visualizationType === VisualizationTypes.MAP ? 1 : 0
               }
