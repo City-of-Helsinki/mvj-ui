@@ -61,7 +61,7 @@ export type MapViewport = {
   zoom: number;
 };
 
-type OverlayLayerProps = Props["overlayLayers"][number] & {
+type OverlayLayerProps = NonNullable<Props["overlayLayers"]>[number] & {
   layerControl: L.Control.Layers;
   map: L.Map;
 };

@@ -5,6 +5,7 @@ import {
   getBoundsFromFeatures,
   getCenterFromCoordinates,
   getCoordinatesOfGeometry,
+  getAreaFromGeoJSON,
 } from "@/util/map";
 
 // GeoJSON positions are [longitude, latitude].
@@ -221,5 +222,63 @@ describe("getBoundsFromBBox", () => {
     expect(getBoundsFromBBox(["a", "b", "c", "d"])).toBeNull();
     expect(getBoundsFromBBox([24.9, 60.1, 25, NaN])).toBeNull();
     expect(getBoundsFromBBox([24.9, 60.1, 25, Infinity])).toBeNull();
+  });
+});
+
+describe("getAreaFromGeoJSON", () => {
+  const outerRing = [
+    [24, 60],
+    [24, 60.02],
+    [24.02, 60.02],
+    [24.02, 60],
+    [24, 60],
+  ];
+  const holeRing = [
+    [24.005, 60.005],
+    [24.005, 60.015],
+    [24.015, 60.015],
+    [24.015, 60.005],
+    [24.005, 60.005],
+  ];
+  const secondSection = [
+    [24.03, 60],
+    [24.03, 60.01],
+    [24.04, 60.01],
+    [24.04, 60],
+    [24.03, 60],
+  ];
+
+  it("subtracts an inner hole from the outer ring area", () => {
+    const polygonWithHole = {
+      type: "Polygon",
+      coordinates: [outerRing, holeRing],
+    };
+    const outerArea = getAreaFromGeoJSON({
+      type: "Polygon",
+      coordinates: [outerRing],
+    });
+    const holeArea = getAreaFromGeoJSON({
+      type: "Polygon",
+      coordinates: [holeRing],
+    });
+
+    expect(getAreaFromGeoJSON(polygonWithHole)).toBeCloseTo(
+      outerArea - holeArea,
+      6,
+    );
+  });
+
+  it("sums the areas of all multipolygon sections", () => {
+    const firstSection = { type: "Polygon", coordinates: [outerRing] };
+    const secondPolygon = { type: "Polygon", coordinates: [secondSection] };
+    const multiPolygon = {
+      type: "MultiPolygon",
+      coordinates: [[outerRing], [secondSection]],
+    };
+
+    expect(getAreaFromGeoJSON(multiPolygon)).toBeCloseTo(
+      getAreaFromGeoJSON(firstSection) + getAreaFromGeoJSON(secondPolygon),
+      6,
+    );
   });
 });
