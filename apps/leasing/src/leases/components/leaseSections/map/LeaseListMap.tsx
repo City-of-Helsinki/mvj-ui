@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 import { useLocation } from "react-router";
 import { useAppSelector } from "@/root/hooks";
 import AreaNotesEditMap from "@/areaNote/components/AreaNotesEditMap";
-import LeaseListLayer from "./LeaseListLayer";
+import LeaseListLayer from "@/leases/components/leaseSections/map/LeaseListLayer";
 import useAreaNotesOverlay from "@/components/map/useAreaNotesOverlay";
 import useMapViewport from "@/components/map/useMapViewport";
 import { MAP_LAYER_COLORS } from "@/components/map/mapStyles";

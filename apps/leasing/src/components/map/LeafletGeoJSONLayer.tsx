@@ -1,8 +1,8 @@
 import { useEffect, useRef } from "react";
 import L from "leaflet";
 import { isEqual } from "lodash-es";
-import { useLeafletMap } from "./LeafletMapContext";
-import { DEFAULT_LEAFLET_PATH_OPTIONS } from "./mapStyles";
+import { useLeafletMap } from "@/components/map/LeafletMapContext";
+import { DEFAULT_LEAFLET_PATH_OPTIONS } from "@/components/map/mapStyles";
 
 type Props = {
   data: GeoJSON.GeoJsonObject;

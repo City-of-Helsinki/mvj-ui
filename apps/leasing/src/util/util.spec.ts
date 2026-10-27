@@ -9,7 +9,7 @@ import {
   splitDateRanges,
   getSplittedDateRanges,
   getSplittedDateRangesWithItems,
-} from "./date";
+} from "@/util/date";
 import {
   composePageTitle,
   getSearchQuery,
@@ -53,7 +53,7 @@ import {
   isActive,
   isActiveOrFuture,
   isArchived,
-} from "./helpers";
+} from "@/util/helpers";
 
 describe("utils", () => {
   describe("date.js", () => {

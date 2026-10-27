@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
 import L from "leaflet";
-import { showMeasurements, updateMeasurements } from "./measurements";
+import {
+  showMeasurements,
+  updateMeasurements,
+} from "@/components/map/measurements";
 
 const createMap = () => L.map(document.createElement("div")).setView([0, 0], 5);
 

@@ -3,7 +3,7 @@ import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { useLocation } from "react-router";
 import { get, isEmpty } from "lodash-es";
 import AreaNotesEditMap from "@/areaNote/components/AreaNotesEditMap";
-import InfillDevelopmentLeaseLayer from "./InfillDevelopmentLeaseLayer";
+import InfillDevelopmentLeaseLayer from "@/infillDevelopment/components/sections/map/InfillDevelopmentLeaseLayer";
 import Loader from "@/components/loader/Loader";
 import LoaderWrapper from "@/components/loader/LoaderWrapper";
 import useAreaNotesOverlay, {

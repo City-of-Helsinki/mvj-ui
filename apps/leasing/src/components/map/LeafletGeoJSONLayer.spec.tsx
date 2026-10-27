@@ -2,8 +2,8 @@ import { describe, expect, it } from "vitest";
 import { render } from "@testing-library/react";
 import L from "leaflet";
 import React from "react";
-import LeafletGeoJSONLayer from "./LeafletGeoJSONLayer";
-import { LeafletMapContext } from "./LeafletMapContext";
+import LeafletGeoJSONLayer from "@/components/map/LeafletGeoJSONLayer";
+import { LeafletMapContext } from "@/components/map/LeafletMapContext";
 
 const createData = (): GeoJSON.FeatureCollection => ({
   type: "FeatureCollection",
