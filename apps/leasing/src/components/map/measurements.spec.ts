@@ -4,6 +4,7 @@ import {
   showMeasurements,
   updateMeasurements,
 } from "@/components/map/measurements";
+import { getPolygonArea } from "@/util/map";
 
 const createMap = () => L.map(document.createElement("div")).setView([0, 0], 5);
 
@@ -36,6 +37,37 @@ describe("measurements", () => {
     const labels = getLabels(map);
     expect(labels).toHaveLength(5);
     expect(labels.filter((label) => label.includes("km²"))).toHaveLength(1);
+  });
+
+  it("labels a polygon area after subtracting its inner hole", () => {
+    const map = createMap();
+    const outerRing = [
+      [0, 0],
+      [0, 10],
+      [10, 10],
+      [10, 0],
+    ] as L.LatLngTuple[];
+    const holeRing = [
+      [2, 2],
+      [2, 4],
+      [4, 4],
+      [4, 2],
+    ] as L.LatLngTuple[];
+    const polygon = L.polygon([outerRing, holeRing]).addTo(map);
+
+    showMeasurements(polygon, map);
+
+    const area = getPolygonArea([
+      outerRing.map(([lat, lng]) => L.latLng(lat, lng)),
+      holeRing.map(([lat, lng]) => L.latLng(lat, lng)),
+    ]);
+    const formattedArea =
+      area > 1000000
+        ? `${Math.round(area / 1000000)} km²`
+        : `${Math.round(area)} m²`;
+    const areaLabels = getLabels(map).filter((label) => label.includes("m²"));
+
+    expect(areaLabels).toEqual([expect.stringContaining(formattedArea)]);
   });
 
   it("measures a layer that is shown through a feature group", () => {
