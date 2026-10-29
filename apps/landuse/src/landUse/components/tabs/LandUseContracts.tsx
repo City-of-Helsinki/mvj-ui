@@ -167,7 +167,7 @@ export const LandUseContracts: React.FC<LandUseContractsProps> = ({
     .filter((entry) => entry.id)
     .map((entry) => ({
       label: entry.party.details.name,
-      value: entry.id!,
+      value: entry.id,
     }));
   const [pendingGuaranteeTypeByContract, setPendingGuaranteeTypeByContract] =
     React.useState<Record<number, LandUseGuaranteeType | undefined>>({});

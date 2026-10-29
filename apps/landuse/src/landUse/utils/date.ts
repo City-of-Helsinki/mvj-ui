@@ -1,4 +1,5 @@
 export const parseFinnishDateToIsoDate = (value: string): string | null => {
+  if (!value) return null;
   const normalized = value.trim();
   if (!normalized) return null;
   const [day, month, year] = normalized.split(".");
@@ -7,7 +8,9 @@ export const parseFinnishDateToIsoDate = (value: string): string | null => {
     : normalized;
 };
 
-export const parseIsoDateToFinnishDate = (value: string | null | undefined): string => {
+export const parseIsoDateToFinnishDate = (
+  value: string | null | undefined,
+): string => {
   if (!value) return "";
   const [year, month, day] = value.split("-");
   return `${day}.${month}.${year}`;
