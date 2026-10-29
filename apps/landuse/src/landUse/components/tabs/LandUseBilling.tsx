@@ -609,7 +609,11 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
                                   <TextInput
                                     id={`landuse-billing-status-${index}`}
                                     label="Laskun tila"
-                                    value={readOnlyTextValue(statusInput.value)}
+                                    value={getOptionsDisplayValue(
+                                      statusInput.value,
+                                      metadataQuery.data?.invoice_statuses ??
+                                        [],
+                                    )}
                                     readOnly
                                   />
                                   {isEditMode && statusAction && (
@@ -1093,8 +1097,10 @@ const InvoiceReviewTable: React.FC<InvoiceReviewTableProps> = ({
                                       <TextInput
                                         id={`landuse-billing-review-type-${scheduleIndex}-${index}`}
                                         label="Laskun tyyppi"
-                                        value={readOnlyTextValue(
+                                        value={getOptionsDisplayValue(
                                           installment.type,
+                                          metadataQuery.data?.invoice_types ??
+                                            [],
                                         )}
                                         readOnly
                                       />

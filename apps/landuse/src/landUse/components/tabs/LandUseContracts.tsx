@@ -17,6 +17,7 @@ import { useLandUseMetadata } from "@/landUse/api/useLandUseMetadata";
 import { type LandUseGuaranteeType } from "@/landUse/options";
 import {
   getFieldTextValue,
+  getOptionsDisplayValue,
   normalizeSelectValue,
   readOnlyTextValue,
 } from "@/landUse/utils/fieldUtils";
@@ -801,7 +802,7 @@ export const LandUseContracts: React.FC<LandUseContractsProps> = ({
                                         savedVakuus?.palautettuPvm,
                                       );
                                       return {
-                                        title: `Vakuus: ${vakuus.tyyppi ?? ""}${
+                                        title: `Vakuus: ${getOptionsDisplayValue(vakuus.tyyppi, guaranteeTypeOptions)}${
                                           isVakuusLocked
                                             ? ` (palautettu ${savedVakuus?.palautettuPvm})`
                                             : ""

@@ -34,6 +34,7 @@ import {
   LAND_USE_PAYMENT_SCHEDULE_STATUSES,
 } from "@/landUse/options";
 import {
+  getOptionsDisplayValue,
   normalizeSelectValue,
   readOnlyTextValue,
   type SelectOption,
@@ -201,11 +202,15 @@ const createPartyOptions = (parties: PartyEntry[]): SelectOption[] =>
 
 const createInvoiceContractOptions = (
   contracts: ContractItem[],
+  contractTypeChoices: SelectOption[],
 ): ContractOption[] =>
   contracts
     .filter((agreement) => agreement.id)
     .map((agreement, index) => {
-      const contractType = agreement.sopimuksenTyyppi?.trim();
+      const contractTypeCode = agreement.sopimuksenTyyppi?.trim();
+      const contractType = contractTypeCode
+        ? getOptionsDisplayValue(contractTypeCode, contractTypeChoices)
+        : "";
       const contractNumber = agreement.sopimusnumero?.trim() ?? "";
       const parts = [contractType, contractNumber].filter(
         (part): part is string => Boolean(part),
@@ -1061,6 +1066,7 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
   onRemoveSchedule,
   onSendToInvoicing,
 }) => {
+  const metadataQuery = useLandUseMetadata();
   const [scheduleToSend, setScheduleToSend] =
     useState<LandUsePaymentScheduleEntry | null>(null);
 
@@ -1231,7 +1237,10 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
                           type={getScheduleStatusLabelType(schedule.status)}
                           iconStart={getScheduleStatusIcon(schedule.status)}
                         >
-                          {schedule.status ?? "-"}
+                          {getOptionsDisplayValue(
+                            schedule.status,
+                            metadataQuery.data?.payment_schedule_statuses ?? [],
+                          )}
                         </StatusLabel>
                         {canSubmitSchedules && statusAction && (
                           <Button
@@ -1491,6 +1500,7 @@ export const LandUsePaymentSchedule: React.FC<LandUsePaymentScheduleProps> = ({
   agreementIdentifier,
   onSendToInvoicing,
 }) => {
+  const metadataQuery = useLandUseMetadata();
   const [isBulkCreateOpen, setIsBulkCreateOpen] = useState(false);
 
   const partyOptions = useMemo(
@@ -1498,8 +1508,12 @@ export const LandUsePaymentSchedule: React.FC<LandUsePaymentScheduleProps> = ({
     [parties],
   );
   const contractOptions = useMemo(
-    () => createInvoiceContractOptions(contracts ?? []),
-    [contracts],
+    () =>
+      createInvoiceContractOptions(
+        contracts ?? [],
+        metadataQuery.data?.contract_types ?? [],
+      ),
+    [contracts, metadataQuery.data?.contract_types],
   );
 
   const tocEntries = useMemo(
