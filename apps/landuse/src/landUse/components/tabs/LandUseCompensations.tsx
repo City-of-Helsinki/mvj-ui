@@ -290,7 +290,9 @@ const SiteRow: React.FC<SiteRowProps> = ({
                         <Select
                           id={`landuse-compensations-kayttotarkoitus-${site.id}`}
                           options={intendedUseOptions}
-                          value={normalizeSelectValue(input.value)}
+                          value={normalizeSelectValue(
+                            input.value == null ? undefined : String(input.value),
+                          )}
                           onChange={(selectedOptions) => {
                             input.onChange(
                               selectedOptions[0]
@@ -485,14 +487,18 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
     queryFn: getLandPolicyPrograms,
     staleTime: 60 * 60 * 1000,
   });
-  const intendedUseOptions = (intendedUsesQuery.data ?? []).map(({ id, name }) => ({
-    label: name,
-    value: String(id),
-  }));
-  const tenureTypeOptions = (tenureTypesQuery.data ?? []).map(({ id, name }) => ({
-    label: name,
-    value: String(id),
-  }));
+  const intendedUseOptions = (intendedUsesQuery.data ?? []).map(
+    ({ id, name }) => ({
+      label: name,
+      value: String(id),
+    }),
+  );
+  const tenureTypeOptions = (tenureTypesQuery.data ?? []).map(
+    ({ id, name }) => ({
+      label: name,
+      value: String(id),
+    }),
+  );
   const preservationOptions =
     metadataQuery.data?.preservation_designations ?? [];
   const landPolicyProgramOptions = (landPolicyProgramsQuery.data ?? []).map(
@@ -897,7 +903,9 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                           id="landuse-compensations-maapoliittinen-ohjelma"
                           options={landPolicyProgramOptions}
                           value={normalizeSelectValue(
-                            input.value == null ? undefined : String(input.value),
+                            input.value == null
+                              ? undefined
+                              : String(input.value),
                           )}
                           onChange={handleMaapoliittinenOhjelmaChange}
                           clearable

@@ -8,7 +8,7 @@ import type { LandUseMonitoringFormValues } from "@/landUse/components/tabs/Land
 import type { LandUsePartiesFormValues } from "@/landUse/components/tabs/LandUseParties";
 import type { LandUseSummaryFormValues } from "@/landUse/components/tabs/LandUseSummary";
 import type { Guarantee } from "@/landUse/components/collateralForms";
-import { LAND_USE_INVOICE_TYPES} from "@/landUse/options";
+import { LAND_USE_INVOICE_TYPES } from "@/landUse/options";
 import type { LandUseListItem } from "@/landUse/api/landUseListTypes";
 import {
   parseIsoDateToFinnishDate,
@@ -690,7 +690,9 @@ const parseOptionalDecimal = (
   return /^-?(?:\d+|\d*\.\d+)$/.test(normalized) ? normalized : null;
 };
 
-const parsePreservationDesignation = (value: string | undefined): string | null => {
+const parsePreservationDesignation = (
+  value: string | undefined,
+): string | null => {
   if (!value) return null;
   if (!new Set(["SR1", "SR2", "SR3"]).has(value)) {
     throw new Error("Invalid preservation designation");
@@ -704,47 +706,50 @@ export const updateCompensations = async (
 ): Promise<LandUseCompensationsFormValues> => {
   await callApiPut<
     unknown,
-    { compensation: CompensationWriteRequest; sites: AgreementSiteWriteRequest[] }
+    {
+      compensation: CompensationWriteRequest;
+      sites: AgreementSiteWriteRequest[];
+    }
   >(`agreements/${agreementId}/compensation-with-sites/`, {
     compensation: {
-        excel_calculation_url: values.excelLaskelmaUrl || null,
-        monetary_compensation: parseOptionalDecimal(values.rahakorvaus),
-        land_compensation: parseOptionalDecimal(values.maakorvaus),
-        other_compensation: parseOptionalDecimal(values.muuKorvaus),
-        total_compensation: parseOptionalDecimal(
-          values.maankayttokorvausYhteensa,
-        ),
-        base_price: parseOptionalDecimal(values.perushinta),
-        land_compensation_description: values.maakorvausSelite,
-        other_compensation_description: values.muuSelite,
-        value_before_detailed_plan_proposal: parseOptionalDecimal(
-          values.kaavaehdotustaEdeltavaArvo,
-        ),
-        demolition_or_other_deduction: parseOptionalDecimal(
-          values.purkuTaiMuuVahennys,
-        ),
-        land_use_compensation: parseOptionalDecimal(values.maankayttokorvaus),
-        land_policy_program: values.maapoliittinenOhjelmaId ?? null,
-        land_policy_program_discount_percentage: parseOptionalDecimal(
-          values.huojennusProsentti,
-        ),
-        public_areas_m2: parseOptionalDecimal(values.yleisetAlueetNeliot),
-        public_areas_acquisition_value: parseOptionalDecimal(
-          values.yleisetAlueetHankinnanArvo,
-        ),
+      excel_calculation_url: values.excelLaskelmaUrl || null,
+      monetary_compensation: parseOptionalDecimal(values.rahakorvaus),
+      land_compensation: parseOptionalDecimal(values.maakorvaus),
+      other_compensation: parseOptionalDecimal(values.muuKorvaus),
+      total_compensation: parseOptionalDecimal(
+        values.maankayttokorvausYhteensa,
+      ),
+      base_price: parseOptionalDecimal(values.perushinta),
+      land_compensation_description: values.maakorvausSelite,
+      other_compensation_description: values.muuSelite,
+      value_before_detailed_plan_proposal: parseOptionalDecimal(
+        values.kaavaehdotustaEdeltavaArvo,
+      ),
+      demolition_or_other_deduction: parseOptionalDecimal(
+        values.purkuTaiMuuVahennys,
+      ),
+      land_use_compensation: parseOptionalDecimal(values.maankayttokorvaus),
+      land_policy_program: values.maapoliittinenOhjelmaId ?? null,
+      land_policy_program_discount_percentage: parseOptionalDecimal(
+        values.huojennusProsentti,
+      ),
+      public_areas_m2: parseOptionalDecimal(values.yleisetAlueetNeliot),
+      public_areas_acquisition_value: parseOptionalDecimal(
+        values.yleisetAlueetHankinnanArvo,
+      ),
     },
-    sites: values.sites.map((site): AgreementSiteWriteRequest => ({
-        ...(Number.isInteger(Number(site.id)) ? { id: Number(site.id) } : {}),
-        identifier: site.kohteenTunnus,
-        area_m2: parseOptionalDecimal(site.pintaAlaM2),
-        floor_area_kem2: parseOptionalDecimal(site.kem2),
-        intended_use: site.kayttotarkoitusId ?? null,
-        tenure_types: (site.hallintamuotoIds ?? []).map(Number),
-        preservation_designation: parsePreservationDesignation(site.suojeltu),
-        has_housing_obligation: site.amVelvoite,
-        unit_price_euro_per_kem2: parseOptionalDecimal(
-          values.perustietotaulukkoRowsBySiteId[site.id]?.yksikkohinta,
-        ),
+    sites: (values.sites ?? []).map((site): AgreementSiteWriteRequest => ({
+      ...(Number.isInteger(Number(site.id)) ? { id: Number(site.id) } : {}),
+      identifier: site.kohteenTunnus,
+      area_m2: parseOptionalDecimal(site.pintaAlaM2),
+      floor_area_kem2: parseOptionalDecimal(site.kem2),
+      intended_use: site.kayttotarkoitusId ?? null,
+      tenure_types: (site.hallintamuotoIds ?? []).map(Number),
+      preservation_designation: parsePreservationDesignation(site.suojeltu),
+      has_housing_obligation: site.amVelvoite,
+      unit_price_euro_per_kem2: parseOptionalDecimal(
+        values.perustietotaulukkoRowsBySiteId?.[site.id]?.yksikkohinta,
+      ),
     })),
   });
 
@@ -945,32 +950,54 @@ export const updateContracts = async (
   await callApiPut(
     `agreements/${agreementId}/contracts/`,
     (values.contracts ?? []).map((contract) => ({
-      ...(Number.isInteger(Number(contract.id)) ? { id: Number(contract.id) } : {}),
+      ...(Number.isInteger(Number(contract.id))
+        ? { id: Number(contract.id) }
+        : {}),
       identifier: contract.sopimusnumero,
       signing_date: parseFinnishDateToIsoDate(contract.allekirjoituspvm),
-      signing_deadline: parseFinnishDateToIsoDate(contract.allekirjoitettavaMennessa),
-      first_invitation_sent_date: parseFinnishDateToIsoDate(contract.ensimmainenKutsuLahetetty),
-      second_invitation_sent_date: parseFinnishDateToIsoDate(contract.toinenKutsuLahetetty),
-      third_invitation_sent_date: parseFinnishDateToIsoDate(contract.kolmasKutsuLahetetty),
+      signing_deadline: parseFinnishDateToIsoDate(
+        contract.allekirjoitettavaMennessa,
+      ),
+      first_invitation_sent_date: parseFinnishDateToIsoDate(
+        contract.ensimmainenKutsuLahetetty,
+      ),
+      second_invitation_sent_date: parseFinnishDateToIsoDate(
+        contract.toinenKutsuLahetetty,
+      ),
+      third_invitation_sent_date: parseFinnishDateToIsoDate(
+        contract.kolmasKutsuLahetetty,
+      ),
       executor: contract.toimeenpanija,
       decision: contract.paatos ? Number(contract.paatos) : null,
       note: contract.huomautus,
       title: contract.title,
       contract_type: contract.sopimuksenTyyppi ?? "",
       changes: contract.muutokset.map((change) => ({
-        ...(Number.isInteger(Number(change.id)) ? { id: Number(change.id) } : {}),
+        ...(Number.isInteger(Number(change.id))
+          ? { id: Number(change.id) }
+          : {}),
         identifier: change.sopimusnumero,
         signing_date: parseFinnishDateToIsoDate(change.allekirjoituspvm),
-        signing_deadline: parseFinnishDateToIsoDate(change.allekirjoitettavaMennessa),
-        first_invitation_sent_date: parseFinnishDateToIsoDate(change.ensimmainenKutsuLahetetty),
-        second_invitation_sent_date: parseFinnishDateToIsoDate(change.toinenKutsuLahetetty),
-        third_invitation_sent_date: parseFinnishDateToIsoDate(change.kolmasKutsuLahetetty),
+        signing_deadline: parseFinnishDateToIsoDate(
+          change.allekirjoitettavaMennessa,
+        ),
+        first_invitation_sent_date: parseFinnishDateToIsoDate(
+          change.ensimmainenKutsuLahetetty,
+        ),
+        second_invitation_sent_date: parseFinnishDateToIsoDate(
+          change.toinenKutsuLahetetty,
+        ),
+        third_invitation_sent_date: parseFinnishDateToIsoDate(
+          change.kolmasKutsuLahetetty,
+        ),
         executor: change.toimeenpanija,
         decision: change.paatos ? Number(change.paatos) : null,
         note: change.huomautus,
       })),
       collaterals: contract.vakuudet.map((collateral) => ({
-        ...(Number.isInteger(Number(collateral.id)) ? { id: Number(collateral.id) } : {}),
+        ...(Number.isInteger(Number(collateral.id))
+          ? { id: Number(collateral.id) }
+          : {}),
         guarantee_type: collateral.tyyppi,
         parties: (collateral.osapuolet ?? []).map(Number),
         document_category: collateral.vakuusasiakirjanLaji ?? "",
@@ -978,17 +1005,23 @@ export const updateContracts = async (
         property_identifiers: collateral.kiinteistotunnukset ?? [],
         facility_identifier: collateral.laitostunnus ?? null,
         mortgage_deed_number: collateral.panttikirjanNumero ?? "",
-        mortgage_deed_date: parseFinnishDateToIsoDate(collateral.panttikirjanPaivays),
+        mortgage_deed_date: parseFinnishDateToIsoDate(
+          collateral.panttikirjanPaivays,
+        ),
         subsequent_pledgee_name: collateral.jalkipantinSaajanNimi ?? null,
-        subsequent_pledgee_business_id: collateral.jalkipantinSaajanYTunnus ?? null,
+        subsequent_pledgee_business_id:
+          collateral.jalkipantinSaajanYTunnus ?? null,
         guarantor_name: collateral.antajanNimi ?? "",
         guarantor_business_id: collateral.antajanYTunnus ?? "",
-        guarantor_national_identification_number: collateral.antajanHenkilotunnus ?? "",
+        guarantor_national_identification_number:
+          collateral.antajanHenkilotunnus ?? "",
         guarantee_identifier: collateral.takausnumero ?? "",
         account_number: collateral.tilinumero ?? "",
         paid_at_date: parseFinnishDateToIsoDate(collateral.maksettuPvm),
-        third_party_pledger_name: collateral.vierasvelkapanttauksenAntajanNimi ?? null,
-        third_party_pledger_business_id: collateral.vierasvelkapanttauksenAntajanYTunnus ?? null,
+        third_party_pledger_name:
+          collateral.vierasvelkapanttauksenAntajanNimi ?? null,
+        third_party_pledger_business_id:
+          collateral.vierasvelkapanttauksenAntajanYTunnus ?? null,
         start_date: parseFinnishDateToIsoDate(collateral.alkupvm),
         end_date: parseFinnishDateToIsoDate(collateral.loppupvm),
         amount: parseOptionalDecimal(collateral.maara),
@@ -1058,7 +1091,9 @@ export const updatePaymentSchedule = async (
   await callApiPut(
     `agreements/${agreementId}/payment-schedules/`,
     (values.paymentSchedules ?? []).map((schedule) => ({
-      ...(Number.isInteger(Number(schedule.id)) ? { id: Number(schedule.id) } : {}),
+      ...(Number.isInteger(Number(schedule.id))
+        ? { id: Number(schedule.id) }
+        : {}),
       recipient_party: Number(schedule.recipientPartyIndex),
       contract: Number(schedule.contractIndex),
       signing_date: parseFinnishDateToIsoDate(schedule.signedDate),
@@ -1066,12 +1101,18 @@ export const updatePaymentSchedule = async (
       base_interest_rate: parseOptionalDecimal(schedule.korkoPeruskorko),
       interest_margin: parseOptionalDecimal(schedule.korkoMarginaali),
       installments: schedule.installments.map((installment) => ({
-        ...(Number.isInteger(Number(installment.id)) ? { id: Number(installment.id) } : {}),
+        ...(Number.isInteger(Number(installment.id))
+          ? { id: Number(installment.id) }
+          : {}),
         installment_sequence_number: Number(installment.installmentNumber),
         installment_count_total: Number(installment.installmentTotal),
         due_date: parseFinnishDateToIsoDate(installment.dueDate),
-        interest_calculation_period_start_date: parseFinnishDateToIsoDate(installment.laskentajaksonAlkupvm),
-        interest_calculation_period_end_date: parseFinnishDateToIsoDate(installment.laskentajaksonLoppupvm),
+        interest_calculation_period_start_date: parseFinnishDateToIsoDate(
+          installment.laskentajaksonAlkupvm,
+        ),
+        interest_calculation_period_end_date: parseFinnishDateToIsoDate(
+          installment.laskentajaksonLoppupvm,
+        ),
         items: (installment.invoiceItems ?? []).map((item) => ({
           ...(Number.isInteger(Number(item.id)) ? { id: Number(item.id) } : {}),
           item_type: item.itemType,

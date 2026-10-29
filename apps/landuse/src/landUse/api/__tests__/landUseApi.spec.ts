@@ -325,9 +325,7 @@ describe("land use API contract adapters", () => {
           name: "Historical recipient",
           streetAddress: "Historic street 1",
         },
-        payments: [
-          { id: "20", paidAmount: "0.40", paidDate: "01.03.2024" },
-        ],
+        payments: [{ id: "20", paidAmount: "0.40", paidDate: "01.03.2024" }],
       });
       expect(invoice?.invoiceItems?.map((item) => item.itemType)).toEqual(
         items.map((item) => item.item_type),
@@ -457,9 +455,11 @@ describe("land use API contract adapters", () => {
       expect(callApiPut).toHaveBeenCalledWith(
         "agreements/1/compensation-with-sites/",
         expect.objectContaining({
-          sites: [expect.objectContaining({
-          preservation_designation: designation || null,
-          })],
+          sites: [
+            expect.objectContaining({
+              preservation_designation: designation || null,
+            }),
+          ],
         }),
       );
       expect((await getCompensations("1")).sites[0].suojeltu).toBe(
@@ -884,6 +884,43 @@ describe("land use API contract adapters", () => {
     );
   });
 
+  it.each([
+    { sites: undefined, expectedSites: [] },
+    {
+      sites: [{ id: "site-1", kohteenTunnus: "New site", amVelvoite: false }],
+      expectedSites: [
+        expect.objectContaining({
+          identifier: "New site",
+          tenure_types: [],
+          unit_price_euro_per_kem2: null,
+        }),
+      ],
+    },
+  ])(
+    "saves compensation with missing collection values: $sites",
+    async ({ sites, expectedSites }) => {
+      mockGet
+        .mockResolvedValueOnce(null)
+        .mockResolvedValueOnce({ agreement_sites: [] });
+      vi.mocked(callApiPut).mockResolvedValue(undefined);
+
+      await updateCompensations("agreement-1", {
+        rahakorvaus: "100",
+        sites,
+      } as LandUseCompensationsFormValues);
+
+      expect(callApiPut).toHaveBeenCalledWith(
+        "agreements/agreement-1/compensation-with-sites/",
+        expect.objectContaining({
+          compensation: expect.objectContaining({
+            monetary_compensation: "100",
+          }),
+          sites: expectedSites,
+        }),
+      );
+    },
+  );
+
   it("writes decimal values as exact strings and preserves blanks as null", async () => {
     mockGet
       .mockResolvedValueOnce(null)
@@ -916,16 +953,16 @@ describe("land use API contract adapters", () => {
       "agreements/agreement-1/compensation-with-sites/",
       expect.objectContaining({
         compensation: expect.objectContaining({
-        monetary_compensation: "999999999999999999.99",
-        land_compensation: null,
-        other_compensation: "0.10",
-        total_compensation: "999999999999999999.99",
-        base_price: "12.30",
-        value_before_detailed_plan_proposal: null,
-        land_use_compensation: "999999999999999999.99",
-        land_policy_program_discount_percentage: "12.50",
-        public_areas_m2: null,
-        public_areas_acquisition_value: "0.01",
+          monetary_compensation: "999999999999999999.99",
+          land_compensation: null,
+          other_compensation: "0.10",
+          total_compensation: "999999999999999999.99",
+          base_price: "12.30",
+          value_before_detailed_plan_proposal: null,
+          land_use_compensation: "999999999999999999.99",
+          land_policy_program_discount_percentage: "12.50",
+          public_areas_m2: null,
+          public_areas_acquisition_value: "0.01",
         }),
         sites: [],
       }),
