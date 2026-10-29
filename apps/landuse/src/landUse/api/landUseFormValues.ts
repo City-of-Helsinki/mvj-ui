@@ -8,7 +8,6 @@ import type {
 
 export const createEmptySummaryFormValues = (): LandUseSummaryFormValues => ({
   identifier: "",
-  maankayttosopimusType: undefined,
   kaupunginosa: "",
   edistamisalue: false,
   tila: undefined,

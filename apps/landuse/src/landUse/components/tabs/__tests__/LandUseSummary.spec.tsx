@@ -257,9 +257,6 @@ it("saves free-text agreement types and preparers selected from real officer IDs
       <LandUseSummary form={form} isEditMode />
     </QueryClientProvider>,
   );
-  fireEvent.change(screen.getByLabelText("Maankäyttösopimuksen tyyppi"), {
-    target: { value: "Custom agreement type" },
-  });
   fireEvent.click(await screen.findByRole("button", { name: /Valmistelija/ }));
   fireEvent.click(
     await screen.findByRole("option", { name: "Actual Officer" }),
@@ -269,7 +266,6 @@ it("saves free-text agreement types and preparers selected from real officer IDs
   expect(callApiPatch).toHaveBeenLastCalledWith(
     "agreements/1/",
     expect.objectContaining({
-      agreement_type: "Custom agreement type",
       preparers: [{ preparer: 89 }],
     }),
   );

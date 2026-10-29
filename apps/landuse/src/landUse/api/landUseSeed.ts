@@ -86,7 +86,6 @@ export const mapMockToSummaryFormValues = (
 
   return {
     identifier: mockData.identifier,
-    maankayttosopimusType: normalizeSelectValue(mockData.maankayttosopimusType),
     kaupunginosa: mockData.kaupunginosa ?? "",
     edistamisalue: normalizeProjectAreaBoolean(mockData.edistamisalue),
     tila: mockData.tila,

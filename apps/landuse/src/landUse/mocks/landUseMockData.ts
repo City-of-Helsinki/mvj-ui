@@ -23,7 +23,6 @@ import {
 
 export interface MockLandUseData {
   identifier: string;
-  maankayttosopimusType: string;
   kaupunginosa: string;
   edistamisalue: boolean;
   tila: AgreementStatusCode;
@@ -380,7 +379,6 @@ export const mockLandUseTabStore: Record<string, LandUseAgreementMockTabs> = {
   "MA113-1": {
     summary: {
       identifier: "MA113-1",
-      maankayttosopimusType: "Maankäyttösopimus",
       kaupunginosa: "Kruununhaka",
       edistamisalue: true,
       tila: "IN_PROGRESS",

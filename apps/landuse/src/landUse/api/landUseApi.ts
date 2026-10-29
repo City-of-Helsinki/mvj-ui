@@ -56,7 +56,6 @@ type AgreementOverviewResponse = AgreementListResponse & {
 type AgreementListResponse = {
   id: number;
   identifier: string;
-  agreement_type: string;
   district: District | null;
   party: string;
   zoning_plan_number: string;
@@ -78,7 +77,6 @@ type AgreementUpdateRequest = {
   addresses: AgreementOverviewResponse["addresses"];
   preparers: { preparer: number }[];
   detailed_plan_sites: string[];
-  agreement_type: string;
   is_promotion_area: boolean;
   status: AgreementStatusCode | "";
   estimated_presentation_year: number | null;
@@ -378,7 +376,6 @@ const mapAgreementOverviewToSummary = (
   agreement: AgreementOverviewResponse,
 ): LandUseSummaryFormValues => ({
   identifier: agreement.identifier,
-  maankayttosopimusType: agreement.agreement_type || undefined,
   kaupunginosa: agreement.district?.name ?? "",
   edistamisalue: agreement.is_promotion_area,
   tila: agreement.status || undefined,
@@ -483,7 +480,6 @@ export const updateSummary = async (
       detailed_plan_sites: values.suunnittelunPerusteenaOlevatKohteet
         .map(({ value }) => value?.trim() ?? "")
         .filter(Boolean),
-      agreement_type: values.maankayttosopimusType ?? "",
       is_promotion_area: values.edistamisalue,
       status: values.tila ?? "",
       estimated_presentation_year: getOptionalYear(

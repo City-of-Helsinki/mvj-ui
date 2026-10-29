@@ -52,7 +52,6 @@ interface KohdeEntry {
 
 export interface LandUseSummaryFormValues {
   identifier: string;
-  maankayttosopimusType: string | undefined;
   kaupunginosa: string;
   edistamisalue: boolean;
   tila: AgreementStatusCode | undefined;
@@ -213,23 +212,6 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                     <div id={getSummaryStepId(SUMMARY_STEP_KEYS.general)}>
                       <Fieldset heading="" className="full-width">
                         <div className="landuse-grid">
-                          <div className="landuse-grid__column-6">
-                            <Field name="maankayttosopimusType">
-                              {({ input }) => (
-                                <TextInput
-                                  id="summary-maankayttosopimus-type"
-                                  label="Maankäyttösopimuksen tyyppi"
-                                  value={getFieldTextValue(
-                                    isEditMode,
-                                    input.value,
-                                  )}
-                                  onChange={input.onChange}
-                                  readOnly={!isEditMode}
-                                />
-                              )}
-                            </Field>
-                          </div>
-
                           <div className="landuse-grid__column-6">
                             <Field name="kaupunginosa">
                               {({ input }) => (

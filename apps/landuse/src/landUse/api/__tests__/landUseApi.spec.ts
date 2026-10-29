@@ -52,7 +52,6 @@ describe("land use API contract adapters", () => {
     mockGet.mockResolvedValue({
       id: 1,
       identifier: "M-2026-1",
-      agreement_type: "",
       district: null,
       is_promotion_area: false,
       status: "",
@@ -73,7 +72,6 @@ describe("land use API contract adapters", () => {
       {
         id: 1,
         identifier: "M-2026-1",
-        agreement_type: "",
         district: null,
         party: "List party",
         zoning_plan_number: "12345",
@@ -534,7 +532,6 @@ describe("land use API contract adapters", () => {
     const agreement = {
       id: 1,
       identifier: "091-01-1",
-      agreement_type: "Custom agreement type",
       district: null,
       is_promotion_area: false,
       status: "DRAFT",
@@ -567,7 +564,6 @@ describe("land use API contract adapters", () => {
       asemakaavanKasittelyvaihe: "EFFECTIVE",
       toimivaltainenPaattaja: "42",
       valmistelijat: [{ value: "89" }],
-      maankayttosopimusType: "Custom agreement type",
     });
     await updateSummary("1", values);
     const payload = vi.mocked(callApiPatch).mock.lastCall?.[1];
@@ -575,7 +571,6 @@ describe("land use API contract adapters", () => {
       detailed_plan: 73,
       authorized_signatory: 42,
       preparers: [{ preparer: 89 }],
-      agreement_type: "Custom agreement type",
     });
     expect(payload).not.toHaveProperty("processing_stage");
     expect(payload).not.toHaveProperty("approval_date");
@@ -598,7 +593,6 @@ describe("land use API contract adapters", () => {
         detailed_plan: null,
         authorized_signatory: null,
         preparers: [],
-        agreement_type: "",
       }),
     );
   });
@@ -617,8 +611,6 @@ describe("land use API contract adapters", () => {
       const agreement = {
         id: 1,
         identifier: "091-01-1",
-        agreement_type: "Maankäyttösopimus",
-        district: { id: 1, name: "Kruununhaka", identifier: "01" },
         is_promotion_area: false,
         status,
         estimated_presentation_year: null,

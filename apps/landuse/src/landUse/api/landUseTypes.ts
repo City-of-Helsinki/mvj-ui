@@ -80,7 +80,6 @@ export type LandUseUiMetadata = {
 export type AgreementResponse = {
   id: number;
   identifier: string;
-  agreement_type: string;
   district: number | null;
   is_promotion_area: boolean;
   status: LandUseUiMetadata["agreement_statuses"][number]["value"] | "";
