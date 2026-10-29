@@ -189,7 +189,7 @@ describe("land use API contract adapters", () => {
       parties: [73],
       document_category: "ELECTRONIC",
       target: "PROPERTY",
-      property_identifiers: [{ identifier: "91-1-1-1" }],
+      property_identifiers: ["91-1-1-1"],
       facility_identifier: "FAC-1",
       mortgage_deed_number: "DEED-1",
       mortgage_deed_date: "2024-02-29",
