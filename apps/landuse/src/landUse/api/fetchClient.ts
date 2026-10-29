@@ -35,7 +35,8 @@ export class LanduseApiError extends Error {
 
 export const getLanduseApiErrorMessage = (error: unknown): string => {
   if (!(error instanceof LanduseApiError)) {
-    return "Toiminto epäonnistui. Yritä uudelleen.";
+    // TODO: Create as notification instead.
+    return `${error}`;
   }
 
   if (!error.body) {
