@@ -241,7 +241,67 @@ export type BasisOfRent = {
   management_subventions: Array<Record<string, any>>;
   children: Array<BasisOfRent>;
 };
-
+export type Collateral = {
+  id: number;
+  type: string;
+  other_type: string | null;
+  number: string | null;
+  deed_date: string | null;
+  start_date: string | null;
+  end_date: string | null;
+  total_amount: string | null;
+  paid_date: string | null;
+  returned_date: string | null;
+  note: string | null;
+  has_third_party_pledge: boolean;
+  third_party_pledgor_name: string | null;
+  third_party_pledgor_business_id: string | null;
+  contract_party: Array<number> | null;
+  pledgor_name: string | null;
+  pledgor_national_identification_number: string | null;
+  pledgor_business_id: string | null;
+  account_number: string | null;
+  document_type: DocumentType | null;
+  returned_by: User | null;
+  has_subordinate_pledge: boolean;
+  subordinate_pledgee_name: string | null;
+  subordinate_pledgee_business_id: string | null;
+  number_mortgage_document: string | null;
+  guarantee_number: string | null;
+  property_identifiers: Array<string> | null;
+  institution_identifier: string | null;
+  use_institution_identifier?: boolean;
+  form_version: number;
+};
+export type CollateralPayload = {
+  id?: number;
+  type: string;
+  other_type: string | null;
+  total_amount: number | null;
+  note: string | null;
+  start_date: string | null;
+  end_date: string | null;
+  third_party_pledgor_name: string | null;
+  third_party_pledgor_business_id: string | null;
+  contract_party: Array<number> | null;
+  returned_by: number | null;
+  paid_date?: string | null;
+  returned_date?: string | null;
+  pledgor_name?: string | null;
+  pledgor_national_identification_number?: string | null;
+  pledgor_business_id?: string | null;
+  account_number?: string | null;
+  number?: string | null;
+  deed_date?: string | null;
+  document_type?: DocumentType | null;
+  subordinate_pledgee_name?: string | null;
+  subordinate_pledgee_business_id?: string | null;
+  number_mortgage_document?: string | null;
+  guarantee_number?: string | null;
+  property_identifiers?: Array<string> | null;
+  institution_identifier?: string | null;
+};
+type DocumentType = "mail" | "electronic";
 export type PeriodicRentAdjustmentType =
   "TASOTARKISTUS_20_20" | "TASOTARKISTUS_20_10";
 
