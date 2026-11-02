@@ -25,7 +25,6 @@ import {
   isFieldAllowedToRead,
 } from "@/util/helpers";
 import { getAttributes, getCollapseStateByKey } from "@/leases/selectors";
-import { useWindowResize } from "@/components/resize/WindowResizeHandler";
 import type { Attributes } from "types";
 const formName = FormNames.LEASE_DECISIONS;
 type Props = {
@@ -42,8 +41,6 @@ const DecisionItem: React.FC<Props> = ({
   typeOptions,
 }) => {
   const attributes: Attributes = useAppSelector(getAttributes);
-
-  const largeScreen = useWindowResize();
 
   const conditionsCollapseState = useAppSelector((state) =>
     getCollapseStateByKey(
@@ -293,285 +290,153 @@ const DecisionItem: React.FC<Props> = ({
             (!decision.conditions.length && <FormText>Ei ehtoja</FormText>)}
           {decision.conditions && !!decision.conditions.length && (
             <BoxItemContainer>
-              {largeScreen && (
-                <Row>
-                  <Column large={2}>
-                    <Authorization
-                      allow={isFieldAllowedToRead(
-                        attributes,
+              <Row>
+                <Column large={2}>
+                  <Authorization
+                    allow={isFieldAllowedToRead(
+                      attributes,
+                      LeaseDecisionConditionsFieldPaths.TYPE,
+                    )}
+                  >
+                    <FormTextTitle
+                      uiDataKey={getUiDataLeaseKey(
                         LeaseDecisionConditionsFieldPaths.TYPE,
                       )}
                     >
-                      <FormTextTitle
-                        uiDataKey={getUiDataLeaseKey(
-                          LeaseDecisionConditionsFieldPaths.TYPE,
-                        )}
-                      >
-                        {LeaseDecisionConditionsFieldTitles.TYPE}
-                      </FormTextTitle>
-                    </Authorization>
-                  </Column>
-                  <Column large={2}>
-                    <Authorization
-                      allow={isFieldAllowedToRead(
-                        attributes,
+                      {LeaseDecisionConditionsFieldTitles.TYPE}
+                    </FormTextTitle>
+                  </Authorization>
+                </Column>
+                <Column large={2}>
+                  <Authorization
+                    allow={isFieldAllowedToRead(
+                      attributes,
+                      LeaseDecisionConditionsFieldPaths.SUPERVISION_DATE,
+                    )}
+                  >
+                    <FormTextTitle
+                      uiDataKey={getUiDataLeaseKey(
                         LeaseDecisionConditionsFieldPaths.SUPERVISION_DATE,
                       )}
                     >
-                      <FormTextTitle
-                        uiDataKey={getUiDataLeaseKey(
-                          LeaseDecisionConditionsFieldPaths.SUPERVISION_DATE,
-                        )}
-                      >
-                        {LeaseDecisionConditionsFieldTitles.SUPERVISION_DATE}
-                      </FormTextTitle>
-                    </Authorization>
-                  </Column>
-                  <Column large={2}>
-                    <Authorization
-                      allow={isFieldAllowedToRead(
-                        attributes,
+                      {LeaseDecisionConditionsFieldTitles.SUPERVISION_DATE}
+                    </FormTextTitle>
+                  </Authorization>
+                </Column>
+                <Column large={2}>
+                  <Authorization
+                    allow={isFieldAllowedToRead(
+                      attributes,
+                      LeaseDecisionConditionsFieldPaths.SUPERVISED_DATE,
+                    )}
+                  >
+                    <FormTextTitle
+                      uiDataKey={getUiDataLeaseKey(
                         LeaseDecisionConditionsFieldPaths.SUPERVISED_DATE,
                       )}
                     >
-                      <FormTextTitle
-                        uiDataKey={getUiDataLeaseKey(
-                          LeaseDecisionConditionsFieldPaths.SUPERVISED_DATE,
-                        )}
-                      >
-                        {LeaseDecisionConditionsFieldTitles.SUPERVISED_DATE}
-                      </FormTextTitle>
-                    </Authorization>
-                  </Column>
-                  <Column large={6}>
-                    <Authorization
-                      allow={isFieldAllowedToRead(
-                        attributes,
+                      {LeaseDecisionConditionsFieldTitles.SUPERVISED_DATE}
+                    </FormTextTitle>
+                  </Authorization>
+                </Column>
+                <Column large={6}>
+                  <Authorization
+                    allow={isFieldAllowedToRead(
+                      attributes,
+                      LeaseDecisionConditionsFieldPaths.DESCRIPTION,
+                    )}
+                  >
+                    <FormTextTitle
+                      uiDataKey={getUiDataLeaseKey(
                         LeaseDecisionConditionsFieldPaths.DESCRIPTION,
                       )}
                     >
-                      <FormTextTitle
-                        uiDataKey={getUiDataLeaseKey(
+                      {LeaseDecisionConditionsFieldTitles.DESCRIPTION}
+                    </FormTextTitle>
+                  </Authorization>
+                </Column>
+              </Row>
+
+              {decision.conditions.map((condition, index) => {
+                return (
+                  <Row key={index}>
+                    <Column large={2}>
+                      <Authorization
+                        allow={isFieldAllowedToRead(
+                          attributes,
+                          LeaseDecisionConditionsFieldPaths.TYPE,
+                        )}
+                      >
+                        <FormText>
+                          {getLabelOfOption(
+                            conditionTypeOptions,
+                            condition.type,
+                          ) || "–"}
+                        </FormText>
+                      </Authorization>
+                    </Column>
+                    <Column large={2}>
+                      <Authorization
+                        allow={isFieldAllowedToRead(
+                          attributes,
+                          LeaseDecisionConditionsFieldPaths.SUPERVISION_DATE,
+                        )}
+                      >
+                        <FormText
+                          className={
+                            condition.supervision_date &&
+                            !condition.supervised_date
+                              ? "alert"
+                              : ""
+                          }
+                        >
+                          {condition.supervision_date ? (
+                            <span>
+                              <i />
+                              {formatDate(condition.supervision_date)}
+                            </span>
+                          ) : (
+                            "–"
+                          )}
+                        </FormText>
+                      </Authorization>
+                    </Column>
+                    <Column large={2}>
+                      <Authorization
+                        allow={isFieldAllowedToRead(
+                          attributes,
+                          LeaseDecisionConditionsFieldPaths.SUPERVISED_DATE,
+                        )}
+                      >
+                        <FormText
+                          className={condition.supervised_date ? "success" : ""}
+                        >
+                          {condition.supervised_date ? (
+                            <span>
+                              <i />
+                              {formatDate(condition.supervised_date)}
+                            </span>
+                          ) : (
+                            "–"
+                          )}
+                        </FormText>
+                      </Authorization>
+                    </Column>
+                    <Column large={6}>
+                      <Authorization
+                        allow={isFieldAllowedToRead(
+                          attributes,
                           LeaseDecisionConditionsFieldPaths.DESCRIPTION,
                         )}
                       >
-                        {LeaseDecisionConditionsFieldTitles.DESCRIPTION}
-                      </FormTextTitle>
-                    </Authorization>
-                  </Column>
-                </Row>
-              )}
-              {decision.conditions.map((condition, index) => {
-                if (largeScreen) {
-                  return (
-                    <Row key={index}>
-                      <Column large={2}>
-                        <Authorization
-                          allow={isFieldAllowedToRead(
-                            attributes,
-                            LeaseDecisionConditionsFieldPaths.TYPE,
-                          )}
-                        >
-                          <FormText>
-                            {getLabelOfOption(
-                              conditionTypeOptions,
-                              condition.type,
-                            ) || "–"}
-                          </FormText>
-                        </Authorization>
-                      </Column>
-                      <Column large={2}>
-                        <Authorization
-                          allow={isFieldAllowedToRead(
-                            attributes,
-                            LeaseDecisionConditionsFieldPaths.SUPERVISION_DATE,
-                          )}
-                        >
-                          <FormText
-                            className={
-                              condition.supervision_date &&
-                              !condition.supervised_date
-                                ? "alert"
-                                : ""
-                            }
-                          >
-                            {condition.supervision_date ? (
-                              <span>
-                                <i />
-                                {formatDate(condition.supervision_date)}
-                              </span>
-                            ) : (
-                              "–"
-                            )}
-                          </FormText>
-                        </Authorization>
-                      </Column>
-                      <Column large={2}>
-                        <Authorization
-                          allow={isFieldAllowedToRead(
-                            attributes,
-                            LeaseDecisionConditionsFieldPaths.SUPERVISED_DATE,
-                          )}
-                        >
-                          <FormText
-                            className={
-                              condition.supervised_date ? "success" : ""
-                            }
-                          >
-                            {condition.supervised_date ? (
-                              <span>
-                                <i />
-                                {formatDate(condition.supervised_date)}
-                              </span>
-                            ) : (
-                              "–"
-                            )}
-                          </FormText>
-                        </Authorization>
-                      </Column>
-                      <Column large={6}>
-                        <Authorization
-                          allow={isFieldAllowedToRead(
-                            attributes,
-                            LeaseDecisionConditionsFieldPaths.DESCRIPTION,
-                          )}
-                        >
-                          <ShowMore
-                            className="no-margin"
-                            text={condition.description || "–"}
-                          />
-                        </Authorization>
-                      </Column>
-                    </Row>
-                  );
-                } else {
-                  return (
-                    <BoxItem
-                      key={index}
-                      className="no-border-on-first-child no-border-on-last-child"
-                    >
-                      <Row>
-                        <Column small={6} medium={4}>
-                          <Authorization
-                            allow={isFieldAllowedToRead(
-                              attributes,
-                              LeaseDecisionConditionsFieldPaths.TYPE,
-                            )}
-                          >
-                            <>
-                              <FormTextTitle
-                                uiDataKey={getUiDataLeaseKey(
-                                  LeaseDecisionConditionsFieldPaths.TYPE,
-                                )}
-                              >
-                                {LeaseDecisionConditionsFieldTitles.TYPE}
-                              </FormTextTitle>
-                              <FormText>
-                                {getLabelOfOption(
-                                  conditionTypeOptions,
-                                  condition.type,
-                                ) || "–"}
-                              </FormText>
-                            </>
-                          </Authorization>
-                        </Column>
-                        <Column small={6} medium={4}>
-                          <Authorization
-                            allow={isFieldAllowedToRead(
-                              attributes,
-                              LeaseDecisionConditionsFieldPaths.SUPERVISION_DATE,
-                            )}
-                          >
-                            <>
-                              <FormTextTitle
-                                uiDataKey={getUiDataLeaseKey(
-                                  LeaseDecisionConditionsFieldPaths.SUPERVISION_DATE,
-                                )}
-                              >
-                                {
-                                  LeaseDecisionConditionsFieldTitles.SUPERVISION_DATE
-                                }
-                              </FormTextTitle>
-                              <FormText
-                                className={
-                                  condition.supervision_date &&
-                                  !condition.supervised_date
-                                    ? "alert"
-                                    : ""
-                                }
-                              >
-                                {condition.supervision_date ? (
-                                  <span>
-                                    <i />
-                                    {formatDate(condition.supervision_date)}
-                                  </span>
-                                ) : (
-                                  "–"
-                                )}
-                              </FormText>
-                            </>
-                          </Authorization>
-                        </Column>
-                        <Column small={6} medium={4}>
-                          <Authorization
-                            allow={isFieldAllowedToRead(
-                              attributes,
-                              LeaseDecisionConditionsFieldPaths.SUPERVISED_DATE,
-                            )}
-                          >
-                            <>
-                              <FormTextTitle
-                                uiDataKey={getUiDataLeaseKey(
-                                  LeaseDecisionConditionsFieldPaths.SUPERVISED_DATE,
-                                )}
-                              >
-                                {
-                                  LeaseDecisionConditionsFieldTitles.SUPERVISED_DATE
-                                }
-                              </FormTextTitle>
-                              <FormText
-                                className={
-                                  condition.supervised_date ? "success" : ""
-                                }
-                              >
-                                {condition.supervised_date ? (
-                                  <span>
-                                    <i />
-                                    {formatDate(condition.supervised_date)}
-                                  </span>
-                                ) : (
-                                  "–"
-                                )}
-                              </FormText>
-                            </>
-                          </Authorization>
-                        </Column>
-                        <Column small={12} medium={12}>
-                          <Authorization
-                            allow={isFieldAllowedToRead(
-                              attributes,
-                              LeaseDecisionConditionsFieldPaths.DESCRIPTION,
-                            )}
-                          >
-                            <>
-                              <FormTextTitle
-                                uiDataKey={getUiDataLeaseKey(
-                                  LeaseDecisionConditionsFieldPaths.DESCRIPTION,
-                                )}
-                              >
-                                {LeaseDecisionConditionsFieldTitles.DESCRIPTION}
-                              </FormTextTitle>
-                              <ShowMore
-                                className="no-margin"
-                                text={condition.description || "–"}
-                              />
-                            </>
-                          </Authorization>
-                        </Column>
-                      </Row>
-                    </BoxItem>
-                  );
-                }
+                        <ShowMore
+                          className="no-margin"
+                          text={condition.description || "–"}
+                        />
+                      </Authorization>
+                    </Column>
+                  </Row>
+                );
               })}
             </BoxItemContainer>
           )}

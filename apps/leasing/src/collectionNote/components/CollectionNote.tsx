@@ -1,6 +1,5 @@
 import React, { useMemo } from "react";
 import { useAppSelector } from "@/root/hooks";
-import { useWindowResize } from "@/components/resize/WindowResizeHandler";
 import { Row, Column } from "@/components/grid/Grid";
 import Authorization from "@/components/authorization/Authorization";
 import FormText from "@/components/form/FormText";
@@ -49,7 +48,6 @@ const CollectionNoteItem: React.FC<Props> = ({
   enableEdit,
   isServiceUnitSameAsActiveServiceUnit,
 }) => {
-  const largeScreen = useWindowResize();
   const collectionNoteAttributes: Attributes = useAppSelector(
     getCollectionNoteAttributes,
   );
@@ -196,12 +194,11 @@ const CollectionNoteItem: React.FC<Props> = ({
 
         {
           // Spacers to consistently position fields in cases of some dynamic fields missing.
-          largeScreen &&
-            !showContractChangeFields &&
+          !showContractChangeFields &&
             !showPostponeDate &&
             !showSentDate && <Column large={2} />
         }
-        {largeScreen && !showContractChangeFields && <Column large={1} />}
+        {!showContractChangeFields && <Column large={1} />}
 
         <Column small={6} medium={2} large={1}>
           <Authorization

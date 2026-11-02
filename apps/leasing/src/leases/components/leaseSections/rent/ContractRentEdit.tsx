@@ -2,8 +2,6 @@ import React, { useEffect } from "react";
 import { Row, Column } from "@/components/grid/Grid";
 import ActionButtonWrapper from "@/components/form/ActionButtonWrapper";
 import Authorization from "@/components/authorization/Authorization";
-import BoxContentWrapper from "@/components/content/BoxContentWrapper";
-import BoxItem from "@/components/content/BoxItem";
 import FormField from "@/components/form/final-form/FormField";
 import FormText from "@/components/form/FormText";
 import FormTextTitle from "@/components/form/FormTextTitle";
@@ -32,7 +30,6 @@ import {
   getIsSaveClicked,
 } from "@/leases/selectors";
 import { getUsersPermissions } from "@/usersPermissions/selectors";
-import { useWindowResize } from "@/components/resize/WindowResizeHandler";
 import type { Attributes } from "types";
 import { useAppSelector } from "@/root/hooks";
 import { useForm } from "react-final-form";
@@ -50,7 +47,6 @@ const ContractRentEdit = ({ field, onRemove, rentType, showRemove }: Props) => {
   const isSaveClicked = useAppSelector(getIsSaveClicked);
   const leaseAttributes: Attributes = useAppSelector(getLeaseAttributes);
   const usersPermissions = useAppSelector(getUsersPermissions);
-  const largeScreen = useWindowResize();
 
   const contractRent = useFieldValue(field);
   const amount = useFieldValue(`${field}.amount`);
@@ -481,48 +477,26 @@ const ContractRentEdit = ({ field, onRemove, rentType, showRemove }: Props) => {
     </>
   );
 
-  if (largeScreen) {
-    return (
-      <Row>
-        {renderFields()}
-        {showRemove && (
-          <Column>
-            <Authorization
-              allow={hasPermissions(
-                usersPermissions,
-                UsersPermissions.DELETE_CONTRACTRENT,
-              )}
-            >
-              <RemoveButton
-                className="third-level"
-                onClick={onRemove}
-                title="Poista sopimusvuokra"
-              />
-            </Authorization>
-          </Column>
-        )}
-      </Row>
-    );
-  }
-
   return (
-    <BoxItem>
-      <BoxContentWrapper>
-        {showRemove && (
-          <ActionButtonWrapper>
-            <Authorization
-              allow={hasPermissions(
-                usersPermissions,
-                UsersPermissions.DELETE_CONTRACTRENT,
-              )}
-            >
-              <RemoveButton onClick={onRemove} title="Poista sopimusvuokra" />
-            </Authorization>
-          </ActionButtonWrapper>
-        )}
-        <Row>{renderFields()}</Row>
-      </BoxContentWrapper>
-    </BoxItem>
+    <Row>
+      {renderFields()}
+      {showRemove && (
+        <Column>
+          <Authorization
+            allow={hasPermissions(
+              usersPermissions,
+              UsersPermissions.DELETE_CONTRACTRENT,
+            )}
+          >
+            <RemoveButton
+              className="third-level"
+              onClick={onRemove}
+              title="Poista sopimusvuokra"
+            />
+          </Authorization>
+        </Column>
+      )}
+    </Row>
   );
 };
 
