@@ -7,8 +7,6 @@ import ActionButtonWrapper from "@/components/form/ActionButtonWrapper";
 import AddButtonThird from "@/components/form/AddButtonThird";
 import AddFileButton from "@/components/form/AddFileButton";
 import Authorization from "@/components/authorization/Authorization";
-import BoxItem from "@/components/content/BoxItem";
-import BoxItemContainer from "@/components/content/BoxItemContainer";
 import CollectionCourtDecisionPanel from "../CollectionCourtDecisionPanel";
 import DecisionLink from "@/components/links/DecisionLink";
 import NewCollectionNote from "./NewCollectionNote";
@@ -84,7 +82,6 @@ import {
   getUserActiveServiceUnit,
   getUsersPermissions,
 } from "@/usersPermissions/selectors";
-import { useWindowResize } from "@/components/resize/WindowResizeHandler";
 
 import type { Attributes } from "types";
 import type { CollectionCourtDecisionId } from "@/collectionCourtDecision/types";
@@ -95,7 +92,6 @@ import type { UsersPermissions as UsersPermissionsType } from "@/usersPermission
 
 const DebtCollectionForm: React.FC = () => {
   const activeServiceUnit = useAppSelector(getUserActiveServiceUnit);
-  const largeScreen = useWindowResize();
   const dispatch = useAppDispatch();
   const currentLease: Lease = useAppSelector(getCurrentLease);
   const collectionCourtDecisions = useAppSelector((state) =>
@@ -452,96 +448,94 @@ const DebtCollectionForm: React.FC = () => {
                       !sortedCollectionCourtDecisions.length) && (
                       <FormText>Ei käräjaoikeuden päätöksiä</FormText>
                     )}
-                  {largeScreen &&
-                    ((sortedCollectionCourtDecisions &&
-                      !!sortedCollectionCourtDecisions.length) ||
-                      isCollectionCourtDecisionPanelOpen) && (
-                      <Row>
-                        <Column large={3}>
-                          <Authorization
-                            allow={isFieldAllowedToRead(
-                              collectionCourtDecisionAttributes,
+                  {((sortedCollectionCourtDecisions &&
+                    !!sortedCollectionCourtDecisions.length) ||
+                    isCollectionCourtDecisionPanelOpen) && (
+                    <Row>
+                      <Column large={3}>
+                        <Authorization
+                          allow={isFieldAllowedToRead(
+                            collectionCourtDecisionAttributes,
+                            CollectionCourtDecisionFieldPaths.FILE,
+                          )}
+                        >
+                          <FormTextTitle
+                            enableUiDataEdit
+                            uiDataKey={getUiDataCollectionCourtDecisionKey(
                               CollectionCourtDecisionFieldPaths.FILE,
                             )}
                           >
-                            <FormTextTitle
-                              enableUiDataEdit
-                              uiDataKey={getUiDataCollectionCourtDecisionKey(
-                                CollectionCourtDecisionFieldPaths.FILE,
-                              )}
-                            >
-                              {CollectionCourtDecisionFieldTitles.FILE}
-                            </FormTextTitle>
-                          </Authorization>
-                        </Column>
-                        <Column large={1}>
-                          <Authorization
-                            allow={isFieldAllowedToRead(
-                              collectionCourtDecisionAttributes,
+                            {CollectionCourtDecisionFieldTitles.FILE}
+                          </FormTextTitle>
+                        </Authorization>
+                      </Column>
+                      <Column large={1}>
+                        <Authorization
+                          allow={isFieldAllowedToRead(
+                            collectionCourtDecisionAttributes,
+                            CollectionCourtDecisionFieldPaths.UPLOADED_AT,
+                          )}
+                        >
+                          <FormTextTitle
+                            enableUiDataEdit
+                            uiDataKey={getUiDataCollectionCourtDecisionKey(
                               CollectionCourtDecisionFieldPaths.UPLOADED_AT,
                             )}
                           >
-                            <FormTextTitle
-                              enableUiDataEdit
-                              uiDataKey={getUiDataCollectionCourtDecisionKey(
-                                CollectionCourtDecisionFieldPaths.UPLOADED_AT,
-                              )}
-                            >
-                              {CollectionCourtDecisionFieldTitles.UPLOADED_AT}
-                            </FormTextTitle>
-                          </Authorization>
-                        </Column>
-                        <Column large={2}>
+                            {CollectionCourtDecisionFieldTitles.UPLOADED_AT}
+                          </FormTextTitle>
+                        </Authorization>
+                      </Column>
+                      <Column large={2}>
+                        <FormTextTitle
+                          enableUiDataEdit
+                          tooltipStyle={{
+                            right: 20,
+                          }}
+                          uiDataKey={getUiDataCollectionCourtDecisionKey(
+                            CollectionCourtDecisionFieldPaths.UPLOADER,
+                          )}
+                        >
+                          {CollectionCourtDecisionFieldTitles.UPLOADER}
+                        </FormTextTitle>
+                      </Column>
+                      <Column large={2}>
+                        <Authorization
+                          allow={isFieldAllowedToRead(
+                            collectionCourtDecisionAttributes,
+                            CollectionCourtDecisionFieldPaths.DECISION_DATE,
+                          )}
+                        >
                           <FormTextTitle
                             enableUiDataEdit
-                            tooltipStyle={{
-                              right: 20,
-                            }}
                             uiDataKey={getUiDataCollectionCourtDecisionKey(
-                              CollectionCourtDecisionFieldPaths.UPLOADER,
-                            )}
-                          >
-                            {CollectionCourtDecisionFieldTitles.UPLOADER}
-                          </FormTextTitle>
-                        </Column>
-                        <Column large={2}>
-                          <Authorization
-                            allow={isFieldAllowedToRead(
-                              collectionCourtDecisionAttributes,
                               CollectionCourtDecisionFieldPaths.DECISION_DATE,
                             )}
                           >
-                            <FormTextTitle
-                              enableUiDataEdit
-                              uiDataKey={getUiDataCollectionCourtDecisionKey(
-                                CollectionCourtDecisionFieldPaths.DECISION_DATE,
-                              )}
-                            >
-                              {CollectionCourtDecisionFieldTitles.DECISION_DATE}
-                            </FormTextTitle>
-                          </Authorization>
-                        </Column>
-                        <Column large={4}>
-                          <Authorization
-                            allow={isFieldAllowedToRead(
-                              collectionCourtDecisionAttributes,
+                            {CollectionCourtDecisionFieldTitles.DECISION_DATE}
+                          </FormTextTitle>
+                        </Authorization>
+                      </Column>
+                      <Column large={4}>
+                        <Authorization
+                          allow={isFieldAllowedToRead(
+                            collectionCourtDecisionAttributes,
+                            CollectionCourtDecisionFieldPaths.NOTE,
+                          )}
+                        >
+                          <FormTextTitle
+                            enableUiDataEdit
+                            uiDataKey={getUiDataCollectionCourtDecisionKey(
                               CollectionCourtDecisionFieldPaths.NOTE,
                             )}
                           >
-                            <FormTextTitle
-                              enableUiDataEdit
-                              uiDataKey={getUiDataCollectionCourtDecisionKey(
-                                CollectionCourtDecisionFieldPaths.NOTE,
-                              )}
-                            >
-                              {CollectionCourtDecisionFieldTitles.NOTE}
-                            </FormTextTitle>
-                          </Authorization>
-                        </Column>
-                      </Row>
-                    )}
-                  {largeScreen &&
-                    sortedCollectionCourtDecisions &&
+                            {CollectionCourtDecisionFieldTitles.NOTE}
+                          </FormTextTitle>
+                        </Authorization>
+                      </Column>
+                    </Row>
+                  )}
+                  {sortedCollectionCourtDecisions &&
                     !!sortedCollectionCourtDecisions.length &&
                     sortedCollectionCourtDecisions.map(
                       (collectionCourtDecision, index) => {
@@ -644,159 +638,6 @@ const DebtCollectionForm: React.FC = () => {
                       },
                     )}
 
-                  {!largeScreen &&
-                    sortedCollectionCourtDecisions &&
-                    !!sortedCollectionCourtDecisions.length && (
-                      <BoxItemContainer>
-                        {sortedCollectionCourtDecisions.map(
-                          (collectionCourtDecision, index) => {
-                            const handleRemove = () => {
-                              modalDispatch({
-                                type: ActionTypes.SHOW_CONFIRMATION_MODAL,
-                                confirmationFunction: () => {
-                                  handleDeleteCollectionCourtDecision(
-                                    collectionCourtDecision.id,
-                                  );
-                                },
-                                confirmationModalButtonClassName:
-                                  ButtonColors.ALERT,
-                                confirmationModalButtonText:
-                                  ConfirmationModalTexts
-                                    .DELETE_COLLECTION_COURT_DECISIONS.BUTTON,
-                                confirmationModalLabel:
-                                  ConfirmationModalTexts
-                                    .DELETE_COLLECTION_COURT_DECISIONS.LABEL,
-                                confirmationModalTitle:
-                                  ConfirmationModalTexts
-                                    .DELETE_COLLECTION_COURT_DECISIONS.TITLE,
-                              });
-                            };
-
-                            return (
-                              <BoxItem key={index}>
-                                <Authorization
-                                  allow={
-                                    hasPermissions(
-                                      usersPermissions,
-                                      UsersPermissions.DELETE_COLLECTIONCOURTDECISION,
-                                    ) && isServiceUnitSameAsActiveServiceUnit()
-                                  }
-                                >
-                                  <ActionButtonWrapper>
-                                    <RemoveButton
-                                      onClick={handleRemove}
-                                      title="Poista käräjäoikeuden päätös"
-                                    />
-                                  </ActionButtonWrapper>
-                                </Authorization>
-                                <Row>
-                                  <Column small={6}>
-                                    <Authorization
-                                      allow={isFieldAllowedToRead(
-                                        collectionCourtDecisionAttributes,
-                                        CollectionCourtDecisionFieldPaths.FILE,
-                                      )}
-                                    >
-                                      <>
-                                        <FormTextTitle
-                                          enableUiDataEdit
-                                          uiDataKey={getUiDataCollectionCourtDecisionKey(
-                                            CollectionCourtDecisionFieldPaths.FILE,
-                                          )}
-                                        >
-                                          {
-                                            CollectionCourtDecisionFieldTitles.FILE
-                                          }
-                                        </FormTextTitle>
-                                        <FileDownloadLink
-                                          fileUrl={collectionCourtDecision.file}
-                                          label={
-                                            collectionCourtDecision.filename
-                                          }
-                                        />
-                                      </>
-                                    </Authorization>
-                                  </Column>
-                                  <Column small={3}>
-                                    <Authorization
-                                      allow={isFieldAllowedToRead(
-                                        collectionCourtDecisionAttributes,
-                                        CollectionCourtDecisionFieldPaths.UPLOADED_AT,
-                                      )}
-                                    >
-                                      <>
-                                        <FormTextTitle
-                                          enableUiDataEdit
-                                          uiDataKey={getUiDataCollectionCourtDecisionKey(
-                                            CollectionCourtDecisionFieldPaths.UPLOADED_AT,
-                                          )}
-                                        >
-                                          {
-                                            CollectionCourtDecisionFieldTitles.UPLOADED_AT
-                                          }
-                                        </FormTextTitle>
-                                        <FormText>
-                                          {formatDate(
-                                            collectionCourtDecision.uploaded_at,
-                                          ) || "-"}
-                                        </FormText>
-                                      </>
-                                    </Authorization>
-                                  </Column>
-                                  <Column small={3}>
-                                    <FormTextTitle
-                                      enableUiDataEdit
-                                      uiDataKey={getUiDataCollectionCourtDecisionKey(
-                                        CollectionCourtDecisionFieldPaths.UPLOADER,
-                                      )}
-                                    >
-                                      {
-                                        CollectionCourtDecisionFieldTitles.UPLOADER
-                                      }
-                                    </FormTextTitle>
-                                    <FormText>
-                                      {getUserFullName(
-                                        collectionCourtDecision.uploader,
-                                      ) || "-"}
-                                    </FormText>
-                                  </Column>
-                                  <Column small={3}>
-                                    <FormTextTitle
-                                      enableUiDataEdit
-                                      uiDataKey={getUiDataCollectionCourtDecisionKey(
-                                        CollectionCourtDecisionFieldPaths.DECISION_DATE,
-                                      )}
-                                    >
-                                      {
-                                        CollectionCourtDecisionFieldTitles.DECISION_DATE
-                                      }
-                                    </FormTextTitle>
-                                    <FormText>
-                                      {formatDate(
-                                        collectionCourtDecision.decision_date,
-                                      ) || "-"}
-                                    </FormText>
-                                  </Column>
-                                  <Column small={9}>
-                                    <FormTextTitle
-                                      enableUiDataEdit
-                                      uiDataKey={getUiDataCollectionCourtDecisionKey(
-                                        CollectionCourtDecisionFieldPaths.NOTE,
-                                      )}
-                                    >
-                                      {CollectionCourtDecisionFieldTitles.NOTE}
-                                    </FormTextTitle>
-                                    <FormText>
-                                      {collectionCourtDecision.note || "-"}
-                                    </FormText>
-                                  </Column>
-                                </Row>
-                              </BoxItem>
-                            );
-                          },
-                        )}
-                      </BoxItemContainer>
-                    )}
                   <Authorization
                     allow={
                       hasPermissions(
@@ -811,7 +652,7 @@ const DebtCollectionForm: React.FC = () => {
                           <>
                             <CollectionCourtDecisionPanel
                               isOpen={isCollectionCourtDecisionPanelOpen}
-                              largeScreen={largeScreen}
+                              largeScreen={true}
                               onClose={handleHideCollectionCourtDecisionPanel}
                               onSave={handleSaveCourtDecisionFile}
                               title="Lisää käräjäoikeuden päätös"

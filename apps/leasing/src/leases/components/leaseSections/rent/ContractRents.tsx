@@ -21,7 +21,6 @@ import {
   isFieldAllowedToRead,
 } from "@/util/helpers";
 import { getAttributes as getLeaseAttributes } from "@/leases/selectors";
-import { useWindowResize } from "@/components/resize/WindowResizeHandler";
 import type { Attributes } from "types";
 import { useAppSelector } from "@/root/hooks";
 type Props = {
@@ -30,7 +29,6 @@ type Props = {
 };
 
 const ContractRents = ({ contractRents, rentType }: Props) => {
-  const largeScreen = useWindowResize();
   const leaseAttributes: Attributes = useAppSelector(getLeaseAttributes);
 
   const [amountPeriodOptions, setAmountPeriodOptions] = useState([]);
@@ -261,21 +259,7 @@ const ContractRents = ({ contractRents, rentType }: Props) => {
               </>
             );
 
-            if (largeScreen) {
-              return <Row key={index}>{renderFields()}</Row>;
-            } else {
-              // For small and medium screens
-              return (
-                <BoxItem
-                  key={index}
-                  className="no-border-on-first-child no-border-on-last-child"
-                >
-                  <BoxContentWrapper>
-                    <Row>{renderFields()}</Row>
-                  </BoxContentWrapper>
-                </BoxItem>
-              );
-            }
+            return <Row key={index}>{renderFields()}</Row>;
           })}
       </BoxItemContainer>
     </>

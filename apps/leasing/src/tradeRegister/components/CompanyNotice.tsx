@@ -2,8 +2,6 @@ import React, { memo } from "react";
 import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { Row, Column } from "@/components/grid/Grid";
 import { get } from "lodash-es";
-import BoxItem from "@/components/content/BoxItem";
-import BoxItemContainer from "@/components/content/BoxItemContainer";
 import Collapse from "@/components/collapse/Collapse";
 import FormText from "@/components/form/FormText";
 import FormTextTitle from "@/components/form/FormTextTitle";
@@ -24,7 +22,6 @@ import {
   getCompanyNoticeById,
   getIsFetchingCompanyNoticeById,
 } from "@/tradeRegister/selectors";
-import { useWindowResize } from "@/components/resize/WindowResizeHandler";
 import type { RootState } from "@/root/types";
 
 type Props = {
@@ -33,7 +30,6 @@ type Props = {
 
 const CompanyNotice = ({ businessId }: Props) => {
   const dispatch = useAppDispatch();
-  const largeScreen = useWindowResize();
 
   const companyNotice = useAppSelector((state: RootState) =>
     getCompanyNoticeById(state, businessId),
@@ -90,180 +86,91 @@ const CompanyNotice = ({ businessId }: Props) => {
 
               {!!notices.length && (
                 <>
-                  {largeScreen && (
-                    <>
-                      <Row>
-                        <Column large={2}>
-                          <FormTextTitle
-                            enableUiDataEdit
-                            uiDataKey={CompanyNoticeFieldPaths.NOTICE_TYPE}
-                          >
-                            {CompanyNoticeFieldTitles.NOTICE_TYPE}
-                          </FormTextTitle>
-                        </Column>
-                        <Column large={2}>
-                          <FormTextTitle
-                            enableUiDataEdit
-                            uiDataKey={
-                              CompanyNoticeFieldPaths.NOTICE_RECORD_NUMBER
-                            }
-                          >
-                            {CompanyNoticeFieldTitles.NOTICE_RECORD_NUMBER}
-                          </FormTextTitle>
-                        </Column>
-                        <Column large={2}>
-                          <FormTextTitle
-                            enableUiDataEdit
-                            uiDataKey={
-                              CompanyNoticeFieldPaths.NOTICE_ARRIVAL_DATE
-                            }
-                          >
-                            {CompanyNoticeFieldTitles.NOTICE_ARRIVAL_DATE}
-                          </FormTextTitle>
-                        </Column>
-                        <Column large={2}>
-                          <FormTextTitle
-                            enableUiDataEdit
-                            uiDataKey={
-                              CompanyNoticeFieldPaths.NOTICE_LATEST_PHASE_ARRIVAL_DATE
-                            }
-                          >
-                            {
-                              CompanyNoticeFieldTitles.NOTICE_LATEST_PHASE_ARRIVAL_DATE
-                            }
-                          </FormTextTitle>
-                        </Column>
-                        <Column large={2}>
-                          <FormTextTitle
-                            enableUiDataEdit
-                            uiDataKey={
-                              CompanyNoticeFieldPaths.NOTICE_LATEST_PHASE_NAME
-                            }
-                          >
-                            {CompanyNoticeFieldTitles.NOTICE_LATEST_PHASE_NAME}
-                          </FormTextTitle>
-                        </Column>
-                      </Row>
+                  <>
+                    <Row>
+                      <Column large={2}>
+                        <FormTextTitle
+                          enableUiDataEdit
+                          uiDataKey={CompanyNoticeFieldPaths.NOTICE_TYPE}
+                        >
+                          {CompanyNoticeFieldTitles.NOTICE_TYPE}
+                        </FormTextTitle>
+                      </Column>
+                      <Column large={2}>
+                        <FormTextTitle
+                          enableUiDataEdit
+                          uiDataKey={
+                            CompanyNoticeFieldPaths.NOTICE_RECORD_NUMBER
+                          }
+                        >
+                          {CompanyNoticeFieldTitles.NOTICE_RECORD_NUMBER}
+                        </FormTextTitle>
+                      </Column>
+                      <Column large={2}>
+                        <FormTextTitle
+                          enableUiDataEdit
+                          uiDataKey={
+                            CompanyNoticeFieldPaths.NOTICE_ARRIVAL_DATE
+                          }
+                        >
+                          {CompanyNoticeFieldTitles.NOTICE_ARRIVAL_DATE}
+                        </FormTextTitle>
+                      </Column>
+                      <Column large={2}>
+                        <FormTextTitle
+                          enableUiDataEdit
+                          uiDataKey={
+                            CompanyNoticeFieldPaths.NOTICE_LATEST_PHASE_ARRIVAL_DATE
+                          }
+                        >
+                          {
+                            CompanyNoticeFieldTitles.NOTICE_LATEST_PHASE_ARRIVAL_DATE
+                          }
+                        </FormTextTitle>
+                      </Column>
+                      <Column large={2}>
+                        <FormTextTitle
+                          enableUiDataEdit
+                          uiDataKey={
+                            CompanyNoticeFieldPaths.NOTICE_LATEST_PHASE_NAME
+                          }
+                        >
+                          {CompanyNoticeFieldTitles.NOTICE_LATEST_PHASE_NAME}
+                        </FormTextTitle>
+                      </Column>
+                    </Row>
 
-                      <ListItems>
-                        {notices.map((notice, index) => {
-                          return (
-                            <Row key={index}>
-                              <Column large={2}>
-                                <ListItem>{notice.type || "-"}</ListItem>
-                              </Column>
-                              <Column large={2}>
-                                <ListItem>
-                                  {notice.recordNumber || "-"}
-                                </ListItem>
-                              </Column>
-                              <Column large={2}>
-                                <ListItem>
-                                  {formatDate(notice.arrivalDate) || "-"}
-                                </ListItem>
-                              </Column>
-                              <Column large={2}>
-                                <ListItem>
-                                  {formatDate(notice.latestPhaseArrivalDate) ||
-                                    "-"}
-                                </ListItem>
-                              </Column>
-                              <Column large={2}>
-                                <ListItem>
-                                  {notice.latestPhaseName || "-"}
-                                </ListItem>
-                              </Column>
-                            </Row>
-                          );
-                        })}
-                      </ListItems>
-                    </>
-                  )}
-                  {!largeScreen && (
-                    <BoxItemContainer>
+                    <ListItems>
                       {notices.map((notice, index) => {
                         return (
-                          <BoxItem
-                            key={index}
-                            className="no-border-on-first-child no-border-on-last-child"
-                          >
-                            <Row>
-                              <Column small={12} medium={4}>
-                                <FormTextTitle
-                                  enableUiDataEdit
-                                  uiDataKey={
-                                    CompanyNoticeFieldPaths.NOTICE_TYPE
-                                  }
-                                >
-                                  {CompanyNoticeFieldTitles.NOTICE_TYPE}
-                                </FormTextTitle>
-                                <FormText>{notice.type || "-"}</FormText>
-                              </Column>
-                              <Column small={12} medium={4}>
-                                <FormTextTitle
-                                  enableUiDataEdit
-                                  uiDataKey={
-                                    CompanyNoticeFieldPaths.NOTICE_RECORD_NUMBER
-                                  }
-                                >
-                                  {
-                                    CompanyNoticeFieldTitles.NOTICE_RECORD_NUMBER
-                                  }
-                                </FormTextTitle>
-                                <FormText>
-                                  {notice.recordNumber || "-"}
-                                </FormText>
-                              </Column>
-                              <Column small={12} medium={4}>
-                                <FormTextTitle
-                                  enableUiDataEdit
-                                  uiDataKey={
-                                    CompanyNoticeFieldPaths.NOTICE_ARRIVAL_DATE
-                                  }
-                                >
-                                  {CompanyNoticeFieldTitles.NOTICE_ARRIVAL_DATE}
-                                </FormTextTitle>
-                                <FormText>
-                                  {formatDate(notice.arrivalDate) || "-"}
-                                </FormText>
-                              </Column>
-                              <Column small={12} medium={4}>
-                                <FormTextTitle
-                                  enableUiDataEdit
-                                  uiDataKey={
-                                    CompanyNoticeFieldPaths.NOTICE_LATEST_PHASE_ARRIVAL_DATE
-                                  }
-                                >
-                                  {
-                                    CompanyNoticeFieldTitles.NOTICE_LATEST_PHASE_ARRIVAL_DATE
-                                  }
-                                </FormTextTitle>
-                                <FormText>
-                                  {formatDate(notice.latestPhaseArrivalDate) ||
-                                    "-"}
-                                </FormText>
-                              </Column>
-                              <Column small={12} medium={4}>
-                                <FormTextTitle
-                                  enableUiDataEdit
-                                  uiDataKey={
-                                    CompanyNoticeFieldPaths.NOTICE_LATEST_PHASE_NAME
-                                  }
-                                >
-                                  {
-                                    CompanyNoticeFieldTitles.NOTICE_LATEST_PHASE_NAME
-                                  }
-                                </FormTextTitle>
-                                <FormText>
-                                  {notice.latestPhaseName || "-"}
-                                </FormText>
-                              </Column>
-                            </Row>
-                          </BoxItem>
+                          <Row key={index}>
+                            <Column large={2}>
+                              <ListItem>{notice.type || "-"}</ListItem>
+                            </Column>
+                            <Column large={2}>
+                              <ListItem>{notice.recordNumber || "-"}</ListItem>
+                            </Column>
+                            <Column large={2}>
+                              <ListItem>
+                                {formatDate(notice.arrivalDate) || "-"}
+                              </ListItem>
+                            </Column>
+                            <Column large={2}>
+                              <ListItem>
+                                {formatDate(notice.latestPhaseArrivalDate) ||
+                                  "-"}
+                              </ListItem>
+                            </Column>
+                            <Column large={2}>
+                              <ListItem>
+                                {notice.latestPhaseName || "-"}
+                              </ListItem>
+                            </Column>
+                          </Row>
                         );
                       })}
-                    </BoxItemContainer>
-                  )}
+                    </ListItems>
+                  </>
                 </>
               )}
             </>

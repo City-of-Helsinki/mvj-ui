@@ -1,12 +1,10 @@
 import React, { Fragment } from "react";
-import { connect } from "react-redux";
+import { useSelector } from "react-redux";
 import { Row, Column } from "@/components/grid/Grid";
 import classNames from "classnames";
-import { flowRight, get } from "lodash-es";
+import { get } from "lodash-es";
 import AmountWithVat from "@/components/vat/AmountWithVat";
 import Authorization from "@/components/authorization/Authorization";
-import BoxItem from "@/components/content/BoxItem";
-import BoxItemContainer from "@/components/content/BoxItemContainer";
 import Comments from "../constructability/Comments";
 import ErrorBlock from "@/components/form/ErrorBlock";
 import ExternalLink from "@/components/links/ExternalLink";
@@ -49,7 +47,6 @@ import {
 } from "@/invoices/selectors";
 import { getAttributes, getCurrentLease } from "@/leases/selectors";
 import { getUsersPermissions } from "@/usersPermissions/selectors";
-import { withWindowResize } from "@/components/resize/WindowResizeHandler";
 import type { Attributes, Methods as MethodsType } from "types";
 import type { Lease } from "@/leases/types";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
@@ -90,129 +87,72 @@ const StatusIndicator = ({
 );
 
 type TenantsProps = {
-  largeScreen: boolean;
   tenants: Array<Record<string, any>>;
   tenantWarnings: Array<any>;
 };
 
-const Tenants = ({ largeScreen, tenants, tenantWarnings }: TenantsProps) => {
-  if (largeScreen) {
-    return (
+const Tenants = ({ tenants, tenantWarnings }: TenantsProps) => (
+  <Fragment>
+    {!!tenants.length && (
       <Fragment>
-        {!!tenants.length && (
-          <Fragment>
-            <Row>
-              <Column large={4}>
-                <FormTextTitle title="Vuokralainen" />
-              </Column>
-              <Column large={4}>
-                <FormTextTitle title="Hallintaosuus" />
-              </Column>
-              <Column large={4}>
-                <FormTextTitle title="Ajalla" />
-              </Column>
-            </Row>
-            <ListItems>
-              {tenants.map((contact, index) => {
-                return (
-                  <Row key={index}>
-                    <Column large={4}>
-                      <ListItem>
-                        <ExternalLink
-                          className="no-margin"
-                          href={`${getRouteById(Routes.CONTACTS)}/${get(contact, "tenant.contact.id")}`}
-                          text={
-                            getContactFullName(
-                              get(contact, "tenant.contact"),
-                            ) || "-"
-                          }
-                        />
-                      </ListItem>
-                    </Column>
-                    <Column large={4}>
-                      <ListItem>
-                        {contact.share_numerator} / {contact.share_denominator}
-                      </ListItem>
-                    </Column>
-                    <Column large={4}>
-                      <ListItem>
-                        {formatDateRange(
-                          contact.tenant.start_date,
-                          contact.tenant.end_date,
-                        ) || "-"}
-                      </ListItem>
-                    </Column>
-                  </Row>
-                );
-              })}
-              {!!tenantWarnings.length &&
-                tenantWarnings.map((error, index) => (
-                  <Row key={index}>
-                    <Column large={4}></Column>
-                    <Column large={4}>
-                      <ErrorBlock error={error} />
-                    </Column>
-                  </Row>
-                ))}
-            </ListItems>
-          </Fragment>
-        )}
-      </Fragment>
-    );
-  } else {
-    return (
-      <BoxItemContainer>
-        {tenants.map((contact, index) => {
-          return (
-            <BoxItem
-              key={index}
-              className="no-border-on-first-child no-border-on-last-child"
-            >
+        <Row>
+          <Column large={4}>
+            <FormTextTitle title="Vuokralainen" />
+          </Column>
+          <Column large={4}>
+            <FormTextTitle title="Hallintaosuus" />
+          </Column>
+          <Column large={4}>
+            <FormTextTitle title="Ajalla" />
+          </Column>
+        </Row>
+        <ListItems>
+          {tenants.map((contact, index) => {
+            return (
               <Row key={index}>
-                <Column small={6}>
-                  <FormTextTitle title="Vuokralainen" />
-                  <FormText>
+                <Column large={4}>
+                  <ListItem>
                     <ExternalLink
                       className="no-margin"
                       href={`${getRouteById(Routes.CONTACTS)}/${get(contact, "tenant.contact.id")}`}
                       text={
-                        getContactFullName(get(contact, "tenant.contact")) ||
-                        "-"
+                        getContactFullName(
+                          get(contact, "tenant.contact"),
+                        ) || "-"
                       }
                     />
-                  </FormText>
+                  </ListItem>
                 </Column>
-                <Column small={6}>
-                  <FormTextTitle title="Hallintaosuus" />
-                  <FormText>
+                <Column large={4}>
+                  <ListItem>
                     {contact.share_numerator} / {contact.share_denominator}
-                  </FormText>
+                  </ListItem>
                 </Column>
-                <Column small={6}>
-                  <FormTextTitle title="Ajalla" />
-                  <FormText>
+                <Column large={4}>
+                  <ListItem>
                     {formatDateRange(
                       contact.tenant.start_date,
                       contact.tenant.end_date,
                     ) || "-"}
-                  </FormText>
+                  </ListItem>
                 </Column>
               </Row>
-            </BoxItem>
-          );
-        })}
-        {!!tenantWarnings.length &&
-          tenantWarnings.map((error, index) => (
-            <Row key={index}>
-              <Column small={12}>
-                <ErrorBlock error={error} />
-              </Column>
-            </Row>
-          ))}
-      </BoxItemContainer>
-    );
-  }
-};
+            );
+          })}
+          {!!tenantWarnings.length &&
+            tenantWarnings.map((error, index) => (
+              <Row key={index}>
+                <Column large={4}></Column>
+                <Column large={4}>
+                  <ErrorBlock error={error} />
+                </Column>
+              </Row>
+            ))}
+        </ListItems>
+      </Fragment>
+    )}
+  </Fragment>
+);
 
 type Props = {
   attributes: Attributes;
@@ -224,15 +164,14 @@ type Props = {
   usersPermissions: UsersPermissionsType;
 };
 
-const SummaryLeaseInfo = ({
-  attributes,
-  currentLease,
-  invoiceAttributes,
-  invoiceMethods,
-  invoices,
-  largeScreen,
-  usersPermissions,
-}: Props) => {
+const SummaryLeaseInfo = () => {
+  const currentLease = useSelector(getCurrentLease);
+  const attributes = useSelector(getAttributes);
+  const invoiceAttributes = useSelector(getInvoiceAttributes);
+  const invoiceMethods = useSelector(getInvoiceMethods);
+  const invoices = useSelector((state) => getInvoicesByLease(state, currentLease.id));
+  const usersPermissions = useSelector(getUsersPermissions);
+
   const constructabilityStateOptions = getFieldOptions(
       attributes,
       LeaseAreasFieldPaths.PRECONSTRUCTION_STATE,
@@ -248,7 +187,6 @@ const SummaryLeaseInfo = ({
       <SubTitle>Vuokralaiset</SubTitle>
       {!tenants.length && <FormText>Ei vuokralaisia</FormText>}
       <Tenants
-        largeScreen={largeScreen}
         tenants={tenants}
         tenantWarnings={tenantWarnings}
       />
@@ -576,266 +514,152 @@ const SummaryLeaseInfo = ({
         {!!overdueInvoices.length && (
           <Fragment>
             <SubTitle>Erääntyneet laskut</SubTitle>
-            {largeScreen && (
-              <Fragment>
-                <Row>
-                  <Column large={4}>
-                    <Authorization
-                      allow={isFieldAllowedToRead(
+            <Fragment>
+              <Row>
+                <Column large={4}>
+                  <Authorization
+                    allow={isFieldAllowedToRead(
+                      invoiceAttributes,
+                      InvoiceFieldPaths.RECIPIENT,
+                    )}
+                  >
+                    <FormTextTitle>
+                      {InvoiceFieldTitles.RECIPIENT}
+                    </FormTextTitle>
+                  </Authorization>
+                </Column>
+                <Column large={2}>
+                  <Authorization
+                    allow={isFieldAllowedToRead(
+                      invoiceAttributes,
+                      InvoiceFieldPaths.DUE_DATE,
+                    )}
+                  >
+                    <FormTextTitle>
+                      {InvoiceFieldTitles.DUE_DATE}
+                    </FormTextTitle>
+                  </Authorization>
+                </Column>
+                <Column large={2}>
+                  <Authorization
+                    allow={isFieldAllowedToRead(
+                      invoiceAttributes,
+                      InvoiceFieldPaths.NUMBER,
+                    )}
+                  >
+                    <FormTextTitle>{InvoiceFieldTitles.NUMBER}</FormTextTitle>
+                  </Authorization>
+                </Column>
+                <Column large={2}>
+                  <Authorization
+                    allow={
+                      isFieldAllowedToRead(
                         invoiceAttributes,
-                        InvoiceFieldPaths.RECIPIENT,
-                      )}
-                    >
-                      <FormTextTitle>
-                        {InvoiceFieldTitles.RECIPIENT}
-                      </FormTextTitle>
-                    </Authorization>
-                  </Column>
-                  <Column large={2}>
-                    <Authorization
-                      allow={isFieldAllowedToRead(
+                        InvoiceFieldPaths.BILLING_PERIOD_START_DATE,
+                      ) ||
+                      isFieldAllowedToRead(
                         invoiceAttributes,
-                        InvoiceFieldPaths.DUE_DATE,
-                      )}
-                    >
-                      <FormTextTitle>
-                        {InvoiceFieldTitles.DUE_DATE}
-                      </FormTextTitle>
-                    </Authorization>
-                  </Column>
-                  <Column large={2}>
-                    <Authorization
-                      allow={isFieldAllowedToRead(
-                        invoiceAttributes,
-                        InvoiceFieldPaths.NUMBER,
-                      )}
-                    >
-                      <FormTextTitle>{InvoiceFieldTitles.NUMBER}</FormTextTitle>
-                    </Authorization>
-                  </Column>
-                  <Column large={2}>
-                    <Authorization
-                      allow={
-                        isFieldAllowedToRead(
-                          invoiceAttributes,
-                          InvoiceFieldPaths.BILLING_PERIOD_START_DATE,
-                        ) ||
-                        isFieldAllowedToRead(
-                          invoiceAttributes,
-                          InvoiceFieldPaths.BILLING_PERIOD_END_DATE,
-                        )
-                      }
-                    >
-                      <FormTextTitle>
-                        {InvoiceFieldTitles.BILLING_PERIOD}
-                      </FormTextTitle>
-                    </Authorization>
-                  </Column>
-                  <Column large={2}>
-                    <Authorization
-                      allow={isFieldAllowedToRead(
-                        invoiceAttributes,
-                        InvoiceFieldPaths.OUTSTANDING_AMOUNT,
-                      )}
-                    >
-                      <FormTextTitle>
-                        {InvoiceFieldTitles.OUTSTANDING_AMOUNT}
-                      </FormTextTitle>
-                    </Authorization>
-                  </Column>
-                </Row>
-                <ListItems>
-                  {overdueInvoices.map((invoice, index) => {
-                    return (
-                      <Row key={index}>
-                        <Column large={4}>
-                          <Authorization
-                            allow={isFieldAllowedToRead(
-                              invoiceAttributes,
-                              InvoiceFieldPaths.RECIPIENT,
-                            )}
-                          >
-                            <ListItem>
-                              {getContactFullName(invoice.recipientFull) || "-"}
-                            </ListItem>
-                          </Authorization>
-                        </Column>
-                        <Column large={2}>
-                          <Authorization
-                            allow={isFieldAllowedToRead(
-                              invoiceAttributes,
-                              InvoiceFieldPaths.DUE_DATE,
-                            )}
-                          >
-                            <ListItem>
-                              {formatDate(invoice.due_date) || "-"}
-                            </ListItem>
-                          </Authorization>
-                        </Column>
-                        <Column large={2}>
-                          <Authorization
-                            allow={isFieldAllowedToRead(
-                              invoiceAttributes,
-                              InvoiceFieldPaths.NUMBER,
-                            )}
-                          >
-                            <ListItem>{invoice.number || "-"}</ListItem>
-                          </Authorization>
-                        </Column>
-                        <Column large={2}>
-                          <Authorization
-                            allow={
-                              isFieldAllowedToRead(
-                                invoiceAttributes,
-                                InvoiceFieldPaths.BILLING_PERIOD_START_DATE,
-                              ) ||
-                              isFieldAllowedToRead(
-                                invoiceAttributes,
-                                InvoiceFieldPaths.BILLING_PERIOD_END_DATE,
-                              )
-                            }
-                          >
-                            <ListItem>
-                              {formatDateRange(
-                                invoice.billing_period_start_date,
-                                invoice.billing_period_end_date,
-                              ) || "-"}
-                            </ListItem>
-                          </Authorization>
-                        </Column>
-                        <Column large={2}>
-                          <Authorization
-                            allow={isFieldAllowedToRead(
-                              invoiceAttributes,
-                              InvoiceFieldPaths.OUTSTANDING_AMOUNT,
-                            )}
-                          >
-                            <ListItem>
-                              <AmountWithVat
-                                amount={invoice.outstanding_amount || 0}
-                                date={invoice.due_date}
-                              />
-                            </ListItem>
-                          </Authorization>
-                        </Column>
-                      </Row>
-                    );
-                  })}
-                </ListItems>
-              </Fragment>
-            )}
-
-            {!largeScreen && (
-              <BoxItemContainer>
+                        InvoiceFieldPaths.BILLING_PERIOD_END_DATE,
+                      )
+                    }
+                  >
+                    <FormTextTitle>
+                      {InvoiceFieldTitles.BILLING_PERIOD}
+                    </FormTextTitle>
+                  </Authorization>
+                </Column>
+                <Column large={2}>
+                  <Authorization
+                    allow={isFieldAllowedToRead(
+                      invoiceAttributes,
+                      InvoiceFieldPaths.OUTSTANDING_AMOUNT,
+                    )}
+                  >
+                    <FormTextTitle>
+                      {InvoiceFieldTitles.OUTSTANDING_AMOUNT}
+                    </FormTextTitle>
+                  </Authorization>
+                </Column>
+              </Row>
+              <ListItems>
                 {overdueInvoices.map((invoice, index) => {
                   return (
-                    <BoxItem
-                      key={index}
-                      className="no-border-on-first-child no-border-on-last-child"
-                    >
-                      <Row>
-                        <Column small={6}>
-                          <Authorization
-                            allow={isFieldAllowedToRead(
+                    <Row key={index}>
+                      <Column large={4}>
+                        <Authorization
+                          allow={isFieldAllowedToRead(
+                            invoiceAttributes,
+                            InvoiceFieldPaths.RECIPIENT,
+                          )}
+                        >
+                          <ListItem>
+                            {getContactFullName(invoice.recipientFull) || "-"}
+                          </ListItem>
+                        </Authorization>
+                      </Column>
+                      <Column large={2}>
+                        <Authorization
+                          allow={isFieldAllowedToRead(
+                            invoiceAttributes,
+                            InvoiceFieldPaths.DUE_DATE,
+                          )}
+                        >
+                          <ListItem>
+                            {formatDate(invoice.due_date) || "-"}
+                          </ListItem>
+                        </Authorization>
+                      </Column>
+                      <Column large={2}>
+                        <Authorization
+                          allow={isFieldAllowedToRead(
+                            invoiceAttributes,
+                            InvoiceFieldPaths.NUMBER,
+                          )}
+                        >
+                          <ListItem>{invoice.number || "-"}</ListItem>
+                        </Authorization>
+                      </Column>
+                      <Column large={2}>
+                        <Authorization
+                          allow={
+                            isFieldAllowedToRead(
                               invoiceAttributes,
-                              InvoiceFieldPaths.RECIPIENT,
-                            )}
-                          >
-                            <>
-                              <FormTextTitle>
-                                {InvoiceFieldTitles.RECIPIENT}
-                              </FormTextTitle>
-                              <FormText>
-                                {getContactFullName(invoice.recipientFull) ||
-                                  "-"}
-                              </FormText>
-                            </>
-                          </Authorization>
-                        </Column>
-                        <Column small={6}>
-                          <Authorization
-                            allow={isFieldAllowedToRead(
+                              InvoiceFieldPaths.BILLING_PERIOD_START_DATE,
+                            ) ||
+                            isFieldAllowedToRead(
                               invoiceAttributes,
-                              InvoiceFieldPaths.DUE_DATE,
-                            )}
-                          >
-                            <>
-                              <FormTextTitle>
-                                {InvoiceFieldTitles.DUE_DATE}
-                              </FormTextTitle>
-                              <FormText>
-                                {formatDate(invoice.due_date) || "-"}
-                              </FormText>
-                            </>
-                          </Authorization>
-                        </Column>
-                        <Column small={6}>
-                          <Authorization
-                            allow={isFieldAllowedToRead(
-                              invoiceAttributes,
-                              InvoiceFieldPaths.NUMBER,
-                            )}
-                          >
-                            <>
-                              <FormTextTitle>
-                                {InvoiceFieldTitles.NUMBER}
-                              </FormTextTitle>
-                              <FormText>{invoice.number || "-"}</FormText>
-                            </>
-                          </Authorization>
-                        </Column>
-                        <Column small={6}>
-                          <Authorization
-                            allow={
-                              isFieldAllowedToRead(
-                                invoiceAttributes,
-                                InvoiceFieldPaths.BILLING_PERIOD_START_DATE,
-                              ) ||
-                              isFieldAllowedToRead(
-                                invoiceAttributes,
-                                InvoiceFieldPaths.BILLING_PERIOD_END_DATE,
-                              )
-                            }
-                          >
-                            <>
-                              <FormTextTitle>
-                                {InvoiceFieldTitles.BILLING_PERIOD}
-                              </FormTextTitle>
-                              <FormText>
-                                {formatDateRange(
-                                  invoice.billing_period_start_date,
-                                  invoice.billing_period_end_date,
-                                ) || "-"}
-                              </FormText>
-                            </>
-                          </Authorization>
-                        </Column>
-                        <Column small={6}>
-                          <Authorization
-                            allow={isFieldAllowedToRead(
-                              invoiceAttributes,
-                              InvoiceFieldPaths.OUTSTANDING_AMOUNT,
-                            )}
-                          >
-                            <>
-                              <FormTextTitle>
-                                {InvoiceFieldTitles.OUTSTANDING_AMOUNT}
-                              </FormTextTitle>
-                              <FormText>
-                                <AmountWithVat
-                                  amount={invoice.outstanding_amount || 0}
-                                  date={invoice.due_date}
-                                />
-                              </FormText>
-                            </>
-                          </Authorization>
-                        </Column>
-                      </Row>
-                    </BoxItem>
+                              InvoiceFieldPaths.BILLING_PERIOD_END_DATE,
+                            )
+                          }
+                        >
+                          <ListItem>
+                            {formatDateRange(
+                              invoice.billing_period_start_date,
+                              invoice.billing_period_end_date,
+                            ) || "-"}
+                          </ListItem>
+                        </Authorization>
+                      </Column>
+                      <Column large={2}>
+                        <Authorization
+                          allow={isFieldAllowedToRead(
+                            invoiceAttributes,
+                            InvoiceFieldPaths.OUTSTANDING_AMOUNT,
+                          )}
+                        >
+                          <ListItem>
+                            <AmountWithVat
+                              amount={invoice.outstanding_amount || 0}
+                              date={invoice.due_date}
+                            />
+                          </ListItem>
+                        </Authorization>
+                      </Column>
+                    </Row>
                   );
                 })}
-              </BoxItemContainer>
-            )}
+              </ListItems>
+            </Fragment>
           </Fragment>
         )}
       </Authorization>
@@ -843,17 +667,4 @@ const SummaryLeaseInfo = ({
   );
 };
 
-export default flowRight(
-  withWindowResize,
-  connect((state) => {
-    const currentLease = getCurrentLease(state);
-    return {
-      attributes: getAttributes(state),
-      currentLease: currentLease,
-      invoiceAttributes: getInvoiceAttributes(state),
-      invoiceMethods: getInvoiceMethods(state),
-      invoices: getInvoicesByLease(state, currentLease.id),
-      usersPermissions: getUsersPermissions(state),
-    };
-  }),
-)(SummaryLeaseInfo);
+export default SummaryLeaseInfo;
