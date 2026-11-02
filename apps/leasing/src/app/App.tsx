@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { connect } from "react-redux";
-import { withRouterLegacy } from "@/root/withRouterLegacy";
 import { useLocation, useNavigate } from "react-router";
-import { flowRight, get } from "lodash-es";
+import { get } from "lodash-es";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { setNavigate } from "@/root/navigationService";
 import { ActionTypes, ModalConsumer, ModalProvider } from "@/app/ModalContext";
 import ApiErrorModal from "@/api/ApiErrorModal";
@@ -16,7 +15,6 @@ import TopNavigation from "@/components/topNavigation/TopNavigation";
 import { Routes, getRouteById } from "@/root/routes";
 import { clearError } from "@/api/slice";
 import { getError } from "@/api/selectors";
-import { getLoggedInUser } from "@/auth/selectors";
 import useActiveServiceUnitSync from "@/usersPermissions/useActiveServiceUnitSync";
 import {
   getLinkUrl,
@@ -28,47 +26,31 @@ import {
   getUserActiveServiceUnit,
   getUserServiceUnits,
 } from "@/usersPermissions/selectors";
-import type { ApiError } from "@/api/types";
-import type {
-  UserGroups,
-  UserServiceUnit,
-  UserServiceUnits,
-} from "@/usersPermissions/types";
-import type { RootState } from "@/root/types";
 import "@/main.scss";
 
 const url = window.location.toString();
 const IS_DEVELOPMENT_URL = url.includes("ninja") || url.includes("localhost");
-type OwnProps = {
+type Props = {
   children: JSX.Element;
 };
-type Props = OwnProps & {
-  apiError?: ApiError;
-  clearError: typeof clearError;
-  linkUrl?: string;
-  pageTitle: string;
-  userActiveServiceUnit?: UserServiceUnit;
-  userServiceUnits?: UserServiceUnits;
-  showSearch?: boolean;
-  user?: Record<string, any>;
-  userGroups?: UserGroups;
-};
-type State = {
-  displaySideMenu: boolean;
-  loggedIn: boolean;
-  displayUserGroups: boolean;
-  isLoggingIn: boolean;
-};
 
-const App: React.FC<Props> = (props) => {
+const App: React.FC<Props> = ({ children }) => {
+  const dispatch = useAppDispatch();
   const location = useLocation();
-  const [displaySideMenu, setDisplaySideMenu] =
-    useState<State["displaySideMenu"]>(false);
-  const [displayUserGroups, setDisplayUserGroups] =
-    useState<State["displayUserGroups"]>(false);
-  const [isLoggingIn, setIsLoggingIn] = useState<State["isLoggingIn"]>(false);
+  const [displaySideMenu, setDisplaySideMenu] = useState(false);
+  const [displayUserGroups, setDisplayUserGroups] = useState(false);
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
   const { loggedIn, authenticatedUser, login, logout } = useAuth();
   const navigate = useNavigate();
+
+  const apiError = useAppSelector(getError);
+  const linkUrl = useAppSelector(getLinkUrl);
+  const pageTitle = useAppSelector(getPageTitle);
+  const showSearch = useAppSelector(getShowSearch);
+  const userGroups = useAppSelector(getUserGroups);
+  const userServiceUnits = useAppSelector(getUserServiceUnits);
+  const userActiveServiceUnit = useAppSelector(getUserActiveServiceUnit);
+
   useEffect(() => {
     setNavigate(navigate);
   }, [navigate]);
@@ -95,19 +77,8 @@ const App: React.FC<Props> = (props) => {
   };
 
   const handleDismissErrorModal = () => {
-    props.clearError();
+    dispatch(clearError());
   };
-
-  const {
-    apiError,
-    children,
-    linkUrl,
-    pageTitle,
-    showSearch,
-    userGroups,
-    userActiveServiceUnit,
-    userServiceUnits,
-  } = props;
 
   const appStyle = IS_DEVELOPMENT_URL ? "app-dev" : "app";
 
@@ -217,29 +188,4 @@ const App: React.FC<Props> = (props) => {
   );
 };
 
-const mapStateToProps = (state: RootState) => {
-  const user = getLoggedInUser(state);
-  if (!user) {
-    return {
-      pageTitle: getPageTitle(state),
-      showSearch: getShowSearch(state),
-      user: null,
-    };
-  }
-  return {
-    apiError: getError(state),
-    linkUrl: getLinkUrl(state),
-    pageTitle: getPageTitle(state),
-    showSearch: getShowSearch(state),
-    userGroups: getUserGroups(state),
-    userServiceUnits: getUserServiceUnits(state),
-    userActiveServiceUnit: getUserActiveServiceUnit(state),
-  };
-};
-
-export default flowRight(
-  withRouterLegacy,
-  connect(mapStateToProps, {
-    clearError,
-  }),
-)(App) as React.ComponentType<OwnProps>;
+export default App;
