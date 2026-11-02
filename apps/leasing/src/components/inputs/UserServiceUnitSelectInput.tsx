@@ -5,6 +5,8 @@ import FormFieldLabel from "@/components/form/FormFieldLabel";
 import DropdownIndicator from "@/components/inputs/DropdownIndicator";
 import LoadingIndicator from "@/components/inputs/SelectLoadingIndicator";
 import { setUserActiveServiceUnit } from "@/usersPermissions/slice";
+import { ACTIVE_SERVICE_UNIT_STORAGE_KEY } from "@/usersPermissions/constants";
+import { setStorageItem } from "@/util/storage";
 import type {
   UserServiceUnit,
   UserServiceUnits,
@@ -26,6 +28,7 @@ const UserServiceUnitSelectInput: React.FC<Props> = ({
 
     if (selected) {
       dispatch(setUserActiveServiceUnit(selected));
+      setStorageItem(ACTIVE_SERVICE_UNIT_STORAGE_KEY, String(selected.id));
     }
   };
 

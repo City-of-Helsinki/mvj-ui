@@ -9,6 +9,17 @@ import {
 } from "./slice";
 import { fetchUsersPermissions } from "./requests";
 import { receiveError } from "@/api/slice";
+import { getStorageItem } from "@/util/storage";
+import { ACTIVE_SERVICE_UNIT_STORAGE_KEY } from "./constants";
+
+// Storage can be unavailable (e.g. blocked cookies); a failed read means no saved preference.
+const readStoredServiceUnitId = (): string => {
+  try {
+    return String(getStorageItem(ACTIVE_SERVICE_UNIT_STORAGE_KEY) ?? "");
+  } catch {
+    return "";
+  }
+};
 
 function* fetchUsersPermissionsSaga(): Generator<any, any, any> {
   try {
@@ -18,11 +29,12 @@ function* fetchUsersPermissionsSaga(): Generator<any, any, any> {
     } = yield call(fetchUsersPermissions);
 
     switch (statusCode) {
-      case 200:
+      case 200: {
+        const fallbackServiceUnit = bodyAsJson.service_units[0];
         yield put(receiveUserGroups(bodyAsJson.groups));
         yield put(receiveUserServiceUnits(bodyAsJson.service_units));
         yield put(receiveUsersPermissions(bodyAsJson.permissions));
-        if (!bodyAsJson.service_units[0]) {
+        if (!fallbackServiceUnit) {
           yield put(
             receiveError(
               new Error(
@@ -32,9 +44,14 @@ function* fetchUsersPermissionsSaga(): Generator<any, any, any> {
             ),
           );
         } else {
-          yield put(setUserActiveServiceUnit(bodyAsJson.service_units[0]));
+          const storedId = readStoredServiceUnitId();
+          const restored = bodyAsJson.service_units.find(
+            (unit: { id: number }) => String(unit.id) === storedId,
+          );
+          yield put(setUserActiveServiceUnit(restored ?? fallbackServiceUnit));
         }
         break;
+      }
 
       default:
         yield put(receiveError(bodyAsJson));
