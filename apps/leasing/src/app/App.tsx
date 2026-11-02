@@ -17,6 +17,7 @@ import { Routes, getRouteById } from "@/root/routes";
 import { clearError } from "@/api/slice";
 import { getError } from "@/api/selectors";
 import { getLoggedInUser } from "@/auth/selectors";
+import useActiveServiceUnitSync from "@/usersPermissions/useActiveServiceUnitSync";
 import {
   getLinkUrl,
   getPageTitle,
@@ -71,6 +72,8 @@ const App: React.FC<Props> = (props) => {
   useEffect(() => {
     setNavigate(navigate);
   }, [navigate]);
+
+  useActiveServiceUnitSync();
 
   const handleLogin = () => {
     const { pathname, search } = location;

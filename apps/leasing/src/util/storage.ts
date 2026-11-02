@@ -112,7 +112,7 @@ export const removeSessionStorageItem = (
  * @param {string} key
  * @returns {string}
  */
-const buildStorageKey = (key: string) => {
+export const buildStorageKey = (key: string) => {
   return [import.meta.env.VITE_STORAGE_PREFIX, key].join(".");
 };
 
