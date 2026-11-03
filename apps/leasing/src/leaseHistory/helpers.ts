@@ -109,15 +109,17 @@ const buildAttachments = (
   return attachments;
 };
 
-/** Compare two nodes for descending chronological order (newest first). */
-const compareNodesDesc = (a: HistoryLeaseNode, b: HistoryLeaseNode): number => {
-  const aTime = a.startDate ?? "0000-01-01";
-  const bTime = b.startDate ?? "0000-01-01";
-  if (aTime === bTime) {
-    return (b.lease.id ?? 0) - (a.lease.id ?? 0);
-  }
-  return aTime < bTime ? 1 : -1;
+const compareDatesDesc = (a: string | null, b: string | null): number => {
+  // Treat null dates most recent, as they are likely so new that their date is not set yet.
+  if (a == null && b != null) return -1;
+  if (a != null && b == null) return 1;
+  if (a === b) return 0;
+  return a < b ? 1 : -1;
 };
+
+/** Compare two nodes for descending chronological order (newest first). */
+const compareNodesDesc = (a: HistoryLeaseNode, b: HistoryLeaseNode): number =>
+  compareDatesDesc(a.startDate, b.startDate) || b.lease.id - a.lease.id;
 
 type LeaseRelations = { successorIds: number[]; predecessorIds: number[] };
 
@@ -219,67 +221,101 @@ const indexNodesById = (
   return byId;
 };
 
-/** A node's predecessors that also live in this group */
-const predecessorsInGroup = (
-  node: HistoryLeaseNode,
-  byId: Map<number, HistoryLeaseNode>,
-): HistoryLeaseNode[] =>
-  node.predecessorIds
-    .filter((id) => byId.has(id))
-    .map((id) => byId.get(id)!)
-    .sort(compareNodesDesc);
-
-/* Heads are nodes without a successor in the group (top of a chain), */
-const findChainHeads = (
-  nodes: HistoryLeaseNode[],
-  byId: Map<number, HistoryLeaseNode>,
-): HistoryLeaseNode[] =>
-  nodes
-    .filter((n) => !n.successorIds.some((id) => byId.has(id)))
-    .sort(compareNodesDesc);
-
-/* Walk a chain head down through its predecessors, collecting one full chain. */
 const collectChainFrom = (
-  head: HistoryLeaseNode,
+  start: HistoryLeaseNode,
   byId: Map<number, HistoryLeaseNode>,
   seen: Set<number>,
 ): HistoryLeaseNode[] => {
   const chain: HistoryLeaseNode[] = [];
-  const visit = (node: HistoryLeaseNode) => {
-    const id = node.lease.id;
-    if (id == null || seen.has(id)) return;
-    seen.add(id);
+  const pending = [start];
+
+  while (pending.length) {
+    const node = pending.pop();
+    const leaseId = node.lease.id;
+    if (leaseId == null || seen.has(leaseId)) continue;
+    seen.add(leaseId);
     chain.push(node);
-    predecessorsInGroup(node, byId).forEach(visit);
-  };
-  visit(head);
-  return chain;
+
+    node.predecessorIds.forEach((neighborId) => {
+      const neighbor = byId.get(neighborId);
+      if (
+        neighbor &&
+        node.predecessorIds.length === 1 &&
+        neighbor.successorIds.length === 1 &&
+        !seen.has(neighborId)
+      )
+        pending.push(neighbor);
+    });
+  }
+
+  return chain.sort(compareNodesDesc);
 };
 
 /* Partition a service unit's nodes into connected chains. */
 const partitionIntoChains = (nodes: HistoryLeaseNode[]): HistoryChain[] => {
-  const byId = indexNodesById(nodes);
-  const heads = findChainHeads(nodes, byId);
+  // Contains the nodes with corrected relations.
+  const displayNodes = nodes.map((node) => ({
+    ...node,
+    predecessorIds: [] as number[],
+    successorIds: [] as number[],
+  }));
+  const byId = indexNodesById(displayNodes);
+  const nodesWithExternalSuccessors = new Set<number>();
+
+  nodes.forEach((node) => {
+    const source = byId.get(node.lease.id);
+    if (!source) return;
+
+    node.successorIds.forEach((successorId) => {
+      const target = byId.get(successorId);
+      if (!target) {
+        nodesWithExternalSuccessors.add(node.lease.id);
+        return;
+      }
+
+      // Reorient relations in case they have been added in a non-chronological order
+      const isReversedRelation =
+        source.startDate != null &&
+        target.startDate != null &&
+        source.startDate > target.startDate;
+      const earlierLease = isReversedRelation ? target : source;
+      const laterLease = isReversedRelation ? source : target;
+      earlierLease.successorIds.push(laterLease.lease.id);
+      laterLease.predecessorIds.push(earlierLease.lease.id);
+    });
+  });
+
+  displayNodes.forEach((node) => {
+    node.state = getHistoryNodeState(
+      node.lease,
+      node.successorIds.length > 0 ||
+        nodesWithExternalSuccessors.has(node.lease.id),
+    );
+  });
 
   const chains: HistoryChain[] = [];
   const seen = new Set<number>();
+  const chainStartingNodes = displayNodes
+    .filter((node) => node.successorIds.length !== 1)
+    .sort(compareNodesDesc);
 
-  heads.forEach((head) => {
-    const chain = collectChainFrom(head, byId, seen);
+  const addChain = (node: HistoryLeaseNode) => {
+    const chain = collectChainFrom(node, byId, seen);
     if (chain.length) {
-      chains.push({ key: `chain-${chain[0].lease.id}`, nodes: chain });
+      chains.push({
+        key: `chain-${chain[0].lease.id}`,
+        nodes: chain,
+      });
     }
-  });
+  };
 
-  // Anything unreached is set as its own chain
-  nodes.forEach((node) => {
-    if (node.lease.id != null && !seen.has(node.lease.id)) {
-      seen.add(node.lease.id);
-      chains.push({ key: `chain-${node.lease.id}`, nodes: [node] });
-    }
-  });
+  chainStartingNodes.forEach(addChain);
+  // Add unsorted/unfiltered nodes as a fallback.
+  displayNodes.forEach(addChain);
 
-  return chains;
+  return chains.sort((first, second) =>
+    compareDatesDesc(first.nodes[0].startDate, second.nodes[0].startDate),
+  );
 };
 
 export const groupHistoryNodesByServiceUnit = (
