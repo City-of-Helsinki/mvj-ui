@@ -6,6 +6,7 @@ import { LoginProvider } from "hds-react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import LandUseApp from "@/landUse/LandUseApp";
 import { LanduseApiError } from "@/landUse/api/fetchClient";
+import { removeLegacyLandUseDb } from "@/landUse/api/removeLegacyLandUseDb";
 import { loginProviderProperties } from "@/landUse/auth/constants";
 import "@/landUse/landUse.scss"; // Only import landUse styles
 import { LANDUSE_BASE_PATH } from "./../../constants";
@@ -45,3 +46,5 @@ root.render(
     </BrowserRouter>
   </Sentry.ErrorBoundary>,
 );
+
+removeLegacyLandUseDb();

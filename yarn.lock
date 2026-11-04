@@ -2485,9 +2485,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@mvj/landuse@workspace:apps/landuse"
   dependencies:
-    "@tanstack/query-persist-client-core": "npm:5.101.4"
     "@tanstack/react-query": "npm:5.101.4"
-    "@tanstack/react-query-persist-client": "npm:5.101.4"
     final-form-calculate: "npm:2.0.0"
   languageName: unknown
   linkType: soft
@@ -3397,27 +3395,6 @@ __metadata:
   version: 5.101.4
   resolution: "@tanstack/query-core@npm:5.101.4"
   checksum: 10c0/a407960303431e6498c6518cf6f8cc7283d3e4a95dbdc5e9fa42c217b9dd7afaffb82a4f2d36b38f578f745e8cf69ff8551abb947f5abcc0a290f3e3e75dc654
-  languageName: node
-  linkType: hard
-
-"@tanstack/query-persist-client-core@npm:5.101.4":
-  version: 5.101.4
-  resolution: "@tanstack/query-persist-client-core@npm:5.101.4"
-  dependencies:
-    "@tanstack/query-core": "npm:5.101.4"
-  checksum: 10c0/095ee23577e9ebc3024cb07755ecc39e88444e36f1b6ad303dbb6f413fcbf8461ad94bc51bbad457f238690a12330b7c5057b3e09062dff4dfb8d837ff42a5a3
-  languageName: node
-  linkType: hard
-
-"@tanstack/react-query-persist-client@npm:5.101.4":
-  version: 5.101.4
-  resolution: "@tanstack/react-query-persist-client@npm:5.101.4"
-  dependencies:
-    "@tanstack/query-persist-client-core": "npm:5.101.4"
-  peerDependencies:
-    "@tanstack/react-query": ^5.101.4
-    react: ^18 || ^19
-  checksum: 10c0/f6a2d6b5f537c3a32c742aa1be6b73d6441448f25bc18a59d892c9010c269bd4006021f88d89294217530a256a94b33da80925e91d86b8ce678d8ac23ab07408
   languageName: node
   linkType: hard
 

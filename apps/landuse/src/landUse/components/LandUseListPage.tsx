@@ -201,7 +201,6 @@ const LandUseListPage: React.FC = () => {
       label: `${name} (${identifier})`,
     }));
   }, [districtsQuery.data]);
-  console.log(districtOptions);
 
   const handleCreate = () => {
     if (!selectedDistrict) {

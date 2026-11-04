@@ -359,9 +359,7 @@ const LandUseDetailPage: React.FC = () => {
   const summaryFormApi = useMemo(
     () =>
       createForm<LandUseSummaryFormValues>({
-        onSubmit: (values) => {
-          console.log("Summary form submitted:", values);
-        },
+        onSubmit: () => {}, // Submitted in LanduseDetailPage.handleSaveClick
         mutators: { ...arrayMutators },
       }),
     [],
@@ -370,9 +368,7 @@ const LandUseDetailPage: React.FC = () => {
   const partiesFormApi = useMemo(
     () =>
       createForm<LandUsePartiesFormValues>({
-        onSubmit: (values) => {
-          console.log("Parties form submitted:", values);
-        },
+        onSubmit: () => {}, // Submitted in LanduseDetailPage.handleSaveClick
         mutators: { ...arrayMutators },
       }),
     [],
@@ -381,9 +377,7 @@ const LandUseDetailPage: React.FC = () => {
   const compensationsFormApi = useMemo(
     () =>
       createForm<LandUseCompensationsFormValues>({
-        onSubmit: (values) => {
-          console.log("Compensations form submitted:", values);
-        },
+        onSubmit: () => {}, // Submitted in LanduseDetailPage.handleSaveClick
         mutators: { ...arrayMutators },
       }),
     [],
@@ -392,9 +386,7 @@ const LandUseDetailPage: React.FC = () => {
   const collateralsFormApi = useMemo(
     () =>
       createForm<LandUseCollateralsFormValues>({
-        onSubmit: (values) => {
-          console.log("Collaterals form submitted:", values);
-        },
+        onSubmit: () => {}, // Submitted in LanduseDetailPage.handleSaveClick
         mutators: { ...arrayMutators },
       }),
     [],
@@ -403,9 +395,7 @@ const LandUseDetailPage: React.FC = () => {
   const monitoringFormApi = useMemo(
     () =>
       createForm<LandUseMonitoringFormValues>({
-        onSubmit: (values) => {
-          console.log("Monitoring form submitted:", values);
-        },
+        onSubmit: () => {}, // Submitted in LanduseDetailPage.handleSaveClick
         mutators: { ...arrayMutators },
       }),
     [],
@@ -414,9 +404,7 @@ const LandUseDetailPage: React.FC = () => {
   const decisionsFormApi = useMemo(
     () =>
       createForm<LandUseDecisionsFormValues>({
-        onSubmit: (values) => {
-          console.log("Decisions form submitted:", values);
-        },
+        onSubmit: () => {}, // Submitted in LanduseDetailPage.handleSaveClick
         mutators: { ...arrayMutators },
       }),
     [],
@@ -425,9 +413,7 @@ const LandUseDetailPage: React.FC = () => {
   const contractsFormApi = useMemo(
     () =>
       createForm<LandUseContractsFormValues>({
-        onSubmit: (values) => {
-          console.log("Contracts form submitted:", values);
-        },
+        onSubmit: () => {}, // Submitted in LanduseDetailPage.handleSaveClick
         mutators: { ...arrayMutators },
       }),
     [],
@@ -436,9 +422,7 @@ const LandUseDetailPage: React.FC = () => {
   const paymentScheduleFormApi = useMemo(
     () =>
       createForm<LandUsePaymentScheduleFormValues>({
-        onSubmit: (values) => {
-          console.log("Payment schedule form submitted:", values);
-        },
+        onSubmit: () => {}, // Submitted in LanduseDetailPage.handleSaveClick
         mutators: { ...arrayMutators },
       }),
     [],
@@ -447,9 +431,7 @@ const LandUseDetailPage: React.FC = () => {
   const billingFormApi = useMemo(
     () =>
       createForm<LandUseBillingFormValues>({
-        onSubmit: (values) => {
-          console.log("Billing form submitted:", values);
-        },
+        onSubmit: () => {}, // Submitted in LanduseDetailPage.handleSaveClick
         mutators: { ...arrayMutators },
       }),
     [],
