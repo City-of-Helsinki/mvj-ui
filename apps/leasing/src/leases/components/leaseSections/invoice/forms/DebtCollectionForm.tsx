@@ -3,13 +3,12 @@ import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { Form } from "react-final-form";
 import { Row, Column } from "@/components/grid/Grid";
 import { ActionTypes, ModalConsumer } from "@/app/ModalContext";
-import ActionButtonWrapper from "@/components/form/ActionButtonWrapper";
 import AddButtonThird from "@/components/form/AddButtonThird";
 import AddFileButton from "@/components/form/AddFileButton";
 import Authorization from "@/components/authorization/Authorization";
-import CollectionCourtDecisionPanel from "../CollectionCourtDecisionPanel";
+import CollectionCourtDecisionPanel from "@/leases/components/leaseSections/invoice/CollectionCourtDecisionPanel";
 import DecisionLink from "@/components/links/DecisionLink";
-import NewCollectionNote from "./NewCollectionNote";
+import NewCollectionNote from "@/leases/components/leaseSections/invoice/forms/NewCollectionNote";
 import CollectionNotes from "@/collectionNote/components/CollectionNotes";
 import FieldAndRemoveButtonWrapper from "@/components/form/FieldAndRemoveButtonWrapper";
 import FileDownloadLink from "@/components/file/FileDownloadLink";
@@ -83,7 +82,7 @@ import {
   getUsersPermissions,
 } from "@/usersPermissions/selectors";
 
-import type { Attributes } from "types";
+import type { Attributes } from "@/types";
 import type { CollectionCourtDecisionId } from "@/collectionCourtDecision/types";
 import type { CollectionNote, CollectionNoteId } from "@/collectionNote/types";
 import type { CollectionLetterId } from "@/collectionLetter/types";
@@ -652,7 +651,6 @@ const DebtCollectionForm: React.FC = () => {
                           <>
                             <CollectionCourtDecisionPanel
                               isOpen={isCollectionCourtDecisionPanelOpen}
-                              largeScreen={true}
                               onClose={handleHideCollectionCourtDecisionPanel}
                               onSave={handleSaveCourtDecisionFile}
                               title="Lisää käräjäoikeuden päätös"

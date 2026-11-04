@@ -6,7 +6,6 @@ import Button from "@/components/button/Button";
 import FileInput from "@/components/file/FileInput";
 import FormField from "@/components/form/final-form/FormField";
 import FormText from "@/components/form/FormText";
-import FormTextTitle from "@/components/form/FormTextTitle";
 import { useField, useForm } from "react-final-form";
 import ButtonWrapper from "@/components/content/ButtonWrapper";
 import {
@@ -22,7 +21,6 @@ import {
 import type { Attributes } from "types";
 type Props = {
   isOpen: boolean;
-  largeScreen: boolean;
   onClose: (...args: Array<any>) => any;
   onSave: (...args: Array<any>) => any;
   title: string;
@@ -30,7 +28,6 @@ type Props = {
 };
 const CollectionCourtDecisionPanel: React.FC<Props> = ({
   isOpen,
-  largeScreen,
   onClose,
   onSave,
   valid,
@@ -76,11 +73,6 @@ const CollectionCourtDecisionPanel: React.FC<Props> = ({
     <>
       <Row>
         <Column small={6} large={3}>
-          {!largeScreen && (
-            <FormTextTitle required>
-              {CollectionCourtDecisionFieldTitles.FILE}
-            </FormTextTitle>
-          )}
           <FileInput
             name={"collection_court_decision_file"}
             onChange={handleFileChange}
@@ -88,19 +80,9 @@ const CollectionCourtDecisionPanel: React.FC<Props> = ({
           />
         </Column>
         <Column small={3} large={1}>
-          {!largeScreen && (
-            <FormTextTitle>
-              {CollectionCourtDecisionFieldTitles.UPLOADED_AT}
-            </FormTextTitle>
-          )}
           <FormText>-</FormText>
         </Column>
         <Column small={3} large={2}>
-          {!largeScreen && (
-            <FormTextTitle>
-              {CollectionCourtDecisionFieldTitles.UPLOADER}
-            </FormTextTitle>
-          )}
           <FormText>-</FormText>
         </Column>
         <Column small={3} large={2}>
@@ -117,7 +99,7 @@ const CollectionCourtDecisionPanel: React.FC<Props> = ({
                 CollectionCourtDecisionFieldPaths.DECISION_DATE,
               )}
               name="decision_date"
-              invisibleLabel={largeScreen}
+              invisibleLabel
               overrideValues={{
                 label: CollectionCourtDecisionFieldTitles.DECISION_DATE,
               }}
@@ -137,7 +119,7 @@ const CollectionCourtDecisionPanel: React.FC<Props> = ({
                 collectionCourtDecisionAttributes,
                 CollectionCourtDecisionFieldPaths.NOTE,
               )}
-              invisibleLabel={largeScreen}
+              invisibleLabel
               name="note"
               overrideValues={{
                 label: CollectionCourtDecisionFieldTitles.NOTE,
