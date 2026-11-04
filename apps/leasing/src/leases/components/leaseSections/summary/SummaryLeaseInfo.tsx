@@ -1,5 +1,4 @@
 import React, { Fragment } from "react";
-import { useSelector } from "react-redux";
 import { Row, Column } from "@/components/grid/Grid";
 import classNames from "classnames";
 import { get } from "lodash-es";
@@ -14,6 +13,7 @@ import ListItem from "@/components/content/ListItem";
 import ListItems from "@/components/content/ListItems";
 import SubTitle from "@/components/content/SubTitle";
 import { Methods } from "@/enums";
+import { useAppSelector } from "@/root/hooks";
 import { AreaNoteFieldTitles } from "@/areaNote/enums";
 import { InvoiceFieldPaths, InvoiceFieldTitles } from "@/invoices/enums";
 import {
@@ -165,12 +165,12 @@ type Props = {
 };
 
 const SummaryLeaseInfo = () => {
-  const currentLease = useSelector(getCurrentLease);
-  const attributes = useSelector(getAttributes);
-  const invoiceAttributes = useSelector(getInvoiceAttributes);
-  const invoiceMethods = useSelector(getInvoiceMethods);
-  const invoices = useSelector((state) => getInvoicesByLease(state, currentLease.id));
-  const usersPermissions = useSelector(getUsersPermissions);
+  const currentLease = useAppSelector(getCurrentLease);
+  const attributes = useAppSelector(getAttributes);
+  const invoiceAttributes = useAppSelector(getInvoiceAttributes);
+  const invoiceMethods = useAppSelector(getInvoiceMethods);
+  const invoices = useAppSelector((state) => getInvoicesByLease(state, currentLease.id));
+  const usersPermissions = useAppSelector(getUsersPermissions);
 
   const constructabilityStateOptions = getFieldOptions(
       attributes,
