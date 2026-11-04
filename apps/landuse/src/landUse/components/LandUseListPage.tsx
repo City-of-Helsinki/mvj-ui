@@ -23,6 +23,10 @@ import {
 } from "@/landUse/api/landUseApi";
 import { getLanduseApiErrorMessage } from "@/landUse/api/fetchClient";
 import {
+  showLanduseApiErrorNotification,
+  showLanduseSuccessNotification,
+} from "@/landUse/notifications/notificationService";
+import {
   LAND_USE_NEGOTIATION_PHASES,
   type LandUseNegotiationPhase,
 } from "@/landUse/options";
@@ -80,16 +84,15 @@ const LandUseListPage: React.FC = () => {
   });
 
   const createAgreementMutation = useMutation({
-    mutationFn: ({
-      districtId,
-    }: {
-      districtId: string;
-    }) => createLandUseAgreement(districtId),
+    mutationFn: ({ districtId }: { districtId: string }) =>
+      createLandUseAgreement(districtId),
     onSuccess: (identifier) => {
       queryClient.invalidateQueries({ queryKey: ["land-use", "list"] });
       resetCreateDialog();
+      showLanduseSuccessNotification("Maankäyttösopimus luotu.");
       navigate(identifier);
     },
+    onError: (error) => showLanduseApiErrorNotification(error),
   });
 
   const updateUrlWithFilters = (filters: LandUseFilters) => {

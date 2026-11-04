@@ -10,6 +10,7 @@ import { removeLegacyLandUseDb } from "@/landUse/api/removeLegacyLandUseDb";
 import { loginProviderProperties } from "@/landUse/auth/constants";
 import "@/landUse/landUse.scss"; // Only import landUse styles
 import { LANDUSE_BASE_PATH } from "./../../constants";
+import { QUERY_CLIENT_MAX_RETRIES } from "@/landUse/constants";
 
 const createQueryClient = () =>
   new QueryClient({
@@ -17,8 +18,9 @@ const createQueryClient = () =>
       queries: {
         staleTime: 5 * 60 * 1000,
         refetchOnWindowFocus: false,
-        retry: (_failureCount, error) =>
-          !(error instanceof LanduseApiError) || error.status >= 500,
+        retry: (failureCount, error) =>
+          failureCount < QUERY_CLIENT_MAX_RETRIES &&
+          (!(error instanceof LanduseApiError) || error.status >= 500),
       },
     },
   });

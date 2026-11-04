@@ -80,7 +80,7 @@ export const PanttikirjaForm: React.FC<CollateralFormProps> = ({
                         {({ input }) => (
                           <TextInput
                             inputMode="text"
-                            id={`${namePrefix.replace(/\./g, "-")}-kiinteistotunnus-${index}`}
+                            id={`${namePrefix.replaceAll(".", "-")}-kiinteistotunnus-${index}`}
                             label={
                               index === 0
                                 ? "Kiinteistötunnus"
@@ -96,7 +96,7 @@ export const PanttikirjaForm: React.FC<CollateralFormProps> = ({
                     <div className="landuse-grid__column-6 landuse-grid__column--align-center">
                       {isEditMode && (
                         <ConfirmDeleteButton
-                          id={`${namePrefix.replace(/\./g, "-")}-kiinteistotunnus-delete-${index}`}
+                          id={`${namePrefix.replaceAll(".", "-")}-kiinteistotunnus-delete-${index}`}
                           buttonLabel="Poista"
                           buttonVariant={ButtonVariant.Supplementary}
                           onConfirm={() => fields.remove(index)}
@@ -173,14 +173,14 @@ export const PanttikirjaForm: React.FC<CollateralFormProps> = ({
         <div className="landuse-grid__column-6">
           {isEditMode ? (
             <ToggleButton
-              id={`${namePrefix.replace(/\./g, "-")}-jalkipanttaus`}
+              id={`${namePrefix.replaceAll(".", "-")}-jalkipanttaus`}
               label="Jälkipanttaus"
               checked={Boolean(isSubsequentPledge)}
               onChange={() => handleSubsequentPledgeChange(!isSubsequentPledge)}
             />
           ) : (
             <TextInput
-              id={`${namePrefix.replace(/\./g, "-")}-jalkipanttaus`}
+              id={`${namePrefix.replaceAll(".", "-")}-jalkipanttaus`}
               label="Jälkipanttaus"
               value={isSubsequentPledge ? "Kyllä" : "Ei"}
               readOnly

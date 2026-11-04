@@ -8,10 +8,7 @@ import type { LandUseMonitoringFormValues } from "@/landUse/components/tabs/Land
 import type { LandUsePartiesFormValues } from "@/landUse/components/tabs/LandUseParties";
 import type { LandUseSummaryFormValues } from "@/landUse/components/tabs/LandUseSummary";
 import type { Collateral } from "@/landUse/components/collateralForms";
-import {
-  LAND_USE_INVOICE_TYPES,
-  type CollateralType,
-} from "@/landUse/options";
+import { LAND_USE_INVOICE_TYPES, type CollateralType } from "@/landUse/options";
 import type { LandUseListItem } from "@/landUse/api/landUseListTypes";
 import {
   parseIsoDateToFinnishDate,
@@ -918,9 +915,7 @@ export const getContracts = async (
       toinenKutsuLahetetty: parseIsoDateToFinnishDate(
         contract.second_call_sent,
       ),
-      kolmasKutsuLahetetty: parseIsoDateToFinnishDate(
-        contract.third_call_sent,
-      ),
+      kolmasKutsuLahetetty: parseIsoDateToFinnishDate(contract.third_call_sent),
       paatos: contract.decision ? String(contract.decision) : undefined,
       toimeenpanija: contract.executor ?? "",
       muutokset: contract.contract_changes.map((change) => ({
@@ -936,9 +931,7 @@ export const getContracts = async (
         toinenKutsuLahetetty: parseIsoDateToFinnishDate(
           change.second_call_sent,
         ),
-        kolmasKutsuLahetetty: parseIsoDateToFinnishDate(
-          change.third_call_sent,
-        ),
+        kolmasKutsuLahetetty: parseIsoDateToFinnishDate(change.third_call_sent),
         paatos: change.decision ? String(change.decision) : undefined,
         huomautus: change.description,
         toimeenpanija: change.executor ?? "",
@@ -970,7 +963,9 @@ const collateralsByKey = (
     grouped[key] = [];
   }
   for (const collateral of collaterals) {
-    const key = collateral.collateralType && COLLATERAL_KEY_BY_TYPE[collateral.collateralType];
+    const key =
+      collateral.collateralType &&
+      COLLATERAL_KEY_BY_TYPE[collateral.collateralType];
     if (!key) {
       continue;
     }
@@ -1033,9 +1028,7 @@ export const updateContracts = async (
       second_call_sent: parseFinnishDateToIsoDate(
         contract.toinenKutsuLahetetty,
       ),
-      third_call_sent: parseFinnishDateToIsoDate(
-        contract.kolmasKutsuLahetetty,
-      ),
+      third_call_sent: parseFinnishDateToIsoDate(contract.kolmasKutsuLahetetty),
       executor: contract.toimeenpanija,
       decision: contract.paatos ? Number(contract.paatos) : null,
       signing_note: contract.huomautus,
@@ -1056,9 +1049,7 @@ export const updateContracts = async (
         second_call_sent: parseFinnishDateToIsoDate(
           change.toinenKutsuLahetetty,
         ),
-        third_call_sent: parseFinnishDateToIsoDate(
-          change.kolmasKutsuLahetetty,
-        ),
+        third_call_sent: parseFinnishDateToIsoDate(change.kolmasKutsuLahetetty),
         executor: change.toimeenpanija,
         decision: change.paatos ? Number(change.paatos) : null,
         description: change.huomautus,
