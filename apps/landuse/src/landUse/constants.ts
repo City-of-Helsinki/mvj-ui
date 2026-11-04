@@ -1,3 +1,8 @@
+/** How many times the UI query client should retry failed requests before giving
+ * up, e.g. in case of server errors or network issues.
+*/
+export const QUERY_CLIENT_MAX_RETRIES = 3;
+
 /**
  * Korotuskerroin is used in collateral and penalty (sakko) calculations.  The
  * default value is set to 1.25, which is based on the current practices in the

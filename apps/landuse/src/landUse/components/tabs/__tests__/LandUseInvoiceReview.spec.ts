@@ -19,7 +19,11 @@ import {
   validateRequiredInstallmentField,
 } from "@/landUse/components/tabs/LandUsePaymentSchedule";
 
-const createInvoice = (installmentNumber: string): LandUseInvoice => ({
+const createInvoice = (
+  installmentNumber: string,
+  id?: string,
+): LandUseInvoice => ({
+  id,
   recipientPartyIndex: "0",
   contractIndex: "0",
   installmentNumber,
@@ -37,7 +41,9 @@ const createInvoice = (installmentNumber: string): LandUseInvoice => ({
   invoiceItems: [],
 });
 
-const createSchedule = (): LandUsePaymentScheduleEntry => ({
+const createSchedule = (): LandUsePaymentScheduleEntry & {
+  installments: (LandUseInvoice & { id: string })[];
+} => ({
   id: "schedule-1",
   recipientPartyIndex: "0",
   contractIndex: "0",
@@ -48,7 +54,10 @@ const createSchedule = (): LandUsePaymentScheduleEntry => ({
   korkoPeruskorko: "",
   korkoMarginaali: "",
   daysInYear: "365",
-  installments: [createInvoice("1"), createInvoice("2")],
+  installments: [
+    { ...createInvoice("1"), id: "installment-1" },
+    { ...createInvoice("2"), id: "installment-2" },
+  ],
 });
 
 describe("invoice review workflow", () => {
@@ -98,19 +107,17 @@ describe("invoice review workflow", () => {
     expect(result).toHaveLength(2);
     expect(result[0]).toMatchObject({
       status: LAND_USE_INVOICE_STATUSES.OPEN,
-      sourcePaymentScheduleId: "schedule-1",
-      sourceInstallmentIndex: 0,
+      sourceInstallmentId: "installment-1",
     });
     expect(result[0].sentAt).toBeTruthy();
     expect(result[0].invoiceNumber).toBeTruthy();
-    expect(result[1].sourceInstallmentIndex).toBe(1);
+    expect(result[1].sourceInstallmentId).toBe("installment-2");
   });
 
   it("does not duplicate installments already represented in billing", () => {
     const existingInvoice: LandUseBillingInvoice = {
       ...createInvoice("1"),
-      sourcePaymentScheduleId: "schedule-1",
-      sourceInstallmentIndex: 0,
+      sourceInstallmentId: "installment-1",
     };
 
     const result = createAcceptedBillingInvoices(createSchedule(), [
@@ -118,7 +125,7 @@ describe("invoice review workflow", () => {
     ]);
 
     expect(result).toHaveLength(1);
-    expect(result[0].sourceInstallmentIndex).toBe(1);
+    expect(result[0].sourceInstallmentId).toBe("installment-2");
   });
 
   it("derives review rows only from schedules pending approval", () => {

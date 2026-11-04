@@ -291,7 +291,9 @@ const SiteRow: React.FC<SiteRowProps> = ({
                           id={`landuse-compensations-kayttotarkoitus-${site.id}`}
                           options={intendedUseOptions}
                           value={normalizeSelectValue(
-                            input.value == null ? undefined : String(input.value),
+                            input.value == null
+                              ? undefined
+                              : String(input.value),
                           )}
                           onChange={(selectedOptions) => {
                             input.onChange(
@@ -330,7 +332,9 @@ const SiteRow: React.FC<SiteRowProps> = ({
                           id={`landuse-compensations-hallintamuoto-${site.id}`}
                           options={tenureTypeOptions}
                           value={normalizeMultiSelectValue(
-                            (input.value ?? []).map(String),
+                            Array.isArray(input.value)
+                              ? input.value.map(String)
+                              : input.value,
                           )}
                           onChange={(selectedOptions) => {
                             input.onChange(
@@ -895,7 +899,9 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                         <TextInput
                           id="landuse-compensations-maapoliittinen-ohjelma"
                           label="Maapoliittinen ohjelma"
-                          value={readOnlyTextValue(input.value)}
+                          value={readOnlyTextValue(
+                            values.maapoliittinenOhjelma,
+                          )}
                           readOnly
                         />
                       ) : (

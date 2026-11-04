@@ -64,13 +64,14 @@ export interface LandUseBillingParty {
 
 export type LandUseBillingScheduleInstallment = Pick<
   LandUseInvoice,
+  | "id"
   | "recipientPartyIndex"
   | "installmentNumber"
   | "installmentTotal"
   | "dueDate"
   | "type"
   | "invoiceItems"
->;
+> & { id: string };
 
 export type LandUseBillingSchedule = Pick<
   LandUsePaymentScheduleEntry,

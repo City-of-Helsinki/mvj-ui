@@ -12,16 +12,18 @@ export const createAcceptedBillingInvoices = (
   schedule: LandUseBillingSchedule,
   existingInvoices: LandUseBillingInvoice[],
 ): LandUseBillingInvoice[] => {
-  const existingInstallmentIndexes = new Set(
+  const existingInstallmentIds = new Set(
     existingInvoices
-      .filter((invoice) => invoice.sourcePaymentScheduleId === schedule.id)
-      .map((invoice) => invoice.sourceInstallmentIndex),
+      .map((invoice) => invoice.sourceInstallmentId)
+      .filter((installmentId): installmentId is string =>
+        Boolean(installmentId),
+      ),
   );
 
   const sentAt = new Date().toISOString();
 
   return schedule.installments.flatMap((installment, installmentIndex) => {
-    if (existingInstallmentIndexes.has(installmentIndex)) {
+    if (existingInstallmentIds.has(installment.id)) {
       return [];
     }
 
@@ -38,8 +40,7 @@ export const createAcceptedBillingInvoices = (
         invoiceNumber: `${Date.now()}-${installmentIndex + 1}`,
         billedAmount: String(amount),
         remainingAmount: String(amount),
-        sourcePaymentScheduleId: schedule.id,
-        sourceInstallmentIndex: installmentIndex,
+        sourceInstallmentId: installment.id,
       },
     ];
   });

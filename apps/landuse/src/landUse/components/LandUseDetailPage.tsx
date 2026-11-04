@@ -46,6 +46,10 @@ import {
 } from "@/landUse/options";
 import { parseLandUseNumericValueOrZero } from "@/landUse/utils/number";
 import { getLanduseApiErrorMessage } from "@/landUse/api/fetchClient";
+import {
+  showLanduseApiErrorNotification,
+  showLanduseSuccessNotification,
+} from "@/landUse/notifications/notificationService";
 import type {
   SectionEntry,
   SideNavigationTab,
@@ -755,7 +759,9 @@ const LandUseDetailPage: React.FC = () => {
       }
       setIsSaveClicked(false);
       setIsEditMode(false);
+      showLanduseSuccessNotification("Tallennus onnistui.");
     } catch (error) {
+      showLanduseApiErrorNotification(error);
       setSaveError(getLanduseApiErrorMessage(error));
     } finally {
       setIsSaving(false);
@@ -865,43 +871,51 @@ const LandUseDetailPage: React.FC = () => {
       partiesQuery.data?.parties) ||
     [];
 
-  const billingParties: LandUseBillingParty[] = activeParties.map((party) => ({
-    party: {
-      details: {
-        name: party.party.details?.name,
-        partyType: party.party.details?.partyType,
-        streetAddress: party.party.details?.streetAddress,
-        city: party.party.details?.city,
-        postalCode: party.party.details?.postalCode,
-        ...(party.party.details?.partyType === "COMPANY" &&
-        "businessId" in party.party.details
-          ? { businessId: party.party.details?.businessId }
-          : {}),
+  const billingParties: LandUseBillingParty[] = activeParties.map(
+    (activeParty) => ({
+      id: activeParty.id,
+      party: {
+        details: {
+          name: activeParty.party.details?.name,
+          partyType: activeParty.party.details?.partyType,
+          streetAddress: activeParty.party.details?.streetAddress,
+          city: activeParty.party.details?.city,
+          postalCode: activeParty.party.details?.postalCode,
+          ...(activeParty.party.details?.partyType === "COMPANY" &&
+          "businessId" in activeParty.party.details
+            ? { businessId: activeParty.party.details?.businessId }
+            : {}),
+        },
       },
-    },
-    billingDetails: {
-      ovtCode: party.billingDetails?.ovtCode,
-      reference: party.billingDetails?.reference,
-      sapCustomerNumber: party.billingDetails?.sapCustomerNumber,
-    },
-    ...(party.invoiceRecipient
-      ? {
-          invoiceRecipient: {
-            details: {
-              name: party.invoiceRecipient?.details?.name,
-              partyType: party.invoiceRecipient?.details?.partyType,
-              streetAddress: party.invoiceRecipient?.details?.streetAddress,
-              city: party.invoiceRecipient?.details?.city,
-              postalCode: party.invoiceRecipient?.details?.postalCode,
-              ...(party.invoiceRecipient?.details?.partyType === "COMPANY" &&
-              "businessId" in party.invoiceRecipient.details
-                ? { businessId: party.invoiceRecipient?.details?.businessId }
-                : {}),
+      billingDetails: {
+        ovtCode: activeParty.billingDetails?.ovtCode,
+        reference: activeParty.billingDetails?.reference,
+        sapCustomerNumber: activeParty.billingDetails?.sapCustomerNumber,
+      },
+      ...(activeParty.invoiceRecipient
+        ? {
+            invoiceRecipient: {
+              details: {
+                name: activeParty.invoiceRecipient?.details?.name,
+                partyType: activeParty.invoiceRecipient?.details?.partyType,
+                streetAddress:
+                  activeParty.invoiceRecipient?.details?.streetAddress,
+                city: activeParty.invoiceRecipient?.details?.city,
+                postalCode: activeParty.invoiceRecipient?.details?.postalCode,
+                ...(activeParty.invoiceRecipient?.details?.partyType ===
+                  "COMPANY" &&
+                "businessId" in activeParty.invoiceRecipient.details
+                  ? {
+                      businessId:
+                        activeParty.invoiceRecipient?.details?.businessId,
+                    }
+                  : {}),
+              },
             },
-          },
-        }
-      : {}),
-  }));
+          }
+        : {}),
+    }),
+  );
 
   const billingPaymentSchedules: LandUseBillingSchedule[] =
     (
@@ -927,10 +941,14 @@ const LandUseDetailPage: React.FC = () => {
         throw new Error("The payment schedule could not be persisted.");
       }
       await submitPaymentSchedule(savedSchedule.id);
+      showLanduseSuccessNotification(
+        "Maksusuunnitelma lähetetty tarkastettavaksi.",
+      );
       await queryClient.invalidateQueries({
         queryKey: ["land-use", agreementId, "paymentSchedule"],
       });
     } catch (error) {
+      showLanduseApiErrorNotification(error);
       setSaveError(getLanduseApiErrorMessage(error));
     } finally {
       setIsSaving(false);
@@ -946,10 +964,12 @@ const LandUseDetailPage: React.FC = () => {
     setIsSaving(true);
     try {
       await rejectPaymentSchedule(schedule.id, rejectedReason);
+      showLanduseSuccessNotification("Maksusuunnitelma hylätty.");
       await queryClient.invalidateQueries({
         queryKey: ["land-use", agreementId, "paymentSchedule"],
       });
     } catch (error) {
+      showLanduseApiErrorNotification(error);
       setSaveError(getLanduseApiErrorMessage(error));
     } finally {
       setIsSaving(false);
@@ -964,6 +984,7 @@ const LandUseDetailPage: React.FC = () => {
     setIsSaving(true);
     try {
       await approvePaymentSchedule(schedule.id);
+      showLanduseSuccessNotification("Maksusuunnitelma hyväksytty.");
       await Promise.all([
         queryClient.invalidateQueries({
           queryKey: ["land-use", agreementId, "paymentSchedule"],
@@ -973,6 +994,7 @@ const LandUseDetailPage: React.FC = () => {
         }),
       ]);
     } catch (error) {
+      showLanduseApiErrorNotification(error);
       setSaveError(getLanduseApiErrorMessage(error));
     } finally {
       setIsSaving(false);

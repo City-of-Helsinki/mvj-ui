@@ -12,6 +12,7 @@ import LandUseListPage from "@/landUse/components/LandUseListPage";
 import LandUseDetailPage from "@/landUse/components/LandUseDetailPage";
 import LandUseHeader from "@/landUse/components/LandUseHeader";
 import CallbackPage from "@/landUse/auth/CallbackPage";
+import NotificationCenter from "@/landUse/notifications/NotificationCenter";
 import { getRouteById, Routes } from "@/landUse/routes";
 import "@/landUse/landUse.scss";
 
@@ -69,6 +70,7 @@ const LandUseApp: React.FC = () => {
         )}
       </RouterRoutes>
       {authenticatedUser ? <Footer /> : null}
+      <NotificationCenter />
     </div>
   );
 };
