@@ -2,11 +2,8 @@ import React from "react";
 import { useAppSelector } from "@/root/hooks";
 import { Row, Column } from "@/components/grid/Grid";
 import { ActionTypes, ModalConsumer } from "@/app/ModalContext";
-import ActionButtonWrapper from "@/components/form/ActionButtonWrapper";
 import AddButtonSecondary from "@/components/form/AddButtonSecondary";
 import Authorization from "@/components/authorization/Authorization";
-import BoxContentWrapper from "@/components/content/BoxContentWrapper";
-import BoxItem from "@/components/content/BoxItem";
 import BoxItemContainer from "@/components/content/BoxItemContainer";
 import FormField from "@/components/form/final-form/FormField";
 import FormText from "@/components/form/FormText";
@@ -31,7 +28,7 @@ import {
   getAttributes as getLeaseAttributes,
 } from "@/leases/selectors";
 import { getUsersPermissions } from "@/usersPermissions/selectors";
-import type { Attributes } from "types";
+import type { Attributes } from "@/types";
 type Props = {
   fields: any;
 };

@@ -47,9 +47,7 @@ import {
 } from "@/invoices/selectors";
 import { getAttributes, getCurrentLease } from "@/leases/selectors";
 import { getUsersPermissions } from "@/usersPermissions/selectors";
-import type { Attributes, Methods as MethodsType } from "types";
-import type { Lease } from "@/leases/types";
-import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
+
 type StatusIndicatorProps = {
   researchState: string;
   stateOptions: Array<Record<string, any>>;
@@ -116,9 +114,8 @@ const Tenants = ({ tenants, tenantWarnings }: TenantsProps) => (
                       className="no-margin"
                       href={`${getRouteById(Routes.CONTACTS)}/${get(contact, "tenant.contact.id")}`}
                       text={
-                        getContactFullName(
-                          get(contact, "tenant.contact"),
-                        ) || "-"
+                        getContactFullName(get(contact, "tenant.contact")) ||
+                        "-"
                       }
                     />
                   </ListItem>
@@ -154,22 +151,14 @@ const Tenants = ({ tenants, tenantWarnings }: TenantsProps) => (
   </Fragment>
 );
 
-type Props = {
-  attributes: Attributes;
-  currentLease: Lease;
-  invoiceAttributes: Attributes;
-  invoiceMethods: MethodsType;
-  invoices: Array<Record<string, any>>;
-  largeScreen: boolean;
-  usersPermissions: UsersPermissionsType;
-};
-
 const SummaryLeaseInfo = () => {
   const currentLease = useAppSelector(getCurrentLease);
   const attributes = useAppSelector(getAttributes);
   const invoiceAttributes = useAppSelector(getInvoiceAttributes);
   const invoiceMethods = useAppSelector(getInvoiceMethods);
-  const invoices = useAppSelector((state) => getInvoicesByLease(state, currentLease.id));
+  const invoices = useAppSelector((state) =>
+    getInvoicesByLease(state, currentLease.id),
+  );
   const usersPermissions = useAppSelector(getUsersPermissions);
 
   const constructabilityStateOptions = getFieldOptions(
@@ -186,10 +175,7 @@ const SummaryLeaseInfo = () => {
     <Fragment>
       <SubTitle>Vuokralaiset</SubTitle>
       {!tenants.length && <FormText>Ei vuokralaisia</FormText>}
-      <Tenants
-        tenants={tenants}
-        tenantWarnings={tenantWarnings}
-      />
+      <Tenants tenants={tenants} tenantWarnings={tenantWarnings} />
 
       <Authorization
         allow={isFieldAllowedToRead(
@@ -535,9 +521,7 @@ const SummaryLeaseInfo = () => {
                       InvoiceFieldPaths.DUE_DATE,
                     )}
                   >
-                    <FormTextTitle>
-                      {InvoiceFieldTitles.DUE_DATE}
-                    </FormTextTitle>
+                    <FormTextTitle>{InvoiceFieldTitles.DUE_DATE}</FormTextTitle>
                   </Authorization>
                 </Column>
                 <Column large={2}>

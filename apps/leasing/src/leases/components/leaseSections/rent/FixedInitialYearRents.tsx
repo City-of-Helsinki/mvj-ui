@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Row, Column } from "@/components/grid/Grid";
 import Authorization from "@/components/authorization/Authorization";
-import BoxContentWrapper from "@/components/content/BoxContentWrapper";
-import BoxItem from "@/components/content/BoxItem";
 import BoxItemContainer from "@/components/content/BoxItemContainer";
 import FormText from "@/components/form/FormText";
 import FormTextTitle from "@/components/form/FormTextTitle";
@@ -20,7 +18,7 @@ import {
   isFieldAllowedToRead,
 } from "@/util/helpers";
 import { getAttributes as getLeaseAttributes } from "@/leases/selectors";
-import type { Attributes } from "types";
+import type { Attributes } from "@/types";
 import { useAppSelector } from "@/root/hooks";
 type Props = {
   fixedInitialYearRents: Array<Record<string, any>>;
