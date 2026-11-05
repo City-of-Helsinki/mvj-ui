@@ -7,10 +7,10 @@ import type { LandUsePaymentScheduleFormValues } from "@/landUse/components/tabs
 import type { LandUseMonitoringFormValues } from "@/landUse/components/tabs/LandUseMonitoring";
 import type { LandUsePartiesFormValues } from "@/landUse/components/tabs/LandUseParties";
 import type { LandUseSummaryFormValues } from "@/landUse/components/tabs/LandUseSummary";
-import type { Guarantee } from "@/landUse/components/collateralForms";
+import type { Collateral } from "@/landUse/components/collateralForms";
 import {
   LAND_USE_INVOICE_TYPES,
-  type LandUseGuaranteeType,
+  type CollateralType,
 } from "@/landUse/options";
 import type { LandUseListItem } from "@/landUse/api/landUseListTypes";
 import {
@@ -215,24 +215,24 @@ export const getSiteTenureTypes = (): Promise<LandUseNamedLookup[]> =>
 
 type CollateralResponse = {
   id: number;
-  guarantee_type: CollateralTypeCode;
+  collateral_type: CollateralTypeCode;
   parties: number[];
-  document_category?: string;
+  document_type?: string;
   target?: string;
   property_identifiers?: string[];
-  facility_identifier?: string | null;
-  mortgage_deed_number?: string;
+  institution_identifier?: string | null;
+  mortgage_document_number?: string;
   mortgage_deed_date?: string | null;
-  subsequent_pledgee_name?: string | null;
-  subsequent_pledgee_business_id?: string | null;
-  guarantor_name?: string;
-  guarantor_business_id?: string;
-  guarantor_national_identification_number?: string;
-  guarantee_identifier?: string;
+  subordinate_pledgee_name?: string | null;
+  subordinate_pledgee_business_id?: string | null;
+  pledgor_name?: string;
+  pledgor_business_id?: string;
+  pledgor_national_identification_number?: string;
+  guarantee_number?: string;
   account_number?: string;
   paid_at_date?: string | null;
-  third_party_pledger_name: string | null;
-  third_party_pledger_business_id: string | null;
+  third_party_pledgor_name: string | null;
+  third_party_pledgor_business_id: string | null;
   start_date: string | null;
   end_date: string | null;
   amount: string | null;
@@ -243,32 +243,33 @@ type CollateralResponse = {
 
 type ContractResponse = {
   id: number;
-  identifier: string;
+  contract_number: string;
   signing_date: string | null;
   signing_deadline: string | null;
-  first_invitation_sent_date: string | null;
-  second_invitation_sent_date: string | null;
-  third_invitation_sent_date: string | null;
+  first_call_sent: string | null;
+  second_call_sent: string | null;
+  third_call_sent: string | null;
   executor: string | null;
   decision: number | null;
-  note: string;
+  signing_note: string;
   title: string;
   contract_type: ContractTypeCode | "";
-  changes: Omit<
+  contract_changes: (Omit<
     ContractResponse,
     | "title"
     | "contract_type"
-    | "changes"
-    | "mortgage_deed_collaterals"
-    | "cash_deposit_collaterals"
-    | "personal_guarantee_collaterals"
-    | "deposit_pledge_collaterals"
+    | "contract_changes"
+    | "mortgage_document_collaterals"
+    | "financial_guarantee_collaterals"
+    | "self_debtor_guarantee_collaterals"
+    | "pledge_of_funds_collaterals"
     | "other_collaterals"
-  >[];
-  mortgage_deed_collaterals: CollateralResponse[];
-  cash_deposit_collaterals: CollateralResponse[];
-  personal_guarantee_collaterals: CollateralResponse[];
-  deposit_pledge_collaterals: CollateralResponse[];
+    | "signing_note"
+  > & { description: string })[];
+  mortgage_document_collaterals: CollateralResponse[];
+  financial_guarantee_collaterals: CollateralResponse[];
+  self_debtor_guarantee_collaterals: CollateralResponse[];
+  pledge_of_funds_collaterals: CollateralResponse[];
   other_collaterals: CollateralResponse[];
 };
 
@@ -858,36 +859,36 @@ export const getContracts = async (
     `agreements/${agreementId}/contracts/`,
   );
 
-  const mapCollateral = (collateral: CollateralResponse): Guarantee => ({
+  const mapCollateral = (collateral: CollateralResponse): Collateral => ({
     id: String(collateral.id),
-    tyyppi: collateral.guarantee_type,
+    collateralType: collateral.collateral_type,
     osapuolet: collateral.parties.map(String),
-    vakuusasiakirjanLaji: collateral.document_category,
+    vakuusasiakirjanLaji: collateral.document_type,
     kiinteistoVaiLaitos: collateral.target,
     kiinteistotunnukset: collateral.property_identifiers ?? [],
-    laitostunnus: collateral.facility_identifier ?? undefined,
+    laitostunnus: collateral.institution_identifier ?? undefined,
     vierasvelkapanttaus: Boolean(
-      collateral.third_party_pledger_name ||
-      collateral.third_party_pledger_business_id,
+      collateral.third_party_pledgor_name ||
+      collateral.third_party_pledgor_business_id,
     ),
     vierasvelkapanttauksenAntajanNimi:
-      collateral.third_party_pledger_name ?? undefined,
+      collateral.third_party_pledgor_name ?? undefined,
     vierasvelkapanttauksenAntajanYTunnus:
-      collateral.third_party_pledger_business_id ?? undefined,
+      collateral.third_party_pledgor_business_id ?? undefined,
     jalkipanttaus: Boolean(
-      collateral.subsequent_pledgee_name ||
-      collateral.subsequent_pledgee_business_id,
+      collateral.subordinate_pledgee_name ||
+      collateral.subordinate_pledgee_business_id,
     ),
-    jalkipantinSaajanNimi: collateral.subsequent_pledgee_name ?? undefined,
+    jalkipantinSaajanNimi: collateral.subordinate_pledgee_name ?? undefined,
     jalkipantinSaajanYTunnus:
-      collateral.subsequent_pledgee_business_id ?? undefined,
-    antajanNimi: collateral.guarantor_name,
-    antajanYTunnus: collateral.guarantor_business_id,
-    antajanHenkilotunnus: collateral.guarantor_national_identification_number,
-    panttikirjanNumero: collateral.mortgage_deed_number,
+      collateral.subordinate_pledgee_business_id ?? undefined,
+    antajanNimi: collateral.pledgor_name,
+    antajanYTunnus: collateral.pledgor_business_id,
+    antajanHenkilotunnus: collateral.pledgor_national_identification_number,
+    panttikirjanNumero: collateral.mortgage_document_number,
     panttikirjanPaivays:
       parseIsoDateToFinnishDate(collateral.mortgage_deed_date) || undefined,
-    takausnumero: collateral.guarantee_identifier,
+    takausnumero: collateral.guarantee_number,
     tilinumero: collateral.account_number,
     alkupvm: parseIsoDateToFinnishDate(collateral.start_date) || undefined,
     loppupvm: parseIsoDateToFinnishDate(collateral.end_date) || undefined,
@@ -905,71 +906,71 @@ export const getContracts = async (
       id: String(contract.id),
       title: contract.title,
       sopimuksenTyyppi: contract.contract_type || undefined,
-      sopimusnumero: contract.identifier,
+      sopimusnumero: contract.contract_number,
       allekirjoituspvm: parseIsoDateToFinnishDate(contract.signing_date),
-      huomautus: contract.note,
+      huomautus: contract.signing_note,
       allekirjoitettavaMennessa: parseIsoDateToFinnishDate(
         contract.signing_deadline,
       ),
       ensimmainenKutsuLahetetty: parseIsoDateToFinnishDate(
-        contract.first_invitation_sent_date,
+        contract.first_call_sent,
       ),
       toinenKutsuLahetetty: parseIsoDateToFinnishDate(
-        contract.second_invitation_sent_date,
+        contract.second_call_sent,
       ),
       kolmasKutsuLahetetty: parseIsoDateToFinnishDate(
-        contract.third_invitation_sent_date,
+        contract.third_call_sent,
       ),
       paatos: contract.decision ? String(contract.decision) : undefined,
       toimeenpanija: contract.executor ?? "",
-      muutokset: contract.changes.map((change) => ({
+      muutokset: contract.contract_changes.map((change) => ({
         id: String(change.id),
-        sopimusnumero: change.identifier,
+        sopimusnumero: change.contract_number,
         allekirjoituspvm: parseIsoDateToFinnishDate(change.signing_date),
         allekirjoitettavaMennessa: parseIsoDateToFinnishDate(
           change.signing_deadline,
         ),
         ensimmainenKutsuLahetetty: parseIsoDateToFinnishDate(
-          change.first_invitation_sent_date,
+          change.first_call_sent,
         ),
         toinenKutsuLahetetty: parseIsoDateToFinnishDate(
-          change.second_invitation_sent_date,
+          change.second_call_sent,
         ),
         kolmasKutsuLahetetty: parseIsoDateToFinnishDate(
-          change.third_invitation_sent_date,
+          change.third_call_sent,
         ),
         paatos: change.decision ? String(change.decision) : undefined,
-        huomautus: change.note,
+        huomautus: change.description,
         toimeenpanija: change.executor ?? "",
       })),
       vakuudet: [
-        ...contract.mortgage_deed_collaterals,
-        ...contract.cash_deposit_collaterals,
-        ...contract.personal_guarantee_collaterals,
-        ...contract.deposit_pledge_collaterals,
+        ...contract.mortgage_document_collaterals,
+        ...contract.financial_guarantee_collaterals,
+        ...contract.self_debtor_guarantee_collaterals,
+        ...contract.pledge_of_funds_collaterals,
         ...contract.other_collaterals,
       ].map(mapCollateral),
     })),
   };
 };
 
-const COLLATERAL_KEY_BY_TYPE: Record<LandUseGuaranteeType, string> = {
-  MORTGAGE_DEED: "mortgage_deed_collaterals",
-  CASH_DEPOSIT: "cash_deposit_collaterals",
-  PERSONAL_GUARANTEE: "personal_guarantee_collaterals",
-  DEPOSIT_PLEDGE: "deposit_pledge_collaterals",
-  OTHER: "other_collaterals",
+const COLLATERAL_KEY_BY_TYPE: Record<CollateralType, string> = {
+  mortgage_document: "mortgage_document_collaterals",
+  financial_guarantee: "financial_guarantee_collaterals",
+  self_debtor_guarantee: "self_debtor_guarantee_collaterals",
+  pledge_of_funds: "pledge_of_funds_collaterals",
+  other: "other_collaterals",
 };
 
 const collateralsByKey = (
-  collaterals: Guarantee[],
+  collaterals: Collateral[],
 ): Record<string, Record<string, unknown>[]> => {
   const grouped: Record<string, Record<string, unknown>[]> = {};
   for (const key of Object.values(COLLATERAL_KEY_BY_TYPE)) {
     grouped[key] = [];
   }
   for (const collateral of collaterals) {
-    const key = collateral.tyyppi && COLLATERAL_KEY_BY_TYPE[collateral.tyyppi];
+    const key = collateral.collateralType && COLLATERAL_KEY_BY_TYPE[collateral.collateralType];
     if (!key) {
       continue;
     }
@@ -978,27 +979,27 @@ const collateralsByKey = (
         ? { id: Number(collateral.id) }
         : {}),
       parties: (collateral.osapuolet ?? []).map(Number),
-      document_category: collateral.vakuusasiakirjanLaji ?? "",
+      document_type: collateral.vakuusasiakirjanLaji ?? "",
       target: collateral.kiinteistoVaiLaitos ?? "",
       property_identifiers: collateral.kiinteistotunnukset ?? [],
-      facility_identifier: collateral.laitostunnus ?? null,
-      mortgage_deed_number: collateral.panttikirjanNumero ?? "",
+      institution_identifier: collateral.laitostunnus ?? null,
+      mortgage_document_number: collateral.panttikirjanNumero ?? "",
       mortgage_deed_date: parseFinnishDateToIsoDate(
         collateral.panttikirjanPaivays,
       ),
-      subsequent_pledgee_name: collateral.jalkipantinSaajanNimi ?? null,
-      subsequent_pledgee_business_id:
+      subordinate_pledgee_name: collateral.jalkipantinSaajanNimi ?? null,
+      subordinate_pledgee_business_id:
         collateral.jalkipantinSaajanYTunnus ?? null,
-      guarantor_name: collateral.antajanNimi ?? "",
-      guarantor_business_id: collateral.antajanYTunnus ?? "",
-      guarantor_national_identification_number:
+      pledgor_name: collateral.antajanNimi ?? "",
+      pledgor_business_id: collateral.antajanYTunnus ?? "",
+      pledgor_national_identification_number:
         collateral.antajanHenkilotunnus ?? "",
-      guarantee_identifier: collateral.takausnumero ?? "",
+      guarantee_number: collateral.takausnumero ?? "",
       account_number: collateral.tilinumero ?? "",
       paid_at_date: parseFinnishDateToIsoDate(collateral.maksettuPvm),
-      third_party_pledger_name:
+      third_party_pledgor_name:
         collateral.vierasvelkapanttauksenAntajanNimi ?? null,
-      third_party_pledger_business_id:
+      third_party_pledgor_business_id:
         collateral.vierasvelkapanttauksenAntajanYTunnus ?? null,
       start_date: parseFinnishDateToIsoDate(collateral.alkupvm),
       end_date: parseFinnishDateToIsoDate(collateral.loppupvm),
@@ -1021,46 +1022,46 @@ export const updateContracts = async (
       ...(Number.isInteger(Number(contract.id))
         ? { id: Number(contract.id) }
         : {}),
-      identifier: contract.sopimusnumero,
+      contract_number: contract.sopimusnumero,
       signing_date: parseFinnishDateToIsoDate(contract.allekirjoituspvm),
       signing_deadline: parseFinnishDateToIsoDate(
         contract.allekirjoitettavaMennessa,
       ),
-      first_invitation_sent_date: parseFinnishDateToIsoDate(
+      first_call_sent: parseFinnishDateToIsoDate(
         contract.ensimmainenKutsuLahetetty,
       ),
-      second_invitation_sent_date: parseFinnishDateToIsoDate(
+      second_call_sent: parseFinnishDateToIsoDate(
         contract.toinenKutsuLahetetty,
       ),
-      third_invitation_sent_date: parseFinnishDateToIsoDate(
+      third_call_sent: parseFinnishDateToIsoDate(
         contract.kolmasKutsuLahetetty,
       ),
       executor: contract.toimeenpanija,
       decision: contract.paatos ? Number(contract.paatos) : null,
-      note: contract.huomautus,
+      signing_note: contract.huomautus,
       title: contract.title,
       contract_type: contract.sopimuksenTyyppi ?? "",
-      changes: contract.muutokset.map((change) => ({
+      contract_changes: contract.muutokset.map((change) => ({
         ...(Number.isInteger(Number(change.id))
           ? { id: Number(change.id) }
           : {}),
-        identifier: change.sopimusnumero,
+        contract_number: change.sopimusnumero,
         signing_date: parseFinnishDateToIsoDate(change.allekirjoituspvm),
         signing_deadline: parseFinnishDateToIsoDate(
           change.allekirjoitettavaMennessa,
         ),
-        first_invitation_sent_date: parseFinnishDateToIsoDate(
+        first_call_sent: parseFinnishDateToIsoDate(
           change.ensimmainenKutsuLahetetty,
         ),
-        second_invitation_sent_date: parseFinnishDateToIsoDate(
+        second_call_sent: parseFinnishDateToIsoDate(
           change.toinenKutsuLahetetty,
         ),
-        third_invitation_sent_date: parseFinnishDateToIsoDate(
+        third_call_sent: parseFinnishDateToIsoDate(
           change.kolmasKutsuLahetetty,
         ),
         executor: change.toimeenpanija,
         decision: change.paatos ? Number(change.paatos) : null,
-        note: change.huomautus,
+        description: change.huomautus,
       })),
       ...collateralsByKey(contract.vakuudet),
     })),

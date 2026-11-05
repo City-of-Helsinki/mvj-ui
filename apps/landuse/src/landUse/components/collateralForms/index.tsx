@@ -1,7 +1,7 @@
 import React from "react";
 import {
-  LAND_USE_GUARANTEE_TYPES,
-  type LandUseGuaranteeType,
+  COLLATERAL_TYPES,
+  type CollateralType,
 } from "@/landUse/options";
 import { PanttikirjaForm } from "@/landUse/components/collateralForms/PanttikirjaForm";
 import { RahavakuusForm } from "@/landUse/components/collateralForms/RahavakuusForm";
@@ -18,12 +18,12 @@ export { TilivarojenPanttausForm } from "@/landUse/components/collateralForms/Ti
 export { MuuVakuusForm } from "@/landUse/components/collateralForms/MuuVakuusForm";
 export { SharedCollateralFields } from "@/landUse/components/collateralForms/SharedCollateralFields";
 export type {
-  Guarantee,
+  Collateral,
   CollateralFormProps,
 } from "@/landUse/components/collateralForms/types";
 
 interface CollateralFormByTypeProps extends CollateralFormProps {
-  type: LandUseGuaranteeType | undefined;
+  type: CollateralType | undefined;
 }
 
 export const CollateralFormByType: React.FC<CollateralFormByTypeProps> = ({
@@ -35,7 +35,7 @@ export const CollateralFormByType: React.FC<CollateralFormByTypeProps> = ({
   const metadataQuery = useLandUseMetadata();
   const metadata = metadataQuery.data;
   switch (type) {
-    case LAND_USE_GUARANTEE_TYPES.PANTTIKIRJA:
+    case COLLATERAL_TYPES.PANTTIKIRJA:
       return (
         <PanttikirjaForm
           namePrefix={namePrefix}
@@ -44,7 +44,7 @@ export const CollateralFormByType: React.FC<CollateralFormByTypeProps> = ({
           metadata={metadata}
         />
       );
-    case LAND_USE_GUARANTEE_TYPES.RAHAVAKUUS:
+    case COLLATERAL_TYPES.RAHAVAKUUS:
       return (
         <RahavakuusForm
           namePrefix={namePrefix}
@@ -53,7 +53,7 @@ export const CollateralFormByType: React.FC<CollateralFormByTypeProps> = ({
           metadata={metadata}
         />
       );
-    case LAND_USE_GUARANTEE_TYPES.OMAVELKAINEN_TAKAUS:
+    case COLLATERAL_TYPES.OMAVELKAINEN_TAKAUS:
       return (
         <OmavelkainenTakausForm
           namePrefix={namePrefix}
@@ -62,7 +62,7 @@ export const CollateralFormByType: React.FC<CollateralFormByTypeProps> = ({
           metadata={metadata}
         />
       );
-    case LAND_USE_GUARANTEE_TYPES.TILIVAROJEN_PANTTAUS:
+    case COLLATERAL_TYPES.TILIVAROJEN_PANTTAUS:
       return (
         <TilivarojenPanttausForm
           namePrefix={namePrefix}
@@ -71,7 +71,7 @@ export const CollateralFormByType: React.FC<CollateralFormByTypeProps> = ({
           metadata={metadata}
         />
       );
-    case LAND_USE_GUARANTEE_TYPES.MUU_VAKUUS:
+    case COLLATERAL_TYPES.MUU_VAKUUS:
       return (
         <MuuVakuusForm
           namePrefix={namePrefix}

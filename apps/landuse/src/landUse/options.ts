@@ -21,21 +21,21 @@ export const landUseNegotiationPhaseOptions = Object.values(
   value,
 }));
 
-export const LAND_USE_GUARANTEE_TYPES = {
-  PANTTIKIRJA: "MORTGAGE_DEED",
-  RAHAVAKUUS: "CASH_DEPOSIT",
-  OMAVELKAINEN_TAKAUS: "PERSONAL_GUARANTEE",
-  TILIVAROJEN_PANTTAUS: "DEPOSIT_PLEDGE",
-  MUU_VAKUUS: "OTHER",
+export const COLLATERAL_TYPES = {
+  PANTTIKIRJA: "mortgage_document",
+  RAHAVAKUUS: "financial_guarantee",
+  OMAVELKAINEN_TAKAUS: "self_debtor_guarantee",
+  TILIVAROJEN_PANTTAUS: "pledge_of_funds",
+  MUU_VAKUUS: "other",
 } as const;
 
-export type LandUseGuaranteeType =
-  (typeof LAND_USE_GUARANTEE_TYPES)[keyof typeof LAND_USE_GUARANTEE_TYPES];
+export type CollateralType =
+  (typeof COLLATERAL_TYPES)[keyof typeof COLLATERAL_TYPES];
 
-export const landUseGuaranteeTypeOptions: {
+export const collateralTypeOptions: {
   label: string;
-  value: LandUseGuaranteeType;
-}[] = Object.values(LAND_USE_GUARANTEE_TYPES).map((value) => ({
+  value: CollateralType;
+}[] = Object.values(COLLATERAL_TYPES).map((value) => ({
   label: value,
   value,
 }));
@@ -174,4 +174,3 @@ export type InterestCalculationDaysInYear =
 export const interestCalculationDaysInYearOptions = Object.values(
   INTEREST_CALCULATION_DAYS_IN_YEAR,
 ).map((value) => ({ label: value, value }));
-

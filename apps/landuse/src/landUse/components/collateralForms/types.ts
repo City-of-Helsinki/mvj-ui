@@ -1,14 +1,14 @@
-import type { LandUseGuaranteeType } from "@/landUse/options";
+import type { CollateralType } from "@/landUse/options";
 import type { LandUseUiMetadata } from "@/landUse/api/landUseTypes";
 
 /**
  * Union of all possible fields across collateral types.
- * Which fields apply depends on `tyyppi`.
+ * Which fields apply depends on `collateralType`.
  */
-export interface Guarantee {
+export interface Collateral {
   id?: string;
   clientKey?: string;
-  tyyppi?: LandUseGuaranteeType;
+  collateralType?: CollateralType;
   osapuolet?: string[];
   vakuusasiakirjanLaji?: string;
   kiinteistoVaiLaitos?: string;

@@ -14,7 +14,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { Field, Form } from "react-final-form";
 import { useTocEntries } from "@/landUse/hooks/useTableOfContents";
 import { useLandUseMetadata } from "@/landUse/api/useLandUseMetadata";
-import { type LandUseGuaranteeType } from "@/landUse/options";
+import { type CollateralType } from "@/landUse/options";
 import {
   getFieldTextValue,
   getOptionsDisplayValue,
@@ -24,7 +24,7 @@ import {
 import { ConfirmDeleteButton } from "@/landUse/components/ConfirmDeleteButton";
 import {
   CollateralFormByType,
-  type Guarantee,
+  type Collateral,
 } from "@/landUse/components/collateralForms";
 import type { PartyEntry } from "@/landUse/components/tabs/LandUseParties";
 import type { LandUseDecisionsFormValues } from "@/landUse/components/tabs/LandUseDecisions";
@@ -57,7 +57,7 @@ interface ContractItem {
   kolmasKutsuLahetetty: string;
   paatos?: string;
   muutokset: ContractChange[];
-  vakuudet: Guarantee[];
+  vakuudet: Collateral[];
   toimeenpanija: string;
 }
 
@@ -96,9 +96,9 @@ const createNewContractChange = (): ContractChange => ({
   toimeenpanija: "",
 });
 
-const createNewGuarantee = (): Guarantee => ({
+const createNewCollateral = (): Collateral => ({
   clientKey: crypto.randomUUID(),
-  tyyppi: undefined,
+  collateralType: undefined,
 });
 
 const createNewContract = (): ContractItem => ({
@@ -139,7 +139,7 @@ export const LandUseContracts: React.FC<LandUseContractsProps> = ({
       value: decision.id!,
       label: decision.title || decision.diaarinumero || decision.id!,
     }));
-  const guaranteeTypeOptions = metadataQuery.data?.collateral_types ?? [];
+  const collateralTypeOptions = metadataQuery.data?.collateral_types ?? [];
   const [contracts, setContracts] = useState<ContractItem[]>(
     () => form.getState().values.contracts ?? [],
   );
@@ -170,14 +170,14 @@ export const LandUseContracts: React.FC<LandUseContractsProps> = ({
       label: entry.party.details.name,
       value: entry.id,
     }));
-  const [pendingGuaranteeTypeByContract, setPendingGuaranteeTypeByContract] =
-    React.useState<Record<number, LandUseGuaranteeType | undefined>>({});
+  const [pendingCollateralTypeByContract, setPendingCollateralTypeByContract] =
+    React.useState<Record<number, CollateralType | undefined>>({});
 
-  const setPendingGuaranteeType = (
+  const setPendingCollateralType = (
     contractIndex: number,
-    value: LandUseGuaranteeType | undefined,
+    value: CollateralType | undefined,
   ) =>
-    setPendingGuaranteeTypeByContract((prev) => ({
+    setPendingCollateralTypeByContract((prev) => ({
       ...prev,
       [contractIndex]: value,
     }));
@@ -796,7 +796,7 @@ export const LandUseContracts: React.FC<LandUseContractsProps> = ({
                                         savedVakuus?.palautettuPvm,
                                       );
                                       return {
-                                        title: `Vakuus: ${getOptionsDisplayValue(vakuus.tyyppi, guaranteeTypeOptions)}${
+                                        title: `Vakuus: ${getOptionsDisplayValue(vakuus.collateralType, collateralTypeOptions)}${
                                           isVakuusLocked
                                             ? ` (palautettu ${savedVakuus?.palautettuPvm})`
                                             : ""
@@ -807,9 +807,9 @@ export const LandUseContracts: React.FC<LandUseContractsProps> = ({
                                           `vakuus-${vakuusIndex}`,
                                         description: (
                                           <div className="landuse-detail__nested-stepbystep ">
-                                            {/* NOTE! Hidden field for vakuuden tyyppi for form data. */}
+                                            {/* NOTE! Hidden field for vakuuden collateralType for form data. */}
                                             <Field
-                                              name={`${vakuusName}.tyyppi`}
+                                              name={`${vakuusName}.collateralType`}
                                             >
                                               {({ input }) => (
                                                 <TextInput
@@ -826,8 +826,8 @@ export const LandUseContracts: React.FC<LandUseContractsProps> = ({
 
                                             <CollateralFormByType
                                               type={
-                                                vakuus.tyyppi as
-                                                  | LandUseGuaranteeType
+                                                vakuus.collateralType as
+                                                  | CollateralType
                                                   | undefined
                                               }
                                               namePrefix={vakuusName}
@@ -876,21 +876,21 @@ export const LandUseContracts: React.FC<LandUseContractsProps> = ({
                                             label: "Vakuuden tyyppi",
                                             placeholder: "Valitse",
                                           }}
-                                          options={guaranteeTypeOptions}
+                                          options={collateralTypeOptions}
                                           value={normalizeSelectValue(
-                                            pendingGuaranteeTypeByContract[
+                                            pendingCollateralTypeByContract[
                                               contractIndex
                                             ],
                                           )}
                                           onChange={(selected) => {
                                             if (selected.length > 0) {
-                                              setPendingGuaranteeType(
+                                              setPendingCollateralType(
                                                 contractIndex,
                                                 selected[0]
-                                                  .value as LandUseGuaranteeType,
+                                                  .value as CollateralType,
                                               );
                                             } else {
-                                              setPendingGuaranteeType(
+                                              setPendingCollateralType(
                                                 contractIndex,
                                                 undefined,
                                               );
@@ -903,24 +903,24 @@ export const LandUseContracts: React.FC<LandUseContractsProps> = ({
                                         variant={ButtonVariant.Supplementary}
                                         iconStart={<IconPlusCircleFill />}
                                         disabled={
-                                          !pendingGuaranteeTypeByContract[
+                                          !pendingCollateralTypeByContract[
                                             contractIndex
                                           ]
                                         }
                                         onClick={() => {
                                           const pendingType =
-                                            pendingGuaranteeTypeByContract[
+                                            pendingCollateralTypeByContract[
                                               contractIndex
                                             ];
                                           if (!pendingType) return;
                                           form.mutators.push(
                                             `contracts.${contractIndex}.vakuudet`,
                                             {
-                                              ...createNewGuarantee(),
-                                              tyyppi: pendingType,
+                                              ...createNewCollateral(),
+                                              collateralType: pendingType,
                                             },
                                           );
-                                          setPendingGuaranteeType(
+                                          setPendingCollateralType(
                                             contractIndex,
                                             undefined,
                                           );
