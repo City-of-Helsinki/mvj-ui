@@ -44,11 +44,11 @@ export type LandUseUiMetadata = {
     "LAND_USE_AGREEMENT" | "REAL_ESTATE_PRELIMINARY_AGREEMENT" | "OTHER"
   >[];
   collateral_types: LandUseChoice<
-    | "MORTGAGE_DEED"
-    | "CASH_DEPOSIT"
-    | "PERSONAL_GUARANTEE"
-    | "DEPOSIT_PLEDGE"
-    | "OTHER"
+    | "mortgage_document"
+    | "financial_guarantee"
+    | "self_debtor_guarantee"
+    | "pledge_of_funds"
+    | "other"
   >[];
   collateral_document_categories: LandUseChoice<"ELECTRONIC" | "PAPER">[];
   mortgage_deed_collateral_targets: LandUseChoice<"PROPERTY" | "FACILITY">[];

@@ -322,14 +322,14 @@ describe("backend-valued contract conventions", () => {
   });
 
   it.each([
-    ["MORTGAGE_DEED", "Panttikirjan numero", "DEED-1"],
-    ["CASH_DEPOSIT", "Maksettu päivämäärällä", "01.01.2026"],
-    ["PERSONAL_GUARANTEE", "Takausnumero", "G-1"],
-    ["DEPOSIT_PLEDGE", "Tilinumero", "FI123"],
-    ["OTHER", "Lisätiedot", "Actual details"],
+    ["mortgage_document", "Panttikirjan numero", "DEED-1"],
+    ["financial_guarantee", "Maksettu päivämäärällä", "01.01.2026"],
+    ["self_debtor_guarantee", "Takausnumero", "G-1"],
+    ["pledge_of_funds", "Tilinumero", "FI123"],
+    ["other", "Lisätiedot", "Actual details"],
   ] as const)(
     "renders %s subtype details and party labels",
-    (tyyppi, label, value) => {
+    (collateralType, label, value) => {
       const party = createEmptyPartyEntry();
       party.id = "73";
       party.party.details.name = "Actual party";
@@ -355,7 +355,7 @@ describe("backend-valued contract conventions", () => {
               vakuudet: [
                 {
                   id: "81",
-                  tyyppi,
+                  collateralType,
                   osapuolet: ["73"],
                   kiinteistoVaiLaitos: "PROPERTY",
                   vakuusasiakirjanLaji: "ELECTRONIC",
@@ -393,9 +393,9 @@ describe("backend-valued contract conventions", () => {
       expect(
         (screen.getByLabelText("Sopimuksen tyyppi") as HTMLInputElement).value,
       ).toBe("Muu sopimus");
-      expect(form.getState().values.contracts?.[0].vakuudet[0].tyyppi).toBe(
-        tyyppi,
-      );
+      expect(
+        form.getState().values.contracts?.[0].vakuudet[0].collateralType,
+      ).toBe(collateralType);
     },
   );
 
