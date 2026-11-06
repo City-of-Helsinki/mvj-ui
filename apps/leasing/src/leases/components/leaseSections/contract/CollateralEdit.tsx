@@ -214,8 +214,6 @@ const CollateralFinancialGuarantee = (
   );
 };
 
-const DEFAULT_PROPERTY_IDENTIFIERS = [undefined];
-
 const CollateralMortgageDocument = (
   collateralFieldProps: CollateralEditFieldProps,
 ) => {
@@ -311,10 +309,7 @@ const CollateralMortgageDocument = (
           {useInstitutionIdentifier ? (
             <InstitutionIdentifierField {...collateralFieldProps} />
           ) : (
-            <FieldArray
-              name={`${field}.property_identifiers`}
-              initialValue={DEFAULT_PROPERTY_IDENTIFIERS}
-            >
+            <FieldArray name={`${field}.property_identifiers`}>
               {(fieldArrayProps) => (
                 <PropertyIdentifiers
                   {...fieldArrayProps}
