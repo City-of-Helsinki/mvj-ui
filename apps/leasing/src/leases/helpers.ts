@@ -56,6 +56,8 @@ import type {
   PeriodicRentAdjustmentType,
   CreateLeaseFormValues,
   BasisOfRent,
+  Collateral,
+  CollateralPayload,
 } from "@/leases/types";
 import type { CommentList } from "@/comments/types";
 import type {
