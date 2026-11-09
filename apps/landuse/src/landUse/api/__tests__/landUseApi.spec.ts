@@ -78,7 +78,7 @@ describe("land use API contract adapters", () => {
       id: 1,
       identifier: "M-1",
       district: null,
-      status: "DRAFT",
+      status: "draft",
       detailed_plan_sites: [],
       addresses: [],
       preparers: [],
@@ -124,7 +124,7 @@ describe("land use API contract adapters", () => {
         zoning_plan_number: "12345",
         site: "List site",
         is_promotion_area: true,
-        status: "IN_PROGRESS",
+        status: "in_progress",
         status_label: "Vireillä",
         estimated_presentation_year: null,
         estimated_payment_year: null,
@@ -139,7 +139,7 @@ describe("land use API contract adapters", () => {
         zoningPlanNumber: "12345",
         site: "List site",
         projectArea: true,
-        negotiationPhase: "IN_PROGRESS",
+        negotiationPhase: "in_progress",
         negotiationPhaseLabel: "Vireillä",
       },
     ]);
@@ -180,7 +180,7 @@ describe("land use API contract adapters", () => {
     async (language) => {
       const details = {
         id: 73,
-        party_type: "COMPANY",
+        party_type: "company",
         name: "Actual party",
         national_identification_number: "",
         business_id: "1234567-1",
@@ -196,7 +196,7 @@ describe("land use API contract adapters", () => {
       };
       const party = {
         ...details,
-        role: "LAND_OWNER",
+        role: "land_owner",
         contact_persons: [],
         billing_details: null,
         invoice_recipient: { ...details, id: 89 },
@@ -224,18 +224,18 @@ describe("land use API contract adapters", () => {
 
   it("retains all collateral subtype details and contract/change identities", async () => {
     const codes = [
-      "MORTGAGE_DEED",
-      "CASH_DEPOSIT",
-      "PERSONAL_GUARANTEE",
-      "DEPOSIT_PLEDGE",
-      "OTHER",
+      "mortgage_deed",
+      "cash_deposit",
+      "personal_guarantee",
+      "deposit_pledge",
+      "other",
     ];
     const collaterals = codes.map((collateral_type, index) => ({
       id: 80 + index,
       collateral_type,
       parties: [73],
-      document_type: "ELECTRONIC",
-      target: "PROPERTY",
+      document_type: "electronic",
+      target: "property",
       property_identifiers: ["91-1-1-1"],
       institution_identifier: "FAC-1",
       mortgage_document_number: "DEED-1",
@@ -262,7 +262,7 @@ describe("land use API contract adapters", () => {
         id: 91,
         title: "Contract",
         contract_number: "C-91",
-        contract_type: "OTHER",
+        contract_type: "other",
         signing_date: "2026-01-01",
         signing_deadline: null,
         first_call_sent: null,
@@ -293,8 +293,8 @@ describe("land use API contract adapters", () => {
     expect(contract?.vakuudet[0]).toMatchObject({
       id: "80",
       osapuolet: ["73"],
-      vakuusasiakirjanLaji: "ELECTRONIC",
-      kiinteistoVaiLaitos: "PROPERTY",
+      vakuusasiakirjanLaji: "electronic",
+      kiinteistoVaiLaitos: "property",
       kiinteistotunnukset: ["91-1-1-1"],
       laitostunnus: "FAC-1",
       panttikirjanNumero: "DEED-1",
@@ -311,14 +311,14 @@ describe("land use API contract adapters", () => {
     });
   });
 
-  it.each(["LAND_USE_COMPENSATION", "PENALTY"])(
+  it.each(["land_use_compensation", "penalty"])(
     "keeps invoice type %s and all item codes",
     async (invoice_type) => {
       const items = [
-        "LAND_USE_COMPENSATION",
-        "INCREASE",
-        "INTEREST",
-        "PENALTY",
+        "land_use_compensation",
+        "increase",
+        "interest",
+        "penalty",
       ].map((item_type) => ({
         id: 10,
         item_type,
@@ -330,7 +330,7 @@ describe("land use API contract adapters", () => {
           id: 1,
           recipient_party: 73,
           invoice_type,
-          status: "PAID",
+          status: "paid",
           due_date: "2024-02-29",
           invoice_identifier: "INV-1",
           installment_sequence_number: 1,
@@ -340,7 +340,7 @@ describe("land use API contract adapters", () => {
           source_payment_schedule_installment: 42,
           recipient_snapshot: {
             name: "Historical recipient",
-            party_type: "COMPANY",
+            party_type: "company",
             business_id: "1234567-8",
             street_address: "Historic street 1",
             postal_code: "00100",
@@ -366,7 +366,7 @@ describe("land use API contract adapters", () => {
         sourceInstallmentId: "42",
         recipientPartyIndex: "73",
         type: invoice_type,
-        status: "PAID",
+        status: "paid",
         dueDate: "29.02.2024",
         recipientSnapshot: {
           name: "Historical recipient",
@@ -381,7 +381,7 @@ describe("land use API contract adapters", () => {
   );
 
   it("keeps schedule relationship IDs and normalizes installment API dates", async () => {
-    const items = ["LAND_USE_COMPENSATION", "INCREASE", "INTEREST"].map(
+    const items = ["land_use_compensation", "increase", "interest"].map(
       (item_type) => ({ item_type, description: "", amount: "100.00" }),
     );
     mockGetAllPages.mockResolvedValue([
@@ -389,7 +389,7 @@ describe("land use API contract adapters", () => {
         id: 1,
         recipient_party: 73,
         contract: 91,
-        status: "DRAFT",
+        status: "draft",
         rejected_reason: "",
         signing_date: "2024-02-28",
         increase_percentage: null,
@@ -418,7 +418,7 @@ describe("land use API contract adapters", () => {
           dueDate: "01.03.2024",
           laskentajaksonAlkupvm: "28.02.2024",
           laskentajaksonLoppupvm: "01.03.2024",
-          type: "LAND_USE_COMPENSATION",
+          type: "land_use_compensation",
         },
       ],
     });
@@ -432,8 +432,8 @@ describe("land use API contract adapters", () => {
     const decision = {
       id: 51,
       title: "Decision",
-      decision_maker: "CITY_BOARD",
-      decision_type: "LAND_USE_AGREEMENT_APPROVAL",
+      decision_maker: "city_board",
+      decision_type: "land_use_agreement_approval",
       decision_date: "2024-02-29",
       section: null,
       diary_number: "",
@@ -441,7 +441,7 @@ describe("land use API contract adapters", () => {
       conditions: [
         {
           id: 1,
-          condition_type: "OTHER",
+          condition_type: "other",
           supervision_date: "2026-01-01",
           supervised_date: null,
           note: "",
@@ -455,11 +455,11 @@ describe("land use API contract adapters", () => {
     expect(callApiPut).toHaveBeenLastCalledWith("agreements/1/decisions/", [
       expect.objectContaining({
         decision_date: "2024-02-29",
-        decision_maker: "CITY_BOARD",
-        decision_type: "LAND_USE_AGREEMENT_APPROVAL",
+        decision_maker: "city_board",
+        decision_type: "land_use_agreement_approval",
         conditions: [
           expect.objectContaining({
-            condition_type: "OTHER",
+            condition_type: "other",
             supervision_date: "2026-01-01",
             supervised_date: null,
           }),
@@ -570,7 +570,7 @@ describe("land use API contract adapters", () => {
     const plan = {
       id: 73,
       plan_number: "0012345",
-      processing_stage: "EFFECTIVE",
+      processing_stage: "effective",
       approval_date: "2026-01-10",
       effective_date: "2026-02-15",
       approver: "Plan approver",
@@ -583,7 +583,7 @@ describe("land use API contract adapters", () => {
       identifier: "091-01-1",
       district: null,
       is_promotion_area: false,
-      status: "DRAFT",
+      status: "draft",
       estimated_presentation_year: 2026,
       estimated_payment_year: 2027,
       detailed_plan_sites: [],
@@ -611,7 +611,7 @@ describe("land use API contract adapters", () => {
     expect(values).toMatchObject({
       detailedPlanId: 73,
       asemakaavanNumero: "0012345",
-      asemakaavanKasittelyvaihe: "EFFECTIVE",
+      asemakaavanKasittelyvaihe: "effective",
       toimivaltainenPaattaja: "42",
       valmistelijat: [{ value: "89" }],
     });
@@ -649,12 +649,12 @@ describe("land use API contract adapters", () => {
   });
 
   it.each<AgreementStatusCode | "">([
-    "DRAFT",
-    "IN_PROGRESS",
-    "NEGOTIATION",
-    "DECISION",
-    "SIGNATURE",
-    "NO_AGREEMENT",
+    "draft",
+    "in_progress",
+    "negotiation",
+    "decision",
+    "signature",
+    "no_agreement",
     "",
   ])(
     "preserves summary status '%s' through GET, unchanged save, and GET",
@@ -766,42 +766,42 @@ describe("land use API contract adapters", () => {
 
   it("loads backend metadata and named lookup DTOs without replacing codes or IDs", async () => {
     const metadata: LandUseUiMetadata = {
-      agreement_statuses: [{ value: "DRAFT", label: "Luonnos" }],
+      agreement_statuses: [{ value: "draft", label: "Luonnos" }],
       detailed_plan_processing_stages: [
-        { value: "EFFECTIVE", label: "Lainvoimainen" },
+        { value: "effective", label: "Lainvoimainen" },
       ],
-      party_types: [{ value: "COMPANY", label: "Yritys" }],
-      agreement_party_roles: [{ value: "LAND_OWNER", label: "Maanomistaja" }],
+      party_types: [{ value: "company", label: "Yritys" }],
+      agreement_party_roles: [{ value: "land_owner", label: "Maanomistaja" }],
       contract_types: [
-        { value: "LAND_USE_AGREEMENT", label: "Maankäyttösopimus" },
+        { value: "land_use_agreement", label: "Maankäyttösopimus" },
       ],
       collateral_types: [{ value: "mortgage_document", label: "Panttirja" }],
       collateral_document_categories: [
-        { value: "ELECTRONIC", label: "Sähköinen" },
+        { value: "electronic", label: "Sähköinen" },
       ],
       mortgage_deed_collateral_targets: [
-        { value: "PROPERTY", label: "Kiinteistö" },
+        { value: "property", label: "Kiinteistö" },
       ],
-      decision_makers: [{ value: "CITY_BOARD", label: "Kaupunginhallitus" }],
+      decision_makers: [{ value: "city_board", label: "Kaupunginhallitus" }],
       decision_types: [
-        { value: "LAND_USE_AGREEMENT_APPROVAL", label: "Hyväksyminen" },
+        { value: "land_use_agreement_approval", label: "Hyväksyminen" },
       ],
-      decision_condition_types: [{ value: "OTHER", label: "Muu" }],
+      decision_condition_types: [{ value: "other", label: "Muu" }],
       invoice_types: [
-        { value: "LAND_USE_COMPENSATION", label: "Maankäyttökorvaus" },
+        { value: "land_use_compensation", label: "Maankäyttökorvaus" },
       ],
-      invoice_statuses: [{ value: "OPEN", label: "Avoin" }],
+      invoice_statuses: [{ value: "open", label: "Avoin" }],
       invoice_item_types: [
-        { value: "LAND_USE_COMPENSATION", label: "Maankäyttökorvaus" },
+        { value: "land_use_compensation", label: "Maankäyttökorvaus" },
       ],
-      payment_schedule_statuses: [{ value: "DRAFT", label: "Luonnos" }],
+      payment_schedule_statuses: [{ value: "draft", label: "Luonnos" }],
       payment_schedule_item_types: [
-        { value: "LAND_USE_COMPENSATION", label: "Maankäyttökorvaus" },
+        { value: "land_use_compensation", label: "Maankäyttökorvaus" },
       ],
       preservation_designations: [
-        { value: "SR1", label: "SR1" },
-        { value: "SR2", label: "SR2" },
-        { value: "SR3", label: "SR3" },
+        { value: "sr1", label: "SR1" },
+        { value: "sr2", label: "SR2" },
+        { value: "sr3", label: "SR3" },
       ],
       languages: [{ value: "fi", label: "suomi" }],
       countries: [{ value: "DE", label: "Saksa" }],
@@ -877,16 +877,16 @@ describe("land use API contract adapters", () => {
       {
         id: 51,
         title: "Päätös",
-        decision_maker: "CITY_BOARD",
+        decision_maker: "city_board",
         decision_date: null,
         section: 12,
-        decision_type: "LAND_USE_AGREEMENT_APPROVAL",
+        decision_type: "land_use_agreement_approval",
         diary_number: "HEL-51",
         note: "",
         conditions: [
           {
             id: 61,
-            condition_type: "OTHER",
+            condition_type: "other",
             supervision_date: null,
             supervised_date: null,
             note: "",
@@ -914,10 +914,10 @@ describe("land use API contract adapters", () => {
     });
     expect(decisions.decisions[0]).toMatchObject({
       id: "51",
-      paattaja: "CITY_BOARD",
+      paattaja: "city_board",
       pykala: "12",
-      paatoksenTyyppi: "LAND_USE_AGREEMENT_APPROVAL",
-      ehdot: [{ conditionType: "OTHER" }],
+      paatoksenTyyppi: "land_use_agreement_approval",
+      ehdot: [{ conditionType: "other" }],
     });
     expect(mockGet).toHaveBeenNthCalledWith(
       1,

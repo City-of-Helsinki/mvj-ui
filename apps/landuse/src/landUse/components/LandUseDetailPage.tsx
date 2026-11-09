@@ -881,7 +881,7 @@ const LandUseDetailPage: React.FC = () => {
           streetAddress: activeParty.party.details?.streetAddress,
           city: activeParty.party.details?.city,
           postalCode: activeParty.party.details?.postalCode,
-          ...(activeParty.party.details?.partyType === "COMPANY" &&
+          ...(activeParty.party.details?.partyType === "company" &&
           "businessId" in activeParty.party.details
             ? { businessId: activeParty.party.details?.businessId }
             : {}),
@@ -903,7 +903,7 @@ const LandUseDetailPage: React.FC = () => {
                 city: activeParty.invoiceRecipient?.details?.city,
                 postalCode: activeParty.invoiceRecipient?.details?.postalCode,
                 ...(activeParty.invoiceRecipient?.details?.partyType ===
-                  "COMPANY" &&
+                  "company" &&
                 "businessId" in activeParty.invoiceRecipient.details
                   ? {
                       businessId:

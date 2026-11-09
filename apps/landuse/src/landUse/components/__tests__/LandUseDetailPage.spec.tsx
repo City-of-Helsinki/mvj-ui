@@ -24,51 +24,51 @@ it("counts only paid backend-coded compensation items", () => {
   expect(
     calculatePaidMaankayttokorvaus([
       {
-        status: "PAID",
+        status: "paid",
         invoiceItems: [
           {
-            itemType: "LAND_USE_COMPENSATION",
+            itemType: "land_use_compensation",
             amountExcludingVat: "100.25",
             description: "",
           },
           {
-            itemType: "INTEREST",
+            itemType: "interest",
             amountExcludingVat: "20.00",
             description: "",
           },
           {
-            itemType: "INCREASE",
+            itemType: "increase",
             amountExcludingVat: "30.00",
             description: "",
           },
-          { itemType: "PENALTY", amountExcludingVat: "40.00", description: "" },
+          { itemType: "penalty", amountExcludingVat: "40.00", description: "" },
         ],
       },
       {
-        status: "OPEN",
+        status: "open",
         invoiceItems: [
           {
-            itemType: "LAND_USE_COMPENSATION",
+            itemType: "land_use_compensation",
             amountExcludingVat: "999",
             description: "",
           },
         ],
       },
       {
-        status: "CREDITED",
+        status: "credited",
         invoiceItems: [
           {
-            itemType: "LAND_USE_COMPENSATION",
+            itemType: "land_use_compensation",
             amountExcludingVat: "999",
             description: "",
           },
         ],
       },
       {
-        status: "PAID",
+        status: "paid",
         invoiceItems: [
           {
-            itemType: "LAND_USE_COMPENSATION",
+            itemType: "land_use_compensation",
             amountExcludingVat: "0.10",
             description: "",
           },

@@ -3,12 +3,12 @@
 export const MUNICIPALITY_OPTIONS = [{ label: "Helsinki", value: "1" }];
 
 export const LAND_USE_NEGOTIATION_PHASES = {
-  DRAFT: "DRAFT",
-  IN_PROGRESS: "IN_PROGRESS",
-  NEGOTIATION: "NEGOTIATION",
-  DECISION: "DECISION",
-  SIGNATURE: "SIGNATURE",
-  NO_AGREEMENT: "NO_AGREEMENT",
+  DRAFT: "draft",
+  IN_PROGRESS: "in_progress",
+  NEGOTIATION: "negotiation",
+  DECISION: "decision",
+  SIGNATURE: "signature",
+  NO_AGREEMENT: "no_agreement",
 } as const;
 
 export type LandUseNegotiationPhase =
@@ -46,9 +46,9 @@ export const landUseGuaranteeVierasvelkapanttausOptions = [
 ];
 
 export const ASEMAKAAVA_KASITTELYVAIHE_OPTIONS = [
-  "DRAFT",
-  "EFFECTIVE",
-  "REVOKED",
+  "draft",
+  "effective",
+  "revoked",
 ] as const;
 
 export type AsemakaavaKasittelyvaihe = string;
@@ -62,6 +62,7 @@ export interface AsemakaavaListItem {
   asemakaavanLainvoimaisuusPvm: string | undefined;
 }
 
+// TODO delete this unused mock
 export const landUseAsemakaavaListItems: AsemakaavaListItem[] = [
   {
     asemakaavanNumero: "0000412",
@@ -90,20 +91,20 @@ export const landUseAsemakaavaListItems: AsemakaavaListItem[] = [
 ];
 
 export const LAND_USE_INVOICE_STATUSES = {
-  DRAFT: "DRAFT",
-  OPEN: "OPEN",
-  PAID: "PAID",
-  CREDITED: "CREDITED",
+  DRAFT: "draft",
+  OPEN: "open",
+  PAID: "paid",
+  CREDITED: "credited",
 } as const;
 
 export type LandUseInvoiceStatus =
   (typeof LAND_USE_INVOICE_STATUSES)[keyof typeof LAND_USE_INVOICE_STATUSES];
 
 export const LAND_USE_PAYMENT_SCHEDULE_STATUSES = {
-  DRAFT: "DRAFT",
-  PENDING_APPROVAL: "PENDING_APPROVAL",
-  APPROVED: "APPROVED",
-  REJECTED: "REJECTED",
+  DRAFT: "draft",
+  PENDING_APPROVAL: "pending_approval",
+  APPROVED: "approved",
+  REJECTED: "rejected",
 } as const;
 
 export type LandUsePaymentScheduleStatus =
@@ -124,8 +125,8 @@ export interface LandUseInvoicePayment {
 }
 
 export const LAND_USE_INVOICE_TYPES = {
-  MAANKAYTTOKORVAUS: "LAND_USE_COMPENSATION",
-  SAKKO: "PENALTY",
+  MAANKAYTTOKORVAUS: "land_use_compensation",
+  SAKKO: "penalty",
 } as const;
 
 export type LandUseInvoiceType =
@@ -153,10 +154,10 @@ export interface LandUseInvoice {
 }
 
 export const LAND_USE_INVOICE_ITEM_TYPES = {
-  MAANKAYTTOKORVAUS: "LAND_USE_COMPENSATION",
-  KOROTUS: "INCREASE",
-  KORKO: "INTEREST",
-  SAKKO: "PENALTY",
+  MAANKAYTTOKORVAUS: "land_use_compensation",
+  KOROTUS: "increase",
+  KORKO: "interest",
+  SAKKO: "penalty",
 } as const;
 
 export type LandUseInvoiceItemType =

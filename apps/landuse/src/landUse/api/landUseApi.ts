@@ -368,7 +368,7 @@ const mapPartyDetails = (
     note: party.note,
   };
 
-  return party.party_type === "PERSON"
+  return party.party_type === "person"
     ? {
         ...details,
         nationalIdentificationNumber: party.national_identification_number,
@@ -1185,7 +1185,7 @@ export const getBilling = async (
         ovtCode: invoice.recipient_snapshot.ovt_code,
         sapCustomerNumber: invoice.recipient_snapshot.sap_customer_number,
         reference: invoice.recipient_snapshot.customer_reference,
-        isCompany: invoice.recipient_snapshot.party_type === "COMPANY",
+        isCompany: invoice.recipient_snapshot.party_type === "company",
       },
       invoiceItems: invoice.items.map((item) => ({
         id: String(item.id),

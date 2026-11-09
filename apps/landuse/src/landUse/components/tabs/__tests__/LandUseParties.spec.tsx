@@ -19,8 +19,8 @@ vi.mock("@/landUse/api/useLandUseMetadata", () => ({
   useLandUseMetadata: () => ({
     data: {
       party_types: [
-        { value: "COMPANY", label: "Yritys" },
-        { value: "PERSON", label: "Yksityishenkilö" },
+        { value: "company", label: "Yritys" },
+        { value: "person", label: "Yksityishenkilö" },
       ],
       countries: [{ value: "DE", label: "Saksa" }],
       languages: [
@@ -53,7 +53,7 @@ afterEach(() => {
 });
 
 describe("LandUseParties", () => {
-  it.each(["COMPANY", "PERSON"])(
+  it.each(["company", "person"])(
     "selects and clears code-valued language/country for both %s recipients",
     async (partyType) => {
       const initialValues = createEmptyPartiesFormValues();
@@ -98,8 +98,8 @@ describe("LandUseParties", () => {
   );
 
   it.each([
-    ["COMPANY", "Y-tunnus", "Henkilötunnus"],
-    ["PERSON", "Henkilötunnus", "Y-tunnus"],
+    ["company", "Y-tunnus", "Henkilötunnus"],
+    ["person", "Henkilötunnus", "Y-tunnus"],
   ])(
     "shows contact details when selecting %s",
     (partyType, label, otherLabel) => {
@@ -132,7 +132,7 @@ describe("LandUseParties", () => {
     },
   );
 
-  it.each(["COMPANY", "PERSON"])(
+  it.each(["company", "person"])(
     "uses metadata country labels for %s parties and invoice recipients",
     (partyType) => {
       const initialValues = createEmptyPartiesFormValues();
