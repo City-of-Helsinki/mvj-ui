@@ -688,7 +688,7 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                                     </div>
 
                                     {partyEntry?.party?.details?.partyType ===
-                                      "COMPANY" && (
+                                      "company" && (
                                       <CompanyPartyForm
                                         fieldPrefix={`${fieldName}.party.details`}
                                         idPrefix={`party-${index}`}
@@ -696,7 +696,7 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                                       />
                                     )}
                                     {partyEntry?.party?.details?.partyType ===
-                                      "PERSON" && (
+                                      "person" && (
                                       <PersonPartyForm
                                         fieldPrefix={`${fieldName}.party.details`}
                                         idPrefix={`party-${index}`}
@@ -968,7 +968,7 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                                       </div>
 
                                       {partyEntry?.invoiceRecipient?.details
-                                        ?.partyType === "COMPANY" && (
+                                        ?.partyType === "company" && (
                                         <CompanyPartyForm
                                           fieldPrefix={`${fieldName}.invoiceRecipient.details`}
                                           idPrefix={`party-${index}-invoice`}
@@ -976,7 +976,7 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                                         />
                                       )}
                                       {partyEntry?.invoiceRecipient?.details
-                                        ?.partyType === "PERSON" && (
+                                        ?.partyType === "person" && (
                                         <PersonPartyForm
                                           fieldPrefix={`${fieldName}.invoiceRecipient.details`}
                                           idPrefix={`party-${index}-invoice`}

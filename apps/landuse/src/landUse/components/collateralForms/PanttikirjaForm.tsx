@@ -69,7 +69,7 @@ export const PanttikirjaForm: React.FC<CollateralFormProps> = ({
       </div>
 
       <div className="landuse-grid landuse-grid__bottom-margin">
-        {target === "PROPERTY" && (
+        {target === "property" && (
           <FieldArray<string> name={`${namePrefix}.kiinteistotunnukset`}>
             {({ fields }) => (
               <>
@@ -123,7 +123,7 @@ export const PanttikirjaForm: React.FC<CollateralFormProps> = ({
             )}
           </FieldArray>
         )}
-        {target === "FACILITY" && (
+        {target === "facility" && (
           <div className="landuse-grid__column-6">
             <CollateralTextField
               namePrefix={namePrefix}

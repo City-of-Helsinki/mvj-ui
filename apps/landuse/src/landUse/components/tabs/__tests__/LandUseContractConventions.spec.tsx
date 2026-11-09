@@ -41,34 +41,34 @@ vi.mock("@/landUse/api/landUseApi", () => ({
 vi.mock("@/landUse/api/useLandUseMetadata", () => ({
   useLandUseMetadata: () => ({
     data: {
-      contract_types: [{ value: "OTHER", label: "Muu sopimus" }],
+      contract_types: [{ value: "other", label: "Muu sopimus" }],
       collateral_types: [
-        { value: "MORTGAGE_DEED", label: "Pantti" },
-        { value: "CASH_DEPOSIT", label: "Raha" },
-        { value: "PERSONAL_GUARANTEE", label: "Takaus" },
-        { value: "DEPOSIT_PLEDGE", label: "Tili" },
-        { value: "OTHER", label: "Muu" },
+        { value: "mortgage_deed", label: "Pantti" },
+        { value: "cash_deposit", label: "Raha" },
+        { value: "personal_guarantee", label: "Takaus" },
+        { value: "deposit_pledge", label: "Tili" },
+        { value: "other", label: "Muu" },
       ],
       mortgage_deed_collateral_targets: [
-        { value: "PROPERTY", label: "Kiinteisto" },
-        { value: "FACILITY", label: "Laitos" },
+        { value: "property", label: "Kiinteisto" },
+        { value: "facility", label: "Laitos" },
       ],
       collateral_document_categories: [
-        { value: "ELECTRONIC", label: "Sahkoinen" },
+        { value: "electronic", label: "Sahkoinen" },
       ],
-      decision_makers: [{ value: "CITY_BOARD", label: "Kaupunginhallitus" }],
+      decision_makers: [{ value: "city_board", label: "Kaupunginhallitus" }],
       decision_types: [
-        { value: "LAND_USE_AGREEMENT_APPROVAL", label: "Hyvaksyminen" },
+        { value: "land_use_agreement_approval", label: "Hyvaksyminen" },
       ],
-      decision_condition_types: [{ value: "OTHER", label: "Muu ehto" }],
+      decision_condition_types: [{ value: "other", label: "Muu ehto" }],
       preservation_designations: ["SR1", "SR2", "SR3"].map((value) => ({
         value,
         label: value,
       })),
-      invoice_types: [{ value: "LAND_USE_COMPENSATION", label: "Korvaus" }],
-      invoice_statuses: [{ value: "PAID", label: "Maksettu" }],
+      invoice_types: [{ value: "land_use_compensation", label: "Korvaus" }],
+      invoice_statuses: [{ value: "paid", label: "Maksettu" }],
       invoice_item_types: [
-        { value: "LAND_USE_COMPENSATION", label: "Korvaus" },
+        { value: "land_use_compensation", label: "Korvaus" },
       ],
     },
   }),
@@ -95,13 +95,13 @@ afterEach(() => {
 const decision = {
   id: "51",
   title: "Actual decision",
-  paattaja: "CITY_BOARD",
+  paattaja: "city_board",
   paatospvm: "29.02.2024",
-  paatoksenTyyppi: "LAND_USE_AGREEMENT_APPROVAL",
+  paatoksenTyyppi: "land_use_agreement_approval",
   diaarinumero: "HEL-51",
   huomautus: "",
   ehdot: [
-    { conditionType: "OTHER", valvontapvm: "", valvottuPvm: "", note: "" },
+    { conditionType: "other", valvontapvm: "", valvottuPvm: "", note: "" },
   ],
 };
 
@@ -158,7 +158,7 @@ describe("backend-valued contract conventions", () => {
             id: "1",
             recipientPartyIndex: "73",
             contractIndex: "91",
-            status: "DRAFT",
+            status: "draft",
             rejectedReason: null,
             signedDate: "",
             korotusProsentti: "",
@@ -177,8 +177,8 @@ describe("backend-valued contract conventions", () => {
                 laskentajaksonAlkupvm: "",
                 laskentajaksonLoppupvm: "",
                 invoiceNumber: "",
-                type: "LAND_USE_COMPENSATION",
-                status: "DRAFT",
+                type: "land_use_compensation",
+                status: "draft",
                 billedAmount: "",
                 remainingAmount: "",
                 invoiceItems: [],
@@ -291,8 +291,8 @@ describe("backend-valued contract conventions", () => {
             installmentTotal: "1",
             dueDate: "",
             invoiceNumber: "INV-1",
-            type: "LAND_USE_COMPENSATION",
-            status: "PAID",
+            type: "land_use_compensation",
+            status: "paid",
             billedAmount: "100",
             remainingAmount: "0",
             invoiceItems: [],
@@ -341,7 +341,7 @@ describe("backend-valued contract conventions", () => {
             {
               id: "91",
               title: "Contract",
-              sopimuksenTyyppi: "OTHER",
+              sopimuksenTyyppi: "other",
               sopimusnumero: "C-91",
               allekirjoituspvm: "",
               huomautus: "",
@@ -357,8 +357,8 @@ describe("backend-valued contract conventions", () => {
                   id: "81",
                   collateralType,
                   osapuolet: ["73"],
-                  kiinteistoVaiLaitos: "PROPERTY",
-                  vakuusasiakirjanLaji: "ELECTRONIC",
+                  kiinteistoVaiLaitos: "property",
+                  vakuusasiakirjanLaji: "electronic",
                   kiinteistotunnukset: ["91-1-1-1"],
                   panttikirjanNumero: "DEED-1",
                   maksettuPvm: "01.01.2026",
@@ -414,7 +414,7 @@ describe("backend-valued contract conventions", () => {
     expect(
       (screen.getByLabelText("Päätöksen tyyppi") as HTMLInputElement).value,
     ).toBe("Hyvaksyminen");
-    expect(form.getState().values.decisions?.[0].paattaja).toBe("CITY_BOARD");
+    expect(form.getState().values.decisions?.[0].paattaja).toBe("city_board");
     rerender(<LandUseDecisions form={form} isEditMode parties={[]} />);
     expect(
       screen.getByRole("combobox", { name: /Päättäjä/ }).textContent,
@@ -422,6 +422,6 @@ describe("backend-valued contract conventions", () => {
     act(() => form.change("decisions", [{ ...decision, paattaja: undefined }]));
     fireEvent.click(screen.getByRole("combobox", { name: /Päättäjä/ }));
     fireEvent.click(screen.getByRole("option", { name: "Kaupunginhallitus" }));
-    expect(form.getState().values.decisions?.[0].paattaja).toBe("CITY_BOARD");
+    expect(form.getState().values.decisions?.[0].paattaja).toBe("city_board");
   });
 });

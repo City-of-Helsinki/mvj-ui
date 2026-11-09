@@ -34,7 +34,7 @@ const createInvoice = (
   laskentajaksonAlkupvm: "",
   laskentajaksonLoppupvm: "",
   invoiceNumber: "",
-  type: "LAND_USE_COMPENSATION",
+  type: "land_use_compensation",
   status: LAND_USE_INVOICE_STATUSES.DRAFT,
   billedAmount: "",
   remainingAmount: "",

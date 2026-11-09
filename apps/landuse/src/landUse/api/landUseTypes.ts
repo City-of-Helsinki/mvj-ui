@@ -28,20 +28,20 @@ export type NullableLandUseDecimalString = LandUseDecimalString | null;
 
 export type LandUseUiMetadata = {
   agreement_statuses: LandUseChoice<
-    | "DRAFT"
-    | "IN_PROGRESS"
-    | "NEGOTIATION"
-    | "DECISION"
-    | "SIGNATURE"
-    | "NO_AGREEMENT"
+    | "draft"
+    | "in_progress"
+    | "negotiation"
+    | "decision"
+    | "signature"
+    | "no_agreement"
   >[];
   detailed_plan_processing_stages: LandUseChoice<
-    "DRAFT" | "EFFECTIVE" | "REVOKED"
+    "draft" | "effective" | "revoked"
   >[];
-  party_types: LandUseChoice<"COMPANY" | "PERSON">[];
-  agreement_party_roles: LandUseChoice<"LAND_OWNER" | "DEVELOPER">[];
+  party_types: LandUseChoice<"company" | "person">[];
+  agreement_party_roles: LandUseChoice<"land_owner" | "developer">[];
   contract_types: LandUseChoice<
-    "LAND_USE_AGREEMENT" | "REAL_ESTATE_PRELIMINARY_AGREEMENT" | "OTHER"
+    "land_use_agreement" | "real_estate_preliminary_agreement" | "other"
   >[];
   collateral_types: LandUseChoice<
     | "mortgage_document"
@@ -50,29 +50,29 @@ export type LandUseUiMetadata = {
     | "pledge_of_funds"
     | "other"
   >[];
-  collateral_document_categories: LandUseChoice<"ELECTRONIC" | "PAPER">[];
-  mortgage_deed_collateral_targets: LandUseChoice<"PROPERTY" | "FACILITY">[];
+  collateral_document_categories: LandUseChoice<"electronic" | "paper">[];
+  mortgage_deed_collateral_targets: LandUseChoice<"property" | "facility">[];
   decision_makers: LandUseChoice<
-    "LAND_MANAGER" | "URBAN_ENVIRONMENT_COMMITTEE" | "CITY_BOARD"
+    "land_manager" | "urban_environment_committee" | "city_board"
   >[];
   decision_types: LandUseChoice<
-    "EASEMENT_CONDITION_ADDITION" | "LAND_USE_AGREEMENT_APPROVAL"
+    "easement_condition_addition" | "land_use_agreement_approval"
   >[];
   decision_condition_types: LandUseChoice<
-    "EASEMENT_OR_EASEMENT_LIKE_CONDITION" | "OTHER"
+    "easement_or_easement_like_condition" | "other"
   >[];
-  invoice_types: LandUseChoice<"LAND_USE_COMPENSATION" | "PENALTY">[];
-  invoice_statuses: LandUseChoice<"DRAFT" | "OPEN" | "PAID" | "CREDITED">[];
+  invoice_types: LandUseChoice<"land_use_compensation" | "penalty">[];
+  invoice_statuses: LandUseChoice<"draft" | "open" | "paid" | "credited">[];
   invoice_item_types: LandUseChoice<
-    "LAND_USE_COMPENSATION" | "INCREASE" | "INTEREST" | "PENALTY"
+    "land_use_compensation" | "increase" | "interest" | "penalty"
   >[];
   payment_schedule_statuses: LandUseChoice<
-    "DRAFT" | "PENDING_APPROVAL" | "APPROVED" | "REJECTED"
+    "draft" | "pending_approval" | "approved" | "rejected"
   >[];
   payment_schedule_item_types: LandUseChoice<
-    "LAND_USE_COMPENSATION" | "INCREASE" | "INTEREST"
+    "land_use_compensation" | "increase" | "interest"
   >[];
-  preservation_designations: LandUseChoice<"SR1" | "SR2" | "SR3">[];
+  preservation_designations: LandUseChoice<"sr1" | "sr2" | "sr3">[];
   languages: LandUseChoice<"fi" | "sv" | "en">[];
   countries: LandUseChoice[];
 };

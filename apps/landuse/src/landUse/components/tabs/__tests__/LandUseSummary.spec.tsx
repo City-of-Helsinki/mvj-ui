@@ -32,7 +32,7 @@ vi.mock("@/landUse/api/fetchClient", () => ({
             {
               id: 73,
               plan_number: "0012345",
-              processing_stage: "EFFECTIVE",
+              processing_stage: "effective",
               approval_date: "2026-01-10",
               effective_date: "2026-02-15",
               approver: "Plan approver",
@@ -56,15 +56,15 @@ vi.mock("@/landUse/api/useLandUseMetadata", () => ({
   useLandUseMetadata: () => ({
     data: {
       detailed_plan_processing_stages: [
-        { value: "EFFECTIVE", label: "Lainvoimainen" },
+        { value: "effective", label: "Lainvoimainen" },
       ],
       agreement_statuses: [
-        { value: "DRAFT", label: "Luonnos" },
-        { value: "IN_PROGRESS", label: "Vireillä" },
-        { value: "NEGOTIATION", label: "Neuvottelu" },
-        { value: "DECISION", label: "Päätös" },
-        { value: "SIGNATURE", label: "Allekirjoitus" },
-        { value: "NO_AGREEMENT", label: "Ei sopimusta" },
+        { value: "draft", label: "Luonnos" },
+        { value: "in_progress", label: "Vireillä" },
+        { value: "negotiation", label: "Neuvottelu" },
+        { value: "decision", label: "Päätös" },
+        { value: "signature", label: "Allekirjoitus" },
+        { value: "no_agreement", label: "Ei sopimusta" },
       ],
     },
   }),
@@ -103,7 +103,7 @@ afterEach(() => {
 it("displays the status label without changing the stored backend code", () => {
   const form = createForm<LandUseSummaryFormValues>({
     onSubmit: () => {},
-    initialValues: { ...createEmptySummaryFormValues(), tila: "DRAFT" },
+    initialValues: { ...createEmptySummaryFormValues(), tila: "draft" },
     mutators: { ...arrayMutators },
   });
   render(
@@ -116,13 +116,13 @@ it("displays the status label without changing the stored backend code", () => {
     (screen.getByLabelText("Maankäyttösopimuksen tila") as HTMLInputElement)
       .value,
   ).toBe("Luonnos");
-  expect(form.getState().values.tila).toBe("DRAFT");
+  expect(form.getState().values.tila).toBe("draft");
 });
 
 it("selects and clears summary status using backend codes rather than labels", async () => {
   const form = createForm<LandUseSummaryFormValues>({
     onSubmit: () => {},
-    initialValues: { ...createEmptySummaryFormValues(), tila: "DRAFT" },
+    initialValues: { ...createEmptySummaryFormValues(), tila: "draft" },
     mutators: { ...arrayMutators },
   });
   render(
@@ -138,11 +138,11 @@ it("selects and clears summary status using backend codes rather than labels", a
   fireEvent.click(statusSelect);
   fireEvent.click(await screen.findByRole("option", { name: "Ei sopimusta" }));
 
-  expect(form.getState().values.tila).toBe("NO_AGREEMENT");
+  expect(form.getState().values.tila).toBe("no_agreement");
   await updateSummary("1", form.getState().values);
   expect(callApiPut).toHaveBeenLastCalledWith(
     "agreements/1/summary/",
-    expect.objectContaining({ status: "NO_AGREEMENT" }),
+    expect.objectContaining({ status: "no_agreement" }),
   );
 
   fireEvent.click(screen.getByRole("button", { name: "Tyhjennä tila" }));
@@ -215,7 +215,7 @@ it("selects a plan by database ID, derives read-only fields, and clears the rela
   expect(form.getState().values).toMatchObject({
     detailedPlanId: 73,
     asemakaavanNumero: "0012345",
-    asemakaavanKasittelyvaihe: "EFFECTIVE",
+    asemakaavanKasittelyvaihe: "effective",
     vahvistamisHyvaksymisPvm: "10.01.2026",
     asemakaavanLainvoimaisuusPvm: "15.02.2026",
     asemakaavanHyvaksyjä: "Plan approver",

@@ -260,7 +260,7 @@ const getSelectedPartyInvoiceData = (
 
   const recipientDetails =
     selectedParty.invoiceRecipient?.details ?? selectedParty.party?.details;
-  const isCompany = recipientDetails?.partyType === "COMPANY";
+  const isCompany = recipientDetails?.partyType === "company";
 
   return {
     name: recipientDetails?.name ?? "",
