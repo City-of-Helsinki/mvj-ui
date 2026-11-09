@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { cleanup, render } from "@testing-library/react";
+import { cleanup, fireEvent, render } from "@testing-library/react";
 import L from "leaflet";
 import React from "react";
 import MapContainer from "@/areaNote/components/MapContainer";
@@ -7,6 +7,39 @@ import MapContainer from "@/areaNote/components/MapContainer";
 const WMS_URL = "https://kartta.hel.fi/ws/geoserver/avoindata/wms?";
 
 describe("MapContainer base layers", () => {
+  it("mounts a lazy overlay only on first selection and retains it on toggles", () => {
+    const mounted = vi.fn();
+    const Overlay = () => {
+      React.useEffect(() => {
+        mounted();
+      }, []);
+      return null;
+    };
+    const { container } = render(
+      <MapContainer
+        center={[60.17, 24.94]}
+        zoom={5}
+        overlayLayers={[
+          {
+            checked: false,
+            lazy: true,
+            name: "History",
+            component: <Overlay />,
+          },
+        ]}
+      />,
+    );
+    const checkbox = container.querySelector(
+      ".leaflet-control-layers-overlays input",
+    )!;
+    expect(mounted).not.toHaveBeenCalled();
+    fireEvent.click(checkbox);
+    expect(mounted).toHaveBeenCalledTimes(1);
+    fireEvent.click(checkbox);
+    fireEvent.click(checkbox);
+    expect(mounted).toHaveBeenCalledTimes(1);
+  });
+
   afterEach(() => {
     cleanup();
     vi.restoreAllMocks();
