@@ -1,6 +1,21 @@
 import createUrl from "@/api/createUrl";
 import callApiAsync from "@/api/callApiAsync";
 import type { IntendedUse } from "./types";
+import type { LeafletGeoJson } from "types";
+
+export const fetchIntersectingArchivedAreas = async (
+  leaseId: number,
+  signal: AbortSignal,
+): Promise<LeafletGeoJson> => {
+  const { response, bodyAsJson } = await callApiAsync<LeafletGeoJson>(
+    new Request(createUrl(`lease/${leaseId}/intersecting_archived_areas/`), {
+      signal,
+    }),
+  );
+  if (!response.ok) throw new Error("Failed to fetch archived lease areas");
+  return bodyAsJson;
+};
+
 export const fetchLeases = async (query?: Record<string, any>) => {
   const {
     response: { status },

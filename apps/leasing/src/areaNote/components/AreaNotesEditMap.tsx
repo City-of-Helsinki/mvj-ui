@@ -35,6 +35,7 @@ type Props = {
   onViewportChanged?: (...args: Array<any>) => any;
   overlayLayers?: Array<{
     checked: boolean;
+    lazy?: boolean;
     name: string;
     component: React.ReactNode;
   }>;

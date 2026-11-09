@@ -5,6 +5,7 @@ import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import AreaNotesLayer from "@/areaNote/components/AreaNotesLayer";
 import AreaNotesEditMap from "@/areaNote/components/AreaNotesEditMap";
 import AreasLayer from "@/leases/components/leaseSections/map/AreasLayer";
+import ArchivedLeaseAreasLayer from "@/leases/components/leaseSections/map/ArchivedLeaseAreasLayer";
 import Divider from "@/components/content/Divider";
 import PlanUnitsLayer from "@/leases/components/leaseSections/map/PlanUnitsLayer";
 import PlotsLayer from "@/leases/components/leaseSections/map/PlotsLayer";
@@ -221,6 +222,19 @@ const SingleLeaseMap = () => {
         ),
         name: "Vuokrakohteet",
       });
+      if (currentLease.id) {
+        layers.push({
+          checked: false,
+          lazy: true,
+          component: (
+            <ArchivedLeaseAreasLayer
+              key={currentLease.id}
+              leaseId={currentLease.id}
+            />
+          ),
+          name: "Päättyneiden vuokrausten leikkaavat alueet",
+        });
+      }
     }
 
     if (
@@ -246,6 +260,7 @@ const SingleLeaseMap = () => {
     areaNotes,
     areaTypeOptions,
     areasGeoJson,
+    currentLease.id,
     leaseAttributes,
     location.search,
     planUnitIntendedUseOptions,

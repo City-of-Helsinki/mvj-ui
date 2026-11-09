@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { createContext, useEffect, useRef, useState } from "react";
 import L from "leaflet";
 import proj4 from "proj4";
 import "proj4leaflet";
@@ -47,6 +47,7 @@ type Props = {
   onViewportChanged?: (viewport: MapViewport) => void;
   overlayLayers?: Array<{
     checked: boolean;
+    lazy?: boolean;
     name: string;
     component: React.ReactNode;
   }>;
@@ -66,9 +67,12 @@ type OverlayLayerProps = NonNullable<Props["overlayLayers"]>[number] & {
   map: L.Map;
 };
 
+export const OverlayLayerActiveContext = createContext(true);
+
 const OverlayLayer: React.FC<OverlayLayerProps> = ({
   checked,
   component,
+  lazy = false,
   layerControl,
   map,
   name,
@@ -80,6 +84,22 @@ const OverlayLayer: React.FC<OverlayLayerProps> = ({
   }
 
   const layer = layerRef.current;
+  const [hasBeenSelected, setHasBeenSelected] = useState(checked);
+  const [isActive, setIsActive] = useState(checked);
+
+  useEffect(() => {
+    const handleAdd = () => {
+      setHasBeenSelected(true);
+      setIsActive(true);
+    };
+    const handleRemove = () => setIsActive(false);
+    layer.on("add", handleAdd);
+    layer.on("remove", handleRemove);
+    return () => {
+      layer.off("add", handleAdd);
+      layer.off("remove", handleRemove);
+    };
+  }, [layer]);
 
   useEffect(() => {
     layerControl.addOverlay(layer, name);
@@ -100,7 +120,9 @@ const OverlayLayer: React.FC<OverlayLayerProps> = ({
 
   return (
     <LeafletMapContext.Provider value={layer}>
-      {component}
+      <OverlayLayerActiveContext.Provider value={isActive}>
+        <div hidden={!isActive}>{(!lazy || hasBeenSelected) && component}</div>
+      </OverlayLayerActiveContext.Provider>
     </LeafletMapContext.Provider>
   );
 };
@@ -236,11 +258,12 @@ const MapContainer: React.FC<Props> = ({
       </div>
       {map &&
         layerControlRef.current &&
-        overlayLayers?.map(({ checked, component, name }) => (
+        overlayLayers?.map(({ checked, component, lazy, name }) => (
           <OverlayLayer
             key={name}
             checked={checked}
             component={component}
+            lazy={lazy}
             layerControl={layerControlRef.current}
             map={map}
             name={name}
