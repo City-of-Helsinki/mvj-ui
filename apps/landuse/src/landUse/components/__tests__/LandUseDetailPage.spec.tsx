@@ -16,6 +16,12 @@ import LandUseDetailPage, {
 import * as landUseApi from "@/landUse/api/landUseApi";
 import { LanduseApiError } from "@/landUse/api/fetchClient";
 import { LAND_USE_NEGOTIATION_PHASES } from "@/landUse/options";
+import { showLanduseSuccessNotification } from "@/landUse/notifications/notificationService";
+
+vi.mock("@/landUse/notifications/notificationService", () => ({
+  showLanduseSuccessNotification: vi.fn(),
+  showLanduseApiErrorNotification: vi.fn(),
+}));
 
 const mockNavigate = vi.fn();
 let mockLocationSearch = "";
@@ -571,6 +577,37 @@ describe("LandUseDetailPage", () => {
     vi.mocked(landUseApi.updateBilling).mockImplementation(
       async (_agreementId, values) => values as any,
     );
+  });
+
+  it("only notifies save success when changes are persisted", async () => {
+    const queryClient = new QueryClient({
+      defaultOptions: { queries: { retry: false } },
+    });
+    render(
+      <QueryClientProvider client={queryClient}>
+        <LandUseDetailPage />
+      </QueryClientProvider>,
+    );
+
+    fireEvent.click(await screen.findByRole("button", { name: "Muokkaa" }));
+    fireEvent.click(screen.getByRole("button", { name: "Tallenna" }));
+
+    await screen.findByRole("button", { name: "Muokkaa" });
+    expect(landUseApi.updateSummary).not.toHaveBeenCalled();
+    expect(showLanduseSuccessNotification).not.toHaveBeenCalled();
+
+    fireEvent.click(screen.getByRole("button", { name: "Muokkaa" }));
+    fireEvent.change(screen.getByLabelText("summary-input"), {
+      target: { value: "updated-summary" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Tallenna" }));
+
+    await waitFor(() =>
+      expect(showLanduseSuccessNotification).toHaveBeenCalledExactlyOnceWith(
+        "Tallennus onnistui.",
+      ),
+    );
+    expect(landUseApi.updateSummary).toHaveBeenCalledTimes(1);
   });
 
   it("keeps edit disabled for a viewer and restricted tabs visible", async () => {

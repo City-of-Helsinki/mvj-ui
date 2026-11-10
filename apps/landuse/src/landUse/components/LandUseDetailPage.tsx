@@ -49,6 +49,7 @@ import { parseLandUseNumericValueOrZero } from "@/landUse/utils/number";
 import { getLanduseApiErrorMessage } from "@/landUse/api/fetchClient";
 import {
   showLanduseApiErrorNotification,
+  showLanduseInfoNotification,
   showLanduseSuccessNotification,
 } from "@/landUse/notifications/notificationService";
 import type {
@@ -748,18 +749,21 @@ const LandUseDetailPage: React.FC = () => {
     }
 
     setIsSaving(true);
+    let hasSavedChanges = false;
     try {
       if (canChangeTab("summary") && formStates.summary?.dirty) {
         await summaryMutation.mutateAsync(
           summaryFormApi.getState().values as LandUseSummaryFormValues,
         );
         markFormSaved("summary");
+        hasSavedChanges = true;
       }
       if (canChangeTab("parties") && formStates.parties?.dirty) {
         await partiesMutation.mutateAsync(
           partiesFormApi.getState().values as LandUsePartiesFormValues,
         );
         markFormSaved("parties");
+        hasSavedChanges = true;
       }
       if (canChangeTab("compensations") && formStates.compensations?.dirty) {
         await compensationsMutation.mutateAsync(
@@ -767,18 +771,21 @@ const LandUseDetailPage: React.FC = () => {
             .values as LandUseCompensationsFormValues,
         );
         markFormSaved("compensations");
+        hasSavedChanges = true;
       }
       if (canChangeTab("decisions") && formStates.decisions?.dirty) {
         await decisionsMutation.mutateAsync(
           decisionsFormApi.getState().values as LandUseDecisionsFormValues,
         );
         markFormSaved("decisions");
+        hasSavedChanges = true;
       }
       if (canChangeTab("contracts") && formStates.contracts?.dirty) {
         await contractsMutation.mutateAsync(
           contractsFormApi.getState().values as LandUseContractsFormValues,
         );
         markFormSaved("contracts");
+        hasSavedChanges = true;
       }
       if (
         canChangeTab("paymentSchedule") &&
@@ -789,16 +796,22 @@ const LandUseDetailPage: React.FC = () => {
             .values as LandUsePaymentScheduleFormValues,
         );
         markFormSaved("paymentSchedule");
+        hasSavedChanges = true;
       }
       if (canChangeTab("collaterals") && formStates.collaterals?.dirty) {
         await collateralsMutation.mutateAsync(
           collateralsFormApi.getState().values as LandUseCollateralsFormValues,
         );
         markFormSaved("collaterals");
+        hasSavedChanges = true;
       }
       setIsSaveClicked(false);
       setIsEditMode(false);
-      showLanduseSuccessNotification("Tallennus onnistui.");
+      if (hasSavedChanges) {
+        showLanduseSuccessNotification("Tallennus onnistui.");
+      } else {
+        showLanduseInfoNotification("Ei muutoksia.");
+      }
     } catch (error) {
       showLanduseApiErrorNotification(error);
       setSaveError(getLanduseApiErrorMessage(error));
