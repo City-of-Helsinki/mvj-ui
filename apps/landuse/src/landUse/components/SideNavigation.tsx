@@ -12,6 +12,7 @@ import {
 
 export interface SideNavigationTab {
   label: string;
+  disabled?: boolean;
   isDirty?: boolean;
   hasError?: boolean;
 }
@@ -32,6 +33,7 @@ interface SideNavigationProps {
   onTocClick: (id: string) => void;
   isEditMode: boolean;
   isSaving: boolean;
+  canEdit: boolean;
   onEditClick: () => void;
   onSaveClick: () => void;
   onDiscardClick: () => void;
@@ -55,6 +57,7 @@ export const SideNavigation: React.FC<SideNavigationProps> = ({
   onTocClick,
   isEditMode,
   isSaving,
+  canEdit,
   onEditClick,
   onSaveClick,
   onDiscardClick,
@@ -79,11 +82,8 @@ export const SideNavigation: React.FC<SideNavigationProps> = ({
                   }`}
                   onClick={() => onTabClick(index)}
                   // Temporarily disable Valvonta tab
-                  disabled={tab.label.toLowerCase() === "valvonta"}
-                  style={
-                    tab.label.toLowerCase() === "valvonta"
-                      ? { cursor: "not-allowed", color: "gray" }
-                      : {}
+                  disabled={
+                    tab.disabled || tab.label.toLowerCase() === "valvonta"
                   }
                 >
                   <span className="landuse-detail__sidebar-tab-label">
@@ -156,7 +156,7 @@ export const SideNavigation: React.FC<SideNavigationProps> = ({
           <Button
             variant={ButtonVariant.Primary}
             onClick={onEditClick}
-            disabled={isSaving}
+            disabled={isSaving || !canEdit}
             iconStart={<IconPen />}
           >
             Muokkaa

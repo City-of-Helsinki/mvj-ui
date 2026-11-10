@@ -75,6 +75,11 @@ $sidebar-width: 260px;
     background-color: hds.$color-black-5;
   }
 
+  &:disabled {
+    color: var(--color-black-50);
+    cursor: not-allowed;
+  }
+
   &--active {
     border-left-color: hds.$color-tram;
     background-color: hds.$color-black-5;

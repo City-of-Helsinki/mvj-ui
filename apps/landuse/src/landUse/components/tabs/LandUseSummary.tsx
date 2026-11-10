@@ -284,13 +284,11 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                                   <TextInput
                                     id="summary-tila"
                                     label="Maankäyttösopimuksen tila"
-                                    value={
-                                      getOptionsDisplayValue(
-                                        input.value,
-                                        metadataQuery.data?.agreement_statuses ??
-                                          [],
-                                      )
-                                    }
+                                    value={getOptionsDisplayValue(
+                                      input.value,
+                                      metadataQuery.data?.agreement_statuses ??
+                                        [],
+                                    )}
                                     readOnly
                                   />
                                 )
