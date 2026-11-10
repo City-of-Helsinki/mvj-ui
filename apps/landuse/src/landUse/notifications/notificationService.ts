@@ -14,6 +14,7 @@ type Subscriber = () => void;
 
 const ERROR_AUTO_CLOSE_DURATION_MS = 6_000;
 const SUCCESS_AUTO_CLOSE_DURATION_MS = 4_000;
+const INFO_AUTO_CLOSE_DURATION_MS = 4_000;
 
 let counter = 0;
 const subscribers = new Set<Subscriber>();
@@ -63,6 +64,14 @@ export const showLanduseSuccessNotification = (body: string) => {
     type: "success",
     body,
     autoCloseDuration: SUCCESS_AUTO_CLOSE_DURATION_MS,
+  });
+};
+
+export const showLanduseInfoNotification = (body: string) => {
+  enqueueNotification({
+    type: "info",
+    body,
+    autoCloseDuration: INFO_AUTO_CLOSE_DURATION_MS,
   });
 };
 
