@@ -6,10 +6,12 @@ import LandUseHeader from "@/landUse/components/LandUseHeader";
 import { getUserPermissions } from "@/landUse/api/landUseApi";
 import { LanduseApiError } from "@/landUse/api/fetchClient";
 
+const { mockLogout } = vi.hoisted(() => ({ mockLogout: vi.fn() }));
+
 vi.mock("hds-react", async (importOriginal) => ({
   ...(await importOriginal<object>()),
   useAuthenticatedUser: () => ({ profile: { name: "Test User" } }),
-  useOidcClient: () => ({ logout: vi.fn() }),
+  useOidcClient: () => ({ logout: mockLogout }),
 }));
 
 vi.mock("@/landUse/api/landUseApi", () => ({
@@ -36,6 +38,24 @@ const openGroups = () => {
   expect(getUserPermissions).not.toHaveBeenCalled();
   fireEvent.click(screen.getByRole("button", { name: "Käyttäjävalikko" }));
 };
+
+it("uses the HDS avatar menu for groups and logout without extra navigation", async () => {
+  vi.mocked(getUserPermissions).mockResolvedValue({
+    groups: ["Land use editors", "Land use viewers"],
+    permissions: [],
+  });
+  openGroups();
+
+  expect(screen.getByRole("img", { name: "Helsinki" })).toBeDefined();
+  expect(screen.getByText("TU")).toBeDefined();
+  expect(await screen.findByText("Land use editors")).toBeDefined();
+  expect(screen.getByText("Land use viewers")).toBeDefined();
+  expect(screen.queryByRole("searchbox")).toBeNull();
+  expect(screen.queryByRole("button", { name: "Valikko" })).toBeNull();
+  expect(document.querySelector('a[href="https://hel.fi"]')).toBeNull();
+  fireEvent.click(screen.getByRole("button", { name: "Kirjaudu ulos" }));
+  expect(mockLogout).toHaveBeenCalledTimes(1);
+});
 
 it("shows an empty state for users without groups", async () => {
   vi.mocked(getUserPermissions).mockResolvedValue({
