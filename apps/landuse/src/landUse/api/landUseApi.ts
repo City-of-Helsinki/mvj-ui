@@ -60,6 +60,7 @@ type AgreementSummaryResponse = {
 };
 
 export type LandUseUserPermissions = {
+  groups?: string[];
   permissions: { app: string; codename: string }[];
 };
 
