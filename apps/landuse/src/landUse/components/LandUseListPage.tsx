@@ -12,6 +12,8 @@ import {
   Table,
   IconPlus,
   Select,
+  Notification,
+  NotificationSize,
 } from "hds-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { parseUrlParams, buildQueryString } from "@/landUse/urlParams";
@@ -261,14 +263,22 @@ const LandUseListPage: React.FC = () => {
       </div>
 
       {landUseListQuery.isError && (
-        <div role="alert">
+        <Notification
+          type="error"
+          size={NotificationSize.Large}
+          label="Tietojen lataaminen epäonnistui"
+        >
           {getLanduseApiErrorMessage(landUseListQuery.error)}
-        </div>
+        </Notification>
       )}
       {createAgreementMutation.isError && (
-        <div role="alert">
+        <Notification
+          type="error"
+          size={NotificationSize.Large}
+          label="Maankäyttösopimuksen luominen epäonnistui"
+        >
           {getLanduseApiErrorMessage(createAgreementMutation.error)}
-        </div>
+        </Notification>
       )}
 
       <div className="landuse-list__filters">
