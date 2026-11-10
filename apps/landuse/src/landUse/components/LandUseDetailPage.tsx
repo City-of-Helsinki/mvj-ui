@@ -31,6 +31,7 @@ import {
   updateParties,
   updateSummary,
   getSummary,
+  getUserPermissions,
 } from "@/landUse/api/landUseApi";
 import { DEFAULT_KOROTUSKERROIN } from "@/landUse/constants";
 import { useCalculateActivePageSection } from "@/landUse/hooks/useCalculateActivePageSection";
@@ -178,6 +179,18 @@ const TABS_CONFIG: TabConfig[] = [
 
 const TAB_QUERY_PARAM = "tab";
 
+const TAB_PERMISSIONS: Record<FormKey, string[]> = {
+  summary: ["landuseagreement"],
+  parties: ["tab_parties"],
+  compensations: ["tab_compensation", "tab_sites"],
+  collaterals: ["landuseagreement"],
+  monitoring: ["landuseagreement"],
+  decisions: ["tab_decisions"],
+  contracts: ["tab_contracts"],
+  paymentSchedule: ["tab_payment_schedules"],
+  billing: ["tab_invoices"],
+};
+
 const getTabQueryKeyFromIndex = (tabIndex: number): string => {
   return TABS_CONFIG[tabIndex]?.queryKey ?? TABS_CONFIG[0].queryKey;
 };
@@ -248,6 +261,28 @@ const LandUseDetailPage: React.FC = () => {
   const contentRef = useRef<HTMLDivElement>(null);
   const queryClient = useQueryClient();
 
+  const permissionsQuery = useQuery({
+    queryKey: ["land-use", "user-permissions"],
+    queryFn: getUserPermissions,
+  });
+  const hasPermission = (codename: string) =>
+    permissionsQuery.isSuccess &&
+    permissionsQuery.data.permissions.some(
+      (permission) =>
+        permission.app === "landuse" && permission.codename === codename,
+    );
+  const canViewTab = (key: FormKey) =>
+    TAB_PERMISSIONS[key].every((permission) =>
+      hasPermission(`view_${permission}`),
+    );
+  const canChangeTab = (key: FormKey) =>
+    TAB_PERMISSIONS[key].every((permission) =>
+      hasPermission(`change_${permission}`),
+    );
+  const canEdit = TABS_CONFIG.some(
+    (tab) => canViewTab(tab.queryKey) && canChangeTab(tab.queryKey),
+  );
+
   useCalculateActivePageSection(
     contentRef,
     sectionEntries.map((entry) => entry.id),
@@ -293,7 +328,7 @@ const LandUseDetailPage: React.FC = () => {
   const summaryQuery = useQuery({
     queryKey: ["land-use", agreementId, "summary"],
     queryFn: () => getSummary(agreementId),
-    enabled: Boolean(agreementId),
+    enabled: Boolean(agreementId) && hasPermission("view_landuseagreement"),
     refetchOnWindowFocus: false,
   });
 
@@ -306,56 +341,56 @@ const LandUseDetailPage: React.FC = () => {
   const partiesQuery = useQuery({
     queryKey: ["land-use", agreementId, "parties"],
     queryFn: () => getParties(agreementId),
-    enabled: canLoadAgreementData,
+    enabled: canLoadAgreementData && canViewTab("parties"),
     refetchOnWindowFocus: false,
   });
 
   const compensationsQuery = useQuery({
     queryKey: ["land-use", agreementId, "compensations"],
     queryFn: () => getCompensations(agreementId),
-    enabled: canLoadAgreementData,
+    enabled: canLoadAgreementData && canViewTab("compensations"),
     refetchOnWindowFocus: false,
   });
 
   const collateralsQuery = useQuery({
     queryKey: ["land-use", agreementId, "collaterals"],
     queryFn: () => getCollaterals(agreementId),
-    enabled: canLoadAgreementData,
+    enabled: canLoadAgreementData && canViewTab("collaterals"),
     refetchOnWindowFocus: false,
   });
 
   const monitoringQuery = useQuery({
     queryKey: ["land-use", agreementId, "monitoring"],
     queryFn: () => getMonitoring(agreementId),
-    enabled: canLoadAgreementData,
+    enabled: canLoadAgreementData && canViewTab("monitoring"),
     refetchOnWindowFocus: false,
   });
 
   const decisionsQuery = useQuery({
     queryKey: ["land-use", agreementId, "decisions"],
     queryFn: () => getDecisions(agreementId),
-    enabled: canLoadAgreementData,
+    enabled: canLoadAgreementData && canViewTab("decisions"),
     refetchOnWindowFocus: false,
   });
 
   const contractsQuery = useQuery({
     queryKey: ["land-use", agreementId, "contracts"],
     queryFn: () => getContracts(agreementId),
-    enabled: canLoadAgreementData,
+    enabled: canLoadAgreementData && canViewTab("contracts"),
     refetchOnWindowFocus: false,
   });
 
   const paymentScheduleQuery = useQuery({
     queryKey: ["land-use", agreementId, "paymentSchedule"],
     queryFn: () => getPaymentSchedule(agreementId),
-    enabled: canLoadAgreementData,
+    enabled: canLoadAgreementData && canViewTab("paymentSchedule"),
     refetchOnWindowFocus: false,
   });
 
   const billingQuery = useQuery({
     queryKey: ["land-use", agreementId, "billing"],
     queryFn: () => getBilling(agreementId),
-    enabled: canLoadAgreementData,
+    enabled: canLoadAgreementData && canViewTab("billing"),
     refetchOnWindowFocus: false,
   });
 
@@ -615,6 +650,7 @@ const LandUseDetailPage: React.FC = () => {
   }, [isAnyFormDirty]);
 
   const handleEditClick = () => {
+    if (!canEdit) return;
     setSaveError(null);
     setIsEditMode(true);
   };
@@ -713,45 +749,48 @@ const LandUseDetailPage: React.FC = () => {
 
     setIsSaving(true);
     try {
-      if (formStates.summary?.dirty) {
+      if (canChangeTab("summary") && formStates.summary?.dirty) {
         await summaryMutation.mutateAsync(
           summaryFormApi.getState().values as LandUseSummaryFormValues,
         );
         markFormSaved("summary");
       }
-      if (formStates.parties?.dirty) {
+      if (canChangeTab("parties") && formStates.parties?.dirty) {
         await partiesMutation.mutateAsync(
           partiesFormApi.getState().values as LandUsePartiesFormValues,
         );
         markFormSaved("parties");
       }
-      if (formStates.compensations?.dirty) {
+      if (canChangeTab("compensations") && formStates.compensations?.dirty) {
         await compensationsMutation.mutateAsync(
           compensationsFormApi.getState()
             .values as LandUseCompensationsFormValues,
         );
         markFormSaved("compensations");
       }
-      if (formStates.decisions?.dirty) {
+      if (canChangeTab("decisions") && formStates.decisions?.dirty) {
         await decisionsMutation.mutateAsync(
           decisionsFormApi.getState().values as LandUseDecisionsFormValues,
         );
         markFormSaved("decisions");
       }
-      if (formStates.contracts?.dirty) {
+      if (canChangeTab("contracts") && formStates.contracts?.dirty) {
         await contractsMutation.mutateAsync(
           contractsFormApi.getState().values as LandUseContractsFormValues,
         );
         markFormSaved("contracts");
       }
-      if (formStates.paymentSchedule?.dirty) {
+      if (
+        canChangeTab("paymentSchedule") &&
+        formStates.paymentSchedule?.dirty
+      ) {
         await paymentScheduleMutation.mutateAsync(
           paymentScheduleFormApi.getState()
             .values as LandUsePaymentScheduleFormValues,
         );
         markFormSaved("paymentSchedule");
       }
-      if (formStates.collaterals?.dirty) {
+      if (canChangeTab("collaterals") && formStates.collaterals?.dirty) {
         await collateralsMutation.mutateAsync(
           collateralsFormApi.getState().values as LandUseCollateralsFormValues,
         );
@@ -829,6 +868,7 @@ const LandUseDetailPage: React.FC = () => {
         : null;
       return {
         label: tabConfig.label,
+        disabled: !canViewTab(tabConfig.queryKey),
         isDirty: formState?.dirty ?? false,
         hasError: isSaveClicked && formState ? !formState.valid : false,
       };
@@ -842,6 +882,18 @@ const LandUseDetailPage: React.FC = () => {
         onBackToList={() => navigate("/")}
       />
     );
+  }
+
+  if (permissionsQuery.isError) {
+    return (
+      <div role="alert">
+        {getLanduseApiErrorMessage(permissionsQuery.error)}
+      </div>
+    );
+  }
+
+  if (permissionsQuery.isSuccess && !hasPermission("view_landuseagreement")) {
+    return <div role="alert">Ei käyttöoikeutta maankäyttösopimukseen.</div>;
   }
 
   if (summaryQuery.isPending) {
@@ -928,7 +980,7 @@ const LandUseDetailPage: React.FC = () => {
   const handleSendToInvoicing = async (
     schedule: LandUsePaymentScheduleEntry,
   ) => {
-    if (isSaving) return;
+    if (isSaving || !canChangeTab("paymentSchedule")) return;
     setSaveError(null);
     setIsSaving(true);
     try {
@@ -959,7 +1011,7 @@ const LandUseDetailPage: React.FC = () => {
     schedule: LandUsePaymentScheduleEntry,
     rejectedReason: string,
   ) => {
-    if (isSaving) return;
+    if (isSaving || !hasPermission("approve_paymentschedule")) return;
     setSaveError(null);
     setIsSaving(true);
     try {
@@ -979,7 +1031,7 @@ const LandUseDetailPage: React.FC = () => {
   const handleAcceptSchedule = async (
     schedule: LandUsePaymentScheduleEntry,
   ) => {
-    if (isSaving) return;
+    if (isSaving || !hasPermission("approve_paymentschedule")) return;
     setSaveError(null);
     setIsSaving(true);
     try {
@@ -1003,8 +1055,10 @@ const LandUseDetailPage: React.FC = () => {
 
   const renderActiveTabPanel = () => {
     const activeTabKey = TABS_CONFIG[activeTab]?.queryKey;
+    if (!activeTabKey || !canViewTab(activeTabKey)) return null;
     const isCurrentTabEditable =
       isEditMode &&
+      canChangeTab(activeTabKey) &&
       (activeTabKey === "summary" ||
         activeTabKey === "parties" ||
         activeTabKey === "compensations" ||
@@ -1141,7 +1195,9 @@ const LandUseDetailPage: React.FC = () => {
           <LandUseBilling
             form={billingFormApi}
             isEditMode={false}
-            canReviewSchedules={isEditMode}
+            canReviewSchedules={
+              isEditMode && hasPermission("approve_paymentschedule")
+            }
             parties={billingParties}
             paymentSchedules={billingPaymentSchedules.map((schedule) => ({
               id: schedule.id,
@@ -1178,6 +1234,7 @@ const LandUseDetailPage: React.FC = () => {
           onTocClick={handleTocClick}
           isEditMode={isEditMode}
           isSaving={isSaving}
+          canEdit={canEdit}
           onEditClick={handleEditClick}
           onSaveClick={handleSaveClick}
           onDiscardClick={handleDiscardClick}

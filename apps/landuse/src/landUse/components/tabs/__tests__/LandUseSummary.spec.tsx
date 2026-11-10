@@ -279,3 +279,62 @@ it("saves free-text agreement types and preparers selected from real officer IDs
     }),
   );
 });
+
+it.each([false, true])(
+  "uses summary edit mode (%s) for address and preparer fields",
+  async (isEditMode) => {
+    const form = createForm<LandUseSummaryFormValues>({
+      onSubmit: () => {},
+      initialValues: {
+        ...createEmptySummaryFormValues(),
+        osoitteet: [
+          {
+            katuosoite: "Testikatu 1",
+            postinumero: "00100",
+            kaupunki: "Helsinki",
+          },
+        ],
+        valmistelijat: [{ value: "89" }],
+      },
+      mutators: { ...arrayMutators },
+    });
+    render(
+      <QueryClientProvider client={new QueryClient()}>
+        <LandUseSummary form={form} isEditMode={isEditMode} />
+      </QueryClientProvider>,
+    );
+    expect(
+      (screen.getByLabelText("Katuosoite") as HTMLInputElement).readOnly,
+    ).toBe(!isEditMode);
+    expect(
+      (screen.getByLabelText("Postinumero") as HTMLInputElement).readOnly,
+    ).toBe(!isEditMode);
+    expect(
+      (screen.getByLabelText("Kaupunki") as HTMLInputElement).readOnly,
+    ).toBe(!isEditMode);
+    if (isEditMode) {
+      expect(
+        await screen.findByRole("button", { name: /Valmistelija/ }),
+      ).toBeDefined();
+      expect(
+        screen.getByRole("button", { name: "Lisää osoite" }),
+      ).toBeDefined();
+      expect(
+        screen.getByRole("button", { name: "Lisää valmistelija" }),
+      ).toBeDefined();
+      return;
+    }
+    await waitFor(() =>
+      expect(
+        (screen.getByLabelText("Valmistelija") as HTMLInputElement).value,
+      ).toBe("Actual Officer"),
+    );
+    expect(
+      (screen.getByLabelText("Valmistelija") as HTMLInputElement).readOnly,
+    ).toBe(true);
+    expect(screen.queryByRole("button", { name: "Lisää osoite" })).toBeNull();
+    expect(
+      screen.queryByRole("button", { name: "Lisää valmistelija" }),
+    ).toBeNull();
+  },
+);

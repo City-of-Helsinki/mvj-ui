@@ -474,6 +474,7 @@ vi.mock("hds-react", async (importOriginal) => {
 });
 
 vi.mock("../../api/landUseApi", () => ({
+  getUserPermissions: vi.fn(),
   getSummary: vi.fn(),
   getCollaterals: vi.fn(),
   getLandUseList: vi.fn(),
@@ -500,6 +501,25 @@ describe("LandUseDetailPage", () => {
     cleanup();
     vi.clearAllMocks();
     mockLocationSearch = "";
+
+    vi.mocked(landUseApi.getUserPermissions).mockResolvedValue({
+      permissions: [
+        "landuseagreement",
+        "tab_parties",
+        "tab_compensation",
+        "tab_sites",
+        "tab_decisions",
+        "tab_contracts",
+        "tab_payment_schedules",
+        "tab_invoices",
+      ].flatMap((resource) =>
+        ["view", "change", "add", "delete"].map((verb) => ({
+          app: "landuse",
+          name: resource,
+          codename: `${verb}_${resource}`,
+        })),
+      ),
+    });
 
     vi.mocked(landUseApi.getSummary).mockResolvedValue({
       tila: LAND_USE_NEGOTIATION_PHASES.IN_PROGRESS,
@@ -551,6 +571,131 @@ describe("LandUseDetailPage", () => {
     vi.mocked(landUseApi.updateBilling).mockImplementation(
       async (_agreementId, values) => values as any,
     );
+  });
+
+  it("keeps edit disabled for a viewer and restricted tabs visible", async () => {
+    vi.mocked(landUseApi.getUserPermissions).mockResolvedValue({
+      permissions: ["view_landuseagreement", "view_tab_parties"].map(
+        (codename) => ({
+          app: "landuse",
+          name: codename,
+          codename,
+        }),
+      ),
+    });
+    const queryClient = new QueryClient({
+      defaultOptions: { queries: { retry: false } },
+    });
+    render(
+      <QueryClientProvider client={queryClient}>
+        <LandUseDetailPage />
+      </QueryClientProvider>,
+    );
+    const edit = await screen.findByRole("button", { name: "Muokkaa" });
+    expect((edit as HTMLButtonElement).disabled).toBe(true);
+    expect(
+      (screen.getByRole("tab", { name: "Osapuolet" }) as HTMLButtonElement)
+        .disabled,
+    ).toBe(false);
+    expect(
+      (screen.getByRole("tab", { name: "Korvaukset" }) as HTMLButtonElement)
+        .disabled,
+    ).toBe(true);
+    expect(landUseApi.getCompensations).not.toHaveBeenCalled();
+    expect(landUseApi.getBilling).not.toHaveBeenCalled();
+  });
+
+  it("keeps a view-only tab read-only while another tab is editable", async () => {
+    vi.mocked(landUseApi.getUserPermissions).mockResolvedValue({
+      permissions: [
+        "view_landuseagreement",
+        "change_landuseagreement",
+        "view_tab_parties",
+      ].map((codename) => ({
+        app: "landuse",
+        name: codename,
+        codename,
+      })),
+    });
+    const queryClient = new QueryClient({
+      defaultOptions: { queries: { retry: false } },
+    });
+    render(
+      <QueryClientProvider client={queryClient}>
+        <LandUseDetailPage />
+      </QueryClientProvider>,
+    );
+    fireEvent.click(await screen.findByRole("button", { name: "Muokkaa" }));
+    expect(
+      (screen.getByLabelText("summary-input") as HTMLInputElement).disabled,
+    ).toBe(false);
+    fireEvent.click(screen.getByRole("tab", { name: "Osapuolet" }));
+    expect(
+      ((await screen.findByLabelText("parties-input")) as HTMLInputElement)
+        .disabled,
+    ).toBe(true);
+    fireEvent.click(screen.getByRole("button", { name: "Tallenna" }));
+    await screen.findByRole("button", { name: "Muokkaa" });
+    expect(landUseApi.updateParties).not.toHaveBeenCalled();
+  });
+
+  it("does not render a forbidden tab opened through its URL", async () => {
+    mockLocationSearch = "?tab=contracts";
+    vi.mocked(landUseApi.getUserPermissions).mockResolvedValue({
+      permissions: [
+        {
+          app: "landuse",
+          name: "View agreement",
+          codename: "view_landuseagreement",
+        },
+      ],
+    });
+    const queryClient = new QueryClient({
+      defaultOptions: { queries: { retry: false } },
+    });
+    render(
+      <QueryClientProvider client={queryClient}>
+        <LandUseDetailPage />
+      </QueryClientProvider>,
+    );
+    await screen.findByRole("button", { name: "Muokkaa" });
+    expect(screen.queryByLabelText("contracts-input")).toBeNull();
+    expect(landUseApi.getContracts).not.toHaveBeenCalled();
+  });
+
+  it("does not load agreement data while permissions are pending", () => {
+    vi.mocked(landUseApi.getUserPermissions).mockReturnValue(
+      new Promise(() => {}),
+    );
+    const queryClient = new QueryClient({
+      defaultOptions: { queries: { retry: false } },
+    });
+    render(
+      <QueryClientProvider client={queryClient}>
+        <LandUseDetailPage />
+      </QueryClientProvider>,
+    );
+    expect(screen.getByText("Ladataan...")).toBeDefined();
+    expect(landUseApi.getSummary).not.toHaveBeenCalled();
+  });
+
+  it("shows a permissions failure without enabling edits or fetching agreement data", async () => {
+    vi.mocked(landUseApi.getUserPermissions).mockRejectedValue(
+      new LanduseApiError(403, { detail: "Permission lookup denied" }),
+    );
+    const queryClient = new QueryClient({
+      defaultOptions: { queries: { retry: false } },
+    });
+    render(
+      <QueryClientProvider client={queryClient}>
+        <LandUseDetailPage />
+      </QueryClientProvider>,
+    );
+    expect((await screen.findByRole("alert")).textContent).toBe(
+      "Permission lookup denied",
+    );
+    expect(screen.queryByRole("button", { name: "Muokkaa" })).toBeNull();
+    expect(landUseApi.getSummary).not.toHaveBeenCalled();
   });
 
   it("renders a loading state until the agreement resolves", () => {

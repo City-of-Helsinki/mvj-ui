@@ -59,6 +59,13 @@ type AgreementSummaryResponse = {
   preparers: { preparer: number; preparer_name: string }[];
 };
 
+export type LandUseUserPermissions = {
+  permissions: { app: string; codename: string }[];
+};
+
+export const getUserPermissions = (): Promise<LandUseUserPermissions> =>
+  callApiGet("user_permissions/");
+
 type AgreementListResponse = {
   id: number;
   identifier: string;
