@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createForm } from "final-form";
 import arrayMutators from "final-form-arrays";
-import { Breadcrumb } from "hds-react";
+import { Breadcrumb, Notification, NotificationSize } from "hds-react";
 import React, {
   useCallback,
   useEffect,
@@ -255,7 +255,6 @@ const LandUseDetailPage: React.FC = () => {
   );
   const [isEditMode, setIsEditMode] = useState(false);
   const [isSaveClicked, setIsSaveClicked] = useState(false);
-  const [saveError, setSaveError] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [sectionEntries, setSectionEntries] = useState<SectionEntry[]>([]);
   const [activeSectionId, setActiveSectionId] = useState<string | null>(null);
@@ -652,7 +651,6 @@ const LandUseDetailPage: React.FC = () => {
 
   const handleEditClick = () => {
     if (!canEdit) return;
-    setSaveError(null);
     setIsEditMode(true);
   };
 
@@ -736,7 +734,6 @@ const LandUseDetailPage: React.FC = () => {
       return;
     }
     setIsSaveClicked(true);
-    setSaveError(null);
 
     if (!agreementId) {
       return;
@@ -814,7 +811,6 @@ const LandUseDetailPage: React.FC = () => {
       }
     } catch (error) {
       showLanduseApiErrorNotification(error);
-      setSaveError(getLanduseApiErrorMessage(error));
     } finally {
       setIsSaving(false);
     }
@@ -897,32 +893,18 @@ const LandUseDetailPage: React.FC = () => {
     );
   }
 
-  if (permissionsQuery.isError) {
-    return (
-      <div role="alert">
-        {getLanduseApiErrorMessage(permissionsQuery.error)}
-      </div>
-    );
-  }
+  const pageError = permissionsQuery.isError
+    ? getLanduseApiErrorMessage(permissionsQuery.error)
+    : permissionsQuery.isSuccess && !hasPermission("view_landuseagreement")
+      ? "Ei käyttöoikeutta maankäyttösopimukseen."
+      : summaryQuery.isError
+        ? getLanduseApiErrorMessage(summaryQuery.error)
+        : null;
 
-  if (permissionsQuery.isSuccess && !hasPermission("view_landuseagreement")) {
-    return <div role="alert">Ei käyttöoikeutta maankäyttösopimukseen.</div>;
-  }
-
-  if (summaryQuery.isPending) {
+  if (!pageError && summaryQuery.isPending) {
     return (
       <div className="landuse-detail">
         <div className="landuse-detail__content">Ladataan...</div>
-      </div>
-    );
-  }
-
-  if (summaryQuery.isError) {
-    return (
-      <div className="landuse-detail">
-        <div className="landuse-detail__content" role="alert">
-          {getLanduseApiErrorMessage(summaryQuery.error)}
-        </div>
       </div>
     );
   }
@@ -994,7 +976,6 @@ const LandUseDetailPage: React.FC = () => {
     schedule: LandUsePaymentScheduleEntry,
   ) => {
     if (isSaving || !canChangeTab("paymentSchedule")) return;
-    setSaveError(null);
     setIsSaving(true);
     try {
       const values = paymentScheduleFormApi.getState()
@@ -1014,7 +995,6 @@ const LandUseDetailPage: React.FC = () => {
       });
     } catch (error) {
       showLanduseApiErrorNotification(error);
-      setSaveError(getLanduseApiErrorMessage(error));
     } finally {
       setIsSaving(false);
     }
@@ -1025,7 +1005,6 @@ const LandUseDetailPage: React.FC = () => {
     rejectedReason: string,
   ) => {
     if (isSaving || !hasPermission("approve_paymentschedule")) return;
-    setSaveError(null);
     setIsSaving(true);
     try {
       await rejectPaymentSchedule(schedule.id, rejectedReason);
@@ -1035,7 +1014,6 @@ const LandUseDetailPage: React.FC = () => {
       });
     } catch (error) {
       showLanduseApiErrorNotification(error);
-      setSaveError(getLanduseApiErrorMessage(error));
     } finally {
       setIsSaving(false);
     }
@@ -1045,7 +1023,6 @@ const LandUseDetailPage: React.FC = () => {
     schedule: LandUsePaymentScheduleEntry,
   ) => {
     if (isSaving || !hasPermission("approve_paymentschedule")) return;
-    setSaveError(null);
     setIsSaving(true);
     try {
       await approvePaymentSchedule(schedule.id);
@@ -1060,7 +1037,6 @@ const LandUseDetailPage: React.FC = () => {
       ]);
     } catch (error) {
       showLanduseApiErrorNotification(error);
-      setSaveError(getLanduseApiErrorMessage(error));
     } finally {
       setIsSaving(false);
     }
@@ -1247,7 +1223,7 @@ const LandUseDetailPage: React.FC = () => {
           onTocClick={handleTocClick}
           isEditMode={isEditMode}
           isSaving={isSaving}
-          canEdit={canEdit}
+          canEdit={canEdit && !pageError && summaryQuery.isSuccess}
           onEditClick={handleEditClick}
           onSaveClick={handleSaveClick}
           onDiscardClick={handleDiscardClick}
@@ -1262,9 +1238,17 @@ const LandUseDetailPage: React.FC = () => {
               { title: summaryQuery?.data?.identifier, path: "" },
             ]}
           />
-          {saveError && <div role="alert">{saveError}</div>}
+          {pageError && (
+            <Notification
+              type="error"
+              size={NotificationSize.Large}
+              label="Tietojen lataaminen epäonnistui"
+            >
+              {pageError}
+            </Notification>
+          )}
           <TableOfContentsProvider setEntries={setSectionEntries}>
-            <div ref={contentRef}>{renderActiveTabPanel()}</div>
+            <div ref={contentRef}>{!pageError && renderActiveTabPanel()}</div>
           </TableOfContentsProvider>
         </div>
       </div>

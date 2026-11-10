@@ -16,10 +16,14 @@ import LandUseDetailPage, {
 import * as landUseApi from "@/landUse/api/landUseApi";
 import { LanduseApiError } from "@/landUse/api/fetchClient";
 import { LAND_USE_NEGOTIATION_PHASES } from "@/landUse/options";
-import { showLanduseSuccessNotification } from "@/landUse/notifications/notificationService";
+import {
+  showLanduseApiErrorNotification,
+  showLanduseSuccessNotification,
+} from "@/landUse/notifications/notificationService";
 
 vi.mock("@/landUse/notifications/notificationService", () => ({
   showLanduseSuccessNotification: vi.fn(),
+  showLanduseInfoNotification: vi.fn(),
   showLanduseApiErrorNotification: vi.fn(),
 }));
 
@@ -579,6 +583,37 @@ describe("LandUseDetailPage", () => {
     );
   });
 
+  it("reports save failures only through the notification service", async () => {
+    const error = new LanduseApiError(500, { detail: "Saving failed" });
+    vi.mocked(landUseApi.updateSummary).mockRejectedValueOnce(error);
+    render(
+      <QueryClientProvider
+        client={
+          new QueryClient({
+            defaultOptions: { queries: { retry: false } },
+          })
+        }
+      >
+        <LandUseDetailPage />
+      </QueryClientProvider>,
+    );
+
+    fireEvent.click(await screen.findByRole("button", { name: "Muokkaa" }));
+    fireEvent.change(screen.getByLabelText("summary-input"), {
+      target: { value: "updated-summary" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Tallenna" }));
+
+    await waitFor(() =>
+      expect(showLanduseApiErrorNotification).toHaveBeenCalledExactlyOnceWith(
+        error,
+      ),
+    );
+    expect(screen.queryByText("Saving failed")).toBeNull();
+    expect(screen.getByRole("button", { name: "Tallenna" })).toBeDefined();
+    expect(showLanduseSuccessNotification).not.toHaveBeenCalled();
+  });
+
   it("only notifies save success when changes are persisted", async () => {
     const queryClient = new QueryClient({
       defaultOptions: { queries: { retry: false } },
@@ -728,11 +763,66 @@ describe("LandUseDetailPage", () => {
         <LandUseDetailPage />
       </QueryClientProvider>,
     );
-    expect((await screen.findByRole("alert")).textContent).toBe(
-      "Permission lookup denied",
-    );
-    expect(screen.queryByRole("button", { name: "Muokkaa" })).toBeNull();
+    const notification = await screen.findByRole("region", {
+      name: "Notification",
+    });
+    expect(notification.className).toContain("hds-notification--error");
+    expect(notification.className).toContain("hds-notification--large");
+    expect(notification.textContent).toContain("Permission lookup denied");
+    expect(
+      screen.getByRole("navigation", { name: "Breadcrumb" }),
+    ).toBeDefined();
+    expect(screen.getByText("Tietojen lataaminen epäonnistui")).toBeDefined();
+    expect(
+      (screen.getByRole("button", { name: "Muokkaa" }) as HTMLButtonElement)
+        .disabled,
+    ).toBe(true);
     expect(landUseApi.getSummary).not.toHaveBeenCalled();
+  });
+
+  it("keeps the page layout visible when agreement access is denied", async () => {
+    vi.mocked(landUseApi.getUserPermissions).mockResolvedValue({
+      permissions: [],
+    });
+    render(
+      <QueryClientProvider client={new QueryClient()}>
+        <LandUseDetailPage />
+      </QueryClientProvider>,
+    );
+
+    expect(
+      (await screen.findByRole("region", { name: "Notification" })).textContent,
+    ).toContain("Ei käyttöoikeutta maankäyttösopimukseen.");
+    expect(
+      screen.getByRole("navigation", { name: "Breadcrumb" }),
+    ).toBeDefined();
+    expect(screen.getByRole("tab", { name: "Perustiedot" })).toBeDefined();
+    expect(landUseApi.getSummary).not.toHaveBeenCalled();
+  });
+
+  it("keeps the page layout visible when agreement loading fails", async () => {
+    vi.mocked(landUseApi.getSummary).mockRejectedValue(
+      new LanduseApiError(500, { detail: "Agreement loading failed" }),
+    );
+    render(
+      <QueryClientProvider
+        client={
+          new QueryClient({
+            defaultOptions: { queries: { retry: false } },
+          })
+        }
+      >
+        <LandUseDetailPage />
+      </QueryClientProvider>,
+    );
+
+    expect(
+      (await screen.findByRole("region", { name: "Notification" })).textContent,
+    ).toContain("Agreement loading failed");
+    expect(
+      screen.getByRole("navigation", { name: "Breadcrumb" }),
+    ).toBeDefined();
+    expect(screen.queryByLabelText("summary-input")).toBeNull();
   });
 
   it("renders a loading state until the agreement resolves", () => {
