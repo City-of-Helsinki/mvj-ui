@@ -3,77 +3,25 @@
 // ============================================================================
 @use "hds-design-tokens/lib/all" as hds;
 @use "variables" as *;
-@use "mixins" as *;
 
 .landuse-header {
-  background-color: hds.$color-tram;
-  color: hds.$color-white;
-  @include flex-row-center;
-  justify-content: space-between;
-  padding: hds.$spacing-s hds.$spacing-m;
   box-shadow: $shadow-sm;
 }
 
-.landuse-header__left {
-  @include flex-row-center(hds.$spacing-m);
-
-  // Override HDS Logo default margin
-  img {
-    margin: 0 !important;
-  }
+.landuse-header__action-bar > a {
+  flex: 1 1 0;
+  min-width: 0;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 
-.landuse-header__title {
-  font-size: 20px;
-  font-weight: 500;
-  margin: 0;
-  color: hds.$color-white;
-}
-
-.landuse-header__right {
-  @include flex-row-center;
-}
-
-.landuse-header__user {
-  position: relative;
-}
-
-.landuse-header__user-button {
-  background-color: hds.$color-white;
-  border: none;
-  border-radius: 50%;
-  width: 48px;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  position: relative;
-  transition: background-color 0.2s;
-
-  &:hover {
-    background-color: hds.$color-black-10;
-  }
-}
-
-.landuse-header__user-initials {
-  font-size: 16px;
-  font-weight: 700;
-  color: hds.$color-black-90;
-}
-
-.landuse-header__user-arrow {
-  position: absolute;
-  bottom: hds.$spacing-3-xs;
-  right: hds.$spacing-3-xs;
-  font-size: 8px;
-  color: hds.$color-black-60;
+.landuse-header__action-bar > div:last-child {
+  flex: 0 0 auto;
+  margin-left: auto;
+  flex-shrink: 0;
 }
 
 .landuse-header__user-menu {
-  position: absolute;
-  top: calc(100% + hds.$spacing-2-xs);
-  right: 0;
   background-color: hds.$color-white;
   color: hds.$color-black-90;
   border: 1px solid hds.$color-black-20;
@@ -82,7 +30,10 @@
   min-width: 200px;
   width: max-content;
   max-width: min(360px, calc(100vw - 32px));
-  z-index: $z-dropdown;
+
+  > ul > li {
+    background-color: hds.$color-white;
+  }
 }
 
 .landuse-header__user-groups {
