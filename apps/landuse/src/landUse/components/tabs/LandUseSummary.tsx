@@ -863,7 +863,6 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                                           buttonStyle={{
                                             width: "fit-content",
                                           }}
-                                          disabled={fields.length === 1}
                                           onConfirm={() => fields.remove(index)}
                                           dialogTitle="Poista valmistelija"
                                           dialogContent={`Haluatko varmasti poistaa valmistelijan ${values.valmistelijat?.[index]?.value?.trim() ?? ""}?`}
