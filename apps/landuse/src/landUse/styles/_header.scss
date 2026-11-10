@@ -75,14 +75,37 @@
   top: calc(100% + hds.$spacing-2-xs);
   right: 0;
   background-color: hds.$color-white;
+  color: hds.$color-black-90;
   border: 1px solid hds.$color-black-20;
   border-radius: $radius-sm;
   box-shadow: $shadow-md;
   min-width: 200px;
+  width: max-content;
+  max-width: min(360px, calc(100vw - 32px));
   z-index: $z-dropdown;
 }
 
+.landuse-header__user-groups {
+  padding: hds.$spacing-xs hds.$spacing-s;
+  border-bottom: 1px solid hds.$color-black-10;
+  overflow-wrap: anywhere;
+  font-size: 14px;
+
+  h2 {
+    margin: 0 0 hds.$spacing-xs;
+    font-size: 14px;
+  }
+
+  ul {
+    margin: 0;
+    padding-left: hds.$spacing-s;
+  }
+}
+
 .landuse-header__user-info {
+  display: flex;
+  align-items: center;
+  gap: hds.$spacing-xs;
   padding: hds.$spacing-xs hds.$spacing-s;
   border-bottom: 1px solid hds.$color-black-10;
   color: hds.$color-black-90;

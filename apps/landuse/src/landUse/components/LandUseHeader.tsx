@@ -6,20 +6,29 @@ import {
   LogoSize,
   logoFiDark,
   IconAngleDown,
+  IconSignout,
+  IconUser,
+  Button,
+  ButtonVariant,
+  Notification,
 } from "hds-react";
-// TODO: Implement ME
+import { useQuery } from "@tanstack/react-query";
+import { getUserPermissions } from "@/landUse/api/landUseApi";
+import { getLanduseApiErrorMessage } from "@/landUse/api/fetchClient";
+
 const LandUseHeader: React.FC = () => {
   const authenticatedUser = useAuthenticatedUser();
   const { logout } = useOidcClient();
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const permissionsQuery = useQuery({
+    queryKey: ["land-use", "user-permissions"],
+    queryFn: getUserPermissions,
+    enabled: showUserMenu,
+  });
 
   const getUserInitials = () => {
-    if (!authenticatedUser) return "U";
-    const user = authenticatedUser as any;
-    const name =
-      user.given_name && user.family_name
-        ? `${user.given_name} ${user.family_name}`
-        : user.email || user.sub || "User";
+    if (!authenticatedUser?.profile?.name) return "?";
+    const name = authenticatedUser?.profile?.name;
     const parts = name.split(" ");
     if (parts.length >= 2) {
       return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
@@ -40,6 +49,7 @@ const LandUseHeader: React.FC = () => {
       <div className="landuse-header__right">
         <div className="landuse-header__user">
           <button
+            aria-label="Käyttäjävalikko"
             className="landuse-header__user-button"
             onClick={() => setShowUserMenu(!showUserMenu)}
             aria-expanded={showUserMenu}
@@ -53,16 +63,42 @@ const LandUseHeader: React.FC = () => {
           {showUserMenu && (
             <div className="landuse-header__user-menu">
               <div className="landuse-header__user-info">
-                {(authenticatedUser as any)?.given_name ||
-                  (authenticatedUser as any)?.email ||
-                  "User"}
+                <IconUser aria-hidden="true" style={{ flexShrink: 0 }} />
+                <span>{authenticatedUser.profile?.name || "?"}</span>
               </div>
-              <button
+              <section
+                className="landuse-header__user-groups"
+                aria-labelledby="landuse-user-groups-title"
+              >
+                <h2 id="landuse-user-groups-title">Käyttäjän ryhmät</h2>
+                {permissionsQuery.isPending ? (
+                  <p role="status">Ladataan...</p>
+                ) : permissionsQuery.isError ? (
+                  <Notification
+                    type="error"
+                    label="Käyttäjäryhmien lataaminen epäonnistui"
+                  >
+                    {getLanduseApiErrorMessage(permissionsQuery.error)}
+                  </Notification>
+                ) : permissionsQuery.data?.groups?.length ? (
+                  <ul>
+                    {permissionsQuery.data.groups.map((group) => (
+                      <li key={group}>{group}</li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p>Ei käyttäjäryhmiä.</p>
+                )}
+              </section>
+              <Button
+                type="button"
+                variant={ButtonVariant.Supplementary}
+                iconStart={<IconSignout />}
                 className="landuse-header__user-menu-item"
                 onClick={handleLogout}
               >
                 Kirjaudu ulos
-              </button>
+              </Button>
             </div>
           )}
         </div>
