@@ -9,7 +9,11 @@ import {
   fetchCollectionNotesByLease as fetchCollectionNotesByLeaseAction,
   receiveCollectionNotesByLease,
   notFoundByLease,
-} from "./actions";
+  fetchAttributes as fetchAttributesAction,
+  createCollectionNote as createCollectionNoteAction,
+  deleteCollectionNote as deleteCollectionNoteAction,
+  editCollectionNote as editCollectionNoteAction,
+} from "./slice";
 import { displayUIMessage } from "@/util/helpers";
 import {
   fetchAttributes,
@@ -50,8 +54,11 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
 
 function* fetchCollectionNotesByLeaseSaga({
   payload: lease,
-  type: any,
-}): Generator<any, any, any> {
+}: ReturnType<typeof fetchCollectionNotesByLeaseAction>): Generator<
+  any,
+  any,
+  any
+> {
   try {
     const {
       response: { status: statusCode },
@@ -84,8 +91,7 @@ function* fetchCollectionNotesByLeaseSaga({
 
 function* createCollectionNoteSaga({
   payload,
-  type: any,
-}): Generator<any, any, any> {
+}: ReturnType<typeof createCollectionNoteAction>): Generator<any, any, any> {
   try {
     const {
       response: { status: statusCode },
@@ -116,8 +122,7 @@ function* createCollectionNoteSaga({
 
 function* deleteCollectionNoteSaga({
   payload,
-  type: any,
-}): Generator<any, any, any> {
+}: ReturnType<typeof deleteCollectionNoteAction>): Generator<any, any, any> {
   try {
     const {
       response: { status: statusCode },
@@ -157,8 +162,7 @@ function* deleteCollectionNoteSaga({
 
 function* editCollectionNoteSaga({
   payload,
-  type: any,
-}): Generator<any, any, any> {
+}: ReturnType<typeof editCollectionNoteAction>): Generator<any, any, any> {
   try {
     const {
       response: { status: statusCode },
@@ -187,17 +191,14 @@ function* editCollectionNoteSaga({
 export default function* (): Generator<any, any, any> {
   yield all([
     fork(function* (): Generator<any, any, any> {
+      yield takeLatest(fetchAttributesAction, fetchAttributesSaga);
       yield takeLatest(
-        "mvj/collectionNote/FETCH_ATTRIBUTES",
-        fetchAttributesSaga,
-      );
-      yield takeLatest(
-        "mvj/collectionNote/FETCH_BY_LEASE",
+        fetchCollectionNotesByLeaseAction,
         fetchCollectionNotesByLeaseSaga,
       );
-      yield takeLatest("mvj/collectionNote/CREATE", createCollectionNoteSaga);
-      yield takeLatest("mvj/collectionNote/DELETE", deleteCollectionNoteSaga);
-      yield takeLatest("mvj/collectionNote/EDIT", editCollectionNoteSaga);
+      yield takeLatest(createCollectionNoteAction, createCollectionNoteSaga);
+      yield takeLatest(deleteCollectionNoteAction, deleteCollectionNoteSaga);
+      yield takeLatest(editCollectionNoteAction, editCollectionNoteSaga);
     }),
   ]);
 }

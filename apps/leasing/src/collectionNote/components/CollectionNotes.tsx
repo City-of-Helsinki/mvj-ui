@@ -19,7 +19,7 @@ import { ButtonColors } from "@/components/enums";
 import { ConfirmationModalTexts } from "@/enums";
 import { getIsFetchingByLease } from "../selectors";
 import { getCurrentLease } from "@/leases/selectors";
-import { editCollectionNote } from "../actions";
+import { editCollectionNote } from "../slice";
 
 import type {
   CollectionNote,

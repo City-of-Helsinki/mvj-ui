@@ -26,7 +26,10 @@ import {
   fetchCollectionLettersByLease,
   fetchAttributes as fetchCollectionLetterAttributes,
 } from "@/collectionLetter/slice";
-import { fetchCollectionNotesByLease } from "@/collectionNote/slice";
+import {
+  fetchCollectionNotesByLease,
+  fetchAttributes as fetchCollectionNoteAttributes,
+} from "@/collectionNote/slice";
 import { fetchInvoiceSetsByLease } from "@/invoiceSets/slice";
 import {
   receiveInvoiceToCredit,
@@ -38,7 +41,6 @@ import {
   startInvoicing as startInvoicingForLease,
   stopInvoicing as stopInvoicingForLease,
 } from "@/leases/slice";
-import { fetchAttributes as fetchCollectionNoteAttributes } from "@/collectionNote/slice";
 import { fetchAttributes as fetchCreateCollectionLetterAttributes } from "@/createCollectionLetter/actions";
 import { fetchAttributes as fetchInvoiceNoteAttributes } from "@/invoiceNote/actions";
 import { fetchAttributes as fetchLeaseCreateChargeAttributes } from "@/leaseCreateCharge/actions";

@@ -9,7 +9,7 @@ import batchrunReducer from "@/batchrun/slice";
 import billingPeriodReducer from "@/billingPeriods/slice";
 import collectionCourtDecisionReducer from "@/collectionCourtDecision/slice";
 import collectionLetterReducer from "@/collectionLetter/slice";
-import collectionNoteReducer from "@/collectionNote/reducer";
+import collectionNoteReducer from "@/collectionNote/slice";
 import commentsReducer from "@/comments/reducer";
 import contactsReducer from "@/contacts/reducer";
 import contractFileReducer from "@/contractFile/reducer";

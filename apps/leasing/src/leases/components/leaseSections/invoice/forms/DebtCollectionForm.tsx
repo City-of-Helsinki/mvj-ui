@@ -30,7 +30,7 @@ import {
 import {
   createCollectionNote,
   deleteCollectionNote,
-} from "@/collectionNote/actions";
+} from "@/collectionNote/slice";
 import { getPayloadCollectionNote } from "@/collectionNote/helpers";
 import { ConfirmationModalTexts } from "@/enums";
 import {
