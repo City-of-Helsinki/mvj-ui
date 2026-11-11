@@ -52,7 +52,7 @@ import {
   receiveFormValidFlags,
   fetchSingleAreaSearch,
   batchEditAreaSearchInfoChecks,
-} from "@/areaSearch/actions";
+} from "@/areaSearch/slice";
 import {
   getUrlParams,
   setPageTitle,

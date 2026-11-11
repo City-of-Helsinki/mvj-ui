@@ -6,7 +6,7 @@ import AreaSearchApplicationSubsection from "@/areaSearch/components/AreaSearchA
 import { getInitialApplicationForm } from "@/application/helpers";
 import { getFieldTypeMapping } from "@/application/selectors";
 import { FormNames } from "@/enums";
-import { receiveFormValidFlags } from "@/areaSearch/actions";
+import { receiveFormValidFlags } from "@/areaSearch/slice";
 import { validateApplicationForm } from "@/application/formValidation";
 type OwnProps = {
   formData: any;
