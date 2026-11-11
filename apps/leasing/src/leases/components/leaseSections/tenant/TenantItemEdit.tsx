@@ -27,7 +27,7 @@ import {
   receiveContactModalSettings,
   receiveIsSaveClicked,
   showContactModal,
-} from "@/contacts/actions";
+} from "@/contacts/slice";
 import { receiveCollapseStates } from "@/leases/slice";
 import { ButtonColors } from "@/components/enums";
 import {

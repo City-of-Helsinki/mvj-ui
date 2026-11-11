@@ -56,10 +56,7 @@ import type {
   UploadedAreaSearchAttachmentMeta,
 } from "@/areaSearch/types";
 import AddFileButton from "@/components/form/AddFileButton";
-import {
-  uploadAttachment,
-  setAreaSearchAttachments,
-} from "@/areaSearch/slice";
+import { uploadAttachment, setAreaSearchAttachments } from "@/areaSearch/slice";
 import AddButtonSecondary from "@/components/form/AddButtonSecondary";
 import CreateLeaseModal from "@/leases/components/createLease/CreateLeaseModal";
 import {
@@ -81,7 +78,7 @@ import {
   receiveContactModalSettings,
   receiveIsSaveClicked,
   showContactModal,
-} from "@/contacts/actions";
+} from "@/contacts/slice";
 import ContactModal from "@/contacts/components/ContactModal";
 import {
   getContactModalSettings,

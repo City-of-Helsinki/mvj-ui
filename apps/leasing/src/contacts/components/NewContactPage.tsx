@@ -19,7 +19,7 @@ import {
   hideEditMode,
   receiveIsSaveClicked,
   showEditMode,
-} from "@/contacts/actions";
+} from "@/contacts/slice";
 import { receiveTopNavigationSettings } from "@/components/topNavigation/actions";
 import {
   ConfirmationModalTexts,

@@ -1,6 +1,6 @@
 import { isDirty } from "redux-form";
 import { FormNames, TableSortOrder } from "@/enums";
-import type { Contact } from "@/contacts/types";
+import type { Contact, ContactsFetchParams } from "@/contacts/types";
 import { ContactTypes } from "./enums";
 import { getIsEditMode } from "@/contacts/selectors";
 import { removeSessionStorageItem } from "@/util/storage";
@@ -95,7 +95,7 @@ export const getContactOptions = (contacts: Contact[]): SelectListOption[] =>
  */
 export const mapContactSearchFilters = (
   query: Record<string, any>,
-): Record<string, any> => {
+): ContactsFetchParams => {
   const searchQuery = { ...query };
 
   if (searchQuery.sort_key) {

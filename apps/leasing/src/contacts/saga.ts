@@ -1,6 +1,13 @@
 import { all, call, fork, put, select, takeLatest } from "redux-saga/effects";
 import { SubmissionError } from "redux-form";
 import {
+  createContact as createContactAction,
+  createContactOnModal as createContactOnModalAction,
+  editContact as editContactAction,
+  editContactOnModal as editContactOnModalAction,
+  fetchAttributes as fetchAttributesAction,
+  fetchContacts as fetchContactsAction,
+  fetchSingleContact as fetchSingleContactAction,
   hideContactModal,
   hideEditMode,
   receiveAttributes,
@@ -10,7 +17,7 @@ import {
   receiveContactModalSettings,
   receiveSingleContact,
   notFound,
-} from "./actions";
+} from "@/contacts/slice";
 import { navigateTo } from "@/root/navigationService";
 import { receiveError } from "@/api/slice";
 import { displayUIMessage } from "@/util/helpers";
@@ -53,8 +60,7 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
 
 function* fetchContactsSaga({
   payload: params,
-  type: any,
-}): Generator<any, any, any> {
+}: ReturnType<typeof fetchContactsAction>): Generator<any, any, any> {
   try {
     const {
       response: { status: statusCode },
@@ -81,8 +87,7 @@ function* fetchContactsSaga({
 
 function* fetchSingleContactSaga({
   payload: id,
-  type: any,
-}): Generator<any, any, any> {
+}: ReturnType<typeof fetchSingleContactAction>): Generator<any, any, any> {
   try {
     const {
       response: { status: statusCode },
@@ -112,8 +117,7 @@ function* fetchSingleContactSaga({
 
 function* createContactSaga({
   payload: contact,
-  type: any,
-}): Generator<any, any, any> {
+}: ReturnType<typeof createContactAction>): Generator<any, any, any> {
   try {
     const {
       response: { status: statusCode },
@@ -151,8 +155,7 @@ function* createContactSaga({
 
 function* editContactSaga({
   payload: contact,
-  type: any,
-}): Generator<any, any, any> {
+}: ReturnType<typeof editContactAction>): Generator<any, any, any> {
   try {
     const {
       response: { status: statusCode },
@@ -188,8 +191,7 @@ function* editContactSaga({
 
 function* createContactOnModalSaga({
   payload: contact,
-  type: any,
-}): Generator<any, any, any> {
+}: ReturnType<typeof createContactOnModalAction>): Generator<any, any, any> {
   try {
     const contactModalSettings = yield select(getContactModalSettings);
     const {
@@ -232,8 +234,7 @@ function* createContactOnModalSaga({
 
 function* editContactOnModalSaga({
   payload: contact,
-  type: any,
-}): Generator<any, any, any> {
+}: ReturnType<typeof editContactOnModalAction>): Generator<any, any, any> {
   try {
     const contactModalSettings = yield select(getContactModalSettings);
     const {
@@ -277,16 +278,13 @@ function* editContactOnModalSaga({
 export default function* (): Generator<any, any, any> {
   yield all([
     fork(function* (): Generator<any, any, any> {
-      yield takeLatest("mvj/contacts/FETCH_ATTRIBUTES", fetchAttributesSaga);
-      yield takeLatest("mvj/contacts/FETCH_ALL", fetchContactsSaga);
-      yield takeLatest("mvj/contacts/FETCH_SINGLE", fetchSingleContactSaga);
-      yield takeLatest("mvj/contacts/CREATE", createContactSaga);
-      yield takeLatest("mvj/contacts/EDIT", editContactSaga);
-      yield takeLatest(
-        "mvj/contacts/CREATE_ON_MODAL",
-        createContactOnModalSaga,
-      );
-      yield takeLatest("mvj/contacts/EDIT_ON_MODAL", editContactOnModalSaga);
+      yield takeLatest(fetchAttributesAction, fetchAttributesSaga);
+      yield takeLatest(fetchContactsAction, fetchContactsSaga);
+      yield takeLatest(fetchSingleContactAction, fetchSingleContactSaga);
+      yield takeLatest(createContactAction, createContactSaga);
+      yield takeLatest(editContactAction, editContactSaga);
+      yield takeLatest(createContactOnModalAction, createContactOnModalSaga);
+      yield takeLatest(editContactOnModalAction, editContactOnModalSaga);
     }),
   ]);
 }

@@ -32,7 +32,7 @@ import {
   receiveIsSaveClicked,
   receiveSingleContact,
   showEditMode,
-} from "@/contacts/actions";
+} from "@/contacts/slice";
 import { receiveTopNavigationSettings } from "@/components/topNavigation/actions";
 import {
   ConfirmationModalTexts,
@@ -206,7 +206,7 @@ const ContactPageView: React.FC<{
       }
 
       stopAutoSaveTimer();
-      dispatch(receiveSingleContact({}));
+      dispatch(receiveSingleContact({} as Contact));
       dispatch(hideEditMode());
       window.removeEventListener("popstate", handlePopState);
     };

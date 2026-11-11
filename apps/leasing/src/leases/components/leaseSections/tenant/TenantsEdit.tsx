@@ -22,7 +22,7 @@ import {
   hideContactModal,
   receiveContactModalSettings,
   receiveIsSaveClicked,
-} from "@/contacts/actions";
+} from "@/contacts/slice";
 import { ContactTypes } from "@/contacts/enums";
 import { ButtonColors } from "@/components/enums";
 import { ConfirmationModalTexts } from "@/enums";
