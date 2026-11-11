@@ -4,21 +4,136 @@
 @use "hds-design-tokens/lib/all" as hds;
 @use "variables" as *;
 
+.landuse-header:has(
+    .landuse-header__app-navigation > button[aria-expanded="true"]
+  )
+  + * {
+  // apply for any next element that comes after header
+  filter: blur(5px);
+}
+
 .landuse-header {
+  position: relative;
   box-shadow: $shadow-sm;
+
+  > div:first-child {
+    display: flex;
+    align-items: center;
+    width: 100%;
+
+    > div:last-child {
+      flex: 1;
+      min-width: 0;
+      border-bottom: 0;
+    }
+  }
+}
+
+.landuse-header__action-bar {
+  min-width: 0;
+  max-width: none;
+  margin: 0;
+  border-bottom: 0;
+
+  > span {
+    display: none;
+  }
 }
 
 .landuse-header__action-bar > a {
-  flex: 1 1 0;
+  display: block;
+  flex: none;
+  text-align: left;
+  margin-top: 0;
+  padding: 0;
+  line-height: var(--lineheight-s);
   min-width: 0;
   white-space: normal;
   overflow-wrap: anywhere;
+
+  > span {
+    display: block;
+    margin: 0;
+    padding: 0;
+  }
 }
 
 .landuse-header__action-bar > div:last-child {
-  flex: 0 0 auto;
+  flex: 1 0 auto;
+}
+
+#landuse-user-menu {
   margin-left: auto;
+}
+
+.landuse-header__app-navigation {
+  position: static;
   flex-shrink: 0;
+  align-self: stretch;
+  display: flex;
+  height: auto;
+
+  > button {
+    --background-color: var(--color-tram);
+    --background-color-hover: var(--color-tram-dark);
+    --background-color-focus: var(--color-tram);
+    --border-color: var(--color-tram);
+    --border-color-hover: var(--color-tram-dark);
+    --border-color-focus: var(--color-white);
+    --color: var(--color-white);
+    --outline-color-focus: var(--color-white);
+    display: flex;
+    font-size: var(--fontsize-heading-m);
+    line-height: var(--lineheight-s);
+
+    @media (max-width: 991px) {
+      font-size: var(--fontsize-heading-s);
+    }
+
+    @media (max-width: 767px) {
+      font-size: var(--fontsize-body-s);
+    }
+
+    svg {
+      // without this the svg is not always clickable
+      pointer-events: none;
+    }
+  }
+
+  > ul {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    box-sizing: border-box;
+    width: min(320px, 100vw);
+    min-height: calc(100dvh - 100%);
+    background: var(--color-white);
+    box-shadow: $shadow-md;
+    z-index: 20;
+  }
+
+  > button[aria-expanded="true"] + ul {
+    display: block;
+  }
+}
+
+@media (max-width: 600px) {
+  .landuse-header > div:first-child {
+    flex-wrap: wrap;
+
+    > div:last-child {
+      flex-basis: 100%;
+    }
+  }
+
+  .landuse-header__app-navigation {
+    flex-basis: 100%;
+  }
+
+  .landuse-header__action-bar > a {
+    font-size: var(--fontsize-body-m);
+  }
 }
 
 .landuse-header__user-menu {

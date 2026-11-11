@@ -1,10 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   useAuthenticatedUser,
   useOidcClient,
-  Logo,
-  LogoSize,
-  logoFiDark,
+  SideNavigation,
   Header,
   IconSignout,
   IconUser,
@@ -19,11 +17,9 @@ import { getLanduseApiErrorMessage } from "@/landUse/api/fetchClient";
 const LandUseHeader: React.FC = () => {
   const authenticatedUser = useAuthenticatedUser();
   const { logout } = useOidcClient();
-  const [hasOpenedUserMenu, setHasOpenedUserMenu] = useState(false);
   const permissionsQuery = useQuery({
     queryKey: ["land-use", "user-permissions"],
     queryFn: getUserPermissions,
-    enabled: hasOpenedUserMenu,
   });
 
   const getUserInitials = () => {
@@ -49,13 +45,30 @@ const LandUseHeader: React.FC = () => {
         "--header-color": "var(--color-white)",
       }}
     >
+      <SideNavigation
+        className="landuse-header__app-navigation"
+        id="landuse-app-navigation"
+        aria-label="Sovellukset"
+        toggleButtonLabel="Maanvuokrausjärjestelmä"
+      >
+        <SideNavigation.MainLevel
+          id="landuse-app-navigation-landuse"
+          label="Maankäyttösopimukset"
+          href="/maankayttosopimukset"
+          active
+        />
+        <SideNavigation.MainLevel
+          id="landuse-app-navigation-leasing"
+          label="Vuokraukset"
+          href="/vuokraukset"
+        />
+      </SideNavigation>
       <Header.ActionBar
         className="landuse-header__action-bar"
         title="Maankäyttösopimukset"
         titleHref="/maankayttosopimukset"
         frontPageLabel="Maankäyttösopimukset"
-        logo={<Logo src={logoFiDark} size={LogoSize.Medium} alt="Helsinki" />}
-        logoAriaLabel="Helsinki"
+        logo={<span />}
         menuButtonAriaLabel="Valikko"
       >
         <Header.ActionBarItem
@@ -63,7 +76,6 @@ const LandUseHeader: React.FC = () => {
           label="Käyttäjävalikko"
           avatar={getUserInitials()}
           dropdownClassName="landuse-header__user-menu"
-          onClick={() => setHasOpenedUserMenu(true)}
         >
           <li>
             <div className="landuse-header__user-info">
