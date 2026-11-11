@@ -55,6 +55,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src'),
+      '@shared': path.resolve(workspaceRoot, 'shared'),
     },
   },
   define: {
@@ -76,6 +77,7 @@ export default defineConfig({
     environment: 'jsdom',
     alias: {
       '@': path.resolve(__dirname, 'src'),
+      '@shared': path.resolve(workspaceRoot, 'shared'),
     },
   },
 });

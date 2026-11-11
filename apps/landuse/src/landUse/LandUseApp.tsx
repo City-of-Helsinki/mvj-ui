@@ -6,7 +6,7 @@ import {
   useLocation,
 } from "react-router";
 import { Footer, useOidcClient, useAuthenticatedUser } from "hds-react";
-import LoginPage from "@/landUse/auth/LoginPage";
+import LoginPage from "@shared/login/LoginPage";
 import { setRedirectUrlToSessionStorage } from "@/landUse/utils/storage";
 import LandUseListPage from "@/landUse/components/LandUseListPage";
 import LandUseDetailPage from "@/landUse/components/LandUseDetailPage";

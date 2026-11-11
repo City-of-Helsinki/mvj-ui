@@ -13,7 +13,7 @@ export default [
       react: { version: "detect" }
     },
     languageOptions: { globals: globals.browser },
-    files: ["apps/**/src/**/*.{js,mjs,cjs,ts,jsx,tsx}"],
+    files: ["apps/**/src/**/*.{js,mjs,cjs,ts,jsx,tsx}", "shared/**/*.{js,mjs,cjs,ts,jsx,tsx}"],
     plugins: {
       react: pluginReact,
       "react-hooks": pluginReactHooks
@@ -43,7 +43,7 @@ export default [
       "@typescript-eslint/no-empty": "off",
       "@typescript-eslint/no-func-assign": "off",
       "@typescript-eslint/no-duplicate-imports": "off",
-      
+
       "@typescript-eslint/no-unsafe-function-type": "off"
     }
   },

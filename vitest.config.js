@@ -5,13 +5,14 @@ export default defineConfig({
     projects: [
       'apps/leasing/vite.config.js',
       'apps/landuse/vite.config.js',
+      { test: { name: 'shared', root: './shared', environment: 'jsdom' } },
     ],
     coverage: {
       provider: 'v8',
       reporter: ['lcov', 'text'],
       reportsDirectory: './coverage',
-      include: ['apps/**/src/**/*.{ts,tsx}'],
-      exclude: ['apps/**/src/**/*.{test,spec}.{ts,tsx}', 'apps/**/src/**/*.d.ts'],
+      include: ['apps/**/src/**/*.{ts,tsx}', 'shared/**/*.{ts,tsx}'],
+      exclude: ['**/*.{test,spec}.{ts,tsx}', '**/*.d.ts'],
     },
   },
 });
