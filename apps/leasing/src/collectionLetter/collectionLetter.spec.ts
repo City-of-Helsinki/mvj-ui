@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import {
+import collectionLetterReducer, {
+  initialState,
   fetchAttributes,
   attributesNotFound,
   receiveAttributes,
@@ -9,28 +10,19 @@ import {
   notFoundByLease,
   uploadCollectionLetter,
   deleteCollectionLetter,
-} from "./actions";
-import collectionLetterReducer from "./reducer";
-import type { CollectionLetterState } from "./types";
-const defaultState: CollectionLetterState = {
-  attributes: null,
-  byLease: {},
-  isFetchingAttributes: false,
-  isFetchingByLease: {},
-  methods: null,
-};
+} from "./slice";
 
 describe("collectionLetter", () => {
   describe("Reducer", () => {
     describe("collectionLetterReducer", () => {
       it("should update isFetchingAttributes flag to true when fetching attributes", () => {
-        const newState = { ...defaultState, isFetchingAttributes: true };
-        const state = collectionLetterReducer({}, fetchAttributes());
+        const newState = { ...initialState, isFetchingAttributes: true };
+        const state = collectionLetterReducer(initialState, fetchAttributes());
         expect(state).to.deep.equal(newState);
       });
       it("should update isFetchingAttributes flag to false by attributesNotFound", () => {
-        const newState = { ...defaultState, isFetchingAttributes: false };
-        let state = collectionLetterReducer({}, fetchAttributes());
+        const newState = { ...initialState, isFetchingAttributes: false };
+        let state = collectionLetterReducer(initialState, fetchAttributes());
         state = collectionLetterReducer(state, attributesNotFound());
         expect(state).to.deep.equal(newState);
       });
@@ -38,9 +30,9 @@ describe("collectionLetter", () => {
         const dummyAttributes = {
           foo: "bar",
         };
-        const newState = { ...defaultState, attributes: dummyAttributes };
+        const newState = { ...initialState, attributes: dummyAttributes };
         const state = collectionLetterReducer(
-          {},
+          initialState,
           receiveAttributes(dummyAttributes),
         );
         expect(state).to.deep.equal(newState);
@@ -49,20 +41,23 @@ describe("collectionLetter", () => {
         const dummyMethods = {
           foo: "bar",
         };
-        const newState = { ...defaultState, methods: dummyMethods };
-        const state = collectionLetterReducer({}, receiveMethods(dummyMethods));
+        const newState = { ...initialState, methods: dummyMethods };
+        const state = collectionLetterReducer(
+          initialState,
+          receiveMethods(dummyMethods),
+        );
         expect(state).to.deep.equal(newState);
       });
       it("should update isFetching flag to true when fetching collection letters", () => {
         const lease = 1;
         const newState = {
-          ...defaultState,
+          ...initialState,
           isFetchingByLease: {
             [lease]: true,
           },
         };
         const state = collectionLetterReducer(
-          {},
+          initialState,
           fetchCollectionLettersByLease(lease),
         );
         expect(state).to.deep.equal(newState);
@@ -77,7 +72,7 @@ describe("collectionLetter", () => {
           },
         ];
         const newState = {
-          ...defaultState,
+          ...initialState,
           isFetchingByLease: {
             [lease]: false,
           },
@@ -86,7 +81,7 @@ describe("collectionLetter", () => {
           },
         };
         const state = collectionLetterReducer(
-          {},
+          initialState,
           receiveCollectionLettersByLease({
             lease: lease,
             collectionLetters: dummyCollectionLetters,
@@ -97,17 +92,20 @@ describe("collectionLetter", () => {
       it("should update isFetching flag to false by notFoundByLease", () => {
         const lease = 1;
         const newState = {
-          ...defaultState,
+          ...initialState,
           isFetchingByLease: {
             [lease]: false,
           },
         };
-        const state = collectionLetterReducer({}, notFoundByLease(lease));
+        const state = collectionLetterReducer(
+          initialState,
+          notFoundByLease(lease),
+        );
         expect(state).to.deep.equal(newState);
       });
       it("uploadCollectionLetter should not change state", () => {
         const state = collectionLetterReducer(
-          {},
+          initialState,
           uploadCollectionLetter({
             data: {
               lease: 1,
@@ -115,17 +113,17 @@ describe("collectionLetter", () => {
             file: {},
           }),
         );
-        expect(state).to.deep.equal(defaultState);
+        expect(state).to.deep.equal(initialState);
       });
       it("deleteCollectionLetter should not change state", () => {
         const state = collectionLetterReducer(
-          {},
+          initialState,
           deleteCollectionLetter({
             id: 1,
             lease: 1,
           }),
         );
-        expect(state).to.deep.equal(defaultState);
+        expect(state).to.deep.equal(initialState);
       });
     });
   });

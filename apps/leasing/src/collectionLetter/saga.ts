@@ -5,10 +5,13 @@ import {
   attributesNotFound,
   receiveAttributes,
   receiveMethods,
-  fetchCollectionLettersByLease as fetchCollectionLettersByLeaseAction,
   receiveCollectionLettersByLease,
   notFoundByLease,
-} from "./actions";
+  fetchCollectionLettersByLease as fetchCollectionLettersByLeaseAction,
+  fetchAttributes as fetchAttributesAction,
+  uploadCollectionLetter as uploadCollectionLetterAction,
+  deleteCollectionLetter as deleteCollectionLetterAction,
+} from "./slice";
 import { displayUIMessage } from "@/util/helpers";
 import {
   fetchAttributes,
@@ -47,8 +50,11 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
 
 function* fetchCollectionLettersByLeaseSaga({
   payload: lease,
-  type: any,
-}): Generator<any, any, any> {
+}: ReturnType<typeof fetchCollectionLettersByLeaseAction>): Generator<
+  any,
+  any,
+  any
+> {
   try {
     const {
       response: { status: statusCode },
@@ -80,8 +86,7 @@ function* fetchCollectionLettersByLeaseSaga({
 
 function* uploadCollectionLetterSaga({
   payload,
-  type: any,
-}): Generator<any, any, any> {
+}: ReturnType<typeof uploadCollectionLetterAction>): Generator<any, any, any> {
   try {
     const {
       response: { status: statusCode },
@@ -109,8 +114,7 @@ function* uploadCollectionLetterSaga({
 
 function* deleteCollectionLetterSaga({
   payload,
-  type: any,
-}): Generator<any, any, any> {
+}: ReturnType<typeof deleteCollectionLetterAction>): Generator<any, any, any> {
   try {
     const {
       response: { status: statusCode },
@@ -151,22 +155,13 @@ function* deleteCollectionLetterSaga({
 export default function* (): Generator<any, any, any> {
   yield all([
     fork(function* (): Generator<any, any, any> {
+      yield takeLatest(fetchAttributesAction, fetchAttributesSaga);
       yield takeLatest(
-        "mvj/collectionLetter/FETCH_ATTRIBUTES",
-        fetchAttributesSaga,
-      );
-      yield takeLatest(
-        "mvj/collectionLetter/FETCH_BY_LEASE",
+        fetchCollectionLettersByLeaseAction,
         fetchCollectionLettersByLeaseSaga,
       );
-      yield takeLatest(
-        "mvj/collectionLetter/UPLOAD",
-        uploadCollectionLetterSaga,
-      );
-      yield takeLatest(
-        "mvj/collectionLetter/DELETE",
-        deleteCollectionLetterSaga,
-      );
+      yield takeLatest(uploadCollectionLetterAction, uploadCollectionLetterSaga);
+      yield takeLatest(deleteCollectionLetterAction, deleteCollectionLetterSaga);
     }),
   ]);
 }

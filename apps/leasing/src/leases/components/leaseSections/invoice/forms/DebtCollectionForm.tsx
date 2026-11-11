@@ -26,7 +26,7 @@ import {
 import {
   deleteCollectionLetter,
   uploadCollectionLetter,
-} from "@/collectionLetter/actions";
+} from "@/collectionLetter/slice";
 import {
   createCollectionNote,
   deleteCollectionNote,

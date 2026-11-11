@@ -8,7 +8,7 @@ import { authReducer } from "@/auth/reducer";
 import batchrunReducer from "@/batchrun/slice";
 import billingPeriodReducer from "@/billingPeriods/slice";
 import collectionCourtDecisionReducer from "@/collectionCourtDecision/slice";
-import collectionLetterReducer from "@/collectionLetter/reducer";
+import collectionLetterReducer from "@/collectionLetter/slice";
 import collectionNoteReducer from "@/collectionNote/reducer";
 import commentsReducer from "@/comments/reducer";
 import contactsReducer from "@/contacts/reducer";
