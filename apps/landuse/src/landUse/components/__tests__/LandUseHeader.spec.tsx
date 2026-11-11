@@ -1,5 +1,11 @@
 import React from "react";
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import {
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { afterEach, expect, it, vi } from "vitest";
 import LandUseHeader from "@/landUse/components/LandUseHeader";
@@ -23,32 +29,66 @@ afterEach(() => {
   vi.resetAllMocks();
 });
 
-const openGroups = () => {
+const renderHeader = () => {
+  const client = new QueryClient({
+    defaultOptions: { queries: { retry: false } },
+  });
   render(
-    <QueryClientProvider
-      client={
-        new QueryClient({
-          defaultOptions: { queries: { retry: false } },
-        })
-      }
-    >
+    <QueryClientProvider client={client}>
       <LandUseHeader />
     </QueryClientProvider>,
   );
-  expect(getUserPermissions).not.toHaveBeenCalled();
+  return client;
+};
+
+const openGroups = () => {
+  renderHeader();
+  expect(getUserPermissions).toHaveBeenCalledTimes(1);
   fireEvent.click(screen.getByRole("button", { name: "Käyttäjävalikko" }));
 };
 
-it("uses the HDS avatar menu for groups and logout without extra navigation", async () => {
+it("switches between applications using full-page navigation links", () => {
+  vi.mocked(getUserPermissions).mockReturnValue(new Promise(() => {}));
+  renderHeader();
+  const switcher = screen.getByRole("button", {
+    name: "Maanvuokrausjärjestelmä",
+  });
+  const menu = document.getElementById("landuse-app-navigation")!;
+  expect(switcher.getAttribute("aria-expanded")).toBe("false");
+  fireEvent.click(switcher);
+  expect(switcher.getAttribute("aria-expanded")).toBe("true");
+  const landuseLink = menu.querySelector('a[href="/maankayttosopimukset"]');
+  expect(landuseLink?.textContent).toContain("Maankäyttösopimukset");
+  expect(landuseLink?.getAttribute("aria-current")).toBe("page");
+  expect(
+    screen.getByRole("link", { name: "Vuokraukset" }).getAttribute("href"),
+  ).toBe("/vuokraukset");
+  expect(getUserPermissions).toHaveBeenCalledTimes(1);
+  fireEvent.click(switcher);
+  expect(switcher.getAttribute("aria-expanded")).toBe("false");
+});
+
+it("loads permissions before opening the avatar menu and supports logout", async () => {
   vi.mocked(getUserPermissions).mockResolvedValue({
     groups: ["Land use editors", "Land use viewers"],
     permissions: [],
   });
-  openGroups();
+  const client = renderHeader();
+  const menuButton = screen.getByRole("button", { name: "Käyttäjävalikko" });
+  expect(menuButton.getAttribute("aria-expanded")).toBe("false");
+  await waitFor(() => {
+    expect(client.getQueryState(["land-use", "user-permissions"])?.status).toBe(
+      "success",
+    );
+  });
+  expect(menuButton.getAttribute("aria-expanded")).toBe("false");
+  fireEvent.click(menuButton);
 
-  expect(screen.getByRole("img", { name: "Helsinki" })).toBeDefined();
+  expect(screen.queryByRole("img", { name: "Helsinki" })).toBeNull();
   expect(screen.getByText("TU")).toBeDefined();
   expect(await screen.findByText("Land use editors")).toBeDefined();
+  expect(screen.queryByRole("status")).toBeNull();
+  expect(getUserPermissions).toHaveBeenCalledTimes(1);
   expect(screen.getByText("Land use viewers")).toBeDefined();
   expect(screen.queryByRole("searchbox")).toBeNull();
   expect(screen.queryByRole("button", { name: "Valikko" })).toBeNull();
