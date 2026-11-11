@@ -1,4 +1,5 @@
 @use "hds-design-tokens/lib/all" as hds;
+// This is not SASS @import. This is CSS @import url() to load remote stylesheets.
 @import url("https://hds.hel.fi/fonts/fonts.css");
 
 .landuse-detail__title {
