@@ -8,6 +8,11 @@ import {
   waitFor,
 } from "@testing-library/react";
 import { OverlayLayerActiveContext } from "@/areaNote/components/MapContainer";
+import NotificationCenter from "@/components/notification/NotificationCenter";
+import {
+  dismissNotification,
+  getNotificationQueue,
+} from "@/components/notification/notificationService";
 import ArchivedLeaseAreasLayer from "./ArchivedLeaseAreasLayer";
 import { fetchIntersectingArchivedAreas } from "@/leases/requestsAsync";
 
@@ -30,8 +35,17 @@ vi.mock("@/components/map/useGeoJsonFeatureInteractions", () => ({
 describe("ArchivedLeaseAreasLayer", () => {
   afterEach(() => {
     cleanup();
+    getNotificationQueue().forEach(({ id }) => dismissNotification(id));
     vi.clearAllMocks();
   });
+
+  const renderLayer = (leaseId: number) =>
+    render(
+      <>
+        <NotificationCenter />
+        <ArchivedLeaseAreasLayer leaseId={leaseId} />
+      </>,
+    );
 
   it("sorts leases by latest end date and filters and highlights their areas", async () => {
     vi.mocked(fetchIntersectingArchivedAreas).mockResolvedValue({
@@ -65,7 +79,7 @@ describe("ArchivedLeaseAreasLayer", () => {
         },
       ],
     });
-    render(<ArchivedLeaseAreasLayer leaseId={42} />);
+    renderLayer(42);
     await screen.findByText("Päättyneet vuokraukset (2)");
     expect(
       screen.getByText("Maaomaisuuden kehittäminen ja tontit"),
@@ -143,27 +157,36 @@ describe("ArchivedLeaseAreasLayer", () => {
       type: "FeatureCollection",
       features: [],
     });
-    render(<ArchivedLeaseAreasLayer leaseId={42} />);
-    await screen.findByText("Ei leikkaavia päättyneiden vuokrausten alueita.");
+    renderLayer(42);
+    await waitFor(() =>
+      expect(
+        getNotificationQueue().some(
+          (notification) => notification.body === "Ei leikkaavia alueita.",
+        ),
+      ).toBe(true),
+    );
     expect(fetchIntersectingArchivedAreas).toHaveBeenCalledWith(
       42,
       expect.any(AbortSignal),
     );
   });
 
-  it("shows request errors", async () => {
+  it("shows request errors without a retry action", async () => {
     vi.mocked(fetchIntersectingArchivedAreas).mockRejectedValue(
       new Error("offline"),
     );
-    render(<ArchivedLeaseAreasLayer leaseId={42} />);
-    await waitFor(() => expect(screen.getByRole("alert")).toBeTruthy());
-    vi.mocked(fetchIntersectingArchivedAreas).mockResolvedValue({
-      type: "FeatureCollection",
-      features: [],
-    });
-    fireEvent.click(screen.getByRole("button", { name: "Yritä uudelleen" }));
-    await screen.findByText("Ei leikkaavia päättyneiden vuokrausten alueita.");
-    expect(fetchIntersectingArchivedAreas).toHaveBeenCalledTimes(2);
+    renderLayer(42);
+    await waitFor(() =>
+      expect(
+        getNotificationQueue().some(
+          (notification) => notification.body === "Alueiden haku epäonnistui.",
+        ),
+      ).toBe(true),
+    );
+    expect(
+      screen.queryByRole("button", { name: "Yritä uudelleen" }),
+    ).toBeNull();
+    expect(fetchIntersectingArchivedAreas).toHaveBeenCalledTimes(1);
   });
 
   it("waits for selection after a lease change and caches results across toggles", async () => {
@@ -172,12 +195,17 @@ describe("ArchivedLeaseAreasLayer", () => {
       features: [],
     });
     const layer = (active: boolean, leaseId: number) => (
-      <OverlayLayerActiveContext.Provider value={active}>
-        <ArchivedLeaseAreasLayer key={leaseId} leaseId={leaseId} />
-      </OverlayLayerActiveContext.Provider>
+      <>
+        <NotificationCenter />
+        <OverlayLayerActiveContext.Provider value={active}>
+          <ArchivedLeaseAreasLayer key={leaseId} leaseId={leaseId} />
+        </OverlayLayerActiveContext.Provider>
+      </>
     );
     const { rerender } = render(layer(true, 42));
-    await screen.findByText("Ei leikkaavia päättyneiden vuokrausten alueita.");
+    await waitFor(() =>
+      expect(fetchIntersectingArchivedAreas).toHaveBeenCalledTimes(1),
+    );
     rerender(layer(false, 42));
     rerender(layer(true, 42));
     expect(fetchIntersectingArchivedAreas).toHaveBeenCalledTimes(1);
@@ -197,7 +225,7 @@ describe("ArchivedLeaseAreasLayer", () => {
     vi.mocked(fetchIntersectingArchivedAreas).mockReturnValue(
       new Promise(() => {}),
     );
-    const { unmount } = render(<ArchivedLeaseAreasLayer leaseId={42} />);
+    const { unmount } = renderLayer(42);
     const signal = vi.mocked(fetchIntersectingArchivedAreas).mock.calls[0][1];
     unmount();
     expect(signal.aborted).toBe(true);
