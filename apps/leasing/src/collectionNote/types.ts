@@ -1,4 +1,4 @@
-import type { Action, Attributes, Methods } from "types";
+import type { Attributes, Methods } from "types";
 import type { LeaseId } from "@/leases/types";
 import type { InvoiceId } from "@/invoices/types";
 import { CollectionStageOptions } from "./enums";
@@ -41,19 +41,3 @@ export type DeleteCollectionNotePayload = {
 };
 export type CollectionStageOption =
   (typeof CollectionStageOptions)[keyof typeof CollectionStageOptions];
-export type FetchAttributesAction = Action<string, void>;
-export type ReceiveAttributesAction = Action<string, Attributes>;
-export type ReceiveMethodsAction = Action<string, Methods>;
-export type CollectionNoteAttributesNotFoundAction = Action<string, void>;
-export type FetchCollectionNotesByLeaseAction = Action<string, LeaseId>;
-export type ReceiveCollectionNotesByLeaseAction = Action<
-  string,
-  Record<string, any>
->;
-export type CollectionNotesNotFoundByLeaseAction = Action<string, LeaseId>;
-export type CreateCollectionNoteAction = Action<string, CollectionNotePayload>;
-export type DeleteCollectionNoteAction = Action<
-  string,
-  DeleteCollectionNotePayload
->;
-export type EditCollectionNoteAction = Action<string, CollectionNotePayload>;
