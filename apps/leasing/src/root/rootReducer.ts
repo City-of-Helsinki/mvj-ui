@@ -2,7 +2,7 @@ import { combineReducers } from "redux";
 import { reducer as formReducer } from "redux-form";
 import apiReducer from "@/api/slice";
 import areaNoteReducer from "@/areaNote/slice";
-import areaSearchReducer from "@/areaSearch/reducer";
+import areaSearchReducer from "@/areaSearch/slice";
 import auditLogReducer from "@/auditLog/slice";
 import { authReducer } from "@/auth/reducer";
 import batchrunReducer from "@/batchrun/slice";

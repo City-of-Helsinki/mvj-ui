@@ -59,7 +59,7 @@ import AddFileButton from "@/components/form/AddFileButton";
 import {
   uploadAttachment,
   setAreaSearchAttachments,
-} from "@/areaSearch/actions";
+} from "@/areaSearch/slice";
 import AddButtonSecondary from "@/components/form/AddButtonSecondary";
 import CreateLeaseModal from "@/leases/components/createLease/CreateLeaseModal";
 import {

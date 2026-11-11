@@ -10,7 +10,7 @@ import {
   getMethods,
 } from "@/areaSearch/selectors";
 import type { Attributes, Methods } from "types";
-import { fetchAttributes, fetchListAttributes } from "@/areaSearch/actions";
+import { fetchAttributes, fetchListAttributes } from "@/areaSearch/slice";
 import type { RootState } from "@/root/types";
 
 function AreaSearchAttributes(WrappedComponent: React.ComponentType<any>) {

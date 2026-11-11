@@ -3,7 +3,7 @@ import { flowRight, get } from "lodash-es";
 import { getFormValues, reduxForm, change } from "redux-form";
 import { connect } from "react-redux";
 import { Column, Row } from "@/components/grid/Grid";
-import { editAreaSearch } from "@/areaSearch/actions";
+import { editAreaSearch } from "@/areaSearch/slice";
 import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import { getAttributes } from "@/areaSearch/selectors";
 import { AreaSearchFieldTitles } from "@/areaSearch/enums";

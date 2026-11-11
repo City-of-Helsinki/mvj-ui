@@ -27,7 +27,7 @@ import {
   receiveSingleAreaSearch,
   showEditMode,
   uploadAttachment,
-} from "@/areaSearch/actions";
+} from "@/areaSearch/slice";
 import {
   getAttributes,
   getCurrentAreaSearch,

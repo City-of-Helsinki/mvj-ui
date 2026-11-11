@@ -25,7 +25,7 @@ import FormFieldLabel from "@/components/form/FormFieldLabel";
 import {
   createAreaSearchSpecs,
   receiveFormValidFlags,
-} from "@/areaSearch/actions";
+} from "@/areaSearch/slice";
 import AddFileButton from "@/components/form/AddFileButton";
 import RemoveButton from "@/components/form/RemoveButton";
 import type { UploadedFileMeta } from "@/application/types";

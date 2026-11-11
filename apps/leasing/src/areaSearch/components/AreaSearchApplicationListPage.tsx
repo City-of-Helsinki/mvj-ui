@@ -59,7 +59,7 @@ import {
   editAreaSearch,
   fetchAreaSearchList,
   fetchAreaSearchListByBBox,
-} from "@/areaSearch/actions";
+} from "@/areaSearch/slice";
 import { getUserFullName } from "@/users/helpers";
 import { areaSearchSearchFilters } from "@/areaSearch/helpers";
 import {

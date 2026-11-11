@@ -26,7 +26,17 @@ import {
   receiveAreaSearchApplicationCreateFailed,
   receiveFileOperationFailed,
   receiveFileOperationFinished,
-} from "@/areaSearch/actions";
+  fetchAreaSearchList,
+  fetchAreaSearchListByBBox,
+  batchEditAreaSearchInfoChecks,
+  createAreaSearchApplication,
+  fetchListAttributes,
+  createAreaSearchSpecs,
+  editAreaSearch,
+  uploadAttachment,
+  deleteUploadedAttachment,
+  fetchAttributes,
+} from "@/areaSearch/slice";
 import {
   editSingleAreaSearchRequest,
   fetchAreaSearchAttributesRequest,
@@ -42,10 +52,6 @@ import { receiveUpdatedApplicantInfoCheckItem } from "@/application/slice";
 import { displayUIMessage } from "@/util/helpers";
 import { getRouteById, Routes } from "@/root/routes";
 import { createApplicationRequest } from "@/application/requests";
-import type {
-  DeleteAreaSearchAttachmentAction,
-  UploadAreaSearchAttachmentAction,
-} from "@/areaSearch/types";
 
 function* fetchListAttributesSaga(): Generator<any, any, any> {
   try {
@@ -101,8 +107,7 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
 
 function* fetchAreaSearchListSaga({
   payload: query,
-  type: any,
-}): Generator<any, any, any> {
+}: ReturnType<typeof fetchAreaSearchList>): Generator<any, any, any> {
   try {
     const {
       response: { status: statusCode },
@@ -126,8 +131,7 @@ function* fetchAreaSearchListSaga({
 
 function* fetchAreaSearchesByBBoxSaga({
   payload: query,
-  type: any,
-}): Generator<any, any, any> {
+}: ReturnType<typeof fetchAreaSearchListByBBox>): Generator<any, any, any> {
   try {
     const {
       response: { status: statusCode },
@@ -156,8 +160,7 @@ function* fetchAreaSearchesByBBoxSaga({
 
 function* fetchCurrentAreaSearchSaga({
   payload: id,
-  type: any,
-}): Generator<any, any, any> {
+}: ReturnType<typeof fetchSingleAreaSearch>): Generator<any, any, any> {
   try {
     const {
       response: { status: statusCode },
@@ -181,8 +184,7 @@ function* fetchCurrentAreaSearchSaga({
 
 function* batchEditAreaSearchInfoChecksSaga({
   payload,
-  type: any,
-}): Generator<any, any, any> {
+}: ReturnType<typeof batchEditAreaSearchInfoChecks>): Generator<any, any, any> {
   const errors = {
     areaSearch: [],
     applicant: [],
@@ -366,8 +368,7 @@ function* createAreaSearchSpecsSaga({
 
 function* createAreaSearchApplicationSaga({
   payload: { application, specs },
-  type: any,
-}): Generator<any, any, any> {
+}: ReturnType<typeof createAreaSearchApplication>): Generator<any, any, any> {
   try {
     const {
       response: { status: applicationStatusCode },
@@ -425,8 +426,7 @@ function* createAreaSearchApplicationSaga({
 
 function* uploadAttachmentSaga({
   payload,
-  type: any,
-}: UploadAreaSearchAttachmentAction): Generator<any, any, any> {
+}: ReturnType<typeof uploadAttachment>): Generator<any, any, any> {
   try {
     const { areaSearch, fileData, callback } = payload;
     const result = yield call(uploadAreaSearchAttachmentRequest, {
@@ -447,8 +447,7 @@ function* uploadAttachmentSaga({
 
 function* deleteAttachmentSaga({
   payload,
-  type: any,
-}: DeleteAreaSearchAttachmentAction): Generator<any, any, any> {
+}: ReturnType<typeof deleteUploadedAttachment>): Generator<any, any, any> {
   try {
     yield call(deleteAreaSearchAttachmentRequest, payload.id);
     yield put(receiveFileOperationFinished());
@@ -466,41 +465,23 @@ function* deleteAttachmentSaga({
 export default function* (): Generator<any, any, any> {
   yield all([
     fork(function* (): Generator<any, any, any> {
+      yield takeLatest(fetchListAttributes, fetchListAttributesSaga);
+      yield takeLatest(fetchAttributes, fetchAttributesSaga);
+      yield takeLatest(fetchAreaSearchList, fetchAreaSearchListSaga);
+      yield takeLatest(fetchAreaSearchListByBBox, fetchAreaSearchesByBBoxSaga);
+      yield takeLatest(fetchSingleAreaSearch, fetchCurrentAreaSearchSaga);
       yield takeLatest(
-        "mvj/areaSearch/FETCH_LIST_ATTRIBUTES",
-        fetchListAttributesSaga,
-      );
-      yield takeLatest("mvj/areaSearch/FETCH_ATTRIBUTES", fetchAttributesSaga);
-      yield takeLatest("mvj/areaSearch/FETCH_ALL", fetchAreaSearchListSaga);
-      yield takeLatest(
-        "mvj/areaSearch/FETCH_ALL_BY_BBOX",
-        fetchAreaSearchesByBBoxSaga,
-      );
-      yield takeLatest(
-        "mvj/areaSearch/FETCH_SINGLE",
-        fetchCurrentAreaSearchSaga,
-      );
-      yield takeLatest(
-        "mvj/areaSearch/BATCH_EDIT_INFO_CHECKS",
+        batchEditAreaSearchInfoChecks,
         batchEditAreaSearchInfoChecksSaga,
       );
-      yield takeLatest("mvj/areaSearch/EDIT", editAreaSearchSaga);
+      yield takeLatest(editAreaSearch, editAreaSearchSaga);
+      yield takeLatest(createAreaSearchSpecs, createAreaSearchSpecsSaga);
       yield takeLatest(
-        "mvj/areaSearch/CREATE_SPECS",
-        createAreaSearchSpecsSaga,
-      );
-      yield takeLatest(
-        "mvj/areaSearch/CREATE_APPLICATION",
+        createAreaSearchApplication,
         createAreaSearchApplicationSaga,
       );
-      yield takeLatest(
-        "mvj/areaSearch/UPLOAD_ATTACHMENT",
-        uploadAttachmentSaga,
-      );
-      yield takeLatest(
-        "mvj/areaSearch/DELETE_ATTACHMENT",
-        deleteAttachmentSaga,
-      );
+      yield takeLatest(uploadAttachment, uploadAttachmentSaga);
+      yield takeLatest(deleteUploadedAttachment, deleteAttachmentSaga);
     }),
   ]);
 }
