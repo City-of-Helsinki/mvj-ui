@@ -1,5 +1,6 @@
 import { get } from "lodash-es";
 import { getContentUser } from "@/users/helpers";
+import type { EditCommentPayload } from "./types";
 
 /**
  * Get content comments
@@ -32,7 +33,9 @@ export const getContentComments = (
  * @param {Object} comment
  * @returns {Object}
  */
-export const getPayloadComment = (comment: Record<string, any>) => ({
+export const getPayloadComment = (
+  comment: Record<string, any>,
+): EditCommentPayload => ({
   id: comment.id,
   text: comment.text,
 });

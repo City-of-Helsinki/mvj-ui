@@ -5,7 +5,7 @@ import { flowRight } from "lodash-es";
 import Authorization from "@/components/authorization/Authorization";
 import Button from "@/components/button/Button";
 import FormFieldLegacy from "@/components/form/FormFieldLegacy";
-import { receiveIsSaveClicked } from "@/comments/actions";
+import { receiveIsSaveClicked } from "@/comments/slice";
 import { FieldTypes, FormNames } from "@/enums";
 import { ButtonColors } from "@/components/enums";
 import { CommentFieldPaths, CommentFieldTitles } from "@/comments/enums";
