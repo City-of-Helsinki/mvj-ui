@@ -1,6 +1,6 @@
 import callApi from "@/api/callApi";
 import createUrl from "@/api/createUrl";
-import type { Contact, ContactId } from "./types";
+import type { Contact, ContactId, ContactsFetchParams } from "./types";
 export const fetchAttributes = (): Generator<any, any, any> => {
   return callApi(
     new Request(createUrl(`contact/`), {
@@ -28,7 +28,7 @@ export const editContact = (contact: Contact): Generator<any, any, any> => {
   );
 };
 export const fetchContacts = (
-  params: Record<string, any>,
+  params: ContactsFetchParams,
 ): Generator<any, any, any> => {
   return callApi(new Request(createUrl("contact/", params)));
 };

@@ -1,11 +1,11 @@
-import type { Action, Attributes, Methods } from "@/types";
+import type { Attributes, Methods } from "@/types";
 import { ContactTypes } from "@/contacts/enums";
 import type { ServiceUnit } from "@/serviceUnits/types";
 export type ContactState = {
   attributes: Attributes;
   contactModalSettings: ContactModalSettings;
   currentContact: Contact;
-  initialContactFormValues: Contact;
+  initialContactFormValues: Partial<Contact>;
   isContactFormValid: boolean;
   isContactModalOpen: boolean;
   isEditMode: boolean;
@@ -51,28 +51,13 @@ export type Contact = {
 export type ContactId = number;
 export type ContactList = any;
 export type ContactModalSettings = Record<string, any> | null;
-export type ContactNotFoundAction = Action<string, void>;
-export type FetchAttributesAction = Action<string, void>;
-export type ReceiveAttributesAction = Action<string, Attributes>;
-export type ReceiveMethodsAction = Action<string, Methods>;
-export type ContactAttributesNotFoundAction = Action<string, void>;
-export type CreateContactAction = Action<string, Contact>;
-export type EditContactAction = Action<string, Contact>;
-export type CreateContactOnModalAction = Action<string, Contact>;
-export type EditContactOnModalAction = Action<string, Contact>;
-export type FetchContactsAction = Action<string, Record<string, any>>;
-export type ReceiveContactsAction = Action<string, ContactList>;
-export type FetchSingleContactAction = Action<string, ContactId>;
-export type ReceiveSingleContactAction = Action<string, Contact>;
-export type ReceiveIsSaveClickedAction = Action<string, boolean>;
-export type InitializeContactFormValuesAction = Action<string, Contact>;
-export type ReceiveContactFormValidAction = Action<string, boolean>;
-export type HideEditModeAction = Action<string, void>;
-export type ShowEditModeAction = Action<string, void>;
-export type HideContactModalAction = Action<string, void>;
-export type ShowContactModalAction = Action<string, void>;
-export type ReceiveContactModalSettingsAction = Action<
-  string,
-  ContactModalSettings
->;
 export type SetTabDirtyFunction = (tabId: number, isDirty: boolean) => void;
+export type ContactsFetchParams = {
+  limit?: number;
+  offset?: number;
+  ordering?: Array<string>;
+  service_unit?: number;
+  lease?: string;
+  is_active?: boolean;
+  is_tenant?: boolean;
+};

@@ -17,7 +17,7 @@ import LoaderWrapper from "@/components/loader/LoaderWrapper";
 import PageContainerHDS from "@/components/content/PageContainerHDS";
 import ContentContainerHds from "@/components/content/ContentContainerHds";
 import Search from "./search/Search";
-import { fetchContacts, initializeContactForm } from "@/contacts/actions";
+import { fetchContacts, initializeContactForm } from "@/contacts/slice";
 import { receiveTopNavigationSettings } from "@/components/topNavigation/actions";
 import { LIST_TABLE_PAGE_SIZE } from "@/util/constants";
 import { DEFAULT_SORT_KEY, DEFAULT_SORT_ORDER } from "@/contacts/constants";

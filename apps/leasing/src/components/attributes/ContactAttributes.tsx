@@ -2,7 +2,7 @@ import React, { PureComponent, useEffect } from "react";
 import { connect } from "react-redux";
 import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { flowRight } from "lodash-es";
-import { fetchAttributes as fetchContactAttributes } from "@/contacts/actions";
+import { fetchAttributes as fetchContactAttributes } from "@/contacts/slice";
 import {
   getAttributes as getContactAttributes,
   getIsFetchingAttributes as getIsFetchingContactAttributes,
