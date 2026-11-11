@@ -39,7 +39,7 @@ import Tenants from "./leaseSections/tenant/Tenants";
 import {
   fetchCommentsByLease,
   fetchAttributes as fetchCommentAttributes,
-} from "@/comments/actions";
+} from "@/comments/slice";
 import {
   fetchInvoicesByLease,
   fetchAttributes as fetchInvoiceAttributes,

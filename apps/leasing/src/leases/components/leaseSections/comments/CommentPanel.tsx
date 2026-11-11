@@ -14,7 +14,7 @@ import {
   clearEditFlags,
   createComment,
   receiveIsSaveClicked,
-} from "@/comments/actions";
+} from "@/comments/slice";
 import { ConfirmationModalTexts, FormNames, Methods } from "@/enums";
 import { ButtonColors } from "@/components/enums";
 import { CommentFieldPaths } from "@/comments/enums";

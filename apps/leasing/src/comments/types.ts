@@ -1,5 +1,5 @@
-import type { Action, Attributes, Methods } from "types";
 import type { LeaseId } from "@/leases/types";
+import type { Attributes, Methods } from "types";
 export type CommentState = {
   attributes: Attributes;
   byLease: Record<string, any>;
@@ -13,16 +13,12 @@ export type Comment = Record<string, any>;
 export type CommentList = Array<Record<string, any>>;
 export type CommentListMap = Record<string, Record<string, any>>;
 export type CommentId = number;
-export type FetchAttributesAction = Action<string, void>;
-export type ReceiveAttributesAction = Action<string, Attributes>;
-export type ReceiveMethodsAction = Action<string, Methods>;
-export type FetchCommentsByLeaseAction = Action<string, LeaseId>;
-export type ReceiveCommentsByLeaseAction = Action<string, Comment>;
-export type CreateCommentAction = Action<string, Comment>;
-export type EditCommentAction = Action<string, Comment>;
-export type ClearEditFlagsAction = Action<string, void>;
-export type HideEditModeByIdAction = Action<string, CommentId>;
-export type ShowEditModeByIdAction = Action<string, CommentId>;
-export type ReceiveIsSaveClickedAction = Action<string, boolean>;
-export type CommentAttributesNotFoundAction = Action<string, void>;
-export type CommentNotFoundAction = Action<string, void>;
+export type CreateCommentPayload = {
+  lease: LeaseId;
+  text: string;
+  topic: number;
+};
+export type EditCommentPayload = {
+  id: CommentId;
+  text: string;
+};

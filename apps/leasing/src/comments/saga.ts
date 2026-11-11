@@ -9,7 +9,11 @@ import {
   receiveMethods,
   receiveCommentsByLease,
   receiveIsSaveClicked,
-} from "./actions";
+  fetchAttributes as fetchAttributesAction,
+  fetchCommentsByLease as fetchCommentsByLeaseAction,
+  createComment as createCommentAction,
+  editComment as editCommentAction,
+} from "./slice";
 import { receiveError } from "@/api/slice";
 import { FormNames } from "@/enums";
 import { displayUIMessage } from "@/util/helpers";
@@ -48,8 +52,7 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
 
 function* fetchCommentsByLeaseSaga({
   payload: leaseId,
-  type: any,
-}): Generator<any, any, any> {
+}: ReturnType<typeof fetchCommentsByLeaseAction>): Generator<any, any, any> {
   try {
     let {
       response: { status: statusCode },
@@ -91,8 +94,7 @@ function* fetchCommentsByLeaseSaga({
 
 function* createCommentSaga({
   payload: comment,
-  type: any,
-}): Generator<any, any, any> {
+}: ReturnType<typeof createCommentAction>): Generator<any, any, any> {
   try {
     const {
       response: { status: statusCode },
@@ -134,8 +136,7 @@ function* createCommentSaga({
 
 function* editCommentSaga({
   payload: comment,
-  type: any,
-}): Generator<any, any, any> {
+}: ReturnType<typeof editCommentAction>): Generator<any, any, any> {
   try {
     const {
       response: { status: statusCode },
@@ -172,10 +173,10 @@ function* editCommentSaga({
 export default function* (): Generator<any, any, any> {
   yield all([
     fork(function* (): Generator<any, any, any> {
-      yield takeLatest("mvj/comments/FETCH_ATTRIBUTES", fetchAttributesSaga);
-      yield takeLatest("mvj/comments/FETCH_BY_LEASE", fetchCommentsByLeaseSaga);
-      yield takeLatest("mvj/comments/CREATE", createCommentSaga);
-      yield takeLatest("mvj/comments/EDIT", editCommentSaga);
+      yield takeLatest(fetchAttributesAction, fetchAttributesSaga);
+      yield takeLatest(fetchCommentsByLeaseAction, fetchCommentsByLeaseSaga);
+      yield takeLatest(createCommentAction, createCommentSaga);
+      yield takeLatest(editCommentAction, editCommentSaga);
     }),
   ]);
 }

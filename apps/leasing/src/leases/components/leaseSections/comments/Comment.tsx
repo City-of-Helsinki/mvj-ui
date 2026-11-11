@@ -9,7 +9,7 @@ import {
   editComment,
   hideEditModeById,
   showEditModeById,
-} from "@/comments/actions";
+} from "@/comments/slice";
 import { ButtonColors } from "@/components/enums";
 import { getPayloadComment } from "@/comments/helpers";
 import { formatDate } from "@/util/helpers";
