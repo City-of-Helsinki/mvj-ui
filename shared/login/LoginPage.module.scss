@@ -1,0 +1,48 @@
+@use "hds-design-tokens/lib/all" as hds;
+@import url("https://hds.hel.fi/fonts/fonts.css");
+
+.page {
+  box-sizing: border-box;
+  width: 600px;
+  max-width: calc(100% - 2rem);
+  margin: hds.$spacing-l auto;
+  background-color: hds.$color-fog-light;
+  color: hds.$color-black;
+  font-family: hds.$font-default;
+  font-size: hds.$fontsize-body-m;
+}
+
+.content {
+  padding: hds.$spacing-l hds.$spacing-m hds.$spacing-2-xl;
+  text-align: center;
+}
+
+.logo {
+  display: block;
+  margin: 0 0 hds.$spacing-xl auto;
+}
+
+.title {
+  margin: 0 0 hds.$spacing-xl;
+  color: inherit;
+  font-family: inherit;
+  font-size: hds.$fontsize-heading-m;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.description {
+  margin: 0 0 hds.$spacing-m;
+  font-family: inherit;
+  font-size: hds.$fontsize-body-m;
+  line-height: 1.5;
+}
+
+.koros {
+  fill: hds.$color-bus;
+}
+
+.footer {
+  height: hds.$spacing-xl;
+  background-color: hds.$color-bus;
+}

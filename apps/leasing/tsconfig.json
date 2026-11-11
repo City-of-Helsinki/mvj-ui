@@ -3,11 +3,17 @@
   "compilerOptions": {
     "baseUrl": "./src",
     "paths": {
-      "@/*": ["./*"]
+      "@shared/*": [
+        "../../../shared/*"
+      ],
+      "@/*": [
+        "./*"
+      ]
     }
   },
   "include": [
     "src",
+    "../../shared",
     "../../types"
   ],
   "exclude": [

@@ -15,7 +15,7 @@
     "build:landuse": "yarn workspace @mvj/landuse build",
     "dev:leasing": "yarn workspace @mvj/leasing dev",
     "dev:landuse": "yarn workspace @mvj/landuse dev",
-    "lint": "eslint apps/**/src",
+    "lint": "eslint apps/**/src shared",
     "start": "yarn dev:leasing",
     "compile": "yarn build",
     "test": "vitest",

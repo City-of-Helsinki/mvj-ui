@@ -9,7 +9,7 @@ import ConfirmationModal from "@/components/modal/ConfirmationModal";
 import Loader from "@/components/loader/Loader";
 import NotificationCenter from "@/components/notification/NotificationCenter";
 import useAuth from "@/auth/useAuth";
-import LoginPage from "@/auth/components/LoginPage";
+import LoginPage from "@shared/login/LoginPage";
 import SideMenu from "@/components/sideMenu/SideMenu";
 import TopNavigation from "@/components/topNavigation/TopNavigation";
 import { Routes, getRouteById } from "@/root/routes";
