@@ -479,7 +479,7 @@ describe("land use API contract adapters", () => {
     ]);
   });
 
-  it.each(["SR1", "SR2", "SR3", ""])(
+  it.each(["sr1", "sr2", "sr3", ""])(
     "round-trips preservation designation %j",
     async (designation) => {
       const site = {
@@ -867,7 +867,7 @@ describe("land use API contract adapters", () => {
             floor_area_kem2: null,
             intended_use: { id: 17, name: "Asuinkerrostalot" },
             tenure_types: [{ id: 23, name: "Pitkä korkotuki" }],
-            preservation_designation: "SR3",
+            preservation_designation: "sr3",
             has_housing_obligation: false,
             unit_price_euro_per_kem2: "0.01",
           },
@@ -902,7 +902,7 @@ describe("land use API contract adapters", () => {
       id: "41",
       kayttotarkoitusId: 17,
       hallintamuotoIds: [23],
-      suojeltu: "SR3",
+      suojeltu: "sr3",
       pintaAlaM2: "123.45",
     });
     expect(compensations).toMatchObject({

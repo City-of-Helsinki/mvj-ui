@@ -31,6 +31,7 @@ import {
   normalizeMultiSelectValue,
   normalizeSelectValue,
   readOnlyTextValue,
+  getOptionsDisplayValue,
   type SelectOption,
 } from "@/landUse/utils/fieldUtils";
 import {
@@ -362,7 +363,10 @@ const SiteRow: React.FC<SiteRowProps> = ({
                         <TextInput
                           id={`landuse-compensations-suojeltu-${site.id}`}
                           label="Suojeltu"
-                          value={readOnlyTextValue(input.value)}
+                          value={getOptionsDisplayValue(
+                            input.value,
+                            preservationOptions,
+                          )}
                           readOnly
                         />
                       ) : (
