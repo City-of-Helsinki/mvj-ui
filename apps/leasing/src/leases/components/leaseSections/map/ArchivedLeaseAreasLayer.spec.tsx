@@ -15,6 +15,7 @@ import {
 } from "@/components/notification/notificationService";
 import ArchivedLeaseAreasLayer from "./ArchivedLeaseAreasLayer";
 import { fetchIntersectingArchivedAreas } from "@/leases/requestsAsync";
+import { formatDate } from "@/util/helpers";
 
 vi.mock("@/leases/requestsAsync", () => ({
   fetchIntersectingArchivedAreas: vi.fn(),
@@ -81,9 +82,10 @@ describe("ArchivedLeaseAreasLayer", () => {
     });
     renderLayer(42);
     await screen.findByText("Päättyneet vuokraukset (2)");
-    expect(
-      screen.getByText("Maaomaisuuden kehittäminen ja tontit"),
-    ).toBeTruthy();
+    const endDate = screen.getByText(`Päättynyt ${formatDate("2024-01-01")}`);
+    expect(endDate.tagName).toBe("TIME");
+    expect(endDate.getAttribute("datetime")).toBe("2024-01-01");
+    expect(endDate.closest("button")).toBeNull();
     const leaseLink = screen.getByRole("link", { name: "A1100-2" });
     expect(leaseLink.getAttribute("href")).toBe("/vuokraukset/20");
     expect(leaseLink.getAttribute("target")).toBe("_blank");
@@ -149,6 +151,21 @@ describe("ArchivedLeaseAreasLayer", () => {
     expect(screen.getByTestId("visible-areas").textContent).toBe("0");
     fireEvent.click(screen.getByRole("button", { name: "Näytä kaikki" }));
     expect(screen.getByTestId("visible-areas").textContent).toBe("2");
+    const highlightButton = screen.getByRole("button", {
+      name: "Korosta vuokrauksen A1100-2 alueet kartalla",
+    });
+    expect(highlightButton.getAttribute("aria-pressed")).toBe("false");
+    fireEvent.click(highlightButton);
+    fireEvent.mouseLeave(leaseLink.closest("li")!);
+    fireEvent.blur(highlightButton);
+    expect(highlightButton.getAttribute("aria-pressed")).toBe("true");
+    expect(highlightButton.getAttribute("title")).toBe(
+      "Poista korostus kartalta",
+    );
+    expect(screen.getByTestId("highlighted-areas").textContent).toBe("1");
+    fireEvent.click(highlightButton);
+    expect(highlightButton.getAttribute("aria-pressed")).toBe("false");
+    expect(screen.queryByTestId("highlighted-areas")).toBeNull();
     expect(fetchIntersectingArchivedAreas).toHaveBeenCalledTimes(1);
   });
 

@@ -85,41 +85,71 @@
       margin: 4px 0 0;
       flex-shrink: 0;
     }
-    button {
-      text-align: left;
-      flex: 1;
-      min-width: 0;
-      overflow-wrap: anywhere;
-      span {
-        display: block;
-        font-size: 12px;
-      }
+  }
+
+  &__highlight {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    align-self: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: 1px solid #777;
+    border-radius: 4px;
+    background: #fff;
+    color: #006d77;
+
+    &:hover {
+      background: #e4f3f2;
+    }
+
+    &[aria-pressed="true"] {
+      background: #006d77;
+      border-color: #006d77;
+      color: #fff;
+    }
+
+    &:focus-visible {
+      outline: 2px solid #006d77;
+      outline-offset: 2px;
     }
   }
 
-  &__area {
-    padding: 4px 0;
+  &__end-date {
+    display: block;
+    color: #555;
+  }
+
+  &__title {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    column-gap: 6px;
+  }
+
+  &__state {
+    font-size: 12px;
     overflow-wrap: anywhere;
   }
 
-  &__service-unit {
-    display: block;
-    color: #555;
+  &__intended_use {
     font-size: 12px;
     overflow-wrap: anywhere;
   }
 
   &__lease {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 36px;
+    align-items: start;
+    gap: 4px 10px;
     flex: 1;
     min-width: 0;
     overflow-wrap: anywhere;
 
     > a {
       font-weight: 600;
-    }
-
-    > button {
-      display: block;
     }
   }
 }
