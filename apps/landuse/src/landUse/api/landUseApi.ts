@@ -703,7 +703,7 @@ const parsePreservationDesignation = (
   value: string | undefined,
 ): string | null => {
   if (!value) return null;
-  if (!new Set(["SR1", "SR2", "SR3"]).has(value)) {
+  if (!new Set(["sr1", "sr2", "sr3"]).has(value)) {
     throw new Error("Invalid preservation designation");
   }
   return value;

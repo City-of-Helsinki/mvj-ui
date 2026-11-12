@@ -61,9 +61,9 @@ vi.mock("@/landUse/api/useLandUseMetadata", () => ({
         { value: "land_use_agreement_approval", label: "Hyvaksyminen" },
       ],
       decision_condition_types: [{ value: "other", label: "Muu ehto" }],
-      preservation_designations: ["SR1", "SR2", "SR3"].map((value) => ({
+      preservation_designations: ["sr1", "sr2", "sr3"].map((value) => ({
         value,
-        label: value,
+        label: value.toUpperCase(),
       })),
       invoice_types: [{ value: "land_use_compensation", label: "Korvaus" }],
       invoice_statuses: [{ value: "paid", label: "Maksettu" }],
@@ -233,7 +233,7 @@ describe("backend-valued contract conventions", () => {
     );
   });
 
-  it.each(["SR1", "SR2", "SR3"])(
+  it.each(["sr1", "sr2", "sr3"])(
     "selects preservation code %s and clears the optional selection",
     async (code) => {
       const form = createForm<LandUseCompensationsFormValues>({
@@ -264,7 +264,9 @@ describe("backend-valued contract conventions", () => {
         screen.getByRole("button", { name: "Avaa kohteen tiedot" }),
       );
       fireEvent.click(screen.getByRole("combobox", { name: /Suojeltu/ }));
-      fireEvent.click(await screen.findByRole("option", { name: code }));
+      fireEvent.click(
+        await screen.findByRole("option", { name: code.toUpperCase() }),
+      );
       expect(form.getState().values.sites[0].suojeltu).toBe(code);
       fireEvent.click(
         screen.getByRole("button", { name: /Poista nykyinen valinta/ }),
