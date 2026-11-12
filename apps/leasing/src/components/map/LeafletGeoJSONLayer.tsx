@@ -5,7 +5,7 @@ import { useLeafletMap } from "@/components/map/LeafletMapContext";
 import { DEFAULT_LEAFLET_PATH_OPTIONS } from "@/components/map/mapStyles";
 
 type Props = {
-  data: GeoJSON.GeoJsonObject;
+  data: GeoJSON.GeoJSON;
   style?: L.PathOptions;
   onEachFeature?: (feature: GeoJSON.Feature, layer: L.Layer) => void;
 };

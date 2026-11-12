@@ -232,7 +232,7 @@ const SingleLeaseMap = () => {
               leaseId={currentLease.id}
             />
           ),
-          name: "Päättyneiden vuokrausten leikkaavat alueet",
+          name: "Päättyneet leikkaavat vuokrakohteet",
         });
       }
     }
