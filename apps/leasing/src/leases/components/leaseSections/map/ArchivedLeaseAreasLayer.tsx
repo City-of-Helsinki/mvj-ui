@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { IconDrag } from "hds-react";
+import { IconDrag, IconMap } from "hds-react";
+import { enqueueNotification } from "@/components/notification/notificationService";
 import { OverlayLayerActiveContext } from "@/areaNote/components/MapContainer";
 import LeafletGeoJSONLayer from "@/components/map/LeafletGeoJSONLayer";
 import useGeoJsonFeatureInteractions from "@/components/map/useGeoJsonFeatureInteractions";
@@ -21,8 +22,6 @@ const getPopupContent = (feature: GeoJSON.Feature) => {
 
 const ArchivedLeaseAreasLayer = ({ leaseId }: { leaseId: number }) => {
   const [data, setData] = useState<LeafletGeoJson>();
-  const [error, setError] = useState(false);
-  const [attempt, setAttempt] = useState(0);
   const [hiddenLeases, setHiddenLeases] = useState<number[]>([]);
   const [highlightedLease, setHighlightedLease] = useState<number | null>(null);
   const [selectedLease, setSelectedLease] = useState<number | null>(null);
@@ -60,38 +59,47 @@ const ArchivedLeaseAreasLayer = ({ leaseId }: { leaseId: number }) => {
   const activeLease = highlightedLease ?? selectedLease;
 
   useEffect(() => {
-    if (!isActive || data || error) return;
+    if (!isActive || data) return;
     const controller = new AbortController();
+    enqueueNotification(
+      {
+        title: "Päättyneiden vuokrausten alueet",
+        body: "Haetaan päättyneiden vuokrausten alueita...",
+      },
+      { type: "info" },
+    );
     fetchIntersectingArchivedAreas(leaseId, controller.signal)
       .then((result) => {
-        if (!controller.signal.aborted) setData(result);
+        if (controller.signal.aborted) return;
+        setData(result);
+        if (!result.features.length) {
+          enqueueNotification(
+            {
+              title: "Päättyneet vuokraukset",
+              body: "Ei leikkaavia alueita.",
+            },
+            { type: "info" },
+          );
+        }
       })
       .catch(() => {
-        if (!controller.signal.aborted) setError(true);
+        if (controller.signal.aborted) return;
+        enqueueNotification(
+          {
+            title: "Päättyneiden vuokrausten alueet",
+            body: "Alueiden haku epäonnistui.",
+          },
+          { type: "error", timeOut: 0 },
+        );
       });
-    return () => controller.abort();
-  }, [leaseId, attempt, isActive, data, error]);
+    return () => {
+      controller.abort();
+    };
+  }, [leaseId, isActive, data]);
 
   return (
     <>
-      {error ? (
-        <div role="alert">
-          Päättyneiden vuokrausten alueiden haku epäonnistui.
-          <button
-            type="button"
-            onClick={() => {
-              setError(false);
-              setAttempt(attempt + 1);
-            }}
-          >
-            Yritä uudelleen
-          </button>
-        </div>
-      ) : !data ? (
-        <div role="status">Haetaan päättyneiden vuokrausten alueita...</div>
-      ) : !data.features.length ? (
-        <div role="status">Ei leikkaavia päättyneiden vuokrausten alueita.</div>
-      ) : (
+      {data && data.features.length > 0 ? (
         <>
           <LeafletGeoJSONLayer
             data={{ ...data, features: visibleFeatures }}
@@ -221,47 +229,55 @@ const ArchivedLeaseAreasLayer = ({ leaseId }: { leaseId: number }) => {
                       }
                     />
                     <div className="archived-lease-panel__lease">
-                      <ExternalLink
-                        className="no-margin"
-                        href={`${getRouteById(Routes.LEASES)}/${group.id}`}
-                        text={group.identifier}
-                      />
-                      {group.service_unit?.name && (
-                        <span className="archived-lease-panel__service-unit">
-                          {group.service_unit.name}
-                        </span>
-                      )}
+                      <div className="archived-lease-panel__title">
+                        <ExternalLink
+                          className="no-margin"
+                          href={`${getRouteById(Routes.LEASES)}/${group.id}`}
+                          text={group.identifier}
+                        />
+                        {group.state && (
+                          <span className="archived-lease-panel__state">
+                            {group.state}
+                          </span>
+                        )}
+                      </div>
+                      <div className="archived-lease-panel__metadata">
+                        {group.intended_use && (
+                          <span>{group.intended_use}</span>
+                        )}
+                        <time
+                          className="archived-lease-panel__end-date"
+                          dateTime={group.end_date}
+                        >
+                          Päättynyt {formatDate(group.end_date)}
+                        </time>
+                      </div>
                       <button
+                        className="archived-lease-panel__highlight"
                         type="button"
-                        aria-label={`Korosta vuokrauksen ${group.identifier} alueet`}
+                        aria-label={`Korosta vuokrauksen ${group.identifier} alueet kartalla`}
                         aria-pressed={selectedLease === group.id}
+                        title={
+                          selectedLease === group.id
+                            ? "Poista korostus kartalta"
+                            : "Korosta alueet kartalla"
+                        }
                         onClick={() =>
                           setSelectedLease(
                             selectedLease === group.id ? null : group.id,
                           )
                         }
                       >
-                        <span>Päättynyt {formatDate(group.end_date)}</span>
+                        <IconMap aria-hidden="true" />
                       </button>
                     </div>
                   </div>
-                  <details>
-                    <summary>Alueet ({group.features.length})</summary>
-                    {group.features.map((feature) => (
-                      <div
-                        key={feature.properties.id}
-                        className="archived-lease-panel__area"
-                      >
-                        {feature.properties.identifier || "-"}
-                      </div>
-                    ))}
-                  </details>
                 </li>
               ))}
             </ul>
           </details>
         </>
-      )}
+      ) : null}
     </>
   );
 };
