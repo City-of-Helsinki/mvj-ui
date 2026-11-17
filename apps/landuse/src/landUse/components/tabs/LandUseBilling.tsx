@@ -1301,7 +1301,7 @@ const InvoiceReviewTable: React.FC<InvoiceReviewTableProps> = ({
                     size={ButtonSize.Small}
                     onClick={() => setScheduleToAccept(schedule)}
                   >
-                    Hyväksy kaikki ja lähetä laskut
+                    Hyväksy maksusuunnitelma ja luo laskut
                   </Button>
                 </div>
               )}
@@ -1323,7 +1323,7 @@ const InvoiceReviewTable: React.FC<InvoiceReviewTableProps> = ({
           title="Hyväksy maksusuunnitelma"
         />
         <Dialog.Content>
-          Hyväksytyistä maksueristä luodaan laskut, ja lähetetään SAP:iin
+          Hyväksytyistä maksueristä luodaan laskut odottamaan lähettämistä.
         </Dialog.Content>
         <Dialog.ActionButtons>
           <Button
@@ -1338,7 +1338,7 @@ const InvoiceReviewTable: React.FC<InvoiceReviewTableProps> = ({
             variant={ButtonVariant.Primary}
             onClick={handleAcceptConfirm}
           >
-            Hyväksy kaikki ja lähetä laskut
+            Hyväksy ja luo laskut
           </Button>
         </Dialog.ActionButtons>
       </Dialog>

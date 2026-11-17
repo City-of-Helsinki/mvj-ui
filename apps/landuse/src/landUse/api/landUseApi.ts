@@ -311,7 +311,7 @@ type InvoiceResponse = {
   installment_sequence_number: number;
   installment_count_total: number;
   due_date: string | null;
-  invoice_identifier: string;
+  invoice_identifier: number;
   invoice_type: InvoiceTypeCode;
   status: InvoiceStatusCode;
   sent_at: string | null;
@@ -1177,7 +1177,7 @@ export const getBilling = async (
       installmentNumber: String(invoice.installment_sequence_number),
       installmentTotal: String(invoice.installment_count_total),
       dueDate: parseIsoDateToFinnishDate(invoice.due_date),
-      invoiceNumber: invoice.invoice_identifier,
+      invoiceNumber: String(invoice.invoice_identifier),
       type: invoice.invoice_type,
       status: invoice.status,
       sentAt: invoice.sent_at ?? undefined,

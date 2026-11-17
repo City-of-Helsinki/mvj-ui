@@ -92,6 +92,7 @@ export const landUseAsemakaavaListItems: AsemakaavaListItem[] = [
 
 export const LAND_USE_INVOICE_STATUSES = {
   DRAFT: "draft",
+  WAITING_TO_BE_SENT: "waiting_to_be_sent",
   OPEN: "open",
   PAID: "paid",
   CREDITED: "credited",
