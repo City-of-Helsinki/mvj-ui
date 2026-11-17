@@ -227,6 +227,7 @@ describe("backend-valued contract conventions", () => {
   });
 
   it("creates a payment schedule from the dialog", async () => {
+    const onReturnToDraft = vi.fn(async () => {});
     const party = createEmptyPartyEntry();
     party.id = "73";
     party.party.details.name = "Creation recipient";
@@ -261,6 +262,7 @@ describe("backend-valued contract conventions", () => {
         asemakaavanLainvoimaisuusPvm=""
         agreementIdentifier="M-1"
         onSendToInvoicing={vi.fn()}
+        onReturnToDraft={onReturnToDraft}
       />,
     );
     fireEvent.click(
@@ -326,6 +328,69 @@ describe("backend-valued contract conventions", () => {
     expect(
       (screen.getAllByLabelText(/Eräpäivä/)[0] as HTMLInputElement).value,
     ).toBe("01.12.2026");
+    expect(
+      (screen.getAllByLabelText(/Eräpäivä/)[0] as HTMLInputElement).readOnly,
+    ).toBe(true);
+    expect(
+      (screen.getAllByLabelText(/Eräpäivä/)[1] as HTMLInputElement).readOnly,
+    ).toBe(false);
+    expect(
+      screen.queryByRole("button", { name: "Palauta luonnokseksi" }),
+    ).toBeNull();
+    act(() =>
+      form.change(
+        "paymentSchedules",
+        form.getState().values.paymentSchedules!.map((schedule) => ({
+          ...schedule,
+          status: "approved",
+        })),
+      ),
+    );
+    fireEvent.click(
+      screen.getByRole("button", { name: "Palauta luonnokseksi" }),
+    );
+    expect(
+      await screen.findByText(
+        "Suunnitelmaan liittyy 1 kappaletta laskuja, jotka poistetaan jos suunnitelma palautetaan luonnos tilaan",
+      ),
+    ).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Peruuta" }));
+    expect(onReturnToDraft).not.toHaveBeenCalled();
+    act(() =>
+      form.change(
+        "paymentSchedules",
+        form.getState().values.paymentSchedules!.map((schedule) => ({
+          ...schedule,
+          status: "pending_approval",
+          installments: schedule.installments.map((installment) =>
+            installment.invoice
+              ? {
+                  ...installment,
+                  invoice: {
+                    ...installment.invoice,
+                    sentAt: "2026-11-17T10:00:00Z",
+                  },
+                }
+              : installment,
+          ),
+        })),
+      ),
+    );
+    fireEvent.click(
+      screen.getByRole("button", { name: "Palauta luonnokseksi" }),
+    );
+    expect(
+      await screen.findByText(
+        "Suunnitelmaan liittyy 0 kappaletta laskuja, jotka poistetaan jos suunnitelma palautetaan luonnos tilaan",
+      ),
+    ).toBeTruthy();
+    const confirmButtons = screen.getAllByRole("button", {
+      name: "Palauta luonnokseksi",
+    });
+    fireEvent.click(confirmButtons[confirmButtons.length - 1]);
+    expect(onReturnToDraft).toHaveBeenCalledExactlyOnceWith(
+      form.getState().values.paymentSchedules![0],
+    );
   });
 
   it("keeps an unsaved decision row mounted when an earlier row is removed", () => {

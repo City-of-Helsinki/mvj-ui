@@ -1146,28 +1146,32 @@ export const updatePaymentSchedule = async (
           increase_percentage: parseOptionalDecimal(schedule.korotusProsentti),
           base_interest_rate: parseOptionalDecimal(schedule.korkoPeruskorko),
           interest_margin: parseOptionalDecimal(schedule.korkoMarginaali),
-          installments: schedule.installments.map((installment) => ({
-            ...(Number.isInteger(Number(installment.id))
-              ? { id: Number(installment.id) }
-              : {}),
-            installment_sequence_number: Number(installment.installmentNumber),
-            installment_count_total: Number(installment.installmentTotal),
-            due_date: parseFinnishDateToIsoDate(installment.dueDate),
-            interest_calculation_period_start_date: parseFinnishDateToIsoDate(
-              installment.laskentajaksonAlkupvm,
-            ),
-            interest_calculation_period_end_date: parseFinnishDateToIsoDate(
-              installment.laskentajaksonLoppupvm,
-            ),
-            items: (installment.items ?? []).map((item) => ({
-              ...(Number.isInteger(Number(item.id))
-                ? { id: Number(item.id) }
+          installments: schedule.installments
+            .filter((installment) => !installment.invoice)
+            .map((installment) => ({
+              ...(Number.isInteger(Number(installment.id))
+                ? { id: Number(installment.id) }
                 : {}),
-              item_type: item.itemType,
-              description: item.description,
-              amount: parseOptionalDecimal(item.amountExcludingVat),
+              installment_sequence_number: Number(
+                installment.installmentNumber,
+              ),
+              installment_count_total: Number(installment.installmentTotal),
+              due_date: parseFinnishDateToIsoDate(installment.dueDate),
+              interest_calculation_period_start_date: parseFinnishDateToIsoDate(
+                installment.laskentajaksonAlkupvm,
+              ),
+              interest_calculation_period_end_date: parseFinnishDateToIsoDate(
+                installment.laskentajaksonLoppupvm,
+              ),
+              items: (installment.items ?? []).map((item) => ({
+                ...(Number.isInteger(Number(item.id))
+                  ? { id: Number(item.id) }
+                  : {}),
+                item_type: item.itemType,
+                description: item.description,
+                amount: parseOptionalDecimal(item.amountExcludingVat),
+              })),
             })),
-          })),
         };
       }),
   );
@@ -1235,6 +1239,15 @@ export const submitPaymentSchedule = async (
 ): Promise<void> => {
   await callApiPost<PaymentScheduleResponse, Record<string, never>>(
     `payment-schedules/${scheduleId}/submit/`,
+    {},
+  );
+};
+
+export const returnPaymentScheduleToDraft = async (
+  scheduleId: string,
+): Promise<void> => {
+  await callApiPost<PaymentScheduleResponse, Record<string, never>>(
+    `payment-schedules/${scheduleId}/return-to-draft/`,
     {},
   );
 };

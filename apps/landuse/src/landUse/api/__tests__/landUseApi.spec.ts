@@ -547,6 +547,27 @@ describe("land use API contract adapters", () => {
     expect(installment).not.toHaveProperty("invoiceNumber");
     expect(installment).not.toHaveProperty("invoiceItems");
     expect(installment).not.toHaveProperty("recipientSnapshot");
+    await updatePaymentSchedule("1", {
+      paymentSchedules: [
+        {
+          id: "1",
+          recipientPartyIndex: "73",
+          contractIndex: "91",
+          status: "draft",
+          rejectedReason: null,
+          signedDate: "",
+          korotusProsentti: "",
+          korkoPeruskorko: "",
+          korkoMarginaali: "",
+          daysInYear: "365",
+          installments: [installment!],
+        },
+      ],
+    });
+    expect(callApiPut).toHaveBeenLastCalledWith(
+      "agreements/1/payment-schedules/",
+      [expect.objectContaining({ installments: [] })],
+    );
   });
 
   it("converts edited decision dates and clears them without changing codes", async () => {
