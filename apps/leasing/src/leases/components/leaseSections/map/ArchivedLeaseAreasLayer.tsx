@@ -232,7 +232,7 @@ const ArchivedLeaseAreasLayer = ({ leaseId }: { leaseId: number }) => {
                       <div className="archived-lease-panel__title">
                         <ExternalLink
                           className="no-margin"
-                          href={`${getRouteById(Routes.LEASES)}/${group.id}`}
+                          href={`${getRouteById(Routes.LEASE)}/${group.identifier}`}
                           text={group.identifier}
                         />
                         {group.state && (

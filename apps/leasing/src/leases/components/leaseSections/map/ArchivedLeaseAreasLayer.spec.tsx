@@ -87,7 +87,7 @@ describe("ArchivedLeaseAreasLayer", () => {
     expect(endDate.getAttribute("datetime")).toBe("2024-01-01");
     expect(endDate.closest("button")).toBeNull();
     const leaseLink = screen.getByRole("link", { name: "A1100-2" });
-    expect(leaseLink.getAttribute("href")).toBe("/vuokraukset/20");
+    expect(leaseLink.getAttribute("href")).toBe("/vuokraus/A1100-2");
     expect(leaseLink.getAttribute("target")).toBe("_blank");
     const panel = leaseLink.closest(
       ".archived-lease-panel",

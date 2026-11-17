@@ -271,7 +271,7 @@ function* createLeaseSaga({ payload }): Generator<any, any, any> {
         }
         yield call(
           navigateTo,
-          `${getRouteById(Routes.LEASES)}/${bodyAsJson.id}`,
+          `${getRouteById(Routes.LEASE)}/${bodyAsJson.identifier.identifier}`,
         );
         yield put(receiveIsSaveClicked(false));
         yield put(hideEditMode());

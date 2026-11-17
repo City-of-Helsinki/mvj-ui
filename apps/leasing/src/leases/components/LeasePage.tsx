@@ -591,7 +591,10 @@ const LeasePage: React.FC = () => {
       );
 
     return () => {
-      if (pathname !== `${getRouteById(Routes.LEASES)}/${leaseId}`) {
+      if (
+        pathname !== `${getRouteById(Routes.LEASE)}/${identifier}` &&
+        pathname !== `${getRouteById(Routes.LEASES)}/${params.leaseId}`
+      ) {
         clearUnsavedChanges();
       }
 

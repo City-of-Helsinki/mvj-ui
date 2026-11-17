@@ -37,6 +37,7 @@ import { TENANT_CONTACT_TYPE_LABELS } from "../constants";
 
 import type { Attributes } from "@/types";
 import type { Contact } from "@/contacts/types";
+import type { LeaseIdentifier } from "@/leases/types";
 
 const joinContactRoles = (roles: string[]): string => {
   if (!roles || roles.length === 0) {
@@ -63,7 +64,7 @@ const sortContactRoles = (roles: string[]): string[] => {
 
 type ContactLease = {
   id: number;
-  identifier: Record<string, any>;
+  identifier: LeaseIdentifier;
   contact_roles: Array<string>;
   contact_role_active: boolean;
   is_active: boolean;
@@ -77,8 +78,8 @@ type Props = {
   contact: Contact;
 };
 
-const getLeaseDetailsHref = (rowId: number | string) => {
-  return `${getRouteById(Routes.LEASES)}/${rowId}`;
+const getLeaseDetailsHref = (leaseIdentifier: string) => {
+  return `${getRouteById(Routes.LEASE)}/${leaseIdentifier}`;
 };
 
 const ContactLeaseTable: React.FC<Props> = ({ contact }: Props) => {
@@ -154,9 +155,9 @@ const ContactLeaseTable: React.FC<Props> = ({ contact }: Props) => {
         key: "lease_identifier",
         headerName: LeaseFieldTitles.IDENTIFIER,
         isSortable: true,
-        transform: (row: { lease_id: number; lease_identifier: string }) => (
+        transform: (row: { lease_identifier: string }) => (
           <Link
-            href={getLeaseDetailsHref(row.lease_id)}
+            href={getLeaseDetailsHref(row.lease_identifier)}
             className="contact-lease-list-identifier-link"
           >
             {row.lease_identifier}

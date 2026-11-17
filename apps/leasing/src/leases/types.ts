@@ -64,7 +64,7 @@ export type Lease = {
   end_date: string | null;
   financing: number | null;
   hitas: number | null;
-  identifier: Record<string, any>;
+  identifier: LeaseIdentifier;
   infill_development_compensations: Array<Record<string, any>>;
   inspections: Array<Record<string, any>>;
   intended_use: IntendedUse;
@@ -110,6 +110,13 @@ export type CreateLease = Partial<Lease> & {
 };
 export type LeaseList = ApiResponse;
 export type LeaseId = number;
+export type LeaseIdentifier = {
+  identifier: string;
+  type: Record<string, any>;
+  municipality: Record<string, any>;
+  district: Record<string, any>;
+  sequence: number;
+};
 export type RelatedLeaseEdge = {
   predecessor: number;
   successor: number;
