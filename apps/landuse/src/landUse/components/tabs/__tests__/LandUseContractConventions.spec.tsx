@@ -26,6 +26,7 @@ import {
 import {
   LandUseBilling,
   type LandUseBillingFormValues,
+  type LandUseBillingSchedule,
 } from "../LandUseBilling";
 import {
   LandUsePaymentSchedule,
@@ -106,6 +107,125 @@ const decision = {
 };
 
 describe("backend-valued contract conventions", () => {
+  it.each([false, true])(
+    "gates schedule review actions with permission %s",
+    async (canReviewSchedules) => {
+      const schedule: LandUseBillingSchedule = {
+        id: "schedule-1",
+        recipientPartyIndex: "73",
+        status: "pending_approval",
+        installments: [
+          {
+            id: "installment-1",
+            recipientPartyIndex: "73",
+            installmentNumber: "1",
+            installmentTotal: "1",
+            dueDate: "01.12.2026",
+            type: "land_use_compensation",
+            items: [],
+          },
+        ],
+      };
+      const form = createForm<LandUseBillingFormValues>({
+        onSubmit: () => {},
+        mutators: { ...arrayMutators },
+        initialValues: { invoices: [] },
+      });
+      const onAcceptSchedule = vi.fn();
+      const onDeclineSchedule = vi.fn();
+      render(
+        <LandUseBilling
+          form={form}
+          parties={[]}
+          paymentSchedules={[schedule]}
+          canReviewSchedules={canReviewSchedules}
+          onAcceptSchedule={onAcceptSchedule}
+          onDeclineSchedule={onDeclineSchedule}
+        />,
+      );
+      expect(screen.getByText("01.12.2026")).toBeTruthy();
+      fireEvent.click(
+        screen.getByRole("button", { name: "Avaa laskun tiedot" }),
+      );
+      expect(screen.getByLabelText("Eräpäivä")).toBeTruthy();
+      if (!canReviewSchedules) {
+        expect(
+          screen.queryByRole("button", {
+            name: "Hyväksy maksusuunnitelma ja luo laskut",
+          }),
+        ).toBeNull();
+        expect(
+          screen.queryByRole("button", { name: "Hylkää kaikki" }),
+        ).toBeNull();
+        return;
+      }
+      fireEvent.click(
+        screen.getByRole("button", {
+          name: "Hyväksy maksusuunnitelma ja luo laskut",
+        }),
+      );
+      expect(onAcceptSchedule).not.toHaveBeenCalled();
+      fireEvent.click(
+        await screen.findByRole("button", { name: "Hyväksy ja luo laskut" }),
+      );
+      expect(onAcceptSchedule).toHaveBeenCalledExactlyOnceWith(schedule);
+      fireEvent.click(screen.getByRole("button", { name: "Hylkää kaikki" }));
+      fireEvent.change(await screen.findByLabelText("Hylkäyksen syy"), {
+        target: { value: "Incorrect amount" },
+      });
+      const buttons = await screen.findAllByRole("button", {
+        name: "Hylkää kaikki",
+      });
+      fireEvent.click(buttons[buttons.length - 1]);
+      expect(onDeclineSchedule).toHaveBeenCalledExactlyOnceWith(
+        schedule,
+        "Incorrect amount",
+      );
+    },
+  );
+
+  it("does not fall back to current party data when an invoice snapshot is absent", () => {
+    const party = createEmptyPartyEntry();
+    party.id = "73";
+    party.party.details.name = "Current recipient";
+    const form = createForm<LandUseBillingFormValues>({
+      onSubmit: () => {},
+      mutators: { ...arrayMutators },
+      initialValues: {
+        invoices: [
+          {
+            id: "5",
+            recipientPartyIndex: "73",
+            installmentNumber: "1",
+            installmentTotal: "1",
+            dueDate: "",
+            invoiceNumber: 1_000_000_000,
+            type: "land_use_compensation",
+            status: "waiting_to_be_sent",
+            billedAmount: "",
+            remainingAmount: "",
+            invoiceItems: [],
+          },
+        ],
+      },
+    });
+    render(
+      <LandUseBilling
+        form={form}
+        parties={[party]}
+        paymentSchedules={[]}
+        canReviewSchedules={false}
+        onAcceptSchedule={vi.fn()}
+        onDeclineSchedule={vi.fn()}
+      />,
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Avaa laskun tiedot" }));
+    expect(
+      (screen.getByLabelText("Laskunsaaja") as HTMLInputElement).value,
+    ).toBe("-");
+    expect(screen.queryByText("Current recipient")).toBeNull();
+  });
+
   it("creates a payment schedule from the dialog", async () => {
     const party = createEmptyPartyEntry();
     party.id = "73";
@@ -397,18 +517,43 @@ describe("backend-valued contract conventions", () => {
               installmentTotal: "1",
               dueDate: "",
               invoiceNumber,
+              recipientSnapshot: {
+                name: "Snapshot recipient",
+                streetAddress: "Snapshot street",
+                city: "Helsinki",
+                postalCode: "00100",
+                sapCustomerNumber: "SAP-OLD",
+                businessId: "",
+                ovtCode: "OVT-OLD",
+                reference: "REF-OLD",
+                isCompany: false,
+              },
               type: "land_use_compensation",
               status: "paid",
+              sentAt: "2026-11-17T10:00:00Z",
               billedAmount: "100",
               remainingAmount: "0",
-              invoiceItems: [],
+              invoiceItems: [
+                {
+                  itemType: "land_use_compensation",
+                  description: "Saved invoice row",
+                  amountExcludingVat: "100",
+                },
+              ],
+              payments: [
+                {
+                  id: "payment-1",
+                  paidAmount: "100",
+                  paidDate: "17.11.2026",
+                  filingCode: "LEDGER-1",
+                },
+              ],
             },
           ],
         },
       });
       const props = {
         form,
-        isEditMode: false,
         canReviewSchedules: false,
         paymentSchedules: [],
         onAcceptSchedule: vi.fn(),
@@ -417,9 +562,9 @@ describe("backend-valued contract conventions", () => {
       const { rerender } = render(
         <LandUseBilling {...props} parties={[first, second]} />,
       );
-      expect(screen.getByText("Actual recipient")).toBeTruthy();
+      expect(screen.getByText("Snapshot recipient")).toBeTruthy();
       rerender(<LandUseBilling {...props} parties={[second, first]} />);
-      expect(screen.getByText("Actual recipient")).toBeTruthy();
+      expect(screen.getByText("Snapshot recipient")).toBeTruthy();
       expect(screen.getByText("Korvaus")).toBeTruthy();
       expect(screen.getByText("Maksettu")).toBeTruthy();
       expect(screen.queryByText("undefined")).toBeNull();
@@ -433,6 +578,38 @@ describe("backend-valued contract conventions", () => {
         invoiceNumber === undefined ? "-" : String(invoiceNumber),
       );
       expect(invoiceNumberInput.readOnly).toBe(true);
+      expect(
+        (screen.getByLabelText("Laskunsaaja") as HTMLInputElement).value,
+      ).toBe("Snapshot recipient");
+      expect(
+        (screen.getByLabelText("Katuosoite") as HTMLInputElement).value,
+      ).toBe("Snapshot street");
+      expect(
+        (screen.getByLabelText("Laskutettu") as HTMLInputElement).readOnly,
+      ).toBe(true);
+      expect(
+        (screen.getByLabelText("Laskutettu") as HTMLInputElement).value,
+      ).toContain("100");
+      expect(
+        (screen.getByLabelText("Maksamatta") as HTMLInputElement).value,
+      ).toContain("0");
+      expect(
+        (screen.getByLabelText("Lähetetty SAP:iin") as HTMLInputElement).value,
+      ).toBe("2026-11-17T10:00:00Z");
+      expect((screen.getByLabelText("Selite") as HTMLInputElement).value).toBe(
+        "Saved invoice row",
+      );
+      expect(screen.getByText("17.11.2026")).toBeTruthy();
+      expect(screen.getByText("LEDGER-1")).toBeTruthy();
+      for (const name of [
+        "Lisää lasku",
+        "Lisää laskurivi",
+        "Poista rivi",
+        "Poista lasku",
+        "Hyväksy ja lähetä",
+      ]) {
+        expect(screen.queryByRole("button", { name })).toBeNull();
+      }
       expect(form.getState().values.invoices?.[0].invoiceNumber).toBe(
         invoiceNumber,
       );
@@ -441,6 +618,10 @@ describe("backend-valued contract conventions", () => {
         "73",
       );
       expect(screen.queryByText("Other recipient")).toBeNull();
+      fireEvent.click(
+        screen.getByRole("button", { name: "Sulje laskun tiedot" }),
+      );
+      expect(screen.queryByLabelText("Laskunumero")).toBeNull();
     },
   );
 

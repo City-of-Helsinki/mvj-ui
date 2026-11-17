@@ -334,24 +334,14 @@ vi.mock("../tabs/LandUsePaymentSchedule", () => ({
 }));
 
 vi.mock("../tabs/LandUseBilling", () => ({
-  LandUseBilling: ({
-    form,
-    isEditMode,
-  }: {
-    form: any;
-    isEditMode: boolean;
-  }) => (
+  LandUseBilling: ({ form }: { form: any }) => (
     <Form
       form={form}
       onSubmit={() => {}}
       render={() => (
         <Field name="billingField">
           {({ input }) => (
-            <input
-              aria-label="billing-input"
-              {...input}
-              disabled={!isEditMode}
-            />
+            <input aria-label="billing-input" {...input} readOnly />
           )}
         </Field>
       )}
@@ -502,7 +492,6 @@ vi.mock("../../api/landUseApi", () => ({
   updateDecisions: vi.fn(),
   updateContracts: vi.fn(),
   updatePaymentSchedule: vi.fn(),
-  updateBilling: vi.fn(),
   updateCollaterals: vi.fn(),
 }));
 
@@ -576,9 +565,6 @@ describe("LandUseDetailPage", () => {
       async (_agreementId, values) => values as any,
     );
     vi.mocked(landUseApi.updatePaymentSchedule).mockImplementation(
-      async (_agreementId, values) => values as any,
-    );
-    vi.mocked(landUseApi.updateBilling).mockImplementation(
       async (_agreementId, values) => values as any,
     );
   });

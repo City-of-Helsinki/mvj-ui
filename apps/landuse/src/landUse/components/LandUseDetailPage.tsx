@@ -964,7 +964,7 @@ const LandUseDetailPage: React.FC = () => {
     }),
   );
 
-  const billingPaymentSchedules: LandUseBillingSchedule[] =
+  const billingPaymentSchedules: LandUsePaymentScheduleEntry[] =
     (
       paymentScheduleFormApi.getState()
         .values as LandUsePaymentScheduleFormValues
@@ -1001,7 +1001,7 @@ const LandUseDetailPage: React.FC = () => {
   };
 
   const handleDeclineSchedule = async (
-    schedule: LandUsePaymentScheduleEntry,
+    schedule: LandUseBillingSchedule,
     rejectedReason: string,
   ) => {
     if (isSaving || !hasPermission("approve_paymentschedule")) return;
@@ -1019,9 +1019,7 @@ const LandUseDetailPage: React.FC = () => {
     }
   };
 
-  const handleAcceptSchedule = async (
-    schedule: LandUsePaymentScheduleEntry,
-  ) => {
+  const handleAcceptSchedule = async (schedule: LandUseBillingSchedule) => {
     if (isSaving || !hasPermission("approve_paymentschedule")) return;
     setIsSaving(true);
     try {
@@ -1183,7 +1181,6 @@ const LandUseDetailPage: React.FC = () => {
         return (
           <LandUseBilling
             form={billingFormApi}
-            isEditMode={false}
             canReviewSchedules={
               isEditMode && hasPermission("approve_paymentschedule")
             }
@@ -1193,6 +1190,7 @@ const LandUseDetailPage: React.FC = () => {
               recipientPartyIndex: schedule.recipientPartyIndex,
               status: schedule.status,
               installments: schedule.installments.map((installment) => ({
+                id: installment.id,
                 recipientPartyIndex: installment.recipientPartyIndex,
                 installmentNumber: installment.installmentNumber,
                 installmentTotal: installment.installmentTotal,

@@ -5,15 +5,11 @@ import {
   ButtonSize,
   ButtonVariant,
   Card,
-  DateInput,
   Dialog,
   Fieldset,
   IconAngleDown,
   IconAngleUp,
-  IconPlusCircleFill,
   IconSize,
-  NumberInput,
-  Select,
   TextArea,
   TextInput,
 } from "hds-react";
@@ -22,15 +18,11 @@ import { Field, Form } from "react-final-form";
 import { FieldArray } from "react-final-form-arrays";
 import { useLandUseMetadata } from "@/landUse/api/useLandUseMetadata";
 import {
-  LAND_USE_INVOICE_STATUSES,
   type LandUseInvoice,
   type LandUseInvoiceItem,
-  type LandUseInvoiceStatus,
 } from "@/landUse/options";
 import {
-  getFieldTextValue,
   getOptionsDisplayValue,
-  normalizeSelectValue,
   readOnlyTextValue,
   type SelectOption,
 } from "@/landUse/utils/fieldUtils";
@@ -39,7 +31,6 @@ import {
   formatLandUseEuroDisplayValue,
   parseLandUseNumericValueOrZero,
 } from "@/landUse/utils/number";
-import { ConfirmDeleteButton } from "@/landUse/components/ConfirmDeleteButton";
 import type {
   BasePartyDetails,
   BillingDetails,
@@ -71,7 +62,7 @@ export type LandUseBillingScheduleInstallment = Pick<
   | "installmentTotal"
   | "dueDate"
   | "type"
-> & { id: string; invoiceNumber?: number; items?: LandUseInvoiceItem[] };
+> & { id: string; items?: LandUseInvoiceItem[] };
 
 export type LandUseBillingSchedule = Pick<
   LandUsePaymentScheduleEntry,
@@ -104,7 +95,7 @@ export interface LandUseBillingInvoice extends Pick<
 
 interface LandUseBillingProps {
   form: FormApi<LandUseBillingFormValues>;
-  isEditMode: boolean;
+
   canReviewSchedules: boolean;
   parties: LandUseBillingParty[];
   paymentSchedules: LandUseBillingSchedule[];
@@ -114,29 +105,6 @@ interface LandUseBillingProps {
     rejectedReason: string,
   ) => void;
 }
-
-const handleSelectChange = (
-  selectedOptions: SelectOption[],
-  callback: (value: string | undefined) => void,
-) => {
-  if (selectedOptions.length > 0) {
-    callback(selectedOptions[0].value);
-  } else {
-    callback(undefined);
-  }
-};
-
-function isInvoiceEditableBasedOnStatus(
-  invoice: Pick<LandUseInvoice, "status"> | undefined,
-): boolean {
-  if (!invoice || !invoice.status) return true;
-  return invoice.status === LAND_USE_INVOICE_STATUSES.DRAFT;
-}
-
-export const isInvoiceContentEditableInBilling = (
-  invoice: LandUseBillingInvoice,
-): boolean =>
-  !invoice.sourceInstallmentId && isInvoiceEditableBasedOnStatus(invoice);
 
 const getPartyName = (value: string | undefined): string => value?.trim() ?? "";
 
@@ -221,79 +189,17 @@ const getSelectedPartyInvoiceData = (
   };
 };
 
-const getInvoiceRecipientData = (
-  invoice: LandUseBillingInvoice,
-  parties: LandUseBillingParty[],
-): SelectedPartyInvoiceData =>
-  invoice.recipientSnapshot ??
-  getSelectedPartyInvoiceData(invoice.recipientPartyIndex, parties);
-
-const createEmptyInvoiceTableRow = (
-  recipientPartyIndex: string | undefined,
-): LandUseBillingInvoice => ({
-  recipientPartyIndex,
-  installmentNumber: "",
-  installmentTotal: "",
-  dueDate: "",
-  invoiceNumber: undefined,
-  type: undefined,
-  status: LAND_USE_INVOICE_STATUSES.DRAFT,
-  sentAt: "",
-  billedAmount: "",
-  remainingAmount: "",
-  invoiceItems: [],
-});
-
-const createEmptyInvoiceItemRow = (): LandUseInvoiceItem => ({
-  itemType: "",
-  description: "",
-  amountExcludingVat: "",
-});
-
-const getInvoiceStatusAction = (
-  status: LandUseInvoiceStatus | undefined,
-): { buttonLabel: string; nextStatus: LandUseInvoiceStatus } | null => {
-  if (status === LAND_USE_INVOICE_STATUSES.DRAFT) {
-    return {
-      buttonLabel: "Hyväksy ja lähetä",
-      nextStatus: LAND_USE_INVOICE_STATUSES.OPEN,
-    };
-  }
-
-  return null;
-};
-
 interface InvoiceTableRowProps {
   fieldName: string;
   index: number;
-  isEditMode: boolean;
-  isExistingInvoice: boolean;
   isOpen: boolean;
-  parties: LandUseBillingParty[];
-  partyOptions: SelectOption[];
-  isInvoiceTableRowEditable: boolean;
-  onRemove: (index: number) => void;
   onToggle: (index: number) => void;
 }
-
-const getInvoiceDeleteLabel = (invoiceNumber: number | undefined): string => {
-  if (invoiceNumber !== undefined) {
-    return String(invoiceNumber);
-  }
-
-  return "tämä lasku";
-};
-
-const getSentAtTimestamp = (): string => new Date().toISOString();
 
 const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
   fieldName,
   index,
-  isEditMode,
   isOpen,
-  parties,
-  partyOptions,
-  onRemove,
   onToggle,
 }) => {
   const metadataQuery = useLandUseMetadata();
@@ -307,9 +213,8 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
           invoice.installmentNumber && invoice.installmentTotal
             ? `${invoice.installmentNumber}/${invoice.installmentTotal}`
             : "-";
-        const selectedPartyData = getInvoiceRecipientData(invoice, parties);
-        const canEditInvoiceContent =
-          isEditMode && isInvoiceContentEditableInBilling(invoice);
+        const selectedPartyData: Partial<SelectedPartyInvoiceData> =
+          invoice.recipientSnapshot ?? {};
 
         return (
           <>
@@ -333,12 +238,7 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
                   )}
                 </button>
               </td>
-              <td>
-                {getOptionsDisplayValue(
-                  invoice.recipientPartyIndex,
-                  partyOptions,
-                )}
-              </td>
+              <td>{readOnlyTextValue(selectedPartyData?.name)}</td>
               <td>{readOnlyTextValue(installmentDisplayValue)}</td>
               <td>{readOnlyTextValue(invoice.dueDate)}</td>
               <td>
@@ -368,75 +268,30 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
                     <div className="landuse-grid landuse-grid__bottom-margin">
                       <div className="landuse-grid__column-3">
                         <Field name={`${fieldName}.type`}>
-                          {({ input: typeInput }) =>
-                            canEditInvoiceContent ? (
-                              <Select
-                                id={`landuse-billing-type-${index}`}
-                                options={invoiceTypeOptions}
-                                value={normalizeSelectValue(typeInput.value)}
-                                onChange={(selectedOptions) =>
-                                  handleSelectChange(
-                                    selectedOptions,
-                                    typeInput.onChange,
-                                  )
-                                }
-                                texts={{
-                                  label: "Laskun tyyppi",
-                                  placeholder: "Valitse",
-                                }}
-                              />
-                            ) : (
-                              <TextInput
-                                id={`landuse-billing-type-${index}`}
-                                label="Laskun tyyppi"
-                                value={getOptionsDisplayValue(
-                                  typeInput.value,
-                                  invoiceTypeOptions,
-                                )}
-                                readOnly
-                              />
-                            )
-                          }
+                          {({ input: typeInput }) => (
+                            <TextInput
+                              id={`landuse-billing-type-${index}`}
+                              label="Laskun tyyppi"
+                              value={getOptionsDisplayValue(
+                                typeInput.value,
+                                invoiceTypeOptions,
+                              )}
+                              readOnly
+                            />
+                          )}
                         </Field>
                       </div>
 
                       <div className="landuse-grid__column-3">
                         <Field name={`${fieldName}.recipientPartyIndex`}>
-                          {({ input: recipientInput }) =>
-                            canEditInvoiceContent ? (
-                              <Select
-                                id={`landuse-billing-recipient-${index}`}
-                                options={partyOptions}
-                                value={normalizeSelectValue(
-                                  recipientInput.value,
-                                )}
-                                onChange={(selectedOptions) =>
-                                  handleSelectChange(
-                                    selectedOptions,
-                                    recipientInput.onChange,
-                                  )
-                                }
-                                disabled={partyOptions.length === 0}
-                                texts={{
-                                  label: "Laskunsaaja",
-                                  placeholder:
-                                    partyOptions.length > 0
-                                      ? "Valitse"
-                                      : "Ei osapuolia",
-                                }}
-                              />
-                            ) : (
-                              <TextInput
-                                id={`landuse-billing-recipient-${index}`}
-                                label="Laskunsaaja"
-                                value={getOptionsDisplayValue(
-                                  recipientInput.value,
-                                  partyOptions,
-                                )}
-                                readOnly
-                              />
-                            )
-                          }
+                          {() => (
+                            <TextInput
+                              id={`landuse-billing-recipient-${index}`}
+                              label="Laskunsaaja"
+                              value={readOnlyTextValue(selectedPartyData?.name)}
+                              readOnly
+                            />
+                          )}
                         </Field>
                       </div>
 
@@ -455,26 +310,14 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
 
                       <div className="landuse-grid__column-3">
                         <Field name={`${fieldName}.dueDate`}>
-                          {({ input: dueDateInput }) =>
-                            canEditInvoiceContent ? (
-                              <DateInput
-                                id={`landuse-billing-due-date-${index}`}
-                                label="Eräpäivä"
-                                value={dueDateInput.value}
-                                onChange={dueDateInput.onChange}
-                                placeholder="DD.MM.YYYY"
-                                language="fi"
-                                disableConfirmation
-                              />
-                            ) : (
-                              <TextInput
-                                id={`landuse-billing-due-date-${index}`}
-                                label="Eräpäivä"
-                                value={readOnlyTextValue(dueDateInput.value)}
-                                readOnly
-                              />
-                            )
-                          }
+                          {({ input: dueDateInput }) => (
+                            <TextInput
+                              id={`landuse-billing-due-date-${index}`}
+                              label="Eräpäivä"
+                              value={readOnlyTextValue(dueDateInput.value)}
+                              readOnly
+                            />
+                          )}
                         </Field>
                       </div>
 
@@ -540,49 +383,31 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
 
                       <div className="landuse-grid__column-1">
                         <Field name={`${fieldName}.installmentNumber`}>
-                          {({ input: installmentNumberInput }) =>
-                            canEditInvoiceContent ? (
-                              <NumberInput
-                                id={`landuse-billing-installment-number-${index}`}
-                                label="Laskutuserä"
-                                value={installmentNumberInput.value}
-                                onChange={installmentNumberInput.onChange}
-                              />
-                            ) : (
-                              <TextInput
-                                id={`landuse-billing-installment-number-${index}`}
-                                label="Laskutuserä"
-                                value={readOnlyTextValue(
-                                  installmentNumberInput.value,
-                                )}
-                                readOnly
-                              />
-                            )
-                          }
+                          {({ input: installmentNumberInput }) => (
+                            <TextInput
+                              id={`landuse-billing-installment-number-${index}`}
+                              label="Laskutuserä"
+                              value={readOnlyTextValue(
+                                installmentNumberInput.value,
+                              )}
+                              readOnly
+                            />
+                          )}
                         </Field>
                       </div>
 
                       <div className="landuse-grid__column-2">
                         <Field name={`${fieldName}.installmentTotal`}>
-                          {({ input: installmentTotalInput }) =>
-                            canEditInvoiceContent ? (
-                              <NumberInput
-                                id={`landuse-billing-installment-total-${index}`}
-                                label="Laskutuseriä yhteensä"
-                                value={installmentTotalInput.value}
-                                onChange={installmentTotalInput.onChange}
-                              />
-                            ) : (
-                              <TextInput
-                                id={`landuse-billing-installment-total-${index}`}
-                                label="Laskutuseriä yhteensä"
-                                value={readOnlyTextValue(
-                                  installmentTotalInput.value,
-                                )}
-                                readOnly
-                              />
-                            )
-                          }
+                          {({ input: installmentTotalInput }) => (
+                            <TextInput
+                              id={`landuse-billing-installment-total-${index}`}
+                              label="Laskutuseriä yhteensä"
+                              value={readOnlyTextValue(
+                                installmentTotalInput.value,
+                              )}
+                              readOnly
+                            />
+                          )}
                         </Field>
                       </div>
 
@@ -590,10 +415,6 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
                         <Field name={`${fieldName}.status`}>
                           {({ input: statusInput }) =>
                             (() => {
-                              const statusAction = getInvoiceStatusAction(
-                                statusInput.value,
-                              );
-
                               return (
                                 <>
                                   <TextInput
@@ -606,52 +427,6 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
                                     )}
                                     readOnly
                                   />
-                                  {isEditMode && statusAction && (
-                                    <div>
-                                      <Button
-                                        type="button"
-                                        variant={ButtonVariant.Primary}
-                                        size={ButtonSize.Small}
-                                        onClick={() => {
-                                          const nextSentAtValue =
-                                            statusAction.nextStatus ===
-                                            LAND_USE_INVOICE_STATUSES.OPEN
-                                              ? getSentAtTimestamp()
-                                              : (invoice.sentAt ?? "");
-                                          if (
-                                            statusAction.nextStatus ===
-                                            LAND_USE_INVOICE_STATUSES.OPEN
-                                          ) {
-                                            const invoiceAmount =
-                                              invoice.invoiceItems?.reduce(
-                                                (sum, item) => {
-                                                  const amount = Number(
-                                                    item.amountExcludingVat,
-                                                  );
-                                                  return sum + amount;
-                                                },
-                                                0,
-                                              );
-                                            input.onChange({
-                                              ...invoice,
-                                              status: statusAction.nextStatus,
-                                              sentAt: nextSentAtValue,
-                                              billedAmount: invoiceAmount,
-                                              remainingAmount: invoiceAmount,
-                                            });
-                                          } else {
-                                            input.onChange({
-                                              ...invoice,
-                                              status: statusAction.nextStatus,
-                                              sentAt: nextSentAtValue,
-                                            });
-                                          }
-                                        }}
-                                      >
-                                        {statusAction.buttonLabel}
-                                      </Button>
-                                    </div>
-                                  )}
                                 </>
                               );
                             })()
@@ -681,10 +456,9 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
                               <NumericDecimalInput
                                 id={`landuse-billing-billed-amount-${index}`}
                                 label="Laskutettu"
-                                isEditMode={canEditInvoiceContent}
+                                isEditMode={false}
                                 value={billedAmountInput.value}
                                 unit="€"
-                                onChange={billedAmountInput.onChange}
                               />
                             )}
                           </Field>
@@ -705,10 +479,9 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
                               <NumericDecimalInput
                                 id={`landuse-billing-remaining-amount-${index}`}
                                 label="Maksamatta"
-                                isEditMode={canEditInvoiceContent}
+                                isEditMode={false}
                                 value={remainingAmountInput.value}
                                 unit="€"
-                                onChange={remainingAmountInput.onChange}
                               />
                             )}
                           </Field>
@@ -778,16 +551,11 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
                                                   inputMode="text"
                                                   id={`landuse-billing-invoice-row-description-${index}-${invoiceItemIndex}`}
                                                   label="Selite"
-                                                  value={getFieldTextValue(
-                                                    canEditInvoiceContent,
+                                                  value={readOnlyTextValue(
                                                     descriptionInput.value,
                                                   )}
-                                                  onChange={
-                                                    descriptionInput.onChange
-                                                  }
-                                                  readOnly={
-                                                    !canEditInvoiceContent
-                                                  }
+
+                                                  readOnly
                                                 />
                                               )}
                                             </Field>
@@ -797,39 +565,17 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
                                             <Field
                                               name={`${invoiceItemFieldName}.itemType`}
                                             >
-                                              {({ input: itemTypeInput }) =>
-                                                canEditInvoiceContent ? (
-                                                  <Select
-                                                    id={`landuse-billing-invoice-row-item-type-${index}-${invoiceItemIndex}`}
-                                                    texts={{
-                                                      label:
-                                                        "Laskurivin tyyppi",
-                                                      placeholder: "Valitse",
-                                                    }}
-                                                    options={
-                                                      invoiceItemTypeOptions
-                                                    }
-                                                    value={itemTypeInput.value}
-                                                    onChange={(selected) => {
-                                                      if (selected.length > 0) {
-                                                        itemTypeInput.onChange(
-                                                          selected[0].value,
-                                                        );
-                                                      }
-                                                    }}
-                                                  />
-                                                ) : (
-                                                  <TextInput
-                                                    id={`landuse-billing-invoice-row-item-type-${index}-${invoiceItemIndex}`}
-                                                    label="Laskurivin tyyppi"
-                                                    value={getOptionsDisplayValue(
-                                                      itemTypeInput.value,
-                                                      invoiceItemTypeOptions,
-                                                    )}
-                                                    readOnly
-                                                  />
-                                                )
-                                              }
+                                              {({ input: itemTypeInput }) => (
+                                                <TextInput
+                                                  id={`landuse-billing-invoice-row-item-type-${index}-${invoiceItemIndex}`}
+                                                  label="Laskurivin tyyppi"
+                                                  value={getOptionsDisplayValue(
+                                                    itemTypeInput.value,
+                                                    invoiceItemTypeOptions,
+                                                  )}
+                                                  readOnly
+                                                />
+                                              )}
                                             </Field>
                                           </div>
 
@@ -842,36 +588,13 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
                                                   id={`landuse-billing-invoice-row-amount-${index}-${invoiceItemIndex}`}
                                                   label="Summa (€)"
                                                   value={amountInput.value}
-                                                  onChange={
-                                                    amountInput.onChange
-                                                  }
+
                                                   unit="€"
-                                                  isEditMode={
-                                                    canEditInvoiceContent
-                                                  }
+                                                  isEditMode={false}
                                                 />
                                               </div>
                                             )}
                                           </Field>
-
-                                          {canEditInvoiceContent && (
-                                            <div className="landuse-grid__column-2 landuse-compensations-table__detail-actions">
-                                              <Button
-                                                type="button"
-                                                size={ButtonSize.Small}
-                                                variant={
-                                                  ButtonVariant.Secondary
-                                                }
-                                                onClick={() =>
-                                                  invoiceItemFields.remove(
-                                                    invoiceItemIndex,
-                                                  )
-                                                }
-                                              >
-                                                Poista rivi
-                                              </Button>
-                                            </div>
-                                          )}
                                         </div>
                                       </Card>
                                     ),
@@ -879,44 +602,12 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
                                 ) : (
                                   <p>Ei laskurivejä.</p>
                                 )}
-
-                                {canEditInvoiceContent && (
-                                  <div>
-                                    <Button
-                                      type="button"
-                                      variant={ButtonVariant.Supplementary}
-                                      size={ButtonSize.Small}
-                                      iconStart={<IconPlusCircleFill />}
-                                      onClick={() =>
-                                        invoiceItemFields.push(
-                                          createEmptyInvoiceItemRow(),
-                                        )
-                                      }
-                                    >
-                                      Lisää laskurivi
-                                    </Button>
-                                  </div>
-                                )}
                               </>
                             )}
                           </FieldArray>
                         </Fieldset>
                       </div>
                     </div>
-                    {/* TODO: Do not allow deleting sent invoices, for now enabled for testing */}
-                    {canEditInvoiceContent && (
-                      <div className="landuse-compensations-table__detail-actions">
-                        <ConfirmDeleteButton
-                          id={`billing-delete-${index}`}
-                          buttonLabel="Poista lasku"
-                          buttonVariant={ButtonVariant.Danger}
-                          buttonSize={ButtonSize.Small}
-                          onConfirm={() => onRemove(index)}
-                          dialogTitle="Poista lasku"
-                          dialogContent={`Haluatko varmasti poistaa laskun ${getInvoiceDeleteLabel(invoice.invoiceNumber)}?`}
-                        />
-                      </div>
-                    )}
                   </div>
                 </td>
               </tr>
@@ -932,7 +623,7 @@ interface InvoiceReviewTableProps {
   schedules: LandUseBillingSchedule[];
   parties: LandUseBillingParty[];
   partyOptions: SelectOption[];
-  isEditMode: boolean;
+
   canReviewSchedules: boolean;
   onAccept: (schedule: LandUseBillingSchedule) => void;
   onDecline: (schedule: LandUseBillingSchedule, rejectedReason: string) => void;
@@ -942,7 +633,6 @@ const InvoiceReviewTable: React.FC<InvoiceReviewTableProps> = ({
   schedules,
   parties,
   partyOptions,
-  isEditMode,
   canReviewSchedules,
   onAccept,
   onDecline,
@@ -1367,7 +1057,6 @@ const InvoiceReviewTable: React.FC<InvoiceReviewTableProps> = ({
 
 export const LandUseBilling: React.FC<LandUseBillingProps> = ({
   form,
-  isEditMode,
   canReviewSchedules,
   parties,
   paymentSchedules,
@@ -1388,43 +1077,6 @@ export const LandUseBilling: React.FC<LandUseBillingProps> = ({
       form={form}
       onSubmit={() => {}}
       render={({ handleSubmit }) => {
-        const existingInvoices =
-          (
-            form.getState().initialValues as
-              LandUseBillingFormValues | undefined
-          )?.invoices ?? [];
-
-        const handleAddInvoice = (
-          push: (value: LandUseBillingInvoice) => void,
-          currentLength: number,
-        ) => {
-          push(createEmptyInvoiceTableRow(partyOptions[0]?.value));
-          setOpenInvoiceIndex(currentLength);
-        };
-
-        const handleRemoveInvoice = (
-          remove: (index: number) => void,
-          index: number,
-        ) => {
-          remove(index);
-
-          setOpenInvoiceIndex((currentOpenInvoiceIndex) => {
-            if (currentOpenInvoiceIndex === null) {
-              return null;
-            }
-
-            if (currentOpenInvoiceIndex === index) {
-              return null;
-            }
-
-            if (currentOpenInvoiceIndex > index) {
-              return currentOpenInvoiceIndex - 1;
-            }
-
-            return currentOpenInvoiceIndex;
-          });
-        };
-
         const handleToggleInvoice = (index: number) => {
           setOpenInvoiceIndex((currentOpenInvoiceIndex) =>
             currentOpenInvoiceIndex === index ? null : index,
@@ -1439,7 +1091,7 @@ export const LandUseBilling: React.FC<LandUseBillingProps> = ({
               schedules={schedulesPendingReview}
               parties={parties}
               partyOptions={partyOptions}
-              isEditMode={isEditMode}
+
               canReviewSchedules={canReviewSchedules}
               onAccept={onAcceptSchedule}
               onDecline={onDeclineSchedule}
@@ -1475,22 +1127,9 @@ export const LandUseBilling: React.FC<LandUseBillingProps> = ({
                                   key={fieldName}
                                   fieldName={fieldName}
                                   index={index}
-                                  isEditMode={isEditMode}
-                                  isExistingInvoice={Boolean(
-                                    existingInvoices[index],
-                                  )}
+
                                   isOpen={openInvoiceIndex === index}
-                                  parties={parties}
-                                  partyOptions={partyOptions}
-                                  isInvoiceTableRowEditable={isInvoiceEditableBasedOnStatus(
-                                    existingInvoices[index] as LandUseInvoice,
-                                  )}
-                                  onRemove={(removeIndex) =>
-                                    handleRemoveInvoice(
-                                      fields.remove,
-                                      removeIndex,
-                                    )
-                                  }
+
                                   onToggle={handleToggleInvoice}
                                 />
                               ))
@@ -1501,21 +1140,6 @@ export const LandUseBilling: React.FC<LandUseBillingProps> = ({
                             )}
                           </tbody>
                         </table>
-
-                        {isEditMode && (
-                          <div className="landuse-invoicing__invoice-actions">
-                            <Button
-                              type="button"
-                              variant={ButtonVariant.Supplementary}
-                              iconStart={<IconPlusCircleFill />}
-                              onClick={() =>
-                                handleAddInvoice(fields.push, fields.length)
-                              }
-                            >
-                              Lisää lasku
-                            </Button>
-                          </div>
-                        )}
                       </>
                     )}
                   </FieldArray>
