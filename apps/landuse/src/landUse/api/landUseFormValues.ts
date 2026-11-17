@@ -1,4 +1,3 @@
-import type { LandUseBillingFormValues } from "@/landUse/components/tabs/LandUseBilling";
 import type { LandUsePaymentScheduleFormValues } from "@/landUse/components/tabs/LandUsePaymentSchedule";
 import type { LandUseSummaryFormValues } from "@/landUse/components/tabs/LandUseSummary";
 import type {
@@ -75,7 +74,3 @@ export const createEmptyPaymentScheduleFormValues =
   (): LandUsePaymentScheduleFormValues => ({
     paymentSchedules: [],
   });
-
-export const createEmptyBillingFormValues = (): LandUseBillingFormValues => ({
-  invoices: [],
-});

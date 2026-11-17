@@ -1,18 +1,10 @@
 import { describe, expect, it } from "vitest";
-import {
-  createAcceptedBillingInvoices,
-  getSchedulesPendingInvoiceReview,
-  setPaymentScheduleStatus,
-} from "@/landUse/utils/invoiceReview";
+import { getSchedulesPendingInvoiceReview } from "@/landUse/utils/invoiceReview";
 import {
   LAND_USE_INVOICE_STATUSES,
   LAND_USE_PAYMENT_SCHEDULE_STATUSES,
   type LandUseInvoice,
 } from "@/landUse/options";
-import {
-  isInvoiceContentEditableInBilling,
-  type LandUseBillingInvoice,
-} from "@/landUse/components/tabs/LandUseBilling";
 import {
   getMissingPaymentScheduleFieldLabels,
   type LandUsePaymentScheduleEntry,
@@ -103,33 +95,6 @@ describe("invoice review workflow", () => {
     ]);
   });
 
-  it("creates one open billing invoice per accepted schedule installment", () => {
-    const result = createAcceptedBillingInvoices(createSchedule(), []);
-
-    expect(result).toHaveLength(2);
-    expect(result[0]).toMatchObject({
-      status: LAND_USE_INVOICE_STATUSES.OPEN,
-      sourceInstallmentId: "installment-1",
-    });
-    expect(result[0].sentAt).toBeTruthy();
-    expect(result[0].invoiceNumber).toBeUndefined();
-    expect(result[1].sourceInstallmentId).toBe("installment-2");
-  });
-
-  it("does not duplicate installments already represented in billing", () => {
-    const existingInvoice: LandUseBillingInvoice = {
-      ...createInvoice("1"),
-      sourceInstallmentId: "installment-1",
-    };
-
-    const result = createAcceptedBillingInvoices(createSchedule(), [
-      existingInvoice,
-    ]);
-
-    expect(result).toHaveLength(1);
-    expect(result[0].sourceInstallmentId).toBe("installment-2");
-  });
-
   it("derives review rows only from schedules pending approval", () => {
     const pendingSchedule = {
       ...createSchedule(),
@@ -140,83 +105,5 @@ describe("invoice review workflow", () => {
     expect(
       getSchedulesPendingInvoiceReview([pendingSchedule, draftSchedule]),
     ).toEqual([pendingSchedule]);
-  });
-
-  it("rejects only the matching payment schedule and stores the reason", () => {
-    const schedule = createSchedule();
-    const otherSchedule = { ...createSchedule(), id: "schedule-2" };
-
-    const result = setPaymentScheduleStatus(
-      [schedule, otherSchedule],
-      schedule.id,
-      LAND_USE_PAYMENT_SCHEDULE_STATUSES.REJECTED,
-      "Tarkista laskurivit",
-    );
-
-    expect(result[0].status).toBe(LAND_USE_PAYMENT_SCHEDULE_STATUSES.REJECTED);
-    expect(result[0].rejectedReason).toBe("Tarkista laskurivit");
-    expect(result[1]).toBe(otherSchedule);
-  });
-
-  it("preserves a rejection reason unless explicitly cleared", () => {
-    const rejectedSchedule = {
-      ...createSchedule(),
-      status: LAND_USE_PAYMENT_SCHEDULE_STATUSES.REJECTED,
-      rejectedReason: "Tarkista laskurivit",
-    };
-
-    const pendingResult = setPaymentScheduleStatus(
-      [rejectedSchedule],
-      rejectedSchedule.id,
-      LAND_USE_PAYMENT_SCHEDULE_STATUSES.PENDING_APPROVAL,
-    );
-    const approvedResult = setPaymentScheduleStatus(
-      pendingResult,
-      rejectedSchedule.id,
-      LAND_USE_PAYMENT_SCHEDULE_STATUSES.APPROVED,
-      null,
-    );
-
-    expect(pendingResult[0].rejectedReason).toBe("Tarkista laskurivit");
-    expect(approvedResult[0].rejectedReason).toBeNull();
-  });
-
-  it("keeps schedule-derived review invoices read-only in billing", () => {
-    const reviewInvoice = createAcceptedBillingInvoices(
-      createSchedule(),
-      [],
-    )[0];
-
-    expect(isInvoiceContentEditableInBilling(reviewInvoice)).toBe(false);
-    expect(
-      isInvoiceContentEditableInBilling({
-        ...reviewInvoice,
-        status: LAND_USE_INVOICE_STATUSES.OPEN,
-      }),
-    ).toBe(false);
-  });
-
-  it("allows manual draft invoices to be edited but locks them when open", () => {
-    const manualInvoice = createInvoice("1");
-
-    expect(isInvoiceContentEditableInBilling(manualInvoice)).toBe(true);
-    expect(
-      isInvoiceContentEditableInBilling({
-        ...manualInvoice,
-        status: LAND_USE_INVOICE_STATUSES.OPEN,
-      }),
-    ).toBe(false);
-    expect(
-      isInvoiceContentEditableInBilling({
-        ...manualInvoice,
-        status: LAND_USE_INVOICE_STATUSES.PAID,
-      }),
-    ).toBe(false);
-    expect(
-      isInvoiceContentEditableInBilling({
-        ...manualInvoice,
-        status: LAND_USE_INVOICE_STATUSES.CREDITED,
-      }),
-    ).toBe(false);
   });
 });
