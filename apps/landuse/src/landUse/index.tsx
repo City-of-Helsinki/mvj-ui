@@ -5,7 +5,7 @@ import { BrowserRouter } from "react-router";
 import { LoginProvider } from "hds-react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import LandUseApp from "@/landUse/LandUseApp";
-import { LanduseApiError } from "@/landUse/api/fetchClient";
+import { isLanduseApiError } from "@/landUse/api/fetchClient";
 import { removeLegacyLandUseDb } from "@/landUse/api/removeLegacyLandUseDb";
 import { loginProviderProperties } from "@/landUse/auth/constants";
 import "@/landUse/landUse.scss"; // Only import landUse styles
@@ -20,7 +20,7 @@ const createQueryClient = () =>
         refetchOnWindowFocus: false,
         retry: (failureCount, error) =>
           failureCount < QUERY_CLIENT_MAX_RETRIES &&
-          (!(error instanceof LanduseApiError) || error.status >= 500),
+          (!isLanduseApiError(error) || error.status >= 500),
       },
     },
   });

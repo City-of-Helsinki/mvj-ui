@@ -33,8 +33,37 @@ export class LanduseApiError extends Error {
   }
 }
 
+export const isLanduseApiError = (error: unknown): error is LanduseApiError =>
+  error instanceof LanduseApiError ||
+  (typeof error === "object" &&
+    error !== null &&
+    // Matches by name too, since `instanceof` can fail across module/realm boundaries.
+    (error as { name?: unknown }).name === "LanduseApiError" &&
+    typeof (error as { status?: unknown }).status === "number");
+
+const collectErrorMessages = (value: unknown, prefix: string): string[] => {
+  if (typeof value === "string") {
+    return [`${prefix}${value}`];
+  }
+  if (typeof value === "number" || typeof value === "boolean") {
+    return [`${prefix}${value}`];
+  }
+  if (Array.isArray(value)) {
+    return value.flatMap((item) => collectErrorMessages(item, prefix));
+  }
+  if (value && typeof value === "object") {
+    return Object.entries(value).flatMap(([field, nested]) =>
+      collectErrorMessages(
+        nested,
+        field === "detail" ? prefix : `${prefix}${field}: `,
+      ),
+    );
+  }
+  return [];
+};
+
 export const getLanduseApiErrorMessage = (error: unknown): string => {
-  if (!(error instanceof LanduseApiError)) {
+  if (!isLanduseApiError(error)) {
     return `${error}`;
   }
 
@@ -42,18 +71,7 @@ export const getLanduseApiErrorMessage = (error: unknown): string => {
     return error.message;
   }
 
-  const messages = Object.entries(error.body).flatMap(([field, value]) => {
-    const prefix = field === "detail" ? "" : `${field}: `;
-    if (Array.isArray(value)) {
-      return value.map((item) => `${prefix}${String(item)}`);
-    }
-    if (typeof value === "string") {
-      return [`${prefix}${value}`];
-    }
-    return [];
-  });
-
-  return messages.join(" ") || error.message;
+  return collectErrorMessages(error.body, "").join(" ") || error.message;
 };
 
 const getQueryString = (query?: LanduseApiQuery): string => {
