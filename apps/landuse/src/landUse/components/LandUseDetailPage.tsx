@@ -22,6 +22,7 @@ import {
   getParties,
   getPaymentSchedule,
   rejectPaymentSchedule,
+  returnPaymentScheduleToDraft,
   submitPaymentSchedule,
   updateCompensations,
   updateCollaterals,
@@ -1000,6 +1001,32 @@ const LandUseDetailPage: React.FC = () => {
     }
   };
 
+  const handleReturnScheduleToDraft = async (
+    schedule: LandUsePaymentScheduleEntry,
+  ): Promise<void> => {
+    if (isSaving || !canChangeTab("paymentSchedule")) return;
+    setIsSaving(true);
+    try {
+      await returnPaymentScheduleToDraft(schedule.id);
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: ["land-use", agreementId, "paymentSchedule"],
+        }),
+        queryClient.invalidateQueries({
+          queryKey: ["land-use", agreementId, "billing"],
+        }),
+      ]);
+      showLanduseSuccessNotification(
+        "Maksusuunnitelma palautettu luonnokseksi.",
+      );
+    } catch (error) {
+      showLanduseApiErrorNotification(error);
+      throw error;
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   const handleDeclineSchedule = async (
     schedule: LandUseBillingSchedule,
     rejectedReason: string,
@@ -1175,6 +1202,7 @@ const LandUseDetailPage: React.FC = () => {
             }
             agreementIdentifier={agreementId}
             onSendToInvoicing={handleSendToInvoicing}
+            onReturnToDraft={handleReturnScheduleToDraft}
           />
         );
       case "billing":
@@ -1189,15 +1217,17 @@ const LandUseDetailPage: React.FC = () => {
               id: schedule.id,
               recipientPartyIndex: schedule.recipientPartyIndex,
               status: schedule.status,
-              installments: schedule.installments.map((installment) => ({
-                id: installment.id,
-                recipientPartyIndex: installment.recipientPartyIndex,
-                installmentNumber: installment.installmentNumber,
-                installmentTotal: installment.installmentTotal,
-                dueDate: installment.dueDate,
-                type: installment.type,
-                items: installment.items,
-              })),
+              installments: schedule.installments
+                .filter((installment) => !installment.invoice)
+                .map((installment) => ({
+                  id: installment.id,
+                  recipientPartyIndex: installment.recipientPartyIndex,
+                  installmentNumber: installment.installmentNumber,
+                  installmentTotal: installment.installmentTotal,
+                  dueDate: installment.dueDate,
+                  type: installment.type,
+                  items: installment.items,
+                })),
             }))}
             onAcceptSchedule={handleAcceptSchedule}
             onDeclineSchedule={handleDeclineSchedule}

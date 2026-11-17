@@ -97,6 +97,7 @@ interface LandUsePaymentScheduleProps {
   asemakaavanLainvoimaisuusPvm: AsemakaavaListItem["asemakaavanLainvoimaisuusPvm"];
   agreementIdentifier: string;
   onSendToInvoicing: (schedule: LandUsePaymentScheduleEntry) => Promise<void>;
+  onReturnToDraft?: (schedule: LandUsePaymentScheduleEntry) => Promise<void>;
 }
 
 type SelectedPartyInvoiceData = Pick<
@@ -142,8 +143,9 @@ export const getMissingPaymentScheduleFieldLabels = (
     isPaymentScheduleFieldFilled(value) ? [] : [label],
   );
 
-  const missingInstallmentFields = schedule.installments.flatMap(
-    (installment, installmentIndex) => {
+  const missingInstallmentFields = schedule.installments
+    .filter((installment) => !installment.invoice)
+    .flatMap((installment, installmentIndex) => {
       const secondItemKind = getInterestKind(
         installment.items?.[1]?.itemType ?? "",
       );
@@ -165,8 +167,7 @@ export const getMissingPaymentScheduleFieldLabels = (
           ? []
           : [`${installmentLabel}: ${label}`],
       );
-    },
-  );
+    });
 
   return [
     ...missingPartyFields,
@@ -1113,6 +1114,7 @@ interface PartyGroupSectionProps {
   contractOptions: ContractOption[];
   onRemoveSchedule: (index: number) => void;
   onSendToInvoicing: (schedule: LandUsePaymentScheduleEntry) => Promise<void>;
+  onReturnToDraft?: (schedule: LandUsePaymentScheduleEntry) => Promise<void>;
 }
 
 const getPartyGroupHeadingId = (partyValue: string): string =>
@@ -1129,10 +1131,32 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
   contractOptions,
   onRemoveSchedule,
   onSendToInvoicing,
+  onReturnToDraft,
 }) => {
   const metadataQuery = useLandUseMetadata();
   const [scheduleToSend, setScheduleToSend] =
     useState<LandUsePaymentScheduleEntry | null>(null);
+  const [scheduleToReturn, setScheduleToReturn] =
+    useState<LandUsePaymentScheduleEntry | null>(null);
+  const [isReturning, setIsReturning] = useState(false);
+  const invoicesToDelete =
+    scheduleToReturn?.installments.filter(
+      ({ invoice }) =>
+        invoice?.status === LAND_USE_INVOICE_STATUSES.WAITING_TO_BE_SENT &&
+        !invoice.sentAt,
+    ).length ?? 0;
+  const handleReturnConfirm = async () => {
+    if (!scheduleToReturn || !onReturnToDraft || isReturning) return;
+    setIsReturning(true);
+    try {
+      await onReturnToDraft(scheduleToReturn);
+      setScheduleToReturn(null);
+    } catch {
+      return;
+    } finally {
+      setIsReturning(false);
+    }
+  };
 
   const closeSendDialog = () => {
     setScheduleToSend(null);
@@ -1309,6 +1333,21 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
                             metadataQuery.data?.payment_schedule_statuses ?? [],
                           )}
                         </StatusLabel>
+                        {isEditMode &&
+                          onReturnToDraft &&
+                          (schedule.status ===
+                            LAND_USE_PAYMENT_SCHEDULE_STATUSES.APPROVED ||
+                            schedule.status ===
+                              LAND_USE_PAYMENT_SCHEDULE_STATUSES.PENDING_APPROVAL) && (
+                            <Button
+                              type="button"
+                              variant={ButtonVariant.Secondary}
+                              size={ButtonSize.Small}
+                              onClick={() => setScheduleToReturn(schedule)}
+                            >
+                              Palauta luonnokseksi
+                            </Button>
+                          )}
                         {canSubmitSchedules && statusAction && (
                           <Button
                             type="button"
@@ -1320,15 +1359,19 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
                           </Button>
                         )}
                       </div>
-                      {isEditMode && isScheduleEditable(schedule.status) && (
-                        <ConfirmDeleteButton
-                          id={`payment-schedule-${index}-delete`}
-                          buttonLabel="Poista maksusuunnitelma"
-                          onConfirm={() => onRemoveSchedule(index)}
-                          dialogTitle="Poista maksusuunnitelma"
-                          dialogContent={`Haluatko varmasti poistaa maksusuunnitelman ${scheduleListIndex + 1}?`}
-                        />
-                      )}
+                      {isEditMode &&
+                        isScheduleEditable(schedule.status) &&
+                        !schedule.installments.some(
+                          (installment) => installment.invoice,
+                        ) && (
+                          <ConfirmDeleteButton
+                            id={`payment-schedule-${index}-delete`}
+                            buttonLabel="Poista maksusuunnitelma"
+                            onConfirm={() => onRemoveSchedule(index)}
+                            dialogTitle="Poista maksusuunnitelma"
+                            dialogContent={`Haluatko varmasti poistaa maksusuunnitelman ${scheduleListIndex + 1}?`}
+                          />
+                        )}
                     </div>
                     {schedule.status ===
                       LAND_USE_PAYMENT_SCHEDULE_STATUSES.REJECTED &&
@@ -1513,6 +1556,42 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
         },
       )}
       <Dialog
+        id={`landuse-return-payment-schedule-${partyValue}`}
+        isOpen={scheduleToReturn !== null}
+        aria-labelledby={`landuse-return-payment-schedule-${partyValue}-title`}
+        closeButtonLabelText="Sulje"
+        close={() => {
+          if (!isReturning) setScheduleToReturn(null);
+        }}
+      >
+        <Dialog.Header
+          id={`landuse-return-payment-schedule-${partyValue}-title`}
+          title="Palauta maksusuunnitelma luonnokseksi"
+        />
+        <Dialog.Content>
+          Suunnitelmaan liittyy {invoicesToDelete} kappaletta laskuja, jotka
+          poistetaan jos suunnitelma palautetaan luonnos tilaan
+        </Dialog.Content>
+        <Dialog.ActionButtons>
+          <Button
+            type="button"
+            variant={ButtonVariant.Secondary}
+            disabled={isReturning}
+            onClick={() => setScheduleToReturn(null)}
+          >
+            Peruuta
+          </Button>
+          <Button
+            type="button"
+            variant={ButtonVariant.Primary}
+            disabled={isReturning}
+            onClick={handleReturnConfirm}
+          >
+            Palauta luonnokseksi
+          </Button>
+        </Dialog.ActionButtons>
+      </Dialog>
+      <Dialog
         id={`landuse-send-payment-schedule-${partyValue}`}
         isOpen={scheduleToSend !== null}
         aria-labelledby={`landuse-send-payment-schedule-${partyValue}-title`}
@@ -1569,6 +1648,7 @@ export const LandUsePaymentSchedule: React.FC<LandUsePaymentScheduleProps> = ({
   asemakaavanLainvoimaisuusPvm,
   agreementIdentifier,
   onSendToInvoicing,
+  onReturnToDraft,
 }) => {
   const metadataQuery = useLandUseMetadata();
   const [isBulkCreateOpen, setIsBulkCreateOpen] = useState(false);
@@ -1746,6 +1826,7 @@ export const LandUsePaymentSchedule: React.FC<LandUsePaymentScheduleProps> = ({
                               contractOptions={contractOptions}
                               onRemoveSchedule={fields.remove}
                               onSendToInvoicing={onSendToInvoicing}
+                              onReturnToDraft={onReturnToDraft}
                             />
                           ))}
                         </>
