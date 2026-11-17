@@ -248,7 +248,7 @@ const SapInvoicesListPage: React.FC = () => {
 
   const handleRowClick = useCallback((id, row) => {
     window.open(
-      `${getRouteById(Routes.LEASES)}/${row.lease.id}?tab=6&opened_invoice=${id}`,
+      `${getRouteById(Routes.LEASE)}/${row.lease.identifier.identifier}?tab=6&opened_invoice=${id}`,
       "_blank",
     );
   }, []);

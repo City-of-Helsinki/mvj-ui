@@ -97,7 +97,8 @@ const LeaseHistoryItem = ({
   const MAX_TITLE_LENGTH = 16;
   const title = getTitleText(titleString, MAX_TITLE_LENGTH);
   const externalLinkHref = (() => {
-    if (lease) return `${getRouteById(Routes.LEASES)}/${lease.id}`;
+    if (lease)
+      return `${getRouteById(Routes.LEASE)}/${lease.identifier.identifier}`;
     if (itemType === LeaseHistoryItemTypes.PLOTSEARCH && id)
       return `${getRouteById(Routes.PLOT_SEARCH)}/${id}`;
     if (itemType === LeaseHistoryItemTypes.PLOT_APPLICATION && id)

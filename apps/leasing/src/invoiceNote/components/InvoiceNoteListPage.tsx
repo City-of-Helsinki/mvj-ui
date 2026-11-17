@@ -53,6 +53,7 @@ import {
 } from "@/invoiceNote/selectors";
 import { getUserActiveServiceUnit } from "@/usersPermissions/selectors";
 import type { Attributes } from "types";
+import type { Lease } from "@/leases/types";
 
 const getColumns = (invoiceNoteAttributes: Attributes) => {
   const columns = [];
@@ -63,11 +64,11 @@ const getColumns = (invoiceNoteAttributes: Attributes) => {
     columns.push({
       key: "lease",
       text: InvoiceNoteFieldTitles.LEASE,
-      renderer: (val) =>
+      renderer: (val: Lease) =>
         val ? (
           <ExternalLink
             className="no-margin"
-            href={`${getRouteById(Routes.LEASES)}/${val.id}?tab=6`}
+            href={`${getRouteById(Routes.LEASE)}/${val.identifier.identifier}?tab=6`}
             text={getContentLeaseIdentifier(val) || "-"}
           />
         ) : (

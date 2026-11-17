@@ -550,9 +550,9 @@ const LeaseListPage: React.FC = () => {
     );
   };
 
-  const handleRowClick = (id) => {
+  const handleRowClick = (identifier: string) => {
     return navigate({
-      pathname: `${getRouteById(Routes.LEASES)}/${id}`,
+      pathname: `${getRouteById(Routes.LEASE)}/${identifier}`,
       search: location.search,
     });
   };
@@ -573,22 +573,22 @@ const LeaseListPage: React.FC = () => {
 
   const renderClickableCell = (
     content: React.ReactNode,
-    rowId: number | string,
+    identifier: string,
   ) => {
     return (
       <button
         className="lease-list-row-link"
         type="button"
-        onClick={() => handleRowClick(rowId)}
+        onClick={() => handleRowClick(identifier)}
       >
         {content}
       </button>
     );
   };
 
-  const getLeaseDetailsHref = (rowId: number | string) => {
+  const getLeaseDetailsHref = (identifier: string) => {
     const search = location.search || "";
-    return `${getRouteById(Routes.LEASES)}/${rowId}${search}`;
+    return `${getRouteById(Routes.LEASE)}/${identifier}${search}`;
   };
 
   const hasRowMultipleValues = (row: Record<string, any>): boolean => {
@@ -739,7 +739,7 @@ const LeaseListPage: React.FC = () => {
         isSortable: true,
         transform: (row: Record<string, any>) => (
           <Link
-            href={getLeaseDetailsHref(row.id)}
+            href={getLeaseDetailsHref(row.identifier)}
             className="lease-list-identifier-link"
           >
             {row.identifier}
@@ -758,7 +758,7 @@ const LeaseListPage: React.FC = () => {
         transform: (row: Record<string, any>) =>
           renderClickableCell(
             renderColumnContent(row, "lease_area_identifiers"),
-            row.id,
+            row.identifier,
           ),
       });
     }
@@ -778,7 +778,7 @@ const LeaseListPage: React.FC = () => {
             renderColumnContent(row, "addresses", (value) =>
               renderAddressValues(value),
             ),
-            row.id,
+            row.identifier,
           ),
       });
     }
@@ -789,7 +789,10 @@ const LeaseListPage: React.FC = () => {
         headerName: LeaseFieldTitles.TENANT,
         isSortable: false,
         transform: (row: Record<string, any>) =>
-          renderClickableCell(renderColumnContent(row, "tenants"), row.id),
+          renderClickableCell(
+            renderColumnContent(row, "tenants"),
+            row.identifier,
+          ),
       });
     }
 
@@ -799,7 +802,10 @@ const LeaseListPage: React.FC = () => {
         headerName: LeaseFieldTitles.LESSOR,
         isSortable: true,
         transform: (row: Record<string, any>) =>
-          renderClickableCell(renderColumnContent(row, "lessor"), row.id),
+          renderClickableCell(
+            renderColumnContent(row, "lessor"),
+            row.identifier,
+          ),
       });
     }
 
@@ -813,7 +819,7 @@ const LeaseListPage: React.FC = () => {
             renderColumnContent(row, "state", (value) =>
               getLabelOfOption(stateOptions, value),
             ),
-            row.id,
+            row.identifier,
           ),
       });
     }
@@ -828,7 +834,7 @@ const LeaseListPage: React.FC = () => {
             renderColumnContent(row, "start_date", (value) =>
               formatDate(value),
             ),
-            row.id,
+            row.identifier,
           ),
       });
     }
@@ -841,7 +847,7 @@ const LeaseListPage: React.FC = () => {
         transform: (row: Record<string, any>) =>
           renderClickableCell(
             renderColumnContent(row, "end_date", (value) => formatDate(value)),
-            row.id,
+            row.identifier,
           ),
       });
     }

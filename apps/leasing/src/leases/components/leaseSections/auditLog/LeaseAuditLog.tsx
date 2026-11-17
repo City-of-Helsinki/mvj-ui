@@ -20,12 +20,13 @@ import { getUiDataLeaseKey } from "@/uiData/helpers";
 import { getAuditLogByLease, getIsFetchingByLease } from "@/auditLog/selectors";
 import { getIsEditMode } from "@/leases/selectors";
 import type { AuditLogList } from "@/auditLog/types";
+import type { LeaseId } from "@/leases/types";
 type Props = {
   auditLogList: AuditLogList;
   fetchAuditLogByLease: (...args: Array<any>) => any;
   isEditMode: boolean;
   isFetching: boolean;
-  leaseId: string;
+  leaseId: LeaseId;
 };
 type State = {
   activePage: number;
