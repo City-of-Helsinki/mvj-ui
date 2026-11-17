@@ -22,12 +22,12 @@ export const createAcceptedBillingInvoices = (
 
   const sentAt = new Date().toISOString();
 
-  return schedule.installments.flatMap((installment, installmentIndex) => {
+  return schedule.installments.flatMap((installment) => {
     if (existingInstallmentIds.has(installment.id)) {
       return [];
     }
 
-    const amount = (installment.invoiceItems ?? []).reduce(
+    const amount = (installment.items ?? []).reduce(
       (sum, item) => sum + Number(item.amountExcludingVat || 0),
       0,
     );
@@ -35,9 +35,10 @@ export const createAcceptedBillingInvoices = (
     return [
       {
         ...structuredClone(installment),
+        invoiceNumber: installment.invoiceNumber,
+        invoiceItems: installment.items,
         status: LAND_USE_INVOICE_STATUSES.OPEN,
         sentAt,
-        invoiceNumber: `${Date.now()}-${installmentIndex + 1}`,
         billedAmount: String(amount),
         remainingAmount: String(amount),
         sourceInstallmentId: installment.id,

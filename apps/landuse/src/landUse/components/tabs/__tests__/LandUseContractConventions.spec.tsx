@@ -106,6 +106,108 @@ const decision = {
 };
 
 describe("backend-valued contract conventions", () => {
+  it("creates a payment schedule from the dialog", async () => {
+    const party = createEmptyPartyEntry();
+    party.id = "73";
+    party.party.details.name = "Creation recipient";
+    const form = createForm<LandUsePaymentScheduleFormValues>({
+      onSubmit: () => {},
+      mutators: { ...arrayMutators },
+      initialValues: { paymentSchedules: [] },
+    });
+    render(
+      <LandUsePaymentSchedule
+        form={form}
+        isEditMode
+        canSubmitSchedules
+        parties={[party]}
+        contracts={[
+          {
+            id: "91",
+            title: "",
+            sopimusnumero: "C-91",
+            allekirjoituspvm: "",
+            huomautus: "",
+            allekirjoitettavaMennessa: "",
+            ensimmainenKutsuLahetetty: "",
+            toinenKutsuLahetetty: "",
+            kolmasKutsuLahetetty: "",
+            toimeenpanija: "",
+            muutokset: [],
+            vakuudet: [],
+          },
+        ]}
+        asemakaavanNumero=""
+        asemakaavanLainvoimaisuusPvm=""
+        agreementIdentifier="M-1"
+        onSendToInvoicing={vi.fn()}
+      />,
+    );
+    fireEvent.click(
+      screen.getByRole("button", { name: "Syötä maksusuunnitelma" }),
+    );
+    fireEvent.click(await screen.findByRole("combobox", { name: /Osapuoli/ }));
+    fireEvent.click(
+      await screen.findByRole("option", { name: "Creation recipient" }),
+    );
+    fireEvent.click(screen.getByRole("combobox", { name: /Sopimus/ }));
+    fireEvent.click(await screen.findByRole("option", { name: "C-91" }));
+    fireEvent.change(
+      screen.getByRole("spinbutton", { name: "Maksueriä yhteensä" }),
+      { target: { value: "2" } },
+    );
+    fireEvent.click(
+      screen.getByRole("button", { name: "Luo maksusuunnitelma" }),
+    );
+    expect(form.getState().values.paymentSchedules).toHaveLength(1);
+    expect(screen.getByText("Erä 1/2")).toBeTruthy();
+    expect(screen.getByText("Erä 2/2")).toBeTruthy();
+    expect(
+      screen.queryByRole("group", { name: "Laskun vastaanottajan tiedot" }),
+    ).toBeNull();
+    const schedules = form.getState().values.paymentSchedules!;
+    act(() =>
+      form.change(
+        "paymentSchedules",
+        schedules.map((schedule) => ({
+          ...schedule,
+          installments: schedule.installments.map((installment, index) =>
+            index === 0
+              ? {
+                  ...installment,
+                  invoice: {
+                    id: "5",
+                    invoiceNumber: 1_000_000_000,
+                    recipientPartyIndex: installment.recipientPartyIndex,
+                    installmentNumber: installment.installmentNumber,
+                    installmentTotal: installment.installmentTotal,
+                    dueDate: "01.12.2026",
+                    type: installment.type,
+                    status: "waiting_to_be_sent" as const,
+                    billedAmount: "",
+                    remainingAmount: "",
+                    invoiceItems: [
+                      {
+                        itemType: "land_use_compensation",
+                        description: "Saved invoice item",
+                        amountExcludingVat: "123.00",
+                      },
+                    ],
+                  },
+                }
+              : installment,
+          ),
+        })),
+      ),
+    );
+    expect(
+      screen.getAllByRole("group", { name: "Laskun vastaanottajan tiedot" }),
+    ).toHaveLength(1);
+    expect(
+      (screen.getAllByLabelText(/Eräpäivä/)[0] as HTMLInputElement).value,
+    ).toBe("01.12.2026");
+  });
+
   it("keeps an unsaved decision row mounted when an earlier row is removed", () => {
     const form = createForm<LandUseDecisionsFormValues>({
       onSubmit: () => {},
@@ -176,12 +278,12 @@ describe("backend-valued contract conventions", () => {
                 dueDate: "",
                 laskentajaksonAlkupvm: "",
                 laskentajaksonLoppupvm: "",
-                invoiceNumber: "",
+                invoiceNumber: undefined,
                 type: "land_use_compensation",
                 status: "draft",
                 billedAmount: "",
                 remainingAmount: "",
-                invoiceItems: [],
+                items: [],
               },
             ],
           },
@@ -275,53 +377,72 @@ describe("backend-valued contract conventions", () => {
     },
   );
 
-  it("keeps invoice recipient references through party reordering and removal", () => {
-    const first = createEmptyPartyEntry();
-    first.id = "73";
-    first.party.details.name = "Actual recipient";
-    const second = createEmptyPartyEntry();
-    second.id = "89";
-    second.party.details.name = "Other recipient";
-    const form = createForm<LandUseBillingFormValues>({
-      onSubmit: () => {},
-      mutators: { ...arrayMutators },
-      initialValues: {
-        invoices: [
-          {
-            recipientPartyIndex: "73",
-            installmentNumber: "1",
-            installmentTotal: "1",
-            dueDate: "",
-            invoiceNumber: "INV-1",
-            type: "land_use_compensation",
-            status: "paid",
-            billedAmount: "100",
-            remainingAmount: "0",
-            invoiceItems: [],
-          },
-        ],
-      },
-    });
-    const props = {
-      form,
-      isEditMode: false,
-      canReviewSchedules: false,
-      paymentSchedules: [],
-      onAcceptSchedule: vi.fn(),
-      onDeclineSchedule: vi.fn(),
-    };
-    const { rerender } = render(
-      <LandUseBilling {...props} parties={[first, second]} />,
-    );
-    expect(screen.getByText("Actual recipient")).toBeTruthy();
-    rerender(<LandUseBilling {...props} parties={[second, first]} />);
-    expect(screen.getByText("Actual recipient")).toBeTruthy();
-    expect(screen.getByText("Korvaus")).toBeTruthy();
-    expect(screen.getByText("Maksettu")).toBeTruthy();
-    rerender(<LandUseBilling {...props} parties={[second]} />);
-    expect(form.getState().values.invoices?.[0].recipientPartyIndex).toBe("73");
-    expect(screen.queryByText("Other recipient")).toBeNull();
-  });
+  it.each([undefined, 1_000_000_000])(
+    "keeps invoice number %s and recipient references through party reordering and removal",
+    (invoiceNumber) => {
+      const first = createEmptyPartyEntry();
+      first.id = "73";
+      first.party.details.name = "Actual recipient";
+      const second = createEmptyPartyEntry();
+      second.id = "89";
+      second.party.details.name = "Other recipient";
+      const form = createForm<LandUseBillingFormValues>({
+        onSubmit: () => {},
+        mutators: { ...arrayMutators },
+        initialValues: {
+          invoices: [
+            {
+              recipientPartyIndex: "73",
+              installmentNumber: "1",
+              installmentTotal: "1",
+              dueDate: "",
+              invoiceNumber,
+              type: "land_use_compensation",
+              status: "paid",
+              billedAmount: "100",
+              remainingAmount: "0",
+              invoiceItems: [],
+            },
+          ],
+        },
+      });
+      const props = {
+        form,
+        isEditMode: false,
+        canReviewSchedules: false,
+        paymentSchedules: [],
+        onAcceptSchedule: vi.fn(),
+        onDeclineSchedule: vi.fn(),
+      };
+      const { rerender } = render(
+        <LandUseBilling {...props} parties={[first, second]} />,
+      );
+      expect(screen.getByText("Actual recipient")).toBeTruthy();
+      rerender(<LandUseBilling {...props} parties={[second, first]} />);
+      expect(screen.getByText("Actual recipient")).toBeTruthy();
+      expect(screen.getByText("Korvaus")).toBeTruthy();
+      expect(screen.getByText("Maksettu")).toBeTruthy();
+      expect(screen.queryByText("undefined")).toBeNull();
+      fireEvent.click(
+        screen.getByRole("button", { name: "Avaa laskun tiedot" }),
+      );
+      const invoiceNumberInput = screen.getByLabelText(
+        "Laskunumero",
+      ) as HTMLInputElement;
+      expect(invoiceNumberInput.value).toBe(
+        invoiceNumber === undefined ? "-" : String(invoiceNumber),
+      );
+      expect(invoiceNumberInput.readOnly).toBe(true);
+      expect(form.getState().values.invoices?.[0].invoiceNumber).toBe(
+        invoiceNumber,
+      );
+      rerender(<LandUseBilling {...props} parties={[second]} />);
+      expect(form.getState().values.invoices?.[0].recipientPartyIndex).toBe(
+        "73",
+      );
+      expect(screen.queryByText("Other recipient")).toBeNull();
+    },
+  );
 
   it.each([
     ["mortgage_document", "Panttikirjan numero", "DEED-1"],

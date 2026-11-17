@@ -153,3 +153,16 @@ export type PaymentScheduleStatusCode =
   LandUseUiMetadata["payment_schedule_statuses"][number]["value"];
 export type PaymentScheduleItemTypeCode =
   LandUseUiMetadata["payment_schedule_item_types"][number]["value"];
+
+export interface SelectedPartyInvoiceData {
+  name?: string;
+  partyType?: string;
+  streetAddress: string;
+  city: string;
+  postalCode: string;
+  ovtCode: string;
+  reference: string;
+  sapCustomerNumber: string;
+  businessId: string;
+  isCompany: boolean;
+}

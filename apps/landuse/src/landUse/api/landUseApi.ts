@@ -8,7 +8,11 @@ import type { LandUseMonitoringFormValues } from "@/landUse/components/tabs/Land
 import type { LandUsePartiesFormValues } from "@/landUse/components/tabs/LandUseParties";
 import type { LandUseSummaryFormValues } from "@/landUse/components/tabs/LandUseSummary";
 import type { Collateral } from "@/landUse/components/collateralForms";
-import { LAND_USE_INVOICE_TYPES, type CollateralType } from "@/landUse/options";
+import {
+  LAND_USE_INVOICE_TYPES,
+  LAND_USE_PAYMENT_SCHEDULE_STATUSES,
+  type CollateralType,
+} from "@/landUse/options";
 import type { LandUseListItem } from "@/landUse/api/landUseListTypes";
 import {
   parseIsoDateToFinnishDate,
@@ -295,6 +299,7 @@ type PaymentScheduleResponse = {
     due_date: string | null;
     interest_calculation_period_start_date: string | null;
     interest_calculation_period_end_date: string | null;
+    invoice?: InvoiceResponse | null;
     items: {
       id: number;
       item_type: PaymentScheduleItemTypeCode;
@@ -1089,6 +1094,9 @@ export const getPaymentSchedule = async (
       daysInYear: "365",
       installments: schedule.installments.map((installment) => ({
         id: String(installment.id),
+        invoice: installment.invoice
+          ? mapInvoice(installment.invoice)
+          : undefined,
         recipientPartyIndex: String(schedule.recipient_party),
         contractIndex: String(schedule.contract),
         installmentNumber: String(installment.installment_sequence_number),
@@ -1102,12 +1110,8 @@ export const getPaymentSchedule = async (
         laskentajaksonLoppupvm: parseIsoDateToFinnishDate(
           installment.interest_calculation_period_end_date,
         ),
-        invoiceNumber: "",
         type: LAND_USE_INVOICE_TYPES.MAANKAYTTOKORVAUS,
-        status: undefined,
-        billedAmount: "",
-        remainingAmount: "",
-        invoiceItems: installment.items.map((item) => ({
+        items: installment.items.map((item) => ({
           id: String(item.id),
           itemType: item.item_type,
           description: item.description,
@@ -1124,37 +1128,48 @@ export const updatePaymentSchedule = async (
 ): Promise<LandUsePaymentScheduleFormValues> => {
   await callApiPut(
     `agreements/${agreementId}/payment-schedules/`,
-    (values.paymentSchedules ?? []).map((schedule) => ({
-      ...(Number.isInteger(Number(schedule.id))
-        ? { id: Number(schedule.id) }
-        : {}),
-      recipient_party: Number(schedule.recipientPartyIndex),
-      contract: Number(schedule.contractIndex),
-      signing_date: parseFinnishDateToIsoDate(schedule.signedDate),
-      increase_percentage: parseOptionalDecimal(schedule.korotusProsentti),
-      base_interest_rate: parseOptionalDecimal(schedule.korkoPeruskorko),
-      interest_margin: parseOptionalDecimal(schedule.korkoMarginaali),
-      installments: schedule.installments.map((installment) => ({
-        ...(Number.isInteger(Number(installment.id))
-          ? { id: Number(installment.id) }
-          : {}),
-        installment_sequence_number: Number(installment.installmentNumber),
-        installment_count_total: Number(installment.installmentTotal),
-        due_date: parseFinnishDateToIsoDate(installment.dueDate),
-        interest_calculation_period_start_date: parseFinnishDateToIsoDate(
-          installment.laskentajaksonAlkupvm,
-        ),
-        interest_calculation_period_end_date: parseFinnishDateToIsoDate(
-          installment.laskentajaksonLoppupvm,
-        ),
-        items: (installment.invoiceItems ?? []).map((item) => ({
-          ...(Number.isInteger(Number(item.id)) ? { id: Number(item.id) } : {}),
-          item_type: item.itemType,
-          description: item.description,
-          amount: parseOptionalDecimal(item.amountExcludingVat),
-        })),
-      })),
-    })),
+    (values.paymentSchedules ?? [])
+      .filter(
+        (schedule) =>
+          // Only update schedules that don't yet have invoices created
+          schedule.status === LAND_USE_PAYMENT_SCHEDULE_STATUSES.DRAFT ||
+          schedule.status === LAND_USE_PAYMENT_SCHEDULE_STATUSES.REJECTED,
+      )
+      .map((schedule) => {
+        return {
+          ...(Number.isInteger(Number(schedule.id))
+            ? { id: Number(schedule.id) }
+            : {}),
+          recipient_party: Number(schedule.recipientPartyIndex),
+          contract: Number(schedule.contractIndex),
+          signing_date: parseFinnishDateToIsoDate(schedule.signedDate),
+          increase_percentage: parseOptionalDecimal(schedule.korotusProsentti),
+          base_interest_rate: parseOptionalDecimal(schedule.korkoPeruskorko),
+          interest_margin: parseOptionalDecimal(schedule.korkoMarginaali),
+          installments: schedule.installments.map((installment) => ({
+            ...(Number.isInteger(Number(installment.id))
+              ? { id: Number(installment.id) }
+              : {}),
+            installment_sequence_number: Number(installment.installmentNumber),
+            installment_count_total: Number(installment.installmentTotal),
+            due_date: parseFinnishDateToIsoDate(installment.dueDate),
+            interest_calculation_period_start_date: parseFinnishDateToIsoDate(
+              installment.laskentajaksonAlkupvm,
+            ),
+            interest_calculation_period_end_date: parseFinnishDateToIsoDate(
+              installment.laskentajaksonLoppupvm,
+            ),
+            items: (installment.items ?? []).map((item) => ({
+              ...(Number.isInteger(Number(item.id))
+                ? { id: Number(item.id) }
+                : {}),
+              item_type: item.itemType,
+              description: item.description,
+              amount: parseOptionalDecimal(item.amountExcludingVat),
+            })),
+          })),
+        };
+      }),
   );
   return getPaymentSchedule(agreementId);
 };
@@ -1167,49 +1182,53 @@ export const getBilling = async (
   );
 
   return {
-    invoices: invoices.map((invoice) => ({
-      id: String(invoice.id),
-      recipientPartyIndex: String(invoice.recipient_party),
-      sourceInstallmentId:
-        invoice.source_payment_schedule_installment == null
-          ? undefined
-          : String(invoice.source_payment_schedule_installment),
-      installmentNumber: String(invoice.installment_sequence_number),
-      installmentTotal: String(invoice.installment_count_total),
-      dueDate: parseIsoDateToFinnishDate(invoice.due_date),
-      invoiceNumber: String(invoice.invoice_identifier),
-      type: invoice.invoice_type,
-      status: invoice.status,
-      sentAt: invoice.sent_at ?? undefined,
-      billedAmount: toText(invoice.billed_amount),
-      remainingAmount: toText(invoice.remaining_amount),
-      recipientSnapshot: {
-        name: invoice.recipient_snapshot.name,
-        partyType: invoice.recipient_snapshot.party_type,
-        businessId: invoice.recipient_snapshot.business_id,
-        streetAddress: invoice.recipient_snapshot.street_address,
-        city: invoice.recipient_snapshot.city,
-        postalCode: invoice.recipient_snapshot.postal_code,
-        ovtCode: invoice.recipient_snapshot.ovt_code,
-        sapCustomerNumber: invoice.recipient_snapshot.sap_customer_number,
-        reference: invoice.recipient_snapshot.customer_reference,
-        isCompany: invoice.recipient_snapshot.party_type === "company",
-      },
-      invoiceItems: invoice.items.map((item) => ({
-        id: String(item.id),
-        itemType: item.item_type,
-        description: item.description,
-        amountExcludingVat: item.amount,
-      })),
-      payments: invoice.payments.map((payment) => ({
-        id: String(payment.id),
-        paidAmount: payment.paid_amount,
-        paidDate: parseIsoDateToFinnishDate(payment.paid_date),
-        filingCode: payment.filing_code,
-      })),
-    })),
+    invoices: invoices.map(mapInvoice),
   };
 };
+
+const mapInvoice = (
+  invoice: InvoiceResponse,
+): NonNullable<LandUseBillingFormValues["invoices"]>[number] => ({
+  id: String(invoice.id),
+  recipientPartyIndex: String(invoice.recipient_party),
+  sourceInstallmentId:
+    invoice.source_payment_schedule_installment == null
+      ? undefined
+      : String(invoice.source_payment_schedule_installment),
+  installmentNumber: String(invoice.installment_sequence_number),
+  installmentTotal: String(invoice.installment_count_total),
+  dueDate: parseIsoDateToFinnishDate(invoice.due_date),
+  invoiceNumber: invoice.invoice_identifier,
+  type: invoice.invoice_type,
+  status: invoice.status,
+  sentAt: invoice.sent_at ?? undefined,
+  billedAmount: toText(invoice.billed_amount),
+  remainingAmount: toText(invoice.remaining_amount),
+  recipientSnapshot: {
+    name: invoice.recipient_snapshot.name,
+    partyType: invoice.recipient_snapshot.party_type,
+    businessId: invoice.recipient_snapshot.business_id,
+    streetAddress: invoice.recipient_snapshot.street_address,
+    city: invoice.recipient_snapshot.city,
+    postalCode: invoice.recipient_snapshot.postal_code,
+    ovtCode: invoice.recipient_snapshot.ovt_code,
+    sapCustomerNumber: invoice.recipient_snapshot.sap_customer_number,
+    reference: invoice.recipient_snapshot.customer_reference,
+    isCompany: invoice.recipient_snapshot.party_type === "company",
+  },
+  invoiceItems: invoice.items.map((item) => ({
+    id: String(item.id),
+    itemType: item.item_type,
+    description: item.description,
+    amountExcludingVat: item.amount,
+  })),
+  payments: invoice.payments.map((payment) => ({
+    id: String(payment.id),
+    paidAmount: payment.paid_amount,
+    paidDate: parseIsoDateToFinnishDate(payment.paid_date),
+    filingCode: payment.filing_code,
+  })),
+});
 
 export const submitPaymentSchedule = async (
   scheduleId: string,
