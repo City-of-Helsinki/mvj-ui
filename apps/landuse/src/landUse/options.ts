@@ -1,5 +1,7 @@
 /** Shared form types and legacy fixture constants; live backend choices come from landuse metadata/lookups. */
 
+import { SelectedPartyInvoiceData } from "@/landUse/api/landUseTypes";
+
 export const MUNICIPALITY_OPTIONS = [{ label: "Helsinki", value: "1" }];
 
 export const LAND_USE_NEGOTIATION_PHASES = {
@@ -135,6 +137,7 @@ export type LandUseInvoiceType =
 
 export interface LandUseInvoice {
   id?: string;
+  recipientSnapshot?: SelectedPartyInvoiceData;
   recipientPartyIndex: string | undefined;
   contractIndex: string | undefined;
   installmentNumber: string;
@@ -144,7 +147,7 @@ export interface LandUseInvoice {
   dueDate: string;
   laskentajaksonAlkupvm: string;
   laskentajaksonLoppupvm: string;
-  invoiceNumber: string;
+  invoiceNumber: number | undefined;
   type: LandUseInvoiceType | undefined;
   status: LandUseInvoiceStatus | undefined;
   sentAt?: string;
@@ -153,6 +156,37 @@ export interface LandUseInvoice {
   invoiceItems?: LandUseInvoiceItem[];
   payments?: LandUseInvoicePayment[];
 }
+
+export type LandUsePaymentScheduleInstallment = Omit<
+  LandUseInvoice,
+  | "invoiceNumber"
+  | "recipientSnapshot"
+  | "status"
+  | "sentAt"
+  | "billedAmount"
+  | "remainingAmount"
+  | "payments"
+  | "invoiceItems"
+> & {
+  items?: LandUseInvoiceItem[];
+  invoice?: Pick<
+    LandUseInvoice,
+    | "id"
+    | "invoiceNumber"
+    | "recipientSnapshot"
+    | "recipientPartyIndex"
+    | "installmentNumber"
+    | "installmentTotal"
+    | "dueDate"
+    | "type"
+    | "status"
+    | "sentAt"
+    | "billedAmount"
+    | "remainingAmount"
+    | "invoiceItems"
+    | "payments"
+  >;
+};
 
 export const LAND_USE_INVOICE_ITEM_TYPES = {
   MAANKAYTTOKORVAUS: "land_use_compensation",

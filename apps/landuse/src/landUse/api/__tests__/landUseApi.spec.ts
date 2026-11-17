@@ -23,6 +23,7 @@ import {
   getContracts,
   getBilling,
   getPaymentSchedule,
+  updatePaymentSchedule,
   updateDecisions,
   updateSummary,
   updateCollaterals,
@@ -332,7 +333,7 @@ describe("land use API contract adapters", () => {
           invoice_type,
           status: "paid",
           due_date: "2024-02-29",
-          invoice_identifier: "INV-1",
+          invoice_identifier: 1_000_000_000,
           installment_sequence_number: 1,
           installment_count_total: 1,
           billed_amount: "0.40",
@@ -364,6 +365,7 @@ describe("land use API contract adapters", () => {
       expect(invoice).toMatchObject({
         id: "1",
         sourceInstallmentId: "42",
+        invoiceNumber: 1_000_000_000,
         recipientPartyIndex: "73",
         type: invoice_type,
         status: "paid",
@@ -379,6 +381,40 @@ describe("land use API contract adapters", () => {
       );
     },
   );
+
+  it("omits locked schedules when saving a new schedule", async () => {
+    mockGetAllPages.mockResolvedValue([]);
+    const schedule = {
+      id: "12",
+      recipientPartyIndex: "73",
+      contractIndex: "91",
+      status: "approved" as const,
+      rejectedReason: null,
+      signedDate: "",
+      korotusProsentti: "",
+      korkoPeruskorko: "",
+      korkoMarginaali: "",
+      daysInYear: "365",
+      installments: [],
+    };
+
+    await updatePaymentSchedule("1", {
+      paymentSchedules: [
+        schedule,
+        { ...schedule, id: "13", status: "pending_approval" },
+        { ...schedule, id: "new-schedule", status: "draft" },
+      ],
+    });
+
+    expect(callApiPut).toHaveBeenCalledWith("agreements/1/payment-schedules/", [
+      expect.objectContaining({
+        recipient_party: 73,
+        contract: 91,
+        installments: [],
+      }),
+    ]);
+    expect(vi.mocked(callApiPut).mock.calls[0][1][0]).not.toHaveProperty("id");
+  });
 
   it("keeps schedule relationship IDs and normalizes installment API dates", async () => {
     const items = ["land_use_compensation", "increase", "interest"].map(
@@ -424,8 +460,93 @@ describe("land use API contract adapters", () => {
     });
     expect(mockGetAllPages).toHaveBeenCalledTimes(1);
     expect(
-      schedule?.installments[0].invoiceItems?.map((item) => item.itemType),
+      schedule?.installments[0].items?.map((item) => item.itemType),
     ).toEqual(items.map((item) => item.item_type));
+  });
+
+  it("uses linked invoice data instead of changed schedule installment data", async () => {
+    mockGetAllPages.mockResolvedValue([
+      {
+        id: 1,
+        recipient_party: 73,
+        contract: 91,
+        status: "approved",
+        signing_date: null,
+        installments: [
+          {
+            id: 42,
+            installment_sequence_number: 1,
+            installment_count_total: 1,
+            due_date: "2026-12-31",
+            items: [
+              {
+                item_type: "interest",
+                description: "Changed",
+                amount: "999.00",
+              },
+            ],
+            invoice: {
+              id: 5,
+              invoice_identifier: 1000000000,
+              payments: [],
+              installment_sequence_number: 1,
+              installment_count_total: 1,
+              due_date: null,
+              invoice_type: "land_use_compensation",
+              status: "waiting_to_be_sent",
+              recipient_snapshot: {
+                name: "Original recipient",
+                party_type: "company",
+                business_id: "1234567-8",
+                street_address: "Original street 1",
+                postal_code: "00100",
+                city: "Helsinki",
+                sap_customer_number: "SAP-OLD",
+                ovt_code: "OVT-OLD",
+                customer_reference: "REF-OLD",
+              },
+              items: [
+                {
+                  id: 10,
+                  item_type: "land_use_compensation",
+                  description: "Original",
+                  amount: "100.00",
+                },
+              ],
+            },
+          },
+        ],
+      },
+    ]);
+
+    const installment = (await getPaymentSchedule("1")).paymentSchedules?.[0]
+      .installments[0];
+
+    expect(installment).toMatchObject({
+      id: "42",
+      dueDate: "31.12.2026",
+      items: [{ description: "Changed", amountExcludingVat: "999.00" }],
+      invoice: {
+        id: "5",
+        invoiceNumber: 1000000000,
+        dueDate: "",
+        status: "waiting_to_be_sent",
+        recipientSnapshot: {
+          name: "Original recipient",
+          streetAddress: "Original street 1",
+          isCompany: true,
+          sapCustomerNumber: "SAP-OLD",
+          ovtCode: "OVT-OLD",
+          reference: "REF-OLD",
+        },
+        invoiceItems: [
+          { description: "Original", amountExcludingVat: "100.00" },
+        ],
+      },
+    });
+    expect(installment).not.toHaveProperty("invoiceNumber");
+    expect(installment).not.toHaveProperty("invoiceItems");
+    expect(installment).not.toHaveProperty("recipientSnapshot");
   });
 
   it("converts edited decision dates and clears them without changing codes", async () => {

@@ -33,7 +33,7 @@ const createInvoice = (
   dueDate: "2026-04-15",
   laskentajaksonAlkupvm: "",
   laskentajaksonLoppupvm: "",
-  invoiceNumber: "",
+  invoiceNumber: undefined,
   type: "land_use_compensation",
   status: LAND_USE_INVOICE_STATUSES.DRAFT,
   billedAmount: "",
@@ -42,7 +42,9 @@ const createInvoice = (
 });
 
 const createSchedule = (): LandUsePaymentScheduleEntry & {
-  installments: (LandUseInvoice & { id: string })[];
+  installments: (NonNullable<
+    LandUsePaymentScheduleEntry["installments"]
+  >[number] & { id: string })[];
 } => ({
   id: "schedule-1",
   recipientPartyIndex: "0",
@@ -55,8 +57,8 @@ const createSchedule = (): LandUsePaymentScheduleEntry & {
   korkoMarginaali: "",
   daysInYear: "365",
   installments: [
-    { ...createInvoice("1"), id: "installment-1" },
-    { ...createInvoice("2"), id: "installment-2" },
+    { ...createInvoice("1"), id: "installment-1", items: [] },
+    { ...createInvoice("2"), id: "installment-2", items: [] },
   ],
 });
 
@@ -110,7 +112,7 @@ describe("invoice review workflow", () => {
       sourceInstallmentId: "installment-1",
     });
     expect(result[0].sentAt).toBeTruthy();
-    expect(result[0].invoiceNumber).toBeTruthy();
+    expect(result[0].invoiceNumber).toBeUndefined();
     expect(result[1].sourceInstallmentId).toBe("installment-2");
   });
 

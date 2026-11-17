@@ -42,13 +42,14 @@ import {
 import { calculateInvoicingPeriodDays } from "@/landUse/utils/date";
 import {
   formatLandUseEuroDisplayValue,
+  formatLandUseIntegerValue,
   parseLandUseNumericValueOrZero,
 } from "@/landUse/utils/number";
 import { ConfirmDeleteButton } from "@/landUse/components/ConfirmDeleteButton";
 import { useLandUseMetadata } from "@/landUse/api/useLandUseMetadata";
 import {
   LAND_USE_INVOICE_STATUSES,
-  type LandUseInvoice,
+  type LandUsePaymentScheduleInstallment,
   type LandUseInvoiceItem,
   type LandUsePaymentScheduleStatus,
 } from "@/landUse/options";
@@ -83,7 +84,7 @@ export interface LandUsePaymentScheduleEntry {
   korkoPeruskorko: string;
   korkoMarginaali: string;
   daysInYear: string;
-  installments: LandUseInvoice[];
+  installments: LandUsePaymentScheduleInstallment[];
 }
 
 interface LandUsePaymentScheduleProps {
@@ -144,7 +145,7 @@ export const getMissingPaymentScheduleFieldLabels = (
   const missingInstallmentFields = schedule.installments.flatMap(
     (installment, installmentIndex) => {
       const secondItemKind = getInterestKind(
-        installment.invoiceItems?.[1]?.itemType ?? "",
+        installment.items?.[1]?.itemType ?? "",
       );
       const periodLabels = getInterestPeriodLabels(secondItemKind ?? "korotus");
       const installmentLabel = `Erä ${installmentIndex + 1}`;
@@ -152,8 +153,8 @@ export const getMissingPaymentScheduleFieldLabels = (
         ["Eräpäivä", installment.dueDate],
         [periodLabels.startLabel, installment.laskentajaksonAlkupvm],
         [periodLabels.endLabel, installment.laskentajaksonLoppupvm],
-        ...(!installment.invoiceItems?.length ? [["Maksurivit", ""]] : []),
-        ...(installment.invoiceItems ?? []).flatMap((item, itemIndex) => [
+        ...(!installment.items?.length ? [["Maksurivit", ""]] : []),
+        ...(installment.items ?? []).flatMap((item, itemIndex) => [
           [`Maksun tyyppi, rivi ${itemIndex + 1}`, item.itemType],
           [`Summa (€), rivi ${itemIndex + 1}`, item.amountExcludingVat],
         ]),
@@ -394,7 +395,7 @@ const InvoiceItemRow: React.FC<InvoiceItemRowProps> = ({
   );
   // Base amount for interest is always the Maankäyttökorvaus row (index 0)
   const { input: baseAmountInput } = useField(
-    `${installmentFieldName}.invoiceItems[0].amountExcludingVat`,
+    `${installmentFieldName}.items[0].amountExcludingVat`,
   );
   const { input: daysInYearInput } = useField(
     `${scheduleFieldName}.daysInYear`,
@@ -568,22 +569,27 @@ const isScheduleEditable = (
   status === LAND_USE_PAYMENT_SCHEDULE_STATUSES.REJECTED;
 
 const calculateScheduleTotals = (
-  installments: LandUseInvoice[],
+  installments: LandUsePaymentScheduleInstallment[],
 ): { landUseCompensationTotal: number; scheduleTotal: number } =>
   installments.reduce(
     (totals, installment) =>
-      (installment.invoiceItems ?? []).reduce((itemTotals, item) => {
-        const amount = parseLandUseNumericValueOrZero(item.amountExcludingVat);
+      (installment.invoice?.invoiceItems ?? installment.items ?? []).reduce(
+        (itemTotals, item) => {
+          const amount = parseLandUseNumericValueOrZero(
+            item.amountExcludingVat,
+          );
 
-        return {
-          landUseCompensationTotal:
-            itemTotals.landUseCompensationTotal +
-            (item.itemType === LAND_USE_INVOICE_ITEM_TYPES.MAANKAYTTOKORVAUS
-              ? amount
-              : 0),
-          scheduleTotal: itemTotals.scheduleTotal + amount,
-        };
-      }, totals),
+          return {
+            landUseCompensationTotal:
+              itemTotals.landUseCompensationTotal +
+              (item.itemType === LAND_USE_INVOICE_ITEM_TYPES.MAANKAYTTOKORVAUS
+                ? amount
+                : 0),
+            scheduleTotal: itemTotals.scheduleTotal + amount,
+          };
+        },
+        totals,
+      ),
     { landUseCompensationTotal: 0, scheduleTotal: 0 },
   );
 
@@ -613,7 +619,7 @@ const createBulkInvoice = (
   sopimusnumero: string,
   asemakaavanNumero: string,
   recipientName: string,
-): LandUseInvoice => ({
+): LandUsePaymentScheduleInstallment => ({
   recipientPartyIndex: values.recipientPartyIndex,
   contractIndex: values.contractIndex,
   installmentNumber: String(installmentNumber),
@@ -623,13 +629,8 @@ const createBulkInvoice = (
   dueDate: "",
   laskentajaksonAlkupvm: "",
   laskentajaksonLoppupvm: "",
-  invoiceNumber: "",
   type: LAND_USE_INVOICE_TYPES.MAANKAYTTOKORVAUS,
-  status: LAND_USE_INVOICE_STATUSES.DRAFT,
-  sentAt: "",
-  billedAmount: "",
-  remainingAmount: "",
-  invoiceItems: [
+  items: [
     {
       itemType: LAND_USE_INVOICE_ITEM_TYPES.MAANKAYTTOKORVAUS,
       description: "Maksutuotot maankäyttösopimuksista",
@@ -798,6 +799,10 @@ interface InstallmentStepProps {
   installmentIndex: number;
   canEdit: boolean;
   validateInstallments: boolean;
+  recipientData: NonNullable<
+    LandUsePaymentScheduleInstallment["invoice"]
+  >["recipientSnapshot"];
+  invoice: LandUsePaymentScheduleInstallment["invoice"];
 }
 
 const InstallmentStep: React.FC<InstallmentStepProps> = ({
@@ -807,6 +812,8 @@ const InstallmentStep: React.FC<InstallmentStepProps> = ({
   installmentIndex,
   canEdit,
   validateInstallments,
+  recipientData,
+  invoice,
 }) => {
   const { input: periodStartDateInput } = useField(
     `${fieldName}.laskentajaksonAlkupvm`,
@@ -828,10 +835,37 @@ const InstallmentStep: React.FC<InstallmentStepProps> = ({
 
   return (
     <Fieldset heading="" className="full-width">
+      {invoice && (
+        <Fieldset heading="Laskun vastaanottajan tiedot" border>
+          <div className="landuse-grid landuse-grid__bottom-margin">
+            {[
+              ["Nimi", recipientData?.name],
+              ...(recipientData?.isCompany
+                ? [["Y-tunnus", recipientData.businessId]]
+                : []),
+              ["Katuosoite", recipientData?.streetAddress],
+              ["Postinumero", recipientData?.postalCode],
+              ["Postitoimipaikka", recipientData?.city],
+              ["SAP-asiakasnumero", recipientData?.sapCustomerNumber],
+              ["OVT-tunnus", recipientData?.ovtCode],
+              ["Asiakkaan viite", recipientData?.reference],
+            ].map(([label, value], fieldIndex) => (
+              <div className="landuse-grid__column-3" key={label}>
+                <TextInput
+                  id={`landuse-installment-recipient-${scheduleIndex}-${installmentIndex}-${fieldIndex}`}
+                  label={label}
+                  value={readOnlyTextValue(value)}
+                  readOnly
+                />
+              </div>
+            ))}
+          </div>
+        </Fieldset>
+      )}
       <div className="landuse-grid landuse-grid__bottom-margin">
         <div className="landuse-grid__column-3">
           <Field<string>
-            name={`${fieldName}.dueDate`}
+            name={`${fieldName}${invoice ? ".invoice" : ""}.dueDate`}
             validate={
               validateInstallments
                 ? validateRequiredInstallmentField
@@ -866,7 +900,9 @@ const InstallmentStep: React.FC<InstallmentStepProps> = ({
             }
           </Field>
         </div>
-        <Field name={`${fieldName}.invoiceItems[1].itemType`}>
+        <Field
+          name={`${fieldName}.${invoice ? "invoice.invoiceItems" : "items"}[1].itemType`}
+        >
           {({ input: secondItemTypeInput }) => {
             const kind =
               getInterestKind(secondItemTypeInput.value) ?? "korotus";
@@ -962,7 +998,9 @@ const InstallmentStep: React.FC<InstallmentStepProps> = ({
       </div>
 
       <section>
-        <FieldArray<LandUseInvoiceItem> name={`${fieldName}.invoiceItems`}>
+        <FieldArray<LandUseInvoiceItem>
+          name={`${fieldName}.${invoice ? "invoice.invoiceItems" : "items"}`}
+        >
           {({ fields: itemFields }) => (
             <>
               {itemFields.length > 0 ? (
@@ -998,8 +1036,10 @@ const buildInstallmentStep = ({
   installmentIndex,
   isEditMode,
   scheduleStatus,
-  invoice,
+  installment,
   validateInstallments,
+  recipientData,
+  invoiceStatusOptions,
 }: {
   fieldName: string;
   scheduleFieldName: string;
@@ -1007,17 +1047,38 @@ const buildInstallmentStep = ({
   installmentIndex: number;
   isEditMode: boolean;
   scheduleStatus: LandUsePaymentScheduleStatus | undefined;
-  invoice: LandUseInvoice;
+  installment: LandUsePaymentScheduleInstallment;
   validateInstallments: boolean;
+  recipientData: SelectedPartyInvoiceData;
+  invoiceStatusOptions: SelectOption[];
 }) => {
-  const canEdit = isEditMode && isScheduleEditable(scheduleStatus);
+  const canEdit =
+    !installment.invoice && isEditMode && isScheduleEditable(scheduleStatus);
+  const savedInvoice = installment.invoice;
+  const displayedInstallment = savedInvoice ?? installment;
   const installmentLabel =
-    invoice.installmentNumber && invoice.installmentTotal
-      ? `${invoice.installmentNumber}/${invoice.installmentTotal}`
+    displayedInstallment.installmentNumber &&
+    displayedInstallment.installmentTotal
+      ? `${displayedInstallment.installmentNumber}/${displayedInstallment.installmentTotal}`
       : `x/x`;
 
   return {
-    title: `Erä ${installmentLabel}`,
+    title: (
+      <span className="landuse-detail__heading-actions">
+        <span>{`Erä ${installmentLabel}${savedInvoice ? ` (Laskunumero: ${savedInvoice.invoiceNumber !== undefined ? formatLandUseIntegerValue(savedInvoice.invoiceNumber) : "-"})` : ""}`}</span>
+        {savedInvoice?.status && (
+          <StatusLabel
+            type={
+              savedInvoice.status === LAND_USE_INVOICE_STATUSES.PAID
+                ? "success"
+                : "info"
+            }
+          >
+            {getOptionsDisplayValue(savedInvoice.status, invoiceStatusOptions)}
+          </StatusLabel>
+        )}
+      </span>
+    ) as unknown as string,
     key: `payment-schedule-${scheduleIndex}-installment-${installmentIndex}`,
     description: (
       <InstallmentStep
@@ -1028,6 +1089,10 @@ const buildInstallmentStep = ({
         installmentIndex={installmentIndex}
         canEdit={canEdit}
         validateInstallments={validateInstallments}
+        recipientData={
+          savedInvoice ? savedInvoice.recipientSnapshot : recipientData
+        }
+        invoice={savedInvoice}
       />
     ),
   };
@@ -1108,12 +1173,13 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
         {partyLabel}
       </h2>
       <Fieldset
-        heading="Laskun vastaanottaja"
+        heading="Osapuolen laskun vastaanottajan tiedot"
         border
         tooltip={
           <Tooltip>
             Laskun vastaanottaja on ensisijaisesti osapuolen laskunsaaja, jos
-            sellainen on määritelty. Muussa tapauksessa osapuoli.
+            sellainen on määritelty. Muussa tapauksessa osapuoli. Näyttää tiedot
+            osapuolet-välilehdeltä.
           </Tooltip>
         }
       >
@@ -1221,7 +1287,9 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
 
           return (
             <section key={schedule.id}>
-              <FieldArray<LandUseInvoice> name={`${fieldName}.installments`}>
+              <FieldArray<LandUsePaymentScheduleInstallment>
+                name={`${fieldName}.installments`}
+              >
                 {({ fields: installmentFields }) => (
                   <>
                     <div className="landuse-detail__heading-with-delete">
@@ -1426,8 +1494,11 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
                               installmentIndex,
                               isEditMode,
                               scheduleStatus: schedule.status,
-                              invoice:
+                              installment:
                                 installmentFields.value[installmentIndex],
+                              recipientData: selectedPartyData,
+                              invoiceStatusOptions:
+                                metadataQuery.data?.invoice_statuses ?? [],
                               validateInstallments:
                                 scheduleToSend?.id === schedule.id,
                             }),

@@ -1198,7 +1198,7 @@ const LandUseDetailPage: React.FC = () => {
                 installmentTotal: installment.installmentTotal,
                 dueDate: installment.dueDate,
                 type: installment.type,
-                invoiceItems: installment.invoiceItems,
+                items: installment.items,
               })),
             }))}
             onAcceptSchedule={handleAcceptSchedule}

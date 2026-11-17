@@ -46,6 +46,7 @@ import type {
   CompanyPartyDetails,
 } from "@/landUse/components/tabs/LandUseParties";
 import type { LandUsePaymentScheduleEntry } from "@/landUse/components/tabs/LandUsePaymentSchedule";
+import { SelectedPartyInvoiceData } from "@/landUse/api/landUseTypes";
 
 type BillingPartyDetails = Pick<
   BasePartyDetails,
@@ -70,8 +71,7 @@ export type LandUseBillingScheduleInstallment = Pick<
   | "installmentTotal"
   | "dueDate"
   | "type"
-  | "invoiceItems"
-> & { id: string };
+> & { id: string; invoiceNumber?: number; items?: LandUseInvoiceItem[] };
 
 export type LandUseBillingSchedule = Pick<
   LandUsePaymentScheduleEntry,
@@ -113,19 +113,6 @@ interface LandUseBillingProps {
     schedule: LandUseBillingSchedule,
     rejectedReason: string,
   ) => void;
-}
-
-interface SelectedPartyInvoiceData {
-  name?: string;
-  partyType?: string;
-  streetAddress: string;
-  city: string;
-  postalCode: string;
-  ovtCode: string;
-  reference: string;
-  sapCustomerNumber: string;
-  businessId: string;
-  isCompany: boolean;
 }
 
 const handleSelectChange = (
@@ -248,7 +235,7 @@ const createEmptyInvoiceTableRow = (
   installmentNumber: "",
   installmentTotal: "",
   dueDate: "",
-  invoiceNumber: "",
+  invoiceNumber: undefined,
   type: undefined,
   status: LAND_USE_INVOICE_STATUSES.DRAFT,
   sentAt: "",
@@ -289,11 +276,9 @@ interface InvoiceTableRowProps {
   onToggle: (index: number) => void;
 }
 
-const getInvoiceDeleteLabel = (invoiceNumber: string | undefined): string => {
-  const trimmedInvoiceNumber = invoiceNumber?.trim();
-
-  if (trimmedInvoiceNumber) {
-    return trimmedInvoiceNumber;
+const getInvoiceDeleteLabel = (invoiceNumber: number | undefined): string => {
+  if (invoiceNumber !== undefined) {
+    return String(invoiceNumber);
   }
 
   return "tämä lasku";
@@ -356,7 +341,11 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
               </td>
               <td>{readOnlyTextValue(installmentDisplayValue)}</td>
               <td>{readOnlyTextValue(invoice.dueDate)}</td>
-              <td>{readOnlyTextValue(invoice.invoiceNumber)}</td>
+              <td>
+                {invoice.invoiceNumber === undefined
+                  ? "-"
+                  : String(invoice.invoiceNumber)}
+              </td>
               <td>
                 {getOptionsDisplayValue(invoice.type, invoiceTypeOptions)}
               </td>
@@ -374,7 +363,7 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
                 <td colSpan={9}>
                   <div
                     className="landuse-compensations-table__detail-content"
-                    aria-label={`Laskun ${invoice.invoiceNumber || index + 1} tiedot`}
+                    aria-label={`Laskun ${invoice.invoiceNumber ?? index + 1} tiedot`}
                   >
                     <div className="landuse-grid landuse-grid__bottom-margin">
                       <div className="landuse-grid__column-3">
@@ -647,8 +636,6 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
                                               ...invoice,
                                               status: statusAction.nextStatus,
                                               sentAt: nextSentAtValue,
-                                              invoiceNumber:
-                                                Date.now().toString(),
                                               billedAmount: invoiceAmount,
                                               remainingAmount: invoiceAmount,
                                             });
@@ -676,21 +663,17 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
                     <Fieldset heading="Reskontra">
                       <div className="landuse-grid landuse-grid__bottom-margin">
                         <div className="landuse-grid__column-3 landuse-compensations-table__field--grey">
-                          <Field name={`${fieldName}.invoiceNumber`}>
-                            {({ input: invoiceNumberInput }) => (
-                              <TextInput
-                                inputMode="text"
-                                id={`landuse-billing-invoice-number-${index}`}
-                                label="Laskunumero"
-                                value={getFieldTextValue(
-                                  canEditInvoiceContent,
-                                  invoiceNumberInput.value,
-                                )}
-                                onChange={invoiceNumberInput.onChange}
-                                readOnly={!canEditInvoiceContent}
-                              />
-                            )}
-                          </Field>
+                          <TextInput
+                            inputMode="text"
+                            id={`landuse-billing-invoice-number-${index}`}
+                            label="Laskunumero"
+                            value={
+                              invoice.invoiceNumber === undefined
+                                ? "-"
+                                : String(invoice.invoiceNumber)
+                            }
+                            readOnly
+                          />
                         </div>
                         <div className="landuse-grid__column-3 landuse-compensations-table__field--grey">
                           <Field name={`${fieldName}.billedAmount`}>
@@ -1035,7 +1018,7 @@ const InvoiceReviewTable: React.FC<InvoiceReviewTableProps> = ({
                           ? `${installment.installmentNumber}/${installment.installmentTotal}`
                           : "-";
                       const amountExcludingVatTotal =
-                        installment.invoiceItems?.reduce(
+                        installment.items?.reduce(
                           (sum, invoiceItem) =>
                             sum +
                             parseLandUseNumericValueOrZero(
@@ -1221,8 +1204,8 @@ const InvoiceReviewTable: React.FC<InvoiceReviewTableProps> = ({
                                     </div>
                                   </div>
                                   <Fieldset heading="Laskurivit">
-                                    {installment.invoiceItems?.length ? (
-                                      installment.invoiceItems.map(
+                                    {installment.items?.length ? (
+                                      installment.items.map(
                                         (invoiceItem, invoiceItemIndex) => (
                                           <Card
                                             border
