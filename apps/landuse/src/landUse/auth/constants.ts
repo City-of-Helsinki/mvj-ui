@@ -1,4 +1,5 @@
 import { createTokenizedFetchModule, type LoginProviderProps } from "hds-react";
+import { LANDUSE_BASE_PATH } from "../../../constants";
 
 const tunnistusApiTokenKeyName: string =
   import.meta.env.VITE_TUNNISTUS_OIDC_API_AUDIENCE || "mvj-api";
@@ -20,7 +21,7 @@ const loginProviderTunnistusProperties: LoginProviderProps = {
       "https://tunnistus.hel.fi/auth/realms/helsinki-tunnistus",
     client_id: import.meta.env.VITE_TUNNISTUS_OIDC_CLIENT_ID || "",
     scope: import.meta.env.VITE_TUNNISTUS_OIDC_SCOPE || "openid profile",
-    redirect_uri: `${location.origin}/callback`,
+    redirect_uri: `${location.origin}${LANDUSE_BASE_PATH}/callback`,
   },
   apiTokensClientSettings: {
     url:
