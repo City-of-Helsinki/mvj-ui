@@ -64,35 +64,7 @@ export interface AsemakaavaListItem {
   asemakaavanLainvoimaisuusPvm: string | undefined;
 }
 
-// TODO delete this unused mock
-export const landUseAsemakaavaListItems: AsemakaavaListItem[] = [
-  {
-    asemakaavanNumero: "0000412",
-    asemakaavanKasittelyvaihe: "Vireillä",
-    vahvistamisHyvaksymisPvm: "27.03.2025",
-    asemakaavanLainvoimaisuusPvm: undefined,
-    asemakaavanHyvaksyjä: "Henkilö 2",
-    asemakaavanDiaarinumero: "HEL 1035-880164",
-  },
-  {
-    asemakaavanNumero: "0000623",
-    asemakaavanKasittelyvaihe: "Lainvoimainen",
-    vahvistamisHyvaksymisPvm: "14.09.2025",
-    asemakaavanLainvoimaisuusPvm: "01.11.2025",
-    asemakaavanHyvaksyjä: "Henkilö 4",
-    asemakaavanDiaarinumero: "HEL 5512-972406",
-  },
-  {
-    asemakaavanNumero: "0000891",
-    asemakaavanKasittelyvaihe: "Kumottu",
-    vahvistamisHyvaksymisPvm: "01.01.2010",
-    asemakaavanLainvoimaisuusPvm: "01.01.2010",
-    asemakaavanHyvaksyjä: "Henkilö 6",
-    asemakaavanDiaarinumero: "HEL 6689-451392",
-  },
-];
-
-export const LAND_USE_INVOICE_STATUSES = {
+export const INVOICE_STATUSES = {
   DRAFT: "draft",
   WAITING_TO_BE_SENT: "waiting_to_be_sent",
   OPEN: "open",
@@ -100,42 +72,44 @@ export const LAND_USE_INVOICE_STATUSES = {
   CREDITED: "credited",
 } as const;
 
-export type LandUseInvoiceStatus =
-  (typeof LAND_USE_INVOICE_STATUSES)[keyof typeof LAND_USE_INVOICE_STATUSES];
+export type InvoiceStatus =
+  (typeof INVOICE_STATUSES)[keyof typeof INVOICE_STATUSES];
 
-export const LAND_USE_PAYMENT_SCHEDULE_STATUSES = {
+export const INVOICE_STATUSES_ALLOWED_BEFORE_SAP_EXPORT: ReadonlySet<InvoiceStatus> =
+  new Set([INVOICE_STATUSES.DRAFT, INVOICE_STATUSES.WAITING_TO_BE_SENT]);
+
+export const PAYMENT_SCHEDULE_STATUSES = {
   DRAFT: "draft",
   PENDING_APPROVAL: "pending_approval",
   APPROVED: "approved",
   REJECTED: "rejected",
 } as const;
 
-export type LandUsePaymentScheduleStatus =
-  (typeof LAND_USE_PAYMENT_SCHEDULE_STATUSES)[keyof typeof LAND_USE_PAYMENT_SCHEDULE_STATUSES];
+export type PaymentScheduleStatus =
+  (typeof PAYMENT_SCHEDULE_STATUSES)[keyof typeof PAYMENT_SCHEDULE_STATUSES];
 
-export interface LandUseInvoiceItem {
+export interface InvoiceItem {
   id?: string;
   description: string;
   itemType: string;
   amountExcludingVat: string;
 }
 
-export interface LandUseInvoicePayment {
+export interface InvoicePayment {
   id: string;
   paidAmount: string;
   paidDate: string;
   filingCode: string;
 }
 
-export const LAND_USE_INVOICE_TYPES = {
+export const INVOICE_TYPES = {
   MAANKAYTTOKORVAUS: "land_use_compensation",
   SAKKO: "penalty",
 } as const;
 
-export type LandUseInvoiceType =
-  (typeof LAND_USE_INVOICE_TYPES)[keyof typeof LAND_USE_INVOICE_TYPES];
+export type InvoiceType = (typeof INVOICE_TYPES)[keyof typeof INVOICE_TYPES];
 
-export interface LandUseInvoice {
+export interface Invoice {
   id?: string;
   recipientSnapshot?: SelectedPartyInvoiceData;
   recipientPartyIndex: string | undefined;
@@ -148,17 +122,17 @@ export interface LandUseInvoice {
   laskentajaksonAlkupvm: string;
   laskentajaksonLoppupvm: string;
   invoiceNumber: number | undefined;
-  type: LandUseInvoiceType | undefined;
-  status: LandUseInvoiceStatus | undefined;
+  type: InvoiceType | undefined;
+  status: InvoiceStatus | undefined;
   sentAt?: string;
   billedAmount: string;
   remainingAmount: string;
-  invoiceItems?: LandUseInvoiceItem[];
-  payments?: LandUseInvoicePayment[];
+  invoiceItems?: InvoiceItem[];
+  payments?: InvoicePayment[];
 }
 
-export type LandUsePaymentScheduleInstallment = Omit<
-  LandUseInvoice,
+export type PaymentScheduleInstallment = Omit<
+  Invoice,
   | "invoiceNumber"
   | "recipientSnapshot"
   | "status"
@@ -168,9 +142,9 @@ export type LandUsePaymentScheduleInstallment = Omit<
   | "payments"
   | "invoiceItems"
 > & {
-  items?: LandUseInvoiceItem[];
+  items?: InvoiceItem[];
   invoice?: Pick<
-    LandUseInvoice,
+    Invoice,
     | "id"
     | "invoiceNumber"
     | "recipientSnapshot"
@@ -188,15 +162,15 @@ export type LandUsePaymentScheduleInstallment = Omit<
   >;
 };
 
-export const LAND_USE_INVOICE_ITEM_TYPES = {
+export const INVOICE_ITEM_TYPES = {
   MAANKAYTTOKORVAUS: "land_use_compensation",
   KOROTUS: "increase",
   KORKO: "interest",
   SAKKO: "penalty",
 } as const;
 
-export type LandUseInvoiceItemType =
-  (typeof LAND_USE_INVOICE_ITEM_TYPES)[keyof typeof LAND_USE_INVOICE_ITEM_TYPES];
+export type InvoiceItemType =
+  (typeof INVOICE_ITEM_TYPES)[keyof typeof INVOICE_ITEM_TYPES];
 
 // Only 365 is supported for now; additional entries can be added later without
 // requiring further changes to the payment schedule UI.

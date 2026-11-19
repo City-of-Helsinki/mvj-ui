@@ -9,8 +9,8 @@ import type { LandUsePartiesFormValues } from "@/landUse/components/tabs/LandUse
 import type { LandUseSummaryFormValues } from "@/landUse/components/tabs/LandUseSummary";
 import type { Collateral } from "@/landUse/components/collateralForms";
 import {
-  LAND_USE_INVOICE_TYPES,
-  LAND_USE_PAYMENT_SCHEDULE_STATUSES,
+  INVOICE_TYPES,
+  PAYMENT_SCHEDULE_STATUSES,
   type CollateralType,
 } from "@/landUse/options";
 import type { LandUseListItem } from "@/landUse/api/landUseListTypes";
@@ -1110,7 +1110,7 @@ export const getPaymentSchedule = async (
         laskentajaksonLoppupvm: parseIsoDateToFinnishDate(
           installment.interest_calculation_period_end_date,
         ),
-        type: LAND_USE_INVOICE_TYPES.MAANKAYTTOKORVAUS,
+        type: INVOICE_TYPES.MAANKAYTTOKORVAUS,
         items: installment.items.map((item) => ({
           id: String(item.id),
           itemType: item.item_type,
@@ -1132,8 +1132,8 @@ export const updatePaymentSchedule = async (
       .filter(
         (schedule) =>
           // Only update schedules that don't yet have invoices created
-          schedule.status === LAND_USE_PAYMENT_SCHEDULE_STATUSES.DRAFT ||
-          schedule.status === LAND_USE_PAYMENT_SCHEDULE_STATUSES.REJECTED,
+          schedule.status === PAYMENT_SCHEDULE_STATUSES.DRAFT ||
+          schedule.status === PAYMENT_SCHEDULE_STATUSES.REJECTED,
       )
       .map((schedule) => {
         return {
