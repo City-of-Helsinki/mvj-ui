@@ -1139,9 +1139,7 @@ export const updatePaymentSchedule = async (
       )
       .map((schedule) => {
         return {
-          ...(Number.isInteger(Number(schedule.id))
-            ? { id: Number(schedule.id) }
-            : {}),
+          ...(schedule.id ? { id: Number(schedule.id) } : {}),
           recipient_party: Number(schedule.recipientPartyIndex),
           contract: Number(schedule.contractIndex),
           signing_date: parseFinnishDateToIsoDate(schedule.signedDate),

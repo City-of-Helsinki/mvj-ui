@@ -14,6 +14,7 @@ import LandUseDetailPage, {
   calculatePaidMaankayttokorvaus,
 } from "@/landUse/components/LandUseDetailPage";
 import * as landUseApi from "@/landUse/api/landUseApi";
+import type { PaymentScheduleEntry } from "@/landUse/components/tabs/LandUsePaymentSchedule";
 import { LanduseApiError } from "@/landUse/api/fetchClient";
 import { LAND_USE_NEGOTIATION_PHASES } from "@/landUse/options";
 import {
@@ -311,23 +312,37 @@ vi.mock("../tabs/LandUsePaymentSchedule", () => ({
   LandUsePaymentSchedule: ({
     form,
     isEditMode,
+    onSendToInvoicing,
   }: {
     form: any;
     isEditMode: boolean;
+    onSendToInvoicing: (schedule: PaymentScheduleEntry) => Promise<void>;
   }) => (
     <Form
       form={form}
       onSubmit={() => {}}
       render={() => (
-        <Field name="paymentScheduleField">
-          {({ input }) => (
-            <input
-              aria-label="payment-schedule-input"
-              {...input}
-              disabled={!isEditMode}
-            />
-          )}
-        </Field>
+        <>
+          <button
+            disabled={!isEditMode}
+            onClick={() =>
+              onSendToInvoicing({
+                ...form.getState().values.paymentSchedules[0],
+              })
+            }
+          >
+            Send schedule
+          </button>
+          <Field name="paymentScheduleField">
+            {({ input }) => (
+              <input
+                aria-label="payment-schedule-input"
+                {...input}
+                disabled={!isEditMode}
+              />
+            )}
+          </Field>
+        </>
       )}
     />
   ),
@@ -492,6 +507,7 @@ vi.mock("../../api/landUseApi", () => ({
   updateDecisions: vi.fn(),
   updateContracts: vi.fn(),
   updatePaymentSchedule: vi.fn(),
+  submitPaymentSchedule: vi.fn(),
   updateCollaterals: vi.fn(),
 }));
 
@@ -568,6 +584,94 @@ describe("LandUseDetailPage", () => {
       async (_agreementId, values) => values as any,
     );
   });
+
+  it("does not save or submit a schedule without a backend ID", async () => {
+    vi.mocked(landUseApi.getPaymentSchedule).mockResolvedValue({
+      paymentSchedules: [
+        {
+          clientKey: "draft-1",
+          installments: [],
+        } as unknown as PaymentScheduleEntry,
+      ],
+    });
+    render(
+      <QueryClientProvider
+        client={
+          new QueryClient({ defaultOptions: { queries: { retry: false } } })
+        }
+      >
+        <LandUseDetailPage />
+      </QueryClientProvider>,
+    );
+    fireEvent.click(await screen.findByRole("button", { name: "Muokkaa" }));
+    fireEvent.click(screen.getByRole("tab", { name: "Maksusuunnitelmat" }));
+    fireEvent.click(
+      await screen.findByRole("button", { name: "Send schedule" }),
+    );
+    expect(landUseApi.updatePaymentSchedule).not.toHaveBeenCalled();
+    expect(landUseApi.submitPaymentSchedule).not.toHaveBeenCalled();
+    expect(screen.getByRole("button", { name: "Tallenna" })).toBeDefined();
+  });
+
+  it.each([true, false])(
+    "exits edit mode only when schedule submission succeeds: %s",
+    async (succeeds) => {
+      vi.mocked(landUseApi.getPaymentSchedule).mockResolvedValue({
+        paymentSchedules: [
+          { id: "1", installments: [] } as unknown as PaymentScheduleEntry,
+          { id: "2", installments: [] } as unknown as PaymentScheduleEntry,
+        ],
+      });
+      vi.mocked(landUseApi.updatePaymentSchedule).mockImplementationOnce(
+        async (_agreementId, values) => ({
+          ...values,
+          paymentSchedules: [...(values.paymentSchedules ?? [])].reverse(),
+        }),
+      );
+      const error = new Error("Submission failed");
+      if (succeeds) {
+        vi.mocked(landUseApi.submitPaymentSchedule).mockResolvedValueOnce();
+      } else {
+        vi.mocked(landUseApi.submitPaymentSchedule).mockRejectedValueOnce(
+          error,
+        );
+      }
+      render(
+        <QueryClientProvider
+          client={
+            new QueryClient({ defaultOptions: { queries: { retry: false } } })
+          }
+        >
+          <LandUseDetailPage />
+        </QueryClientProvider>,
+      );
+      fireEvent.click(await screen.findByRole("button", { name: "Muokkaa" }));
+      fireEvent.click(screen.getByRole("tab", { name: "Maksusuunnitelmat" }));
+      fireEvent.click(
+        await screen.findByRole("button", { name: "Send schedule" }),
+      );
+      await waitFor(() =>
+        expect(landUseApi.submitPaymentSchedule).toHaveBeenCalledWith("1"),
+      );
+      expect(landUseApi.updatePaymentSchedule).toHaveBeenCalledTimes(1);
+      if (succeeds) {
+        await screen.findByRole("button", { name: "Muokkaa" });
+        expect(
+          (screen.getByLabelText("payment-schedule-input") as HTMLInputElement)
+            .disabled,
+        ).toBe(true);
+      } else {
+        await waitFor(() =>
+          expect(showLanduseApiErrorNotification).toHaveBeenCalledWith(error),
+        );
+        expect(
+          (screen.getByLabelText("payment-schedule-input") as HTMLInputElement)
+            .disabled,
+        ).toBe(false);
+        expect(screen.getByRole("button", { name: "Tallenna" })).toBeDefined();
+      }
+    },
+  );
 
   it("reports save failures only through the notification service", async () => {
     const error = new LanduseApiError(500, { detail: "Saving failed" });

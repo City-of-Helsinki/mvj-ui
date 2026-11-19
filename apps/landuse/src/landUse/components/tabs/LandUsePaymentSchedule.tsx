@@ -75,7 +75,8 @@ export interface LandUsePaymentScheduleFormValues {
 }
 
 export interface PaymentScheduleEntry {
-  id: string;
+  id?: string;
+  clientKey?: string;
   createdAt?: string;
   recipientPartyIndex: string | undefined;
   contractIndex: string | undefined;
@@ -621,6 +622,7 @@ const createBulkInvoice = (
   sopimusnumero: string,
   asemakaavanNumero: string,
   recipientName: string,
+  isFirst = installmentNumber === 1,
 ): PaymentScheduleInstallment => ({
   recipientPartyIndex: values.recipientPartyIndex,
   contractIndex: values.contractIndex,
@@ -639,10 +641,7 @@ const createBulkInvoice = (
       amountExcludingVat: "",
     },
     {
-      itemType:
-        installmentNumber === 1
-          ? INVOICE_ITEM_TYPES.KOROTUS
-          : INVOICE_ITEM_TYPES.KORKO,
+      itemType: isFirst ? INVOICE_ITEM_TYPES.KOROTUS : INVOICE_ITEM_TYPES.KORKO,
       description: buildSecondRowSelite(
         agreementIdentifier,
         sopimusnumero,
@@ -650,7 +649,7 @@ const createBulkInvoice = (
         installmentNumber,
         values.installmentTotal,
         recipientName,
-        installmentNumber === 1,
+        isFirst,
       ),
       amountExcludingVat: "",
     },
@@ -1042,6 +1041,7 @@ const buildInstallmentStep = ({
   validateInstallments,
   recipientData,
   invoiceStatusOptions,
+  onRemove,
 }: {
   fieldName: string;
   scheduleFieldName: string;
@@ -1053,6 +1053,7 @@ const buildInstallmentStep = ({
   validateInstallments: boolean;
   recipientData: SelectedPartyInvoiceData;
   invoiceStatusOptions: SelectOption[];
+  onRemove: () => void;
 }) => {
   const canEdit =
     !installment.invoice && isEditMode && isScheduleEditable(scheduleStatus);
@@ -1066,16 +1067,35 @@ const buildInstallmentStep = ({
 
   return {
     title: (
-      <span className="landuse-detail__heading-actions">
-        <span>{`Erä ${installmentLabel}${savedInvoice ? ` (Laskunumero: ${savedInvoice.invoiceNumber !== undefined ? formatLandUseIntegerValue(savedInvoice.invoiceNumber) : "-"})` : ""}`}</span>
-        {savedInvoice?.status && (
-          <StatusLabel
-            type={
-              savedInvoice.status === INVOICE_STATUSES.PAID ? "success" : "info"
-            }
-          >
-            {getOptionsDisplayValue(savedInvoice.status, invoiceStatusOptions)}
-          </StatusLabel>
+      <span
+        className="landuse-detail__heading-with-delete"
+        style={{ width: "100%" }}
+      >
+        <span className="landuse-detail__heading-actions">
+          <span>{`Erä ${installmentLabel}${savedInvoice ? ` (Laskunumero: ${savedInvoice.invoiceNumber !== undefined ? formatLandUseIntegerValue(savedInvoice.invoiceNumber) : "-"})` : ""}`}</span>
+          {savedInvoice?.status && (
+            <StatusLabel
+              type={
+                savedInvoice.status === INVOICE_STATUSES.PAID
+                  ? "success"
+                  : "info"
+              }
+            >
+              {getOptionsDisplayValue(
+                savedInvoice.status,
+                invoiceStatusOptions,
+              )}
+            </StatusLabel>
+          )}
+        </span>
+        {canEdit && (
+          <ConfirmDeleteButton
+            id={`payment-schedule-${scheduleIndex}-installment-${installmentIndex}-delete`}
+            buttonLabel="Poista erä"
+            onConfirm={onRemove}
+            dialogTitle="Poista erä"
+            dialogContent={`Haluatko varmasti poistaa erän ${installmentLabel}?`}
+          />
         )}
       </span>
     ) as unknown as string,
@@ -1112,6 +1132,12 @@ interface PartyGroupSectionProps {
   parties: PartyEntry[];
   contractOptions: ContractOption[];
   onRemoveSchedule: (index: number) => void;
+  onAddInstallment: (schedule: PaymentScheduleEntry, index: number) => void;
+  onRemoveInstallment: (
+    schedule: PaymentScheduleEntry,
+    index: number,
+    installmentIndex: number,
+  ) => void;
   onSendToInvoicing: (schedule: PaymentScheduleEntry) => Promise<void>;
   onReturnToDraft?: (schedule: PaymentScheduleEntry) => Promise<void>;
 }
@@ -1129,6 +1155,8 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
   parties,
   contractOptions,
   onRemoveSchedule,
+  onAddInstallment,
+  onRemoveInstallment,
   onSendToInvoicing,
   onReturnToDraft,
 }) => {
@@ -1172,7 +1200,7 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
   };
 
   const handleSendConfirm = async () => {
-    if (!scheduleToSend || areAllInvoicesInScheduleSent(scheduleToSend)) {
+    if (!scheduleToSend?.id || areAllInvoicesInScheduleSent(scheduleToSend)) {
       return;
     }
 
@@ -1323,7 +1351,7 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
             areAllInvoicesInScheduleSent(schedule);
 
           return (
-            <section key={schedule.id}>
+            <section key={schedule.id ?? schedule.clientKey}>
               <FieldArray<PaymentScheduleInstallment>
                 name={`${fieldName}.installments`}
               >
@@ -1364,15 +1392,25 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
                             </Button>
                           )}
                         {canSubmitSchedules && statusAction && (
-                          <Button
-                            type="button"
-                            variant={ButtonVariant.Primary}
-                            size={ButtonSize.Small}
-                            disabled={allInstallmentInvoicesSent}
-                            onClick={() => setScheduleToSend(schedule)}
+                          <span
+                            title={
+                              !schedule.id
+                                ? "Tallentamattomia suunnitelmia ei voi lähettää laskutukseen"
+                                : undefined
+                            }
                           >
-                            {statusAction.buttonLabel}
-                          </Button>
+                            <Button
+                              type="button"
+                              variant={ButtonVariant.Primary}
+                              size={ButtonSize.Small}
+                              disabled={
+                                !schedule.id || allInstallmentInvoicesSent
+                              }
+                              onClick={() => setScheduleToSend(schedule)}
+                            >
+                              {statusAction.buttonLabel}
+                            </Button>
+                          </span>
                         )}
                       </div>
                       {isEditMode &&
@@ -1408,6 +1446,7 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
                           description: (
                             <Fieldset
                               key={
+                                Boolean(schedule.id) &&
                                 scheduleToSend?.id === schedule.id
                                   ? "validate"
                                   : "draft"
@@ -1467,6 +1506,7 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
                                   <Field<string | number>
                                     name={`${fieldName}.korotusProsentti`}
                                     validate={
+                                      Boolean(schedule.id) &&
                                       scheduleToSend?.id === schedule.id
                                         ? validateRequiredInstallmentField
                                         : undefined
@@ -1494,6 +1534,7 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
                                   <Field<string | number>
                                     name={`${fieldName}.korkoPeruskorko`}
                                     validate={
+                                      Boolean(schedule.id) &&
                                       scheduleToSend?.id === schedule.id
                                         ? validateRequiredInstallmentField
                                         : undefined
@@ -1521,6 +1562,7 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
                                   <Field<string | number>
                                     name={`${fieldName}.korkoMarginaali`}
                                     validate={
+                                      Boolean(schedule.id) &&
                                       scheduleToSend?.id === schedule.id
                                         ? validateRequiredInstallmentField
                                         : undefined
@@ -1563,11 +1605,29 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
                               invoiceStatusOptions:
                                 metadataQuery.data?.invoice_statuses ?? [],
                               validateInstallments:
+                                Boolean(schedule.id) &&
                                 scheduleToSend?.id === schedule.id,
+                              onRemove: () =>
+                                onRemoveInstallment(
+                                  schedule,
+                                  index,
+                                  installmentIndex,
+                                ),
                             }),
                         ),
                       ]}
                     />
+                    {isEditMode && isScheduleEditable(schedule.status) && (
+                      <Button
+                        type="button"
+                        variant={ButtonVariant.Secondary}
+                        size={ButtonSize.Small}
+                        iconStart={<IconPlusCircle />}
+                        onClick={() => onAddInstallment(schedule, index)}
+                      >
+                        Lisää erä
+                      </Button>
+                    )}
                   </>
                 )}
               </FieldArray>
@@ -1718,6 +1778,106 @@ export const LandUsePaymentSchedule: React.FC<LandUsePaymentScheduleProps> = ({
 
   useTocEntries(tocEntries);
 
+  const updateInstallments = (
+    schedule: PaymentScheduleEntry,
+    index: number,
+    installments: PaymentScheduleInstallment[],
+  ) => {
+    const sopimusnumero =
+      contractOptions.find((option) => option.value === schedule.contractIndex)
+        ?.sopimusnumero ?? "";
+    const recipientName = getOptionsDisplayValue(
+      schedule.recipientPartyIndex,
+      partyOptions,
+    );
+    const installmentTotal = String(installments.length);
+
+    const updatedInstallments = installments.map(
+      (installment, installmentIndex) => {
+        if (installment.invoice) return installment;
+        const installmentNumber = installmentIndex + 1;
+        return {
+          ...installment,
+          installmentNumber: String(installmentNumber),
+          installmentTotal,
+          // Have to update the description for installment items based on the installment number and total
+          items: installment.items?.map((item, itemIndex) =>
+            itemIndex === 1 && getInterestKind(item.itemType)
+              ? {
+                  ...item,
+                  description: buildSecondRowSelite(
+                    agreementIdentifier,
+                    sopimusnumero,
+                    asemakaavanNumero,
+                    installmentNumber,
+                    installmentTotal,
+                    recipientName,
+                    item.itemType === INVOICE_ITEM_TYPES.KOROTUS,
+                  ),
+                }
+              : item,
+          ),
+        };
+      },
+    );
+    form.change(
+      "paymentSchedules",
+      form
+        .getState()
+        .values.paymentSchedules?.map((entry, scheduleIndex) =>
+          scheduleIndex === index
+            ? { ...entry, installments: updatedInstallments }
+            : entry,
+        ),
+    );
+  };
+
+  const handleAddInstallment = (
+    schedule: PaymentScheduleEntry,
+    index: number,
+  ) => {
+    if (!isEditMode || !isScheduleEditable(schedule.status)) return;
+    const installment = createBulkInvoice(
+      schedule.installments.length + 1,
+      {
+        installmentTotal: String(schedule.installments.length + 1),
+        contractIndex: schedule.contractIndex,
+        recipientPartyIndex: schedule.recipientPartyIndex,
+        asemakaavanLainvoimaisuusPvm,
+      },
+      schedule.signedDate,
+      agreementIdentifier,
+      contractOptions.find((option) => option.value === schedule.contractIndex)
+        ?.sopimusnumero ?? "",
+      asemakaavanNumero,
+      getOptionsDisplayValue(schedule.recipientPartyIndex, partyOptions),
+    );
+    updateInstallments(schedule, index, [
+      ...schedule.installments,
+      installment,
+    ]);
+  };
+
+  const handleRemoveInstallment = (
+    schedule: PaymentScheduleEntry,
+    index: number,
+    installmentIndex: number,
+  ) => {
+    if (
+      !isEditMode ||
+      !isScheduleEditable(schedule.status) ||
+      schedule.installments[installmentIndex]?.invoice
+    )
+      return;
+    updateInstallments(
+      schedule,
+      index,
+      schedule.installments.filter(
+        (_, currentIndex) => currentIndex !== installmentIndex,
+      ),
+    );
+  };
+
   const handleBulkCreate = (values: BulkCreateFormValues) => {
     const total = parseInt(values.installmentTotal, 10);
     if (
@@ -1753,7 +1913,7 @@ export const LandUsePaymentSchedule: React.FC<LandUsePaymentScheduleProps> = ({
     );
 
     form.mutators.push("paymentSchedules", {
-      id: crypto.randomUUID(),
+      clientKey: crypto.randomUUID(),
       recipientPartyIndex: values.recipientPartyIndex,
       contractIndex: values.contractIndex,
       status: PAYMENT_SCHEDULE_STATUSES.DRAFT,
@@ -1865,6 +2025,8 @@ export const LandUsePaymentSchedule: React.FC<LandUsePaymentScheduleProps> = ({
                               parties={parties}
                               contractOptions={contractOptions}
                               onRemoveSchedule={fields.remove}
+                              onAddInstallment={handleAddInstallment}
+                              onRemoveInstallment={handleRemoveInstallment}
                               onSendToInvoicing={onSendToInvoicing}
                               onReturnToDraft={onReturnToDraft}
                             />

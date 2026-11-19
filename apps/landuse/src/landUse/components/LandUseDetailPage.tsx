@@ -973,18 +973,15 @@ const LandUseDetailPage: React.FC = () => {
     [];
 
   const handleSendToInvoicing = async (schedule: PaymentScheduleEntry) => {
-    if (isSaving || !canChangeTab("paymentSchedule")) return;
+    if (isSaving || !canChangeTab("paymentSchedule") || !schedule.id) return;
     setIsSaving(true);
     try {
       const values = paymentScheduleFormApi.getState()
         .values as LandUsePaymentScheduleFormValues;
-      const scheduleIndex = values.paymentSchedules?.indexOf(schedule) ?? -1;
-      const savedValues = await paymentScheduleMutation.mutateAsync(values);
-      const savedSchedule = savedValues.paymentSchedules?.[scheduleIndex];
-      if (!savedSchedule) {
-        throw new Error("The payment schedule could not be persisted.");
-      }
-      await submitPaymentSchedule(savedSchedule.id);
+      await paymentScheduleMutation.mutateAsync(values);
+      markFormSaved("paymentSchedule");
+      await submitPaymentSchedule(schedule.id);
+      setIsEditMode(false);
       showLanduseSuccessNotification(
         "Maksusuunnitelma lähetetty tarkastettavaksi.",
       );
@@ -1001,7 +998,7 @@ const LandUseDetailPage: React.FC = () => {
   const handleReturnScheduleToDraft = async (
     schedule: PaymentScheduleEntry,
   ): Promise<void> => {
-    if (isSaving || !canChangeTab("paymentSchedule")) return;
+    if (isSaving || !canChangeTab("paymentSchedule") || !schedule.id) return;
     setIsSaving(true);
     try {
       await returnPaymentScheduleToDraft(schedule.id);
@@ -1210,24 +1207,29 @@ const LandUseDetailPage: React.FC = () => {
               isEditMode && hasPermission("approve_paymentschedule")
             }
             parties={billingParties}
-            paymentSchedules={billingPaymentSchedules.map((schedule) => ({
-              id: schedule.id,
-              recipientPartyIndex: schedule.recipientPartyIndex,
-              status: schedule.status,
-              allInstallmentInvoicesSent:
-                areAllInvoicesInScheduleSent(schedule),
-              installments: schedule.installments
-                .filter((installment) => !installment.invoice)
-                .map((installment) => ({
-                  id: installment.id,
-                  recipientPartyIndex: installment.recipientPartyIndex,
-                  installmentNumber: installment.installmentNumber,
-                  installmentTotal: installment.installmentTotal,
-                  dueDate: installment.dueDate,
-                  type: installment.type,
-                  items: installment.items,
-                })),
-            }))}
+            paymentSchedules={billingPaymentSchedules
+              .filter(
+                (schedule): schedule is PaymentScheduleEntry & { id: string } =>
+                  Boolean(schedule.id),
+              )
+              .map((schedule) => ({
+                id: schedule.id,
+                recipientPartyIndex: schedule.recipientPartyIndex,
+                status: schedule.status,
+                allInstallmentInvoicesSent:
+                  areAllInvoicesInScheduleSent(schedule),
+                installments: schedule.installments
+                  .filter((installment) => !installment.invoice)
+                  .map((installment) => ({
+                    id: installment.id,
+                    recipientPartyIndex: installment.recipientPartyIndex,
+                    installmentNumber: installment.installmentNumber,
+                    installmentTotal: installment.installmentTotal,
+                    dueDate: installment.dueDate,
+                    type: installment.type,
+                    items: installment.items,
+                  })),
+              }))}
             onAcceptSchedule={handleAcceptSchedule}
             onDeclineSchedule={handleDeclineSchedule}
           />

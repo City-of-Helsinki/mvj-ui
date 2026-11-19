@@ -402,7 +402,12 @@ describe("land use API contract adapters", () => {
       paymentSchedules: [
         schedule,
         { ...schedule, id: "13", status: "pending_approval" },
-        { ...schedule, id: "new-schedule", status: "draft" },
+        {
+          ...schedule,
+          id: undefined,
+          clientKey: "new-schedule",
+          status: "draft",
+        },
       ],
     });
 
@@ -470,6 +475,7 @@ describe("land use API contract adapters", () => {
     mockGetAllPages.mockResolvedValue([
       {
         id: 1,
+        created_at: "2024-02-28T12:34:56Z",
         recipient_party: 73,
         contract: 91,
         status: "approved",
