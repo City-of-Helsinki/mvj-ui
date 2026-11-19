@@ -29,9 +29,9 @@ import { useTocEntries } from "@/landUse/hooks/useTableOfContents";
 import {
   AsemakaavaListItem,
   INTEREST_CALCULATION_DAYS_IN_YEAR,
-  LAND_USE_INVOICE_ITEM_TYPES,
-  LAND_USE_INVOICE_TYPES,
-  LAND_USE_PAYMENT_SCHEDULE_STATUSES,
+  INVOICE_ITEM_TYPES,
+  INVOICE_TYPES,
+  PAYMENT_SCHEDULE_STATUSES,
 } from "@/landUse/options";
 import {
   getOptionsDisplayValue,
@@ -47,11 +47,12 @@ import {
 } from "@/landUse/utils/number";
 import { ConfirmDeleteButton } from "@/landUse/components/ConfirmDeleteButton";
 import { useLandUseMetadata } from "@/landUse/api/useLandUseMetadata";
+import { areAllInvoicesInScheduleSent } from "@/landUse/utils/invoiceReview";
 import {
-  LAND_USE_INVOICE_STATUSES,
-  type LandUsePaymentScheduleInstallment,
-  type LandUseInvoiceItem,
-  type LandUsePaymentScheduleStatus,
+  INVOICE_STATUSES,
+  type PaymentScheduleInstallment,
+  type InvoiceItem,
+  type PaymentScheduleStatus,
 } from "@/landUse/options";
 import type { LandUseContractsFormValues } from "@/landUse/components/tabs/LandUseContracts";
 import type {
@@ -70,21 +71,21 @@ interface ContractOption extends SelectOption {
 }
 
 export interface LandUsePaymentScheduleFormValues {
-  paymentSchedules?: LandUsePaymentScheduleEntry[];
+  paymentSchedules?: PaymentScheduleEntry[];
 }
 
-export interface LandUsePaymentScheduleEntry {
+export interface PaymentScheduleEntry {
   id: string;
   recipientPartyIndex: string | undefined;
   contractIndex: string | undefined;
-  status: LandUsePaymentScheduleStatus | undefined;
+  status: PaymentScheduleStatus | undefined;
   rejectedReason: string | null;
   signedDate: string;
   korotusProsentti: string;
   korkoPeruskorko: string;
   korkoMarginaali: string;
   daysInYear: string;
-  installments: LandUsePaymentScheduleInstallment[];
+  installments: PaymentScheduleInstallment[];
 }
 
 interface LandUsePaymentScheduleProps {
@@ -96,8 +97,8 @@ interface LandUsePaymentScheduleProps {
   asemakaavanNumero: AsemakaavaListItem["asemakaavanNumero"];
   asemakaavanLainvoimaisuusPvm: AsemakaavaListItem["asemakaavanLainvoimaisuusPvm"];
   agreementIdentifier: string;
-  onSendToInvoicing: (schedule: LandUsePaymentScheduleEntry) => Promise<void>;
-  onReturnToDraft?: (schedule: LandUsePaymentScheduleEntry) => Promise<void>;
+  onSendToInvoicing: (schedule: PaymentScheduleEntry) => Promise<void>;
+  onReturnToDraft?: (schedule: PaymentScheduleEntry) => Promise<void>;
 }
 
 type SelectedPartyInvoiceData = Pick<
@@ -121,7 +122,7 @@ const isPaymentScheduleFieldFilled = (value: unknown): boolean =>
     : value !== null && value !== undefined;
 
 export const getMissingPaymentScheduleFieldLabels = (
-  schedule: LandUsePaymentScheduleEntry,
+  schedule: PaymentScheduleEntry,
   party: SelectedPartyInvoiceData,
 ): string[] => {
   const missingPartyFields = [
@@ -288,8 +289,8 @@ const getSelectedPartyInvoiceData = (
 type InterestKind = "korotus" | "korko";
 
 const getInterestKind = (itemType: string): InterestKind | null => {
-  if (itemType === LAND_USE_INVOICE_ITEM_TYPES.KOROTUS) return "korotus";
-  if (itemType === LAND_USE_INVOICE_ITEM_TYPES.KORKO) return "korko";
+  if (itemType === INVOICE_ITEM_TYPES.KOROTUS) return "korotus";
+  if (itemType === INVOICE_ITEM_TYPES.KORKO) return "korko";
   return null;
 };
 
@@ -521,56 +522,55 @@ const InvoiceItemRow: React.FC<InvoiceItemRowProps> = ({
 };
 
 const getScheduleStatusAction = (
-  status: LandUsePaymentScheduleStatus | undefined,
-): { buttonLabel: string; nextStatus: LandUsePaymentScheduleStatus } | null => {
+  status: PaymentScheduleStatus | undefined,
+): { buttonLabel: string; nextStatus: PaymentScheduleStatus } | null => {
   if (
-    status === LAND_USE_PAYMENT_SCHEDULE_STATUSES.DRAFT ||
-    status === LAND_USE_PAYMENT_SCHEDULE_STATUSES.REJECTED
+    status === PAYMENT_SCHEDULE_STATUSES.DRAFT ||
+    status === PAYMENT_SCHEDULE_STATUSES.REJECTED
   ) {
     return {
       buttonLabel: "Siirrä laskutukseen",
-      nextStatus: LAND_USE_PAYMENT_SCHEDULE_STATUSES.PENDING_APPROVAL,
+      nextStatus: PAYMENT_SCHEDULE_STATUSES.PENDING_APPROVAL,
     };
   }
   return null;
 };
 
 const getScheduleStatusLabelType = (
-  status: LandUsePaymentScheduleStatus | undefined,
+  status: PaymentScheduleStatus | undefined,
 ): StatusLabelType => {
-  if (status === LAND_USE_PAYMENT_SCHEDULE_STATUSES.APPROVED) return "success";
-  if (status === LAND_USE_PAYMENT_SCHEDULE_STATUSES.REJECTED) return "error";
-  if (status === LAND_USE_PAYMENT_SCHEDULE_STATUSES.PENDING_APPROVAL)
-    return "info";
+  if (status === PAYMENT_SCHEDULE_STATUSES.APPROVED) return "success";
+  if (status === PAYMENT_SCHEDULE_STATUSES.REJECTED) return "error";
+  if (status === PAYMENT_SCHEDULE_STATUSES.PENDING_APPROVAL) return "info";
   return "neutral";
 };
 
 const getScheduleStatusIcon = (
-  status: LandUsePaymentScheduleStatus | undefined,
+  status: PaymentScheduleStatus | undefined,
 ): React.ReactNode => {
-  if (status === LAND_USE_PAYMENT_SCHEDULE_STATUSES.APPROVED) {
+  if (status === PAYMENT_SCHEDULE_STATUSES.APPROVED) {
     return <IconCheckCircleFill aria-hidden />;
   }
-  if (status === LAND_USE_PAYMENT_SCHEDULE_STATUSES.REJECTED) {
+  if (status === PAYMENT_SCHEDULE_STATUSES.REJECTED) {
     return <IconCrossCircleFill aria-hidden />;
   }
-  if (status === LAND_USE_PAYMENT_SCHEDULE_STATUSES.PENDING_APPROVAL) {
+  if (status === PAYMENT_SCHEDULE_STATUSES.PENDING_APPROVAL) {
     return <IconClock aria-hidden />;
   }
-  if (status === LAND_USE_PAYMENT_SCHEDULE_STATUSES.DRAFT) {
+  if (status === PAYMENT_SCHEDULE_STATUSES.DRAFT) {
     return <IconHammers aria-hidden />;
   }
   return null;
 };
 
 const isScheduleEditable = (
-  status: LandUsePaymentScheduleStatus | undefined,
+  status: PaymentScheduleStatus | undefined,
 ): boolean =>
-  status === LAND_USE_PAYMENT_SCHEDULE_STATUSES.DRAFT ||
-  status === LAND_USE_PAYMENT_SCHEDULE_STATUSES.REJECTED;
+  status === PAYMENT_SCHEDULE_STATUSES.DRAFT ||
+  status === PAYMENT_SCHEDULE_STATUSES.REJECTED;
 
 const calculateScheduleTotals = (
-  installments: LandUsePaymentScheduleInstallment[],
+  installments: PaymentScheduleInstallment[],
 ): { landUseCompensationTotal: number; scheduleTotal: number } =>
   installments.reduce(
     (totals, installment) =>
@@ -583,7 +583,7 @@ const calculateScheduleTotals = (
           return {
             landUseCompensationTotal:
               itemTotals.landUseCompensationTotal +
-              (item.itemType === LAND_USE_INVOICE_ITEM_TYPES.MAANKAYTTOKORVAUS
+              (item.itemType === INVOICE_ITEM_TYPES.MAANKAYTTOKORVAUS
                 ? amount
                 : 0),
             scheduleTotal: itemTotals.scheduleTotal + amount,
@@ -620,7 +620,7 @@ const createBulkInvoice = (
   sopimusnumero: string,
   asemakaavanNumero: string,
   recipientName: string,
-): LandUsePaymentScheduleInstallment => ({
+): PaymentScheduleInstallment => ({
   recipientPartyIndex: values.recipientPartyIndex,
   contractIndex: values.contractIndex,
   installmentNumber: String(installmentNumber),
@@ -630,18 +630,18 @@ const createBulkInvoice = (
   dueDate: "",
   laskentajaksonAlkupvm: "",
   laskentajaksonLoppupvm: "",
-  type: LAND_USE_INVOICE_TYPES.MAANKAYTTOKORVAUS,
+  type: INVOICE_TYPES.MAANKAYTTOKORVAUS,
   items: [
     {
-      itemType: LAND_USE_INVOICE_ITEM_TYPES.MAANKAYTTOKORVAUS,
+      itemType: INVOICE_ITEM_TYPES.MAANKAYTTOKORVAUS,
       description: "Maksutuotot maankäyttösopimuksista",
       amountExcludingVat: "",
     },
     {
       itemType:
         installmentNumber === 1
-          ? LAND_USE_INVOICE_ITEM_TYPES.KOROTUS
-          : LAND_USE_INVOICE_ITEM_TYPES.KORKO,
+          ? INVOICE_ITEM_TYPES.KOROTUS
+          : INVOICE_ITEM_TYPES.KORKO,
       description: buildSecondRowSelite(
         agreementIdentifier,
         sopimusnumero,
@@ -801,9 +801,9 @@ interface InstallmentStepProps {
   canEdit: boolean;
   validateInstallments: boolean;
   recipientData: NonNullable<
-    LandUsePaymentScheduleInstallment["invoice"]
+    PaymentScheduleInstallment["invoice"]
   >["recipientSnapshot"];
-  invoice: LandUsePaymentScheduleInstallment["invoice"];
+  invoice: PaymentScheduleInstallment["invoice"];
 }
 
 const InstallmentStep: React.FC<InstallmentStepProps> = ({
@@ -999,7 +999,7 @@ const InstallmentStep: React.FC<InstallmentStepProps> = ({
       </div>
 
       <section>
-        <FieldArray<LandUseInvoiceItem>
+        <FieldArray<InvoiceItem>
           name={`${fieldName}.${invoice ? "invoice.invoiceItems" : "items"}`}
         >
           {({ fields: itemFields }) => (
@@ -1047,8 +1047,8 @@ const buildInstallmentStep = ({
   scheduleIndex: number;
   installmentIndex: number;
   isEditMode: boolean;
-  scheduleStatus: LandUsePaymentScheduleStatus | undefined;
-  installment: LandUsePaymentScheduleInstallment;
+  scheduleStatus: PaymentScheduleStatus | undefined;
+  installment: PaymentScheduleInstallment;
   validateInstallments: boolean;
   recipientData: SelectedPartyInvoiceData;
   invoiceStatusOptions: SelectOption[];
@@ -1070,9 +1070,7 @@ const buildInstallmentStep = ({
         {savedInvoice?.status && (
           <StatusLabel
             type={
-              savedInvoice.status === LAND_USE_INVOICE_STATUSES.PAID
-                ? "success"
-                : "info"
+              savedInvoice.status === INVOICE_STATUSES.PAID ? "success" : "info"
             }
           >
             {getOptionsDisplayValue(savedInvoice.status, invoiceStatusOptions)}
@@ -1106,15 +1104,15 @@ interface PartyGroupSectionProps {
   partySchedules: Array<{
     fieldName: string;
     index: number;
-    schedule: LandUsePaymentScheduleEntry;
+    schedule: PaymentScheduleEntry;
   }>;
   isEditMode: boolean;
   canSubmitSchedules: boolean;
   parties: PartyEntry[];
   contractOptions: ContractOption[];
   onRemoveSchedule: (index: number) => void;
-  onSendToInvoicing: (schedule: LandUsePaymentScheduleEntry) => Promise<void>;
-  onReturnToDraft?: (schedule: LandUsePaymentScheduleEntry) => Promise<void>;
+  onSendToInvoicing: (schedule: PaymentScheduleEntry) => Promise<void>;
+  onReturnToDraft?: (schedule: PaymentScheduleEntry) => Promise<void>;
 }
 
 const getPartyGroupHeadingId = (partyValue: string): string =>
@@ -1135,27 +1133,28 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
 }) => {
   const metadataQuery = useLandUseMetadata();
   const [scheduleToSend, setScheduleToSend] =
-    useState<LandUsePaymentScheduleEntry | null>(null);
+    useState<PaymentScheduleEntry | null>(null);
   const [scheduleToReturn, setScheduleToReturn] =
-    useState<LandUsePaymentScheduleEntry | null>(null);
+    useState<PaymentScheduleEntry | null>(null);
   const [isReturning, setIsReturning] = useState(false);
 
   const invoicesToDeleteCount =
     scheduleToReturn?.installments.filter(
       ({ invoice }) =>
-        invoice?.status === LAND_USE_INVOICE_STATUSES.WAITING_TO_BE_SENT &&
+        invoice?.status === INVOICE_STATUSES.WAITING_TO_BE_SENT &&
         !invoice.sentAt,
     ).length ?? 0;
 
   const invoicesToKeepCount =
     scheduleToReturn?.installments.filter(
       ({ invoice }) =>
-        invoice?.status !== LAND_USE_INVOICE_STATUSES.WAITING_TO_BE_SENT ||
+        invoice?.status !== INVOICE_STATUSES.WAITING_TO_BE_SENT ||
         !!invoice.sentAt,
     ).length ?? 0;
 
   const handleReturnConfirm = async () => {
     if (!scheduleToReturn || !onReturnToDraft || isReturning) return;
+    if (areAllInvoicesInScheduleSent(scheduleToReturn)) return;
     setIsReturning(true);
     try {
       await onReturnToDraft(scheduleToReturn);
@@ -1172,7 +1171,9 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
   };
 
   const handleSendConfirm = async () => {
-    if (!scheduleToSend) return;
+    if (!scheduleToSend || areAllInvoicesInScheduleSent(scheduleToSend)) {
+      return;
+    }
 
     await onSendToInvoicing(scheduleToSend);
     closeSendDialog();
@@ -1317,10 +1318,12 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
           const statusAction = getScheduleStatusAction(schedule.status);
           const { landUseCompensationTotal, scheduleTotal } =
             calculateScheduleTotals(schedule.installments);
+          const allInstallmentInvoicesSent =
+            areAllInvoicesInScheduleSent(schedule);
 
           return (
             <section key={schedule.id}>
-              <FieldArray<LandUsePaymentScheduleInstallment>
+              <FieldArray<PaymentScheduleInstallment>
                 name={`${fieldName}.installments`}
               >
                 {({ fields: installmentFields }) => (
@@ -1345,13 +1348,14 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
                         {isEditMode &&
                           onReturnToDraft &&
                           (schedule.status ===
-                            LAND_USE_PAYMENT_SCHEDULE_STATUSES.APPROVED ||
+                            PAYMENT_SCHEDULE_STATUSES.APPROVED ||
                             schedule.status ===
-                              LAND_USE_PAYMENT_SCHEDULE_STATUSES.PENDING_APPROVAL) && (
+                              PAYMENT_SCHEDULE_STATUSES.PENDING_APPROVAL) && (
                             <Button
                               type="button"
                               variant={ButtonVariant.Secondary}
                               size={ButtonSize.Small}
+                              disabled={allInstallmentInvoicesSent}
                               onClick={() => setScheduleToReturn(schedule)}
                             >
                               Palauta luonnokseksi
@@ -1362,6 +1366,7 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
                             type="button"
                             variant={ButtonVariant.Primary}
                             size={ButtonSize.Small}
+                            disabled={allInstallmentInvoicesSent}
                             onClick={() => setScheduleToSend(schedule)}
                           >
                             {statusAction.buttonLabel}
@@ -1382,8 +1387,12 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
                           />
                         )}
                     </div>
-                    {schedule.status ===
-                      LAND_USE_PAYMENT_SCHEDULE_STATUSES.REJECTED &&
+                    {allInstallmentInvoicesSent && (
+                      <Notification type="success">
+                        Kaikki maksusuunnitelman laskut on lähetetty SAP:iin.
+                      </Notification>
+                    )}
+                    {schedule.status === PAYMENT_SCHEDULE_STATUSES.REJECTED &&
                       schedule.rejectedReason !== null && (
                         <Notification type="error" label="Hylkäyksen syy">
                           {schedule.rejectedReason}
@@ -1579,11 +1588,10 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
         />
         <Dialog.Content>
           {scheduleToReturn?.status ===
-            LAND_USE_PAYMENT_SCHEDULE_STATUSES.PENDING_APPROVAL && (
+            PAYMENT_SCHEDULE_STATUSES.PENDING_APPROVAL && (
             <p>Suunnitelmaa ei ole vielä tarkastettu.</p>
           )}
-          {scheduleToReturn?.status ===
-            LAND_USE_PAYMENT_SCHEDULE_STATUSES.APPROVED && (
+          {scheduleToReturn?.status === PAYMENT_SCHEDULE_STATUSES.APPROVED && (
             <>
               <p>
                 Suunnitelma on hyväksytty. Lähettämättömät laskut poistetaan ja
@@ -1610,7 +1618,11 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
           <Button
             type="button"
             variant={ButtonVariant.Primary}
-            disabled={isReturning}
+            disabled={
+              isReturning ||
+              (scheduleToReturn !== null &&
+                areAllInvoicesInScheduleSent(scheduleToReturn))
+            }
             onClick={handleReturnConfirm}
           >
             Palauta luonnokseksi
@@ -1742,7 +1754,7 @@ export const LandUsePaymentSchedule: React.FC<LandUsePaymentScheduleProps> = ({
       id: crypto.randomUUID(),
       recipientPartyIndex: values.recipientPartyIndex,
       contractIndex: values.contractIndex,
-      status: LAND_USE_PAYMENT_SCHEDULE_STATUSES.DRAFT,
+      status: PAYMENT_SCHEDULE_STATUSES.DRAFT,
       rejectedReason: null,
       signedDate,
       korotusProsentti: "",
@@ -1750,7 +1762,7 @@ export const LandUsePaymentSchedule: React.FC<LandUsePaymentScheduleProps> = ({
       korkoMarginaali: "",
       daysInYear: INTEREST_CALCULATION_DAYS_IN_YEAR.DAYS_365,
       installments,
-    } satisfies LandUsePaymentScheduleEntry);
+    } satisfies PaymentScheduleEntry);
 
     setIsBulkCreateOpen(false);
   };
@@ -1809,14 +1821,14 @@ export const LandUsePaymentSchedule: React.FC<LandUsePaymentScheduleProps> = ({
                   heading=""
                   className="landuse-detail__fieldset--with-margin"
                 >
-                  <FieldArray<LandUsePaymentScheduleEntry> name="paymentSchedules">
+                  <FieldArray<PaymentScheduleEntry> name="paymentSchedules">
                     {({ fields }) => {
                       const groupedByParty = new Map<
                         string,
                         Array<{
                           fieldName: string;
                           index: number;
-                          schedule: LandUsePaymentScheduleEntry;
+                          schedule: PaymentScheduleEntry;
                         }>
                       >();
                       fields.forEach((fieldName, index) => {

@@ -26,7 +26,7 @@ import {
 import {
   LandUseBilling,
   type LandUseBillingFormValues,
-  type LandUseBillingSchedule,
+  type BillingSchedule,
 } from "../LandUseBilling";
 import {
   LandUsePaymentSchedule,
@@ -110,10 +110,11 @@ describe("backend-valued contract conventions", () => {
   it.each([false, true])(
     "gates schedule review actions with permission %s",
     async (canReviewSchedules) => {
-      const schedule: LandUseBillingSchedule = {
+      const schedule: BillingSchedule = {
         id: "schedule-1",
         recipientPartyIndex: "73",
         status: "pending_approval",
+        allInstallmentInvoicesSent: false,
         installments: [
           {
             id: "installment-1",
@@ -184,6 +185,52 @@ describe("backend-valued contract conventions", () => {
     },
   );
 
+  it("disables schedule review actions when all linked invoices were sent", () => {
+    const form = createForm<LandUseBillingFormValues>({
+      onSubmit: () => {},
+      mutators: { ...arrayMutators },
+      initialValues: { invoices: [] },
+    });
+    render(
+      <LandUseBilling
+        form={form}
+        parties={[]}
+        paymentSchedules={[
+          {
+            id: "schedule-1",
+            recipientPartyIndex: "73",
+            status: "pending_approval",
+            allInstallmentInvoicesSent: true,
+            installments: [],
+          },
+        ]}
+        canReviewSchedules
+        onAcceptSchedule={vi.fn()}
+        onDeclineSchedule={vi.fn()}
+      />,
+    );
+
+    expect(
+      screen.getByText(
+        "Kaikki maksusuunnitelman laskut on jo lähetetty SAP:iin.",
+      ),
+    ).toBeTruthy();
+    expect(
+      (
+        screen.getByRole("button", {
+          name: "Hyväksy maksusuunnitelma ja luo laskut",
+        }) as HTMLButtonElement
+      ).disabled,
+    ).toBe(true);
+    expect(
+      (
+        screen.getByRole("button", {
+          name: "Hylkää kaikki",
+        }) as HTMLButtonElement
+      ).disabled,
+    ).toBe(true);
+  });
+
   it("does not fall back to current party data when an invoice snapshot is absent", () => {
     const party = createEmptyPartyEntry();
     party.id = "73";
@@ -226,7 +273,8 @@ describe("backend-valued contract conventions", () => {
     expect(screen.queryByText("Current recipient")).toBeNull();
   });
 
-  it("creates a payment schedule from the dialog", async () => {
+  it("creates a payment schedule from the dialog and performs state transitions without errors", async () => {
+    // Set up an editable schedule form with a party and contract to select.
     const onReturnToDraft = vi.fn(async () => {});
     const party = createEmptyPartyEntry();
     party.id = "73";
@@ -265,6 +313,7 @@ describe("backend-valued contract conventions", () => {
         onReturnToDraft={onReturnToDraft}
       />,
     );
+    // Create a new payment schedule through the dialog
     fireEvent.click(
       screen.getByRole("button", { name: "Syötä maksusuunnitelma" }),
     );
@@ -287,6 +336,8 @@ describe("backend-valued contract conventions", () => {
     expect(
       screen.queryByRole("group", { name: "Laskun vastaanottajan tiedot" }),
     ).toBeNull();
+
+    // Add a saved invoice to the first installment and verify its snapshot is read-only.
     const schedules = form.getState().values.paymentSchedules!;
     act(() =>
       form.change(
@@ -337,6 +388,8 @@ describe("backend-valued contract conventions", () => {
     expect(
       screen.queryByRole("button", { name: "Palauta luonnokseksi" }),
     ).toBeNull();
+
+    // An approved schedule with an unsent invoice can be returned to draft.
     act(() =>
       form.change(
         "paymentSchedules",
@@ -351,46 +404,70 @@ describe("backend-valued contract conventions", () => {
     );
     expect(
       await screen.findByText(
-        "Suunnitelmaan liittyy 1 kappaletta laskuja, jotka poistetaan jos suunnitelma palautetaan luonnos tilaan",
+        "Suunnitelma on hyväksytty. Lähettämättömät laskut poistetaan ja palautetaan muokattaviksi. Lähetettyjä laskuja ei voi enää palauttaa.",
       ),
     ).toBeTruthy();
+    expect(screen.getByText("Palautettavia laskuja: 1 kpl")).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "Peruuta" }));
     expect(onReturnToDraft).not.toHaveBeenCalled();
+
+    // Mark every installment as invoiced and sent; the return action must be blocked.
     act(() =>
       form.change(
         "paymentSchedules",
         form.getState().values.paymentSchedules!.map((schedule) => ({
           ...schedule,
           status: "pending_approval",
-          installments: schedule.installments.map((installment) =>
-            installment.invoice
-              ? {
-                  ...installment,
-                  invoice: {
-                    ...installment.invoice,
-                    sentAt: "2026-11-17T10:00:00Z",
-                  },
-                }
-              : installment,
-          ),
+          installments: schedule.installments.map((installment) => ({
+            ...installment,
+            invoice: {
+              ...installment.invoice,
+              id:
+                installment.invoice?.id ??
+                `invoice-${installment.installmentNumber}`,
+              invoiceNumber: installment.invoice?.invoiceNumber,
+              recipientPartyIndex:
+                installment.invoice?.recipientPartyIndex ??
+                installment.recipientPartyIndex,
+              installmentNumber:
+                installment.invoice?.installmentNumber ??
+                installment.installmentNumber,
+              installmentTotal:
+                installment.invoice?.installmentTotal ??
+                installment.installmentTotal,
+              dueDate:
+                installment.invoice?.dueDate ?? installment.dueDate,
+              type: installment.invoice?.type ?? installment.type,
+              status:
+                installment.invoice?.status ?? "waiting_to_be_sent",
+              sentAt: "2026-11-17T10:00:00Z",
+              billedAmount: installment.invoice?.billedAmount ?? "",
+              remainingAmount: installment.invoice?.remainingAmount ?? "",
+            },
+          })),
         })),
       ),
     );
-    fireEvent.click(
-      screen.getByRole("button", { name: "Palauta luonnokseksi" }),
-    );
     expect(
-      await screen.findByText(
-        "Suunnitelmaan liittyy 0 kappaletta laskuja, jotka poistetaan jos suunnitelma palautetaan luonnos tilaan",
-      ),
+      screen.getByText("Kaikki maksusuunnitelman laskut on lähetetty SAP:iin."),
     ).toBeTruthy();
-    const confirmButtons = screen.getAllByRole("button", {
+    expect(
+      (
+        screen.getByRole("button", {
+          name: "Palauta luonnokseksi",
+        }) as HTMLButtonElement
+      ).disabled,
+    ).toBe(true);
+    expect(
+      screen.queryByRole("dialog", {
+        name: "Palauta maksusuunnitelma luonnokseksi",
+      }),
+    ).toBeNull();
+    expect(onReturnToDraft).not.toHaveBeenCalled();
+    const confirmButtons = screen.queryAllByRole("button", {
       name: "Palauta luonnokseksi",
     });
-    fireEvent.click(confirmButtons[confirmButtons.length - 1]);
-    expect(onReturnToDraft).toHaveBeenCalledExactlyOnceWith(
-      form.getState().values.paymentSchedules![0],
-    );
+    expect(confirmButtons).toHaveLength(1);
   });
 
   it("keeps an unsaved decision row mounted when an earlier row is removed", () => {

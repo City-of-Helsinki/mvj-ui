@@ -10,6 +10,7 @@ import {
   IconAngleDown,
   IconAngleUp,
   IconSize,
+  Notification,
   TextArea,
   TextInput,
 } from "hds-react";
@@ -17,10 +18,7 @@ import React, { useState } from "react";
 import { Field, Form } from "react-final-form";
 import { FieldArray } from "react-final-form-arrays";
 import { useLandUseMetadata } from "@/landUse/api/useLandUseMetadata";
-import {
-  type LandUseInvoice,
-  type LandUseInvoiceItem,
-} from "@/landUse/options";
+import { type Invoice, type InvoiceItem } from "@/landUse/options";
 import {
   getOptionsDisplayValue,
   readOnlyTextValue,
@@ -36,7 +34,7 @@ import type {
   BillingDetails,
   CompanyPartyDetails,
 } from "@/landUse/components/tabs/LandUseParties";
-import type { LandUsePaymentScheduleEntry } from "@/landUse/components/tabs/LandUsePaymentSchedule";
+import type { PaymentScheduleEntry as PaymentScheduleEntry } from "@/landUse/components/tabs/LandUsePaymentSchedule";
 import { SelectedPartyInvoiceData } from "@/landUse/api/landUseTypes";
 
 type BillingPartyDetails = Pick<
@@ -44,7 +42,7 @@ type BillingPartyDetails = Pick<
   "name" | "partyType" | "streetAddress" | "city" | "postalCode"
 > & { businessId?: CompanyPartyDetails["businessId"] };
 
-export interface LandUseBillingParty {
+export interface BillingParty {
   id?: string;
   party: { details: BillingPartyDetails };
   invoiceRecipient?: { details: BillingPartyDetails };
@@ -54,27 +52,30 @@ export interface LandUseBillingParty {
   >;
 }
 
-export type LandUseBillingScheduleInstallment = Pick<
-  LandUseInvoice,
+export type BillingScheduleInstallment = Pick<
+  Invoice,
   | "id"
   | "recipientPartyIndex"
   | "installmentNumber"
   | "installmentTotal"
   | "dueDate"
   | "type"
-> & { id: string; items?: LandUseInvoiceItem[] };
+> & { id: string; items?: InvoiceItem[] };
 
-export type LandUseBillingSchedule = Pick<
-  LandUsePaymentScheduleEntry,
+export type BillingSchedule = Pick<
+  PaymentScheduleEntry,
   "id" | "recipientPartyIndex" | "status"
-> & { installments: LandUseBillingScheduleInstallment[] };
+> & {
+  allInstallmentInvoicesSent: boolean;
+  installments: BillingScheduleInstallment[];
+};
 
 export interface LandUseBillingFormValues {
-  invoices?: LandUseBillingInvoice[];
+  invoices?: BillingInvoice[];
 }
 
-export interface LandUseBillingInvoice extends Pick<
-  LandUseInvoice,
+export interface BillingInvoice extends Pick<
+  Invoice,
   | "id"
   | "recipientPartyIndex"
   | "installmentNumber"
@@ -97,11 +98,11 @@ interface LandUseBillingProps {
   form: FormApi<LandUseBillingFormValues>;
 
   canReviewSchedules: boolean;
-  parties: LandUseBillingParty[];
-  paymentSchedules: LandUseBillingSchedule[];
-  onAcceptSchedule: (schedule: LandUseBillingSchedule) => void;
+  parties: BillingParty[];
+  paymentSchedules: BillingSchedule[];
+  onAcceptSchedule: (schedule: BillingSchedule) => void;
   onDeclineSchedule: (
-    schedule: LandUseBillingSchedule,
+    schedule: BillingSchedule,
     rejectedReason: string,
   ) => void;
 }
@@ -109,7 +110,7 @@ interface LandUseBillingProps {
 const getPartyName = (value: string | undefined): string => value?.trim() ?? "";
 
 const getInvoiceRecipientLabel = (
-  party: LandUseBillingParty,
+  party: BillingParty,
   index: number,
 ): string => {
   const invoiceRecipientName = getPartyName(
@@ -128,7 +129,7 @@ const getInvoiceRecipientLabel = (
 };
 
 const createInvoiceRecipientOptions = (
-  parties: LandUseBillingParty[],
+  parties: BillingParty[],
 ): SelectOption[] =>
   parties
     .filter((party) => party.id)
@@ -139,7 +140,7 @@ const createInvoiceRecipientOptions = (
 
 const getSelectedPartyInvoiceData = (
   recipientPartyIndex: string | undefined,
-  parties: LandUseBillingParty[],
+  parties: BillingParty[],
 ): SelectedPartyInvoiceData => {
   if (!recipientPartyIndex) {
     return {
@@ -208,7 +209,7 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
   return (
     <Field name={fieldName} subscription={{ value: true }}>
       {({ input }) => {
-        const invoice = (input.value ?? {}) as LandUseBillingInvoice;
+        const invoice = (input.value ?? {}) as BillingInvoice;
         const installmentDisplayValue =
           invoice.installmentNumber && invoice.installmentTotal
             ? `${invoice.installmentNumber}/${invoice.installmentTotal}`
@@ -519,7 +520,7 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
                     <div className="landuse-grid">
                       <div className="landuse-grid__column-12">
                         <Fieldset heading="Laskurivit">
-                          <FieldArray<LandUseInvoiceItem>
+                          <FieldArray<InvoiceItem>
                             name={`${fieldName}.invoiceItems`}
                           >
                             {({ fields: invoiceItemFields }) => (
@@ -620,13 +621,13 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
 };
 
 interface InvoiceReviewTableProps {
-  schedules: LandUseBillingSchedule[];
-  parties: LandUseBillingParty[];
+  schedules: BillingSchedule[];
+  parties: BillingParty[];
   partyOptions: SelectOption[];
 
   canReviewSchedules: boolean;
-  onAccept: (schedule: LandUseBillingSchedule) => void;
-  onDecline: (schedule: LandUseBillingSchedule, rejectedReason: string) => void;
+  onAccept: (schedule: BillingSchedule) => void;
+  onDecline: (schedule: BillingSchedule, rejectedReason: string) => void;
 }
 
 const InvoiceReviewTable: React.FC<InvoiceReviewTableProps> = ({
@@ -640,9 +641,9 @@ const InvoiceReviewTable: React.FC<InvoiceReviewTableProps> = ({
   const metadataQuery = useLandUseMetadata();
   const [openInvoice, setOpenInvoice] = useState<string | null>(null);
   const [scheduleToAccept, setScheduleToAccept] =
-    useState<LandUseBillingSchedule | null>(null);
+    useState<BillingSchedule | null>(null);
   const [scheduleToDecline, setScheduleToDecline] =
-    useState<LandUseBillingSchedule | null>(null);
+    useState<BillingSchedule | null>(null);
   const [rejectedReason, setRejectedReason] = useState("");
 
   const closeAcceptDialog = () => {
@@ -650,7 +651,8 @@ const InvoiceReviewTable: React.FC<InvoiceReviewTableProps> = ({
   };
 
   const handleAcceptConfirm = () => {
-    if (!scheduleToAccept) return;
+    if (!scheduleToAccept || scheduleToAccept.allInstallmentInvoicesSent)
+      return;
 
     onAccept(scheduleToAccept);
     closeAcceptDialog();
@@ -662,7 +664,8 @@ const InvoiceReviewTable: React.FC<InvoiceReviewTableProps> = ({
   };
 
   const handleDeclineConfirm = () => {
-    if (!scheduleToDecline) return;
+    if (!scheduleToDecline || scheduleToDecline.allInstallmentInvoicesSent)
+      return;
 
     onDecline(scheduleToDecline, rejectedReason);
     closeDeclineDialog();
@@ -683,6 +686,11 @@ const InvoiceReviewTable: React.FC<InvoiceReviewTableProps> = ({
           return (
             <section key={schedule.id}>
               <h3>{invoiceRecipientName}</h3>
+              {schedule.allInstallmentInvoicesSent && (
+                <Notification type="error">
+                  Kaikki maksusuunnitelman laskut on jo lähetetty SAP:iin.
+                </Notification>
+              )}
               <div className="landuse-detail__sites-table-wrapper">
                 <table className="landuse-compensations-table">
                   <thead>
@@ -964,6 +972,7 @@ const InvoiceReviewTable: React.FC<InvoiceReviewTableProps> = ({
                     type="button"
                     variant={ButtonVariant.Secondary}
                     size={ButtonSize.Small}
+                    disabled={schedule.allInstallmentInvoicesSent}
                     onClick={() => setScheduleToDecline(schedule)}
                   >
                     Hylkää kaikki
@@ -972,6 +981,7 @@ const InvoiceReviewTable: React.FC<InvoiceReviewTableProps> = ({
                     type="button"
                     variant={ButtonVariant.Primary}
                     size={ButtonSize.Small}
+                    disabled={schedule.allInstallmentInvoicesSent}
                     onClick={() => setScheduleToAccept(schedule)}
                   >
                     Hyväksy maksusuunnitelma ja luo laskut
@@ -1009,6 +1019,7 @@ const InvoiceReviewTable: React.FC<InvoiceReviewTableProps> = ({
           <Button
             type="button"
             variant={ButtonVariant.Primary}
+            disabled={scheduleToAccept?.allInstallmentInvoicesSent ?? false}
             onClick={handleAcceptConfirm}
           >
             Hyväksy ja luo laskut
@@ -1045,6 +1056,7 @@ const InvoiceReviewTable: React.FC<InvoiceReviewTableProps> = ({
           <Button
             type="button"
             variant={ButtonVariant.Danger}
+            disabled={scheduleToDecline?.allInstallmentInvoicesSent ?? false}
             onClick={handleDeclineConfirm}
           >
             Hylkää kaikki
@@ -1103,7 +1115,7 @@ export const LandUseBilling: React.FC<LandUseBillingProps> = ({
                 className="landuse-detail__fieldset--with-margin"
               >
                 <div className="landuse-detail__sites-table-wrapper">
-                  <FieldArray<LandUseBillingInvoice> name="invoices">
+                  <FieldArray<BillingInvoice> name="invoices">
                     {({ fields }) => (
                       <>
                         <table className="landuse-compensations-table">

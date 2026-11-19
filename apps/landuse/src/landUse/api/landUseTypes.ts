@@ -1,4 +1,4 @@
-import { LandUseInvoiceStatus } from "@/landUse/options";
+import { InvoiceStatus } from "@/landUse/options";
 
 export const LAND_USE_TAB_KEYS = [
   "summary",
@@ -64,7 +64,7 @@ export type LandUseUiMetadata = {
     "easement_or_easement_like_condition" | "other"
   >[];
   invoice_types: LandUseChoice<"land_use_compensation" | "penalty">[];
-  invoice_statuses: LandUseChoice<LandUseInvoiceStatus>[];
+  invoice_statuses: LandUseChoice<InvoiceStatus>[];
   invoice_item_types: LandUseChoice<
     "land_use_compensation" | "increase" | "interest" | "penalty"
   >[];

@@ -41,12 +41,13 @@ import {
   TableOfContentsProvider,
 } from "@/landUse/hooks/useTableOfContents";
 import {
-  LAND_USE_INVOICE_ITEM_TYPES,
-  LAND_USE_INVOICE_STATUSES,
-  type LandUseInvoice,
-  type LandUseInvoiceItem,
+  INVOICE_ITEM_TYPES,
+  INVOICE_STATUSES,
+  type Invoice,
+  type InvoiceItem,
 } from "@/landUse/options";
 import { parseLandUseNumericValueOrZero } from "@/landUse/utils/number";
+import { areAllInvoicesInScheduleSent } from "@/landUse/utils/invoiceReview";
 import { getLanduseApiErrorMessage } from "@/landUse/api/fetchClient";
 import {
   showLanduseApiErrorNotification,
@@ -78,12 +79,12 @@ import {
 import {
   LandUseBilling,
   type LandUseBillingFormValues,
-  type LandUseBillingParty,
-  type LandUseBillingSchedule,
+  type BillingParty,
+  type BillingSchedule,
 } from "@/landUse/components/tabs/LandUseBilling";
 import {
   LandUsePaymentSchedule,
-  type LandUsePaymentScheduleEntry,
+  type PaymentScheduleEntry,
   type LandUsePaymentScheduleFormValues,
 } from "@/landUse/components/tabs/LandUsePaymentSchedule";
 import {
@@ -227,13 +228,13 @@ const getActiveTabFromSearch = (search: string): number => {
 };
 
 export const calculatePaidMaankayttokorvaus = (
-  invoices: Pick<LandUseInvoice, "status" | "invoiceItems">[],
+  invoices: Pick<Invoice, "status" | "invoiceItems">[],
 ) => {
-  const isMaankayttokorvausItem = (item: LandUseInvoiceItem) =>
-    item.itemType === LAND_USE_INVOICE_ITEM_TYPES.MAANKAYTTOKORVAUS;
+  const isMaankayttokorvausItem = (item: InvoiceItem) =>
+    item.itemType === INVOICE_ITEM_TYPES.MAANKAYTTOKORVAUS;
 
   return invoices
-    .filter((invoice) => invoice.status === LAND_USE_INVOICE_STATUSES.PAID)
+    .filter((invoice) => invoice.status === INVOICE_STATUSES.PAID)
     .flatMap((invoice) => invoice.invoiceItems ?? [])
     .filter(isMaankayttokorvausItem)
     .reduce(
@@ -919,53 +920,51 @@ const LandUseDetailPage: React.FC = () => {
       partiesQuery.data?.parties) ||
     [];
 
-  const billingParties: LandUseBillingParty[] = activeParties.map(
-    (activeParty) => ({
-      id: activeParty.id,
-      party: {
-        details: {
-          name: activeParty.party.details?.name,
-          partyType: activeParty.party.details?.partyType,
-          streetAddress: activeParty.party.details?.streetAddress,
-          city: activeParty.party.details?.city,
-          postalCode: activeParty.party.details?.postalCode,
-          ...(activeParty.party.details?.partyType === "company" &&
-          "businessId" in activeParty.party.details
-            ? { businessId: activeParty.party.details?.businessId }
-            : {}),
-        },
+  const billingParties: BillingParty[] = activeParties.map((activeParty) => ({
+    id: activeParty.id,
+    party: {
+      details: {
+        name: activeParty.party.details?.name,
+        partyType: activeParty.party.details?.partyType,
+        streetAddress: activeParty.party.details?.streetAddress,
+        city: activeParty.party.details?.city,
+        postalCode: activeParty.party.details?.postalCode,
+        ...(activeParty.party.details?.partyType === "company" &&
+        "businessId" in activeParty.party.details
+          ? { businessId: activeParty.party.details?.businessId }
+          : {}),
       },
-      billingDetails: {
-        ovtCode: activeParty.billingDetails?.ovtCode,
-        reference: activeParty.billingDetails?.reference,
-        sapCustomerNumber: activeParty.billingDetails?.sapCustomerNumber,
-      },
-      ...(activeParty.invoiceRecipient
-        ? {
-            invoiceRecipient: {
-              details: {
-                name: activeParty.invoiceRecipient?.details?.name,
-                partyType: activeParty.invoiceRecipient?.details?.partyType,
-                streetAddress:
-                  activeParty.invoiceRecipient?.details?.streetAddress,
-                city: activeParty.invoiceRecipient?.details?.city,
-                postalCode: activeParty.invoiceRecipient?.details?.postalCode,
-                ...(activeParty.invoiceRecipient?.details?.partyType ===
-                  "company" &&
-                "businessId" in activeParty.invoiceRecipient.details
-                  ? {
-                      businessId:
-                        activeParty.invoiceRecipient?.details?.businessId,
-                    }
-                  : {}),
-              },
+    },
+    billingDetails: {
+      ovtCode: activeParty.billingDetails?.ovtCode,
+      reference: activeParty.billingDetails?.reference,
+      sapCustomerNumber: activeParty.billingDetails?.sapCustomerNumber,
+    },
+    ...(activeParty.invoiceRecipient
+      ? {
+          invoiceRecipient: {
+            details: {
+              name: activeParty.invoiceRecipient?.details?.name,
+              partyType: activeParty.invoiceRecipient?.details?.partyType,
+              streetAddress:
+                activeParty.invoiceRecipient?.details?.streetAddress,
+              city: activeParty.invoiceRecipient?.details?.city,
+              postalCode: activeParty.invoiceRecipient?.details?.postalCode,
+              ...(activeParty.invoiceRecipient?.details?.partyType ===
+                "company" &&
+              "businessId" in activeParty.invoiceRecipient.details
+                ? {
+                    businessId:
+                      activeParty.invoiceRecipient?.details?.businessId,
+                  }
+                : {}),
             },
-          }
-        : {}),
-    }),
-  );
+          },
+        }
+      : {}),
+  }));
 
-  const billingPaymentSchedules: LandUsePaymentScheduleEntry[] =
+  const billingPaymentSchedules: PaymentScheduleEntry[] =
     (
       paymentScheduleFormApi.getState()
         .values as LandUsePaymentScheduleFormValues
@@ -973,9 +972,7 @@ const LandUseDetailPage: React.FC = () => {
     paymentScheduleQuery.data?.paymentSchedules ??
     [];
 
-  const handleSendToInvoicing = async (
-    schedule: LandUsePaymentScheduleEntry,
-  ) => {
+  const handleSendToInvoicing = async (schedule: PaymentScheduleEntry) => {
     if (isSaving || !canChangeTab("paymentSchedule")) return;
     setIsSaving(true);
     try {
@@ -1002,7 +999,7 @@ const LandUseDetailPage: React.FC = () => {
   };
 
   const handleReturnScheduleToDraft = async (
-    schedule: LandUsePaymentScheduleEntry,
+    schedule: PaymentScheduleEntry,
   ): Promise<void> => {
     if (isSaving || !canChangeTab("paymentSchedule")) return;
     setIsSaving(true);
@@ -1028,7 +1025,7 @@ const LandUseDetailPage: React.FC = () => {
   };
 
   const handleDeclineSchedule = async (
-    schedule: LandUseBillingSchedule,
+    schedule: BillingSchedule,
     rejectedReason: string,
   ) => {
     if (isSaving || !hasPermission("approve_paymentschedule")) return;
@@ -1046,7 +1043,7 @@ const LandUseDetailPage: React.FC = () => {
     }
   };
 
-  const handleAcceptSchedule = async (schedule: LandUseBillingSchedule) => {
+  const handleAcceptSchedule = async (schedule: BillingSchedule) => {
     if (isSaving || !hasPermission("approve_paymentschedule")) return;
     setIsSaving(true);
     try {
@@ -1217,6 +1214,8 @@ const LandUseDetailPage: React.FC = () => {
               id: schedule.id,
               recipientPartyIndex: schedule.recipientPartyIndex,
               status: schedule.status,
+              allInstallmentInvoicesSent:
+                areAllInvoicesInScheduleSent(schedule),
               installments: schedule.installments
                 .filter((installment) => !installment.invoice)
                 .map((installment) => ({

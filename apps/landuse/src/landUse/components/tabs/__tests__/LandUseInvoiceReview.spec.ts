@@ -1,20 +1,21 @@
 import { describe, expect, it } from "vitest";
-import { getSchedulesPendingInvoiceReview } from "@/landUse/utils/invoiceReview";
 import {
-  LAND_USE_INVOICE_STATUSES,
-  LAND_USE_PAYMENT_SCHEDULE_STATUSES,
-  type LandUseInvoice,
+  areAllInvoicesInScheduleSent,
+  getSchedulesPendingInvoiceReview,
+} from "@/landUse/utils/invoiceReview";
+import {
+  INVOICE_STATUSES,
+  INVOICE_STATUSES_ALLOWED_BEFORE_SAP_EXPORT,
+  PAYMENT_SCHEDULE_STATUSES,
+  type Invoice,
 } from "@/landUse/options";
 import {
   getMissingPaymentScheduleFieldLabels,
-  type LandUsePaymentScheduleEntry,
+  type PaymentScheduleEntry,
   validateRequiredInstallmentField,
 } from "@/landUse/components/tabs/LandUsePaymentSchedule";
 
-const createInvoice = (
-  installmentNumber: string,
-  id?: string,
-): LandUseInvoice => ({
+const createInvoice = (installmentNumber: string, id?: string): Invoice => ({
   id,
   recipientPartyIndex: "0",
   contractIndex: "0",
@@ -27,21 +28,21 @@ const createInvoice = (
   laskentajaksonLoppupvm: "",
   invoiceNumber: undefined,
   type: "land_use_compensation",
-  status: LAND_USE_INVOICE_STATUSES.DRAFT,
+  status: INVOICE_STATUSES.DRAFT,
   billedAmount: "",
   remainingAmount: "",
   invoiceItems: [],
 });
 
-const createSchedule = (): LandUsePaymentScheduleEntry & {
-  installments: (NonNullable<
-    LandUsePaymentScheduleEntry["installments"]
-  >[number] & { id: string })[];
+const createSchedule = (): PaymentScheduleEntry & {
+  installments: (NonNullable<PaymentScheduleEntry["installments"]>[number] & {
+    id: string;
+  })[];
 } => ({
   id: "schedule-1",
   recipientPartyIndex: "0",
   contractIndex: "0",
-  status: LAND_USE_PAYMENT_SCHEDULE_STATUSES.DRAFT,
+  status: PAYMENT_SCHEDULE_STATUSES.DRAFT,
   rejectedReason: null,
   signedDate: "2026-01-20",
   korotusProsentti: "",
@@ -98,12 +99,93 @@ describe("invoice review workflow", () => {
   it("derives review rows only from schedules pending approval", () => {
     const pendingSchedule = {
       ...createSchedule(),
-      status: LAND_USE_PAYMENT_SCHEDULE_STATUSES.PENDING_APPROVAL,
+      status: PAYMENT_SCHEDULE_STATUSES.PENDING_APPROVAL,
     };
     const draftSchedule = { ...createSchedule(), id: "schedule-2" };
 
     expect(
       getSchedulesPendingInvoiceReview([pendingSchedule, draftSchedule]),
     ).toEqual([pendingSchedule]);
+  });
+
+  it("blocks transitions only when every existing installment invoice was sent", () => {
+    const schedule = createSchedule();
+    const withInstallments = (installments: typeof schedule.installments) => ({
+      ...schedule,
+      installments,
+    });
+
+    expect(areAllInvoicesInScheduleSent(schedule)).toBe(false);
+    expect(
+      areAllInvoicesInScheduleSent(
+        // Only one installment is sent, another is unsent
+        withInstallments([
+          {
+            ...schedule.installments[0],
+            invoice: { sentAt: "2026-11-18" },
+          },
+          schedule.installments[1],
+        ]),
+      ),
+    ).toBe(false);
+    expect(
+      areAllInvoicesInScheduleSent(
+        // All installments are sent
+        withInstallments(
+          schedule.installments.map((installment) => ({
+            ...installment,
+            invoice: { sentAt: "2026-11-18" },
+          })),
+        ),
+      ),
+    ).toBe(true);
+    expect(
+      areAllInvoicesInScheduleSent(
+        withInstallments([
+          {
+            ...schedule.installments[0],
+            invoice: { sentAt: "2026-11-18" },
+          },
+          {
+            ...schedule.installments[1],
+            invoice: {
+              sentAt: undefined,
+              status: INVOICE_STATUSES.WAITING_TO_BE_SENT,
+            },
+          },
+        ]),
+      ),
+    ).toBe(false);
+    for (const invoiceStatus of Object.values(INVOICE_STATUSES)) {
+      if (INVOICE_STATUSES_ALLOWED_BEFORE_SAP_EXPORT.has(invoiceStatus))
+        continue;
+      expect(
+        areAllInvoicesInScheduleSent(
+          withInstallments([
+            {
+              ...schedule.installments[0],
+              invoice: { status: invoiceStatus },
+            },
+            {
+              ...schedule.installments[1],
+              invoice: { status: invoiceStatus },
+            },
+          ]),
+        ),
+      ).toBe(true);
+    }
+    expect(
+      areAllInvoicesInScheduleSent(
+        withInstallments([
+          {
+            ...schedule.installments[0],
+            invoice: {
+              status: INVOICE_STATUSES.WAITING_TO_BE_SENT,
+            },
+          },
+          schedule.installments[1],
+        ]),
+      ),
+    ).toBe(false);
   });
 });
