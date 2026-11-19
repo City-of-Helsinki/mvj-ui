@@ -1139,12 +1139,21 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
   const [scheduleToReturn, setScheduleToReturn] =
     useState<LandUsePaymentScheduleEntry | null>(null);
   const [isReturning, setIsReturning] = useState(false);
-  const invoicesToDelete =
+
+  const invoicesToDeleteCount =
     scheduleToReturn?.installments.filter(
       ({ invoice }) =>
         invoice?.status === LAND_USE_INVOICE_STATUSES.WAITING_TO_BE_SENT &&
         !invoice.sentAt,
     ).length ?? 0;
+
+  const invoicesToKeepCount =
+    scheduleToReturn?.installments.filter(
+      ({ invoice }) =>
+        invoice?.status !== LAND_USE_INVOICE_STATUSES.WAITING_TO_BE_SENT ||
+        !!invoice.sentAt,
+    ).length ?? 0;
+
   const handleReturnConfirm = async () => {
     if (!scheduleToReturn || !onReturnToDraft || isReturning) return;
     setIsReturning(true);
@@ -1569,8 +1578,25 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
           title="Palauta maksusuunnitelma luonnokseksi"
         />
         <Dialog.Content>
-          Suunnitelmaan liittyy {invoicesToDelete} kappaletta laskuja, jotka
-          poistetaan jos suunnitelma palautetaan luonnos tilaan
+          {scheduleToReturn?.status ===
+            LAND_USE_PAYMENT_SCHEDULE_STATUSES.PENDING_APPROVAL && (
+            <p>Suunnitelmaa ei ole vielä tarkastettu.</p>
+          )}
+          {scheduleToReturn?.status ===
+            LAND_USE_PAYMENT_SCHEDULE_STATUSES.APPROVED && (
+            <>
+              <p>
+                Suunnitelma on hyväksytty. Lähettämättömät laskut poistetaan ja
+                palautetaan muokattaviksi. Lähetettyjä laskuja ei voi enää
+                palauttaa.
+              </p>
+              <ul>
+                <li>Palautettavia laskuja: {invoicesToDeleteCount} kpl</li>
+                <li>Lähetettyjä laskuja: {invoicesToKeepCount} kpl</li>
+              </ul>
+            </>
+          )}
+          <p>Haluatko palauttaa maksusuunnitelman luonnokseksi?</p>
         </Dialog.Content>
         <Dialog.ActionButtons>
           <Button
