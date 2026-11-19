@@ -284,6 +284,7 @@ type ContractResponse = {
 
 type PaymentScheduleResponse = {
   id: number;
+  created_at: string;
   recipient_party: number;
   contract: number;
   status: PaymentScheduleStatusCode;
@@ -1083,6 +1084,7 @@ export const getPaymentSchedule = async (
   return {
     paymentSchedules: schedules.map((schedule) => ({
       id: String(schedule.id),
+      createdAt: parseIsoDateToFinnishDate(schedule.created_at.slice(0, 10)),
       recipientPartyIndex: String(schedule.recipient_party),
       contractIndex: String(schedule.contract),
       status: schedule.status,

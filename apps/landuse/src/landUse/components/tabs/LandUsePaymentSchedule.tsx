@@ -76,6 +76,7 @@ export interface LandUsePaymentScheduleFormValues {
 
 export interface PaymentScheduleEntry {
   id: string;
+  createdAt?: string;
   recipientPartyIndex: string | undefined;
   contractIndex: string | undefined;
   status: PaymentScheduleStatus | undefined;
@@ -1334,7 +1335,8 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
                           {!isScheduleEditable(schedule.status) && (
                             <IconLock aria-label="Maksusuunnitelma lukittu" />
                           )}{" "}
-                          Maksusuunnitelma {scheduleListIndex + 1}
+                          Maksusuunnitelma{" "}
+                          {schedule.createdAt || "(tallentamaton)"}
                         </h3>
                         <StatusLabel
                           type={getScheduleStatusLabelType(schedule.status)}

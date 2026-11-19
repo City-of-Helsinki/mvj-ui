@@ -331,6 +331,11 @@ describe("backend-valued contract conventions", () => {
       screen.getByRole("button", { name: "Luo maksusuunnitelma" }),
     );
     expect(form.getState().values.paymentSchedules).toHaveLength(1);
+    expect(
+      screen.getByRole("heading", {
+        name: "Maksusuunnitelma (tallentamaton)",
+      }),
+    ).toBeTruthy();
     expect(screen.getByText("Erä 1/2")).toBeTruthy();
     expect(screen.getByText("Erä 2/2")).toBeTruthy();
     expect(
@@ -435,11 +440,9 @@ describe("backend-valued contract conventions", () => {
               installmentTotal:
                 installment.invoice?.installmentTotal ??
                 installment.installmentTotal,
-              dueDate:
-                installment.invoice?.dueDate ?? installment.dueDate,
+              dueDate: installment.invoice?.dueDate ?? installment.dueDate,
               type: installment.invoice?.type ?? installment.type,
-              status:
-                installment.invoice?.status ?? "waiting_to_be_sent",
+              status: installment.invoice?.status ?? "waiting_to_be_sent",
               sentAt: "2026-11-17T10:00:00Z",
               billedAmount: installment.invoice?.billedAmount ?? "",
               remainingAmount: installment.invoice?.remainingAmount ?? "",

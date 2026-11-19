@@ -423,6 +423,7 @@ describe("land use API contract adapters", () => {
     mockGetAllPages.mockResolvedValue([
       {
         id: 1,
+        created_at: "2024-02-28T12:34:56Z",
         recipient_party: 73,
         contract: 91,
         status: "draft",
@@ -445,6 +446,7 @@ describe("land use API contract adapters", () => {
     ]);
     const schedule = (await getPaymentSchedule("1")).paymentSchedules?.[0];
     expect(schedule).toMatchObject({
+      createdAt: "28.02.2024",
       recipientPartyIndex: "73",
       contractIndex: "91",
       installments: [
