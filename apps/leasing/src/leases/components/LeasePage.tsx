@@ -36,6 +36,7 @@ import TabPane from "@/components/tabs/TabPane";
 import TabContent from "@/components/tabs/TabContent";
 import TenantsEdit from "./leaseSections/tenant/TenantsEdit";
 import Tenants from "./leaseSections/tenant/Tenants";
+import ErrorPage from "@/errorPage/ErrorPage";
 import {
   fetchCommentsByLease,
   fetchAttributes as fetchCommentAttributes,
@@ -57,6 +58,7 @@ import {
   fetchAttributes as fetchLeaseAttributes,
 } from "@/leases/slice";
 import { fetchLeaseTypes } from "@/leaseType/actions";
+import { fetchLeaseIdByIdentifier } from "@/leases/requestsAsync";
 import { clearPreviewInvoices } from "@/previewInvoices/actions";
 import { receiveTopNavigationSettings } from "@/components/topNavigation/actions";
 import { fetchVats } from "@/vat/actions";
@@ -234,7 +236,13 @@ const LeasePage: React.FC = () => {
   const vats = useAppSelector(getVats);
 
   const { search, pathname } = location;
-  const { leaseId } = params;
+  const { identifier } = params;
+  const {
+    leaseId,
+    hasFailed: hasLeaseIdFetchFailed,
+    isLoading: isLeaseIdLoading,
+  } = useLeaseId(identifier);
+
   const [isRestoreModalOpen, setIsRestoreModalOpen] = useState(false);
   const [isCommentPanelOpen, setIsCommentPanelOpen] = useState(false);
   const [isFetchingLeasePageAttributes, setIsFetchingLeasePageAttributes] =
@@ -613,6 +621,7 @@ const LeasePage: React.FC = () => {
   }, [activeTab]);
 
   useEffect(() => {
+    if (!leaseId) return;
     const key = String(leaseId);
     // Reset per-lease tracking so returning to a previously visited lease will re-run
     if (requestedForLeaseRef.current[key]) {
@@ -621,11 +630,15 @@ const LeasePage: React.FC = () => {
     prevUsersPermissionsRef.current = null;
 
     requestedForLeaseRef.current[key] = requestedForLeaseRef.current[key] || {};
-    dispatch(fetchSingleLease(Number(leaseId)));
+    dispatch(fetchSingleLease(leaseId));
   }, [dispatch, leaseId]);
 
   useEffect(() => {
     // Fetch related lease data
+    if (!leaseId) {
+      return;
+    }
+
     const key = String(leaseId);
     requestedForLeaseRef.current[key] = requestedForLeaseRef.current[key] || {};
     let requested = requestedForLeaseRef.current[key];
@@ -1255,7 +1268,7 @@ const LeasePage: React.FC = () => {
     );
   };
   const handleDelete = () => {
-    dispatch(deleteLease(Number(leaseId)));
+    dispatch(deleteLease(leaseId));
   };
 
   const areFormsValid = validateForms();
@@ -1264,7 +1277,13 @@ const LeasePage: React.FC = () => {
     return userActiveServiceUnit?.id === currentLease?.service_unit?.id;
   };
 
-  if (isFetching || isFetchingLeasePageAttributes || isFetchingReceivableTypes)
+  if (hasLeaseIdFetchFailed) return <ErrorPage />;
+  if (
+    isLeaseIdLoading ||
+    isFetching ||
+    isFetchingLeasePageAttributes ||
+    isFetchingReceivableTypes
+  )
     return (
       <PageContainer>
         <Loader isLoading={true} />
@@ -1277,7 +1296,7 @@ const LeasePage: React.FC = () => {
         <AuthorizationError text={PermissionMissingTexts.LEASE} />
       </PageContainer>
     );
-  if (isEmpty(currentLease)) return null;
+  if (isEmpty(currentLease) || currentLease.id !== leaseId) return null;
   return (
     <FullWidthContainer>
       <PageNavigationWrapper>
@@ -1702,6 +1721,42 @@ const LeasePage: React.FC = () => {
       </PageContainer>
     </FullWidthContainer>
   );
+};
+
+const useLeaseId = (identifier: string) => {
+  const [lookup, setLookup] = useState<{
+    identifier: string;
+    leaseId: number | null;
+  } | null>(null);
+
+  useEffect(() => {
+    if (!identifier) return;
+    let active = true;
+
+    fetchLeaseIdByIdentifier(identifier)
+      .then((leaseId) => {
+        if (active) setLookup({ identifier, leaseId });
+      })
+      .catch(() => {
+        if (active) setLookup({ identifier, leaseId: null });
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [identifier]);
+
+  const isCurrentIdentifier = lookup?.identifier === identifier;
+
+  const leaseId = isCurrentIdentifier ? lookup?.leaseId : undefined;
+  const isLoading = Boolean(identifier) && leaseId === undefined;
+  const hasFailed = !identifier || leaseId === null;
+
+  return {
+    leaseId,
+    isLoading,
+    hasFailed,
+  };
 };
 
 export default LeasePage;
