@@ -32,6 +32,7 @@ import PlotApplicationCreatePage from "@/plotApplications/components/PlotApplica
 import AreaSearchApplicationListPage from "@/areaSearch/components/AreaSearchApplicationListPage";
 import AreaSearchApplicationPage from "@/areaSearch/components/AreaSearchApplicationPage";
 import AreaSearchApplicationCreatePage from "@/areaSearch/components/AreaSearchApplicationCreatePage";
+import LeaseIdRedirectPage from "@/leases/components/LeaseIdRedirectPage";
 
 /**
  * Routes enumerate
@@ -51,6 +52,7 @@ export const Routes = {
   INFILL_DEVELOPMENT_NEW: "infill_development_new",
   INVOICE_NOTES: "invoice_notes",
   LEASES: "leases",
+  LEASE: "lease",
   LEASEHOLD_TRANSFER: "leasehold_transfer",
   LOGOUT: "logout",
   PLOT_SEARCH: "plotSearch",
@@ -82,6 +84,7 @@ export const getRouteById = (id: string): string => {
     [Routes.INFILL_DEVELOPMENT_NEW]: "/uusitaydennysrakennuskorvaus",
     [Routes.INVOICE_NOTES]: "/laskujentiedotteet",
     [Routes.LEASES]: "/vuokraukset",
+    [Routes.LEASE]: "/vuokraus",
     [Routes.LEASEHOLD_TRANSFER]: "/vuokraoikeudensiirrot",
     [Routes.LOGOUT]: "/logout",
     [Routes.PLOT_SEARCH]: "/tonttihaku",
@@ -101,6 +104,10 @@ export default (
       <Route path={getRouteById(Routes.LEASES)} element={<LeaseListPage />} />
       <Route
         path={`${getRouteById(Routes.LEASES)}/:leaseId`}
+        element={<LeaseIdRedirectPage />}
+      />
+      <Route
+        path={`${getRouteById(Routes.LEASE)}/:identifier`}
         element={<LeasePage />}
       />
       <Route

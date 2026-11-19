@@ -1,7 +1,35 @@
 import createUrl from "@/api/createUrl";
 import callApiAsync from "@/api/callApiAsync";
-import type { IntendedUse } from "./types";
+import type { IntendedUse } from "@/leases/types";
 import type { LeafletGeoJson } from "types";
+
+export const fetchLeaseIdByIdentifier = async (
+  identifier: string,
+): Promise<number> => {
+  const { response, bodyAsJson } = await callApiAsync<{ id: number }>(
+    new Request(createUrl("lease/id_by_identifier/", { identifier })),
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to resolve lease identifier");
+  }
+
+  return bodyAsJson.id;
+};
+
+export const fetchLeaseIdentifierById = async (
+  leaseId: string,
+): Promise<string> => {
+  const { response, bodyAsJson } = await callApiAsync<string>(
+    new Request(createUrl("lease/identifier_by_id/", { id: leaseId })),
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to resolve lease ID");
+  }
+
+  return bodyAsJson;
+};
 
 export const fetchIntersectingArchivedAreas = async (
   leaseId: number,
