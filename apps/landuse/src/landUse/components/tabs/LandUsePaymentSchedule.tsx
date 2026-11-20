@@ -1076,6 +1076,14 @@ const buildInstallmentStep = ({
     displayedInstallment.installmentTotal
       ? `${displayedInstallment.installmentNumber}/${displayedInstallment.installmentTotal}`
       : `x/x`;
+  const invoiceNumber = savedInvoice?.invoiceNumber;
+  const invoiceNumberLabel =
+    invoiceNumber === undefined
+      ? "-"
+      : formatLandUseIntegerValue(invoiceNumber);
+  const installmentTitle = savedInvoice
+    ? `Erä ${installmentLabel} (Laskunumero: ${invoiceNumberLabel})`
+    : `Erä ${installmentLabel}`;
 
   return {
     title: (
@@ -1084,7 +1092,7 @@ const buildInstallmentStep = ({
         style={{ width: "100%" }}
       >
         <span className="landuse-detail__heading-actions">
-          <span>{`Erä ${installmentLabel}${savedInvoice ? ` (Laskunumero: ${savedInvoice.invoiceNumber !== undefined ? formatLandUseIntegerValue(savedInvoice.invoiceNumber) : "-"})` : ""}`}</span>
+          <span>{installmentTitle}</span>
           {savedInvoice?.status && (
             <StatusLabel
               type={
