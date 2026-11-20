@@ -6,6 +6,7 @@ import AreaNotesLayer from "@/areaNote/components/AreaNotesLayer";
 import AreaNotesEditMap from "@/areaNote/components/AreaNotesEditMap";
 import AreasLayer from "@/leases/components/leaseSections/map/AreasLayer";
 import ArchivedLeaseAreasLayer from "@/leases/components/leaseSections/map/ArchivedLeaseAreasLayer";
+import RelatedLeaseAreasLayer from "@/leases/components/leaseSections/map/RelatedLeaseAreasLayer";
 import Divider from "@/components/content/Divider";
 import PlanUnitsLayer from "@/leases/components/leaseSections/map/PlanUnitsLayer";
 import PlotsLayer from "@/leases/components/leaseSections/map/PlotsLayer";
@@ -234,6 +235,21 @@ const SingleLeaseMap = () => {
           ),
           name: "Päättyneet leikkaavat vuokrakohteet",
         });
+        if (
+          isFieldAllowedToRead(leaseAttributes, LeaseFieldPaths.RELATED_LEASES)
+        ) {
+          layers.push({
+            checked: false,
+            lazy: true,
+            component: (
+              <RelatedLeaseAreasLayer
+                key={currentLease.id}
+                lease={currentLease}
+              />
+            ),
+            name: "Liittyvät vuokraukset",
+          });
+        }
       }
     }
 
@@ -260,7 +276,7 @@ const SingleLeaseMap = () => {
     areaNotes,
     areaTypeOptions,
     areasGeoJson,
-    currentLease.id,
+    currentLease,
     leaseAttributes,
     location.search,
     planUnitIntendedUseOptions,

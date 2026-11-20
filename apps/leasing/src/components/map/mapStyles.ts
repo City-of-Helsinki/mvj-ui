@@ -8,6 +8,7 @@ export const DEFAULT_LEAFLET_PATH_OPTIONS: PathOptions = {
 export const DRAFT_GEOMETRY_COLOR: PathOptions["color"] = "#9c27b0";
 export const DRAFT_GEOMETRY_FILL_OPACITY: PathOptions["fillOpacity"] = 0.5;
 export const SAVED_AREA_NOTE_COLOR: PathOptions["color"] = "#2196f3";
+export const ARCHIVED_LEASE_AREA_COLOR: PathOptions["color"] = "#777777";
 
 export const FEATURE_HIGHLIGHT_FILL_OPACITY: PathOptions["fillOpacity"] = 0.9;
 export const FEATURE_HOVER_FILL_OPACITY: PathOptions["fillOpacity"] = 0.7;

@@ -1,0 +1,50 @@
+@use "@/styles/variables";
+
+.related-lease-panel {
+  right: 12px;
+  left: auto;
+  width: min(330px, calc(100% - 80px));
+
+  h4 {
+    margin: 8px 12px;
+    font-size: 14px;
+  }
+
+  &__chain {
+    border-left: 2px solid #aaa;
+    margin-left: 12px !important;
+    margin-bottom: 10px !important;
+  }
+
+  &__lease {
+    flex: 1;
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .is-current {
+    border-left: 3px solid variables.$blue;
+  }
+
+  .is-inactive {
+    color: #666;
+
+    a {
+      color: inherit;
+    }
+  }
+
+  button:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+}
+
+@media (max-width: 700px) {
+  .map:has(.archived-lease-panel:not(.related-lease-panel))
+    .related-lease-panel {
+    top: 64px;
+    bottom: auto;
+    max-height: 35%;
+  }
+}
