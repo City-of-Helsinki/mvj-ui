@@ -3,6 +3,17 @@ import callApiAsync from "@/api/callApiAsync";
 import type { IntendedUse } from "@/leases/types";
 import type { LeafletGeoJson } from "types";
 
+export const fetchRelatedAreas = async (
+  leaseId: number,
+  signal: AbortSignal,
+): Promise<LeafletGeoJson> => {
+  const { response, bodyAsJson } = await callApiAsync<LeafletGeoJson>(
+    new Request(createUrl(`lease/${leaseId}/related_areas/`), { signal }),
+  );
+  if (!response.ok) throw new Error("Failed to fetch related lease areas");
+  return bodyAsJson;
+};
+
 export const fetchLeaseIdByIdentifier = async (
   identifier: string,
 ): Promise<number> => {

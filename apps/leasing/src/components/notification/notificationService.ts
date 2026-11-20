@@ -51,7 +51,7 @@ const isVisibleDuplicateNotification = (
 export const enqueueNotification = (
   message: Record<string, any>,
   options: NotificationOptions = {},
-) => {
+): string | undefined => {
   const { title, body } = message;
   const type = options.type || "success";
   const autoCloseDuration =
@@ -67,18 +67,20 @@ export const enqueueNotification = (
     options.preventDuplicates !== false &&
     isVisibleDuplicateNotification(notification)
   ) {
-    return;
+    return undefined;
   }
 
   counter += 1;
+  const id = `${Date.now()}-${counter}`;
   queue = [
     ...queue,
     {
       ...notification,
-      id: `${Date.now()}-${counter}`,
+      id,
     },
   ];
   publish();
+  return id;
 };
 
 export const dismissNotification = (id: string) => {

@@ -1,6 +1,9 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { IconDrag, IconMap } from "hds-react";
-import { enqueueNotification } from "@/components/notification/notificationService";
+import {
+  dismissNotification,
+  enqueueNotification,
+} from "@/components/notification/notificationService";
 import { OverlayLayerActiveContext } from "@/areaNote/components/MapContainer";
 import LeafletGeoJSONLayer from "@/components/map/LeafletGeoJSONLayer";
 import useGeoJsonFeatureInteractions from "@/components/map/useGeoJsonFeatureInteractions";
@@ -61,7 +64,7 @@ const ArchivedLeaseAreasLayer = ({ leaseId }: { leaseId: number }) => {
   useEffect(() => {
     if (!isActive || data) return;
     const controller = new AbortController();
-    enqueueNotification(
+    const fetchAreasNotification = enqueueNotification(
       {
         title: "Päättyneiden vuokrausten alueet",
         body: "Haetaan päättyneiden vuokrausten alueita...",
@@ -73,6 +76,7 @@ const ArchivedLeaseAreasLayer = ({ leaseId }: { leaseId: number }) => {
         if (controller.signal.aborted) return;
         setData(result);
         if (!result.features.length) {
+          dismissNotification(fetchAreasNotification);
           enqueueNotification(
             {
               title: "Päättyneet vuokraukset",
@@ -84,6 +88,7 @@ const ArchivedLeaseAreasLayer = ({ leaseId }: { leaseId: number }) => {
       })
       .catch(() => {
         if (controller.signal.aborted) return;
+        dismissNotification(fetchAreasNotification);
         enqueueNotification(
           {
             title: "Päättyneiden vuokrausten alueet",
