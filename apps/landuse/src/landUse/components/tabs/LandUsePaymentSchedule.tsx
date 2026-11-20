@@ -1087,10 +1087,7 @@ const buildInstallmentStep = ({
 
   return {
     title: (
-      <span
-        className="landuse-detail__heading-with-delete"
-        style={{ width: "100%" }}
-      >
+      <span className="landuse-detail__heading-with-delete">
         <span className="landuse-detail__heading-actions">
           <span>{installmentTitle}</span>
           {savedInvoice?.status && (
