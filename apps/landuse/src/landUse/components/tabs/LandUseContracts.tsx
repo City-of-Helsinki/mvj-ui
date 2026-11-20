@@ -266,12 +266,10 @@ export const LandUseContracts: React.FC<LandUseContractsProps> = ({
                                         <TextInput
                                           id={`contract-tyyppi-${contractIndex}`}
                                           label="Sopimuksen tyyppi"
-                                          value={
-                                            getOptionsDisplayValue(
-                                              input.value,
-                                              contractTypeOptions,
-                                            )
-                                          }
+                                          value={getOptionsDisplayValue(
+                                            input.value,
+                                            contractTypeOptions,
+                                          )}
                                           readOnly
                                         />
                                       )
@@ -457,12 +455,10 @@ export const LandUseContracts: React.FC<LandUseContractsProps> = ({
                                         <TextInput
                                           id={`contract-paatos-${contractIndex}`}
                                           label="Päätös"
-                                          value={
-                                            getOptionsDisplayValue(
-                                              input.value,
-                                              decisionTypeOptions,
-                                            )
-                                          }
+                                          value={getOptionsDisplayValue(
+                                            input.value,
+                                            decisionTypeOptions,
+                                          )}
                                           readOnly
                                         />
                                       )
@@ -795,12 +791,31 @@ export const LandUseContracts: React.FC<LandUseContractsProps> = ({
                                       const isVakuusLocked = Boolean(
                                         savedVakuus?.palautettuPvm,
                                       );
+                                      const vakuusTitle = `Vakuus: ${getOptionsDisplayValue(vakuus.collateralType, collateralTypeOptions)}${
+                                        isVakuusLocked
+                                          ? ` (palautettu ${savedVakuus?.palautettuPvm})`
+                                          : ""
+                                      }`;
                                       return {
-                                        title: `Vakuus: ${getOptionsDisplayValue(vakuus.collateralType, collateralTypeOptions)}${
-                                          isVakuusLocked
-                                            ? ` (palautettu ${savedVakuus?.palautettuPvm})`
-                                            : ""
-                                        }`,
+                                        title: (
+                                          <span className="landuse-detail__heading-with-delete">
+                                            <span>{vakuusTitle}</span>
+                                            {isEditMode && !isVakuusLocked && (
+                                              <ConfirmDeleteButton
+                                                id={`vakuus-delete-${contractIndex}-${vakuusIndex}`}
+                                                buttonLabel="Poista vakuus"
+                                                onConfirm={() => {
+                                                  form.mutators.remove(
+                                                    `contracts.${contractIndex}.vakuudet`,
+                                                    vakuusIndex,
+                                                  );
+                                                }}
+                                                dialogTitle="Poista vakuus"
+                                                dialogContent="Haluatko varmasti poistaa vakuuden?"
+                                              />
+                                            )}
+                                          </span>
+                                        ) as unknown as string,
                                         key:
                                           vakuus.id ??
                                           vakuus.clientKey ??
@@ -827,8 +842,7 @@ export const LandUseContracts: React.FC<LandUseContractsProps> = ({
                                             <CollateralFormByType
                                               type={
                                                 vakuus.collateralType as
-                                                  | CollateralType
-                                                  | undefined
+                                                  CollateralType | undefined
                                               }
                                               namePrefix={vakuusName}
                                               isEditMode={
@@ -836,23 +850,6 @@ export const LandUseContracts: React.FC<LandUseContractsProps> = ({
                                               }
                                               partyOptions={partyOptions}
                                             />
-
-                                            {isEditMode && !isVakuusLocked && (
-                                              <div className="landuse-detail__delete-button-row">
-                                                <ConfirmDeleteButton
-                                                  id={`vakuus-delete-${contractIndex}-${vakuusIndex}`}
-                                                  buttonLabel="Poista vakuus"
-                                                  onConfirm={() => {
-                                                    form.mutators.remove(
-                                                      `contracts.${contractIndex}.vakuudet`,
-                                                      vakuusIndex,
-                                                    );
-                                                  }}
-                                                  dialogTitle="Poista vakuus"
-                                                  dialogContent="Haluatko varmasti poistaa vakuuden?"
-                                                />
-                                              </div>
-                                            )}
                                           </div>
                                         ),
                                       };
