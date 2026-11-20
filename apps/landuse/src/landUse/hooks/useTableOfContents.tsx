@@ -57,11 +57,17 @@ const useTableOfContentsContext = (): TableOfContentsContextValue => {
 /** A tab publishes an explicit list of table of contents entries. */
 export const useTocEntries = (entries: SectionEntry[]): void => {
   const { setEntries } = useTableOfContentsContext();
+  const entriesKey = JSON.stringify(entries);
+  const stableEntries = useMemo(
+    () => JSON.parse(entriesKey) as SectionEntry[],
+    [entriesKey],
+  );
 
   useEffect(() => {
-    setEntries(entries);
-    return () => setEntries([]);
-  }, [setEntries, entries]);
+    setEntries(stableEntries);
+  }, [setEntries, stableEntries]);
+
+  useEffect(() => () => setEntries([]), [setEntries]);
 };
 
 /** A tab publishes an entry for each heading rendered inside `contentRef`. */
