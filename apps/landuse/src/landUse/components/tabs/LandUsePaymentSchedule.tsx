@@ -29,9 +29,8 @@ import { useTocEntries } from "@/landUse/hooks/useTableOfContents";
 import {
   AsemakaavaListItem,
   INTEREST_CALCULATION_DAYS_IN_YEAR,
-  INVOICE_ITEM_TYPES,
-  INVOICE_TYPES,
   PAYMENT_SCHEDULE_STATUSES,
+  PAYMENT_SCHEDULE_INSTALLMENT_ITEM_TYPES,
 } from "@/landUse/options";
 import {
   getOptionsDisplayValue,
@@ -51,7 +50,7 @@ import { areAllInvoicesInScheduleSent } from "@/landUse/utils/invoiceReview";
 import {
   INVOICE_STATUSES,
   type PaymentScheduleInstallment,
-  type InvoiceItem,
+  type PaymentScheduleInstallmentItem,
   type PaymentScheduleStatus,
 } from "@/landUse/options";
 import type { LandUseContractsFormValues } from "@/landUse/components/tabs/LandUseContracts";
@@ -205,7 +204,7 @@ const createPartyOptions = (parties: PartyEntry[]): SelectOption[] =>
       value: party.id!,
     }));
 
-const createInvoiceContractOptions = (
+const createContractOptions = (
   contracts: ContractItem[],
   contractTypeChoices: SelectOption[],
 ): ContractOption[] =>
@@ -284,15 +283,17 @@ const getSelectedPartyInvoiceData = (
 };
 
 /**
- * The second invoice row is either a "korotus"
- * or a "korko" (interest, peruskorko + marginaali). Everything that differs
- * between the two variants is derived from a `InterestKind`.
+ * The second installment item is either a "korotus" or a "korko" (interest,
+ * peruskorko + marginaali).
+ * Everything that differs between the two variants is derived from `InterestKind`.
  */
 type InterestKind = "korotus" | "korko";
 
 const getInterestKind = (itemType: string): InterestKind | null => {
-  if (itemType === INVOICE_ITEM_TYPES.KOROTUS) return "korotus";
-  if (itemType === INVOICE_ITEM_TYPES.KORKO) return "korko";
+  if (itemType === PAYMENT_SCHEDULE_INSTALLMENT_ITEM_TYPES.KOROTUS)
+    return "korotus";
+  if (itemType === PAYMENT_SCHEDULE_INSTALLMENT_ITEM_TYPES.KORKO)
+    return "korko";
   return null;
 };
 
@@ -355,7 +356,7 @@ const calculatePeriodRateAmount = ({
   return (parsedAmount * (combinedRate / 100) * periodDays) / parsedDaysInYear;
 };
 
-interface InvoiceItemRowProps {
+interface InstallmentItemProps {
   itemFieldName: string;
   installmentFieldName: string;
   scheduleFieldName: string;
@@ -367,7 +368,7 @@ interface InvoiceItemRowProps {
   validateInstallments: boolean;
 }
 
-const InvoiceItemRow: React.FC<InvoiceItemRowProps> = ({
+const InstallmentItem: React.FC<InstallmentItemProps> = ({
   itemFieldName,
   installmentFieldName,
   scheduleFieldName,
@@ -397,7 +398,7 @@ const InvoiceItemRow: React.FC<InvoiceItemRowProps> = ({
         : undefined,
     },
   );
-  // Base amount for interest is always the Maankäyttökorvaus row (index 0)
+  // Base amount for interest is always the Maankäyttökorvaus item (index 0)
   const { input: baseAmountInput } = useField(
     `${installmentFieldName}.items[0].amountExcludingVat`,
   );
@@ -435,7 +436,7 @@ const InvoiceItemRow: React.FC<InvoiceItemRowProps> = ({
         {/* It is expected that there are two items only, if there were more they would be editable. */}
         {canEdit && itemIndex >= 2 ? (
           <Select
-            id={`landuse-payment-schedule-invoice-row-item-type-${scheduleIndex}-${installmentIndex}-${itemIndex}`}
+            id={`landuse-payment-schedule-installment-item-type-${scheduleIndex}-${installmentIndex}-${itemIndex}`}
             texts={{ label: "Maksun tyyppi", placeholder: "Valitse" }}
             options={scheduleItemTypeOptions}
             value={itemTypeInput.value}
@@ -449,7 +450,7 @@ const InvoiceItemRow: React.FC<InvoiceItemRowProps> = ({
           />
         ) : (
           <TextInput
-            id={`landuse-payment-schedule-invoice-row-item-type-${scheduleIndex}-${installmentIndex}-${itemIndex}`}
+            id={`landuse-payment-schedule-installment-item-type-${scheduleIndex}-${installmentIndex}-${itemIndex}`}
             label="Maksun tyyppi"
             value={getOptionsDisplayValue(
               itemTypeInput.value,
@@ -465,7 +466,7 @@ const InvoiceItemRow: React.FC<InvoiceItemRowProps> = ({
 
       <div className="landuse-grid__column-2">
         <NumericDecimalInput
-          id={`landuse-payment-schedule-invoice-row-amount-${scheduleIndex}-${installmentIndex}-${itemIndex}`}
+          id={`landuse-payment-schedule-installment-amount-${scheduleIndex}-${installmentIndex}-${itemIndex}`}
           label="Summa (€)"
           value={amountInput.value}
           onChange={amountInput.onChange}
@@ -481,7 +482,7 @@ const InvoiceItemRow: React.FC<InvoiceItemRowProps> = ({
         <>
           <div className="landuse-grid__column-4">
             <TextInput
-              id={`landuse-payment-schedule-invoice-row-calc-${scheduleIndex}-${installmentIndex}-${itemIndex}`}
+              id={`landuse-payment-schedule-installment-calc-${scheduleIndex}-${installmentIndex}-${itemIndex}`}
               label={formatCalculationLabel(
                 interestKind,
                 rateInput.value,
@@ -523,7 +524,7 @@ const InvoiceItemRow: React.FC<InvoiceItemRowProps> = ({
   );
 };
 
-const getScheduleStatusAction = (
+const getPaymentScheduleStatusAction = (
   status: PaymentScheduleStatus | undefined,
 ): { buttonLabel: string; nextStatus: PaymentScheduleStatus } | null => {
   if (
@@ -538,7 +539,7 @@ const getScheduleStatusAction = (
   return null;
 };
 
-const getScheduleStatusLabelType = (
+const getPaymentScheduleStatusLabelType = (
   status: PaymentScheduleStatus | undefined,
 ): StatusLabelType => {
   if (status === PAYMENT_SCHEDULE_STATUSES.APPROVED) return "success";
@@ -547,7 +548,7 @@ const getScheduleStatusLabelType = (
   return "neutral";
 };
 
-const getScheduleStatusIcon = (
+const getPaymentScheduleStatusIcon = (
   status: PaymentScheduleStatus | undefined,
 ): React.ReactNode => {
   if (status === PAYMENT_SCHEDULE_STATUSES.APPROVED) {
@@ -565,13 +566,13 @@ const getScheduleStatusIcon = (
   return null;
 };
 
-const isScheduleEditable = (
+const isPaymentScheduleEditable = (
   status: PaymentScheduleStatus | undefined,
 ): boolean =>
   status === PAYMENT_SCHEDULE_STATUSES.DRAFT ||
   status === PAYMENT_SCHEDULE_STATUSES.REJECTED;
 
-const calculateScheduleTotals = (
+const calculatePaymentScheduleTotals = (
   installments: PaymentScheduleInstallment[],
 ): { landUseCompensationTotal: number; scheduleTotal: number } =>
   installments.reduce(
@@ -585,7 +586,8 @@ const calculateScheduleTotals = (
           return {
             landUseCompensationTotal:
               itemTotals.landUseCompensationTotal +
-              (item.itemType === INVOICE_ITEM_TYPES.MAANKAYTTOKORVAUS
+              (item.itemType ===
+              PAYMENT_SCHEDULE_INSTALLMENT_ITEM_TYPES.MAANKAYTTOKORVAUS
                 ? amount
                 : 0),
             scheduleTotal: itemTotals.scheduleTotal + amount,
@@ -596,14 +598,14 @@ const calculateScheduleTotals = (
     { landUseCompensationTotal: 0, scheduleTotal: 0 },
   );
 
-interface BulkCreateFormValues {
+interface CreatePaymentScheduleDialogValues {
   installmentTotal: string;
   contractIndex: string | undefined;
   recipientPartyIndex: string | undefined;
   asemakaavanLainvoimaisuusPvm: string;
 }
 
-const buildSecondRowSelite = (
+const buildSecondItemDescription = (
   agreementIdentifier: string,
   sopimusnumero: string,
   asemakaavanNumero: string,
@@ -614,58 +616,66 @@ const buildSecondRowSelite = (
 ): string =>
   `Maankäyttökorvaus ${agreementIdentifier}, ${sopimusnumero}, ${asemakaavanNumero}, ${installmentNumber}/${installmentTotal}, ${recipientName}, ${isFirst ? "Korotus" : "Korko"}`;
 
-const createBulkInvoice = (
+const createInstallment = (
   installmentNumber: number,
-  values: BulkCreateFormValues,
+  scheduleDialogValues: CreatePaymentScheduleDialogValues,
   signedDate: string,
   agreementIdentifier: string,
   sopimusnumero: string,
   asemakaavanNumero: string,
   recipientName: string,
   isFirst = installmentNumber === 1,
-): PaymentScheduleInstallment => ({
-  recipientPartyIndex: values.recipientPartyIndex,
-  contractIndex: values.contractIndex,
-  installmentNumber: String(installmentNumber),
-  installmentTotal: values.installmentTotal,
-  signedDate,
-  asemakaavanLainvoimaisuusPvm: values.asemakaavanLainvoimaisuusPvm,
-  dueDate: "",
-  laskentajaksonAlkupvm: "",
-  laskentajaksonLoppupvm: "",
-  type: INVOICE_TYPES.MAANKAYTTOKORVAUS,
-  items: [
-    {
-      itemType: INVOICE_ITEM_TYPES.MAANKAYTTOKORVAUS,
-      description: "Maksutuotot maankäyttösopimuksista",
-      amountExcludingVat: "",
-    },
-    {
-      itemType: isFirst ? INVOICE_ITEM_TYPES.KOROTUS : INVOICE_ITEM_TYPES.KORKO,
-      description: buildSecondRowSelite(
-        agreementIdentifier,
-        sopimusnumero,
-        asemakaavanNumero,
-        installmentNumber,
-        values.installmentTotal,
-        recipientName,
-        isFirst,
-      ),
-      amountExcludingVat: "",
-    },
-  ],
-});
+): PaymentScheduleInstallment => {
+  const secondItemDescription = buildSecondItemDescription(
+    agreementIdentifier,
+    sopimusnumero,
+    asemakaavanNumero,
+    installmentNumber,
+    scheduleDialogValues.installmentTotal,
+    recipientName,
+    isFirst,
+  );
+  return {
+    recipientPartyIndex: scheduleDialogValues.recipientPartyIndex,
+    contractIndex: scheduleDialogValues.contractIndex,
+    installmentNumber: String(installmentNumber),
+    installmentTotal: scheduleDialogValues.installmentTotal,
+    signedDate,
+    asemakaavanLainvoimaisuusPvm:
+      scheduleDialogValues.asemakaavanLainvoimaisuusPvm,
+    dueDate: "",
+    laskentajaksonAlkupvm: "",
+    laskentajaksonLoppupvm: "",
+    type: PAYMENT_SCHEDULE_INSTALLMENT_ITEM_TYPES.MAANKAYTTOKORVAUS,
+    items: [
+      {
+        itemType: PAYMENT_SCHEDULE_INSTALLMENT_ITEM_TYPES.MAANKAYTTOKORVAUS,
+        description: "Maksutuotot maankäyttösopimuksista",
+        amountExcludingVat: "",
+      },
+      {
+        itemType: isFirst
+          ? PAYMENT_SCHEDULE_INSTALLMENT_ITEM_TYPES.KOROTUS
+          : PAYMENT_SCHEDULE_INSTALLMENT_ITEM_TYPES.KORKO,
+        description: secondItemDescription,
+        amountExcludingVat: "",
+      },
+    ],
+  };
+};
 
-interface BulkCreateInvoicesDialogProps {
+interface CreatePaymentScheduleDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (values: BulkCreateFormValues) => void;
+  onSubmit: (values: CreatePaymentScheduleDialogValues) => void;
   partyOptions: SelectOption[];
   contractOptions: ContractOption[];
   asemakaavanLainvoimaisuusPvm: AsemakaavaListItem["asemakaavanLainvoimaisuusPvm"];
 }
 
-const BulkCreateInvoicesDialog: React.FC<BulkCreateInvoicesDialogProps> = ({
+const CreatePaymentScheduleDialog: React.FC<
+  CreatePaymentScheduleDialogProps
+> = ({
   isOpen,
   onClose,
   onSubmit,
@@ -699,7 +709,7 @@ const BulkCreateInvoicesDialog: React.FC<BulkCreateInvoicesDialogProps> = ({
     onClose();
   };
 
-  const handleBulkInvoiceCreate = () => {
+  const handleCreatePaymentSchedule = () => {
     onSubmit({
       installmentTotal: String(installmentTotal),
       contractIndex,
@@ -717,14 +727,14 @@ const BulkCreateInvoicesDialog: React.FC<BulkCreateInvoicesDialogProps> = ({
 
   return (
     <Dialog
-      id="landuse-bulk-create-invoices-schedule"
+      id="landuse-create-payment-schedule"
       isOpen={isOpen}
-      aria-labelledby="landuse-bulk-create-invoices-schedule-title"
+      aria-labelledby="landuse-create-payment-schedule-title"
       closeButtonLabelText="Sulje"
       close={handleClose}
     >
       <Dialog.Header
-        id="landuse-bulk-create-invoices-schedule-title"
+        id="landuse-create-payment-schedule-title"
         title="Syötä maksusuunnitelma"
       />
       <Dialog.Content>
@@ -783,7 +793,7 @@ const BulkCreateInvoicesDialog: React.FC<BulkCreateInvoicesDialogProps> = ({
         </Button>
         <Button
           variant={ButtonVariant.Primary}
-          onClick={handleBulkInvoiceCreate}
+          onClick={handleCreatePaymentSchedule}
           disabled={isSubmitDisabled}
         >
           Luo maksusuunnitelma
@@ -999,14 +1009,14 @@ const InstallmentStep: React.FC<InstallmentStepProps> = ({
       </div>
 
       <section>
-        <FieldArray<InvoiceItem>
+        <FieldArray<PaymentScheduleInstallmentItem>
           name={`${fieldName}.${invoice ? "invoice.invoiceItems" : "items"}`}
         >
           {({ fields: itemFields }) => (
             <>
               {itemFields.length > 0 ? (
                 itemFields.map((itemFieldName, itemIndex) => (
-                  <InvoiceItemRow
+                  <InstallmentItem
                     key={itemFieldName}
                     itemFieldName={itemFieldName}
                     installmentFieldName={fieldName}
@@ -1056,7 +1066,9 @@ const buildInstallmentStep = ({
   onRemove: () => void;
 }) => {
   const canEdit =
-    !installment.invoice && isEditMode && isScheduleEditable(scheduleStatus);
+    !installment.invoice &&
+    isEditMode &&
+    isPaymentScheduleEditable(scheduleStatus);
   const savedInvoice = installment.invoice;
   const displayedInstallment = savedInvoice ?? installment;
   const installmentLabel =
@@ -1249,7 +1261,7 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
         <div className="landuse-grid landuse-grid__bottom-margin">
           <div className="landuse-grid__column-6">
             <TextInput
-              id={`landuse-payment-schedule-invoice-recipient-${partyValue}`}
+              id={`landuse-payment-schedule-recipient-${partyValue}`}
               label="Nimi"
               value={readOnlyTextValue(selectedPartyData.name)}
               errorText={selectedPartyData.name ? undefined : "Puuttuu"}
@@ -1344,9 +1356,9 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
             contractOptions.find(
               (option) => option.value === schedule.contractIndex,
             )?.sopimusnumero ?? "-";
-          const statusAction = getScheduleStatusAction(schedule.status);
+          const statusAction = getPaymentScheduleStatusAction(schedule.status);
           const { landUseCompensationTotal, scheduleTotal } =
-            calculateScheduleTotals(schedule.installments);
+            calculatePaymentScheduleTotals(schedule.installments);
           const allInstallmentInvoicesSent =
             areAllInvoicesInScheduleSent(schedule);
 
@@ -1360,15 +1372,19 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
                     <div className="landuse-detail__heading-with-delete">
                       <div className="landuse-detail__heading-actions">
                         <h3>
-                          {!isScheduleEditable(schedule.status) && (
+                          {!isPaymentScheduleEditable(schedule.status) && (
                             <IconLock aria-label="Maksusuunnitelma lukittu" />
                           )}{" "}
                           Maksusuunnitelma{" "}
                           {schedule.createdAt || "(tallentamaton)"}
                         </h3>
                         <StatusLabel
-                          type={getScheduleStatusLabelType(schedule.status)}
-                          iconStart={getScheduleStatusIcon(schedule.status)}
+                          type={getPaymentScheduleStatusLabelType(
+                            schedule.status,
+                          )}
+                          iconStart={getPaymentScheduleStatusIcon(
+                            schedule.status,
+                          )}
                         >
                           {getOptionsDisplayValue(
                             schedule.status,
@@ -1414,7 +1430,7 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
                         )}
                       </div>
                       {isEditMode &&
-                        isScheduleEditable(schedule.status) &&
+                        isPaymentScheduleEditable(schedule.status) &&
                         !schedule.installments.some(
                           (installment) => installment.invoice,
                         ) && (
@@ -1524,7 +1540,9 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
                                         required
                                         isEditMode={
                                           isEditMode &&
-                                          isScheduleEditable(schedule.status)
+                                          isPaymentScheduleEditable(
+                                            schedule.status,
+                                          )
                                         }
                                       />
                                     )}
@@ -1552,7 +1570,9 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
                                         required
                                         isEditMode={
                                           isEditMode &&
-                                          isScheduleEditable(schedule.status)
+                                          isPaymentScheduleEditable(
+                                            schedule.status,
+                                          )
                                         }
                                       />
                                     )}
@@ -1580,7 +1600,9 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
                                         required
                                         isEditMode={
                                           isEditMode &&
-                                          isScheduleEditable(schedule.status)
+                                          isPaymentScheduleEditable(
+                                            schedule.status,
+                                          )
                                         }
                                       />
                                     )}
@@ -1617,17 +1639,18 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
                         ),
                       ]}
                     />
-                    {isEditMode && isScheduleEditable(schedule.status) && (
-                      <Button
-                        type="button"
-                        variant={ButtonVariant.Secondary}
-                        size={ButtonSize.Small}
-                        iconStart={<IconPlusCircle />}
-                        onClick={() => onAddInstallment(schedule, index)}
-                      >
-                        Lisää erä
-                      </Button>
-                    )}
+                    {isEditMode &&
+                      isPaymentScheduleEditable(schedule.status) && (
+                        <Button
+                          type="button"
+                          variant={ButtonVariant.Secondary}
+                          size={ButtonSize.Small}
+                          iconStart={<IconPlusCircle />}
+                          onClick={() => onAddInstallment(schedule, index)}
+                        >
+                          Lisää erä
+                        </Button>
+                      )}
                   </>
                 )}
               </FieldArray>
@@ -1751,7 +1774,8 @@ export const LandUsePaymentSchedule: React.FC<LandUsePaymentScheduleProps> = ({
   onReturnToDraft,
 }) => {
   const metadataQuery = useLandUseMetadata();
-  const [isBulkCreateOpen, setIsBulkCreateOpen] = useState(false);
+  const [isCreateScheduleDialogOpen, setIsCreateScheduleDialogOpen] =
+    useState(false);
 
   const partyOptions = useMemo(
     () => createPartyOptions(parties ?? []),
@@ -1759,7 +1783,7 @@ export const LandUsePaymentSchedule: React.FC<LandUsePaymentScheduleProps> = ({
   );
   const contractOptions = useMemo(
     () =>
-      createInvoiceContractOptions(
+      createContractOptions(
         contracts ?? [],
         metadataQuery.data?.contract_types ?? [],
       ),
@@ -1805,14 +1829,15 @@ export const LandUsePaymentSchedule: React.FC<LandUsePaymentScheduleProps> = ({
             itemIndex === 1 && getInterestKind(item.itemType)
               ? {
                   ...item,
-                  description: buildSecondRowSelite(
+                  description: buildSecondItemDescription(
                     agreementIdentifier,
                     sopimusnumero,
                     asemakaavanNumero,
                     installmentNumber,
                     installmentTotal,
                     recipientName,
-                    item.itemType === INVOICE_ITEM_TYPES.KOROTUS,
+                    item.itemType ===
+                      PAYMENT_SCHEDULE_INSTALLMENT_ITEM_TYPES.KOROTUS,
                   ),
                 }
               : item,
@@ -1836,8 +1861,8 @@ export const LandUsePaymentSchedule: React.FC<LandUsePaymentScheduleProps> = ({
     schedule: PaymentScheduleEntry,
     index: number,
   ) => {
-    if (!isEditMode || !isScheduleEditable(schedule.status)) return;
-    const installment = createBulkInvoice(
+    if (!isEditMode || !isPaymentScheduleEditable(schedule.status)) return;
+    const installment = createInstallment(
       schedule.installments.length + 1,
       {
         installmentTotal: String(schedule.installments.length + 1),
@@ -1865,7 +1890,7 @@ export const LandUsePaymentSchedule: React.FC<LandUsePaymentScheduleProps> = ({
   ) => {
     if (
       !isEditMode ||
-      !isScheduleEditable(schedule.status) ||
+      !isPaymentScheduleEditable(schedule.status) ||
       schedule.installments[installmentIndex]?.invoice
     )
       return;
@@ -1878,7 +1903,9 @@ export const LandUsePaymentSchedule: React.FC<LandUsePaymentScheduleProps> = ({
     );
   };
 
-  const handleBulkCreate = (values: BulkCreateFormValues) => {
+  const handleCreatePaymentSchedule = (
+    values: CreatePaymentScheduleDialogValues,
+  ) => {
     const total = parseInt(values.installmentTotal, 10);
     if (
       !total ||
@@ -1901,7 +1928,7 @@ export const LandUsePaymentSchedule: React.FC<LandUsePaymentScheduleProps> = ({
       : "";
 
     const installments = Array.from({ length: total }, (_, index) =>
-      createBulkInvoice(
+      createInstallment(
         index + 1,
         values,
         signedDate,
@@ -1926,7 +1953,7 @@ export const LandUsePaymentSchedule: React.FC<LandUsePaymentScheduleProps> = ({
       installments,
     } satisfies PaymentScheduleEntry);
 
-    setIsBulkCreateOpen(false);
+    setIsCreateScheduleDialogOpen(false);
   };
 
   return (
@@ -1964,12 +1991,12 @@ export const LandUsePaymentSchedule: React.FC<LandUsePaymentScheduleProps> = ({
               <div className="landuse-grid landuse-grid__bottom-margin">
                 <div className="landuse-grid__column-12">
                   {isEditMode && (
-                    <div className="landuse-invoicing__invoice-actions">
+                    <div className="landuse-payment-schedule__actions">
                       <Button
                         type="button"
                         variant={ButtonVariant.Primary}
                         iconStart={<IconPlusCircle />}
-                        onClick={() => setIsBulkCreateOpen(true)}
+                        onClick={() => setIsCreateScheduleDialogOpen(true)}
                       >
                         Syötä maksusuunnitelma
                       </Button>
@@ -2041,10 +2068,10 @@ export const LandUsePaymentSchedule: React.FC<LandUsePaymentScheduleProps> = ({
           );
         }}
       />
-      <BulkCreateInvoicesDialog
-        isOpen={isBulkCreateOpen}
-        onClose={() => setIsBulkCreateOpen(false)}
-        onSubmit={handleBulkCreate}
+      <CreatePaymentScheduleDialog
+        isOpen={isCreateScheduleDialogOpen}
+        onClose={() => setIsCreateScheduleDialogOpen(false)}
+        onSubmit={handleCreatePaymentSchedule}
         partyOptions={partyOptions}
         contractOptions={contractOptions}
         asemakaavanLainvoimaisuusPvm={asemakaavanLainvoimaisuusPvm}

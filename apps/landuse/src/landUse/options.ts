@@ -95,6 +95,13 @@ export interface InvoiceItem {
   amountExcludingVat: string;
 }
 
+export interface PaymentScheduleInstallmentItem {
+  id?: string;
+  description: string;
+  itemType: string;
+  amountExcludingVat: string;
+}
+
 export interface InvoicePayment {
   id: string;
   paidAmount: string;
@@ -131,8 +138,7 @@ export interface Invoice {
   payments?: InvoicePayment[];
 }
 
-export type PaymentScheduleInstallment = Omit<
-  Invoice,
+type PaymentScheduleInstallmentInvoiceOnlyFields =
   | "invoiceNumber"
   | "recipientSnapshot"
   | "status"
@@ -140,26 +146,32 @@ export type PaymentScheduleInstallment = Omit<
   | "billedAmount"
   | "remainingAmount"
   | "payments"
+  | "invoiceItems";
+
+export type PaymentScheduleInstallmentInvoice = Pick<
+  Invoice,
+  | "id"
+  | "invoiceNumber"
+  | "recipientSnapshot"
+  | "recipientPartyIndex"
+  | "installmentNumber"
+  | "installmentTotal"
+  | "dueDate"
+  | "type"
+  | "status"
+  | "sentAt"
+  | "billedAmount"
+  | "remainingAmount"
   | "invoiceItems"
+  | "payments"
+>;
+
+export type PaymentScheduleInstallment = Omit<
+  Invoice,
+  PaymentScheduleInstallmentInvoiceOnlyFields
 > & {
-  items?: InvoiceItem[];
-  invoice?: Pick<
-    Invoice,
-    | "id"
-    | "invoiceNumber"
-    | "recipientSnapshot"
-    | "recipientPartyIndex"
-    | "installmentNumber"
-    | "installmentTotal"
-    | "dueDate"
-    | "type"
-    | "status"
-    | "sentAt"
-    | "billedAmount"
-    | "remainingAmount"
-    | "invoiceItems"
-    | "payments"
-  >;
+  items?: PaymentScheduleInstallmentItem[];
+  invoice?: PaymentScheduleInstallmentInvoice;
 };
 
 export const INVOICE_ITEM_TYPES = {
@@ -171,6 +183,15 @@ export const INVOICE_ITEM_TYPES = {
 
 export type InvoiceItemType =
   (typeof INVOICE_ITEM_TYPES)[keyof typeof INVOICE_ITEM_TYPES];
+
+export const PAYMENT_SCHEDULE_INSTALLMENT_ITEM_TYPES = {
+  MAANKAYTTOKORVAUS: INVOICE_ITEM_TYPES.MAANKAYTTOKORVAUS,
+  KOROTUS: INVOICE_ITEM_TYPES.KOROTUS,
+  KORKO: INVOICE_ITEM_TYPES.KORKO,
+} as const;
+
+export type PaymentScheduleInstallmentType =
+  (typeof PAYMENT_SCHEDULE_INSTALLMENT_ITEM_TYPES)[keyof typeof PAYMENT_SCHEDULE_INSTALLMENT_ITEM_TYPES];
 
 // Only 365 is supported for now; additional entries can be added later without
 // requiring further changes to the payment schedule UI.
