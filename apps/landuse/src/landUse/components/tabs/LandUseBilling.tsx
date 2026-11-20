@@ -34,7 +34,7 @@ import type {
   BillingDetails,
   CompanyPartyDetails,
 } from "@/landUse/components/tabs/LandUseParties";
-import type { PaymentScheduleEntry as PaymentScheduleEntry } from "@/landUse/components/tabs/LandUsePaymentSchedule";
+import type { PaymentScheduleEntry } from "@/landUse/components/tabs/LandUsePaymentSchedule";
 import { SelectedPartyInvoiceData } from "@/landUse/api/landUseTypes";
 
 type BillingPartyDetails = Pick<
@@ -417,18 +417,15 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
                           {({ input: statusInput }) =>
                             (() => {
                               return (
-                                <>
-                                  <TextInput
-                                    id={`landuse-billing-status-${index}`}
-                                    label="Laskun tila"
-                                    value={getOptionsDisplayValue(
-                                      statusInput.value,
-                                      metadataQuery.data?.invoice_statuses ??
-                                        [],
-                                    )}
-                                    readOnly
-                                  />
-                                </>
+                                <TextInput
+                                  id={`landuse-billing-status-${index}`}
+                                  label="Laskun tila"
+                                  value={getOptionsDisplayValue(
+                                    statusInput.value,
+                                    metadataQuery.data?.invoice_statuses ?? [],
+                                  )}
+                                  readOnly
+                                />
                               );
                             })()
                           }
@@ -1117,42 +1114,40 @@ export const LandUseBilling: React.FC<LandUseBillingProps> = ({
                 <div className="landuse-detail__sites-table-wrapper">
                   <FieldArray<BillingInvoice> name="invoices">
                     {({ fields }) => (
-                      <>
-                        <table className="landuse-compensations-table">
-                          <thead>
+                      <table className="landuse-compensations-table">
+                        <thead>
+                          <tr>
+                            <th className="landuse-compensations-table__toggle-cell" />
+                            <th>Laskunsaaja</th>
+                            <th>Laskutuserä</th>
+                            <th>Eräpäivä</th>
+                            <th>Laskunumero</th>
+                            <th>Tyyppi</th>
+                            <th>Laskun tila</th>
+                            <th>Laskutettu</th>
+                            <th>Maksamatta</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {fields.length > 0 ? (
+                            fields.map((fieldName, index) => (
+                              <InvoiceTableRow
+                                key={fieldName}
+                                fieldName={fieldName}
+                                index={index}
+
+                                isOpen={openInvoiceIndex === index}
+
+                                onToggle={handleToggleInvoice}
+                              />
+                            ))
+                          ) : (
                             <tr>
-                              <th className="landuse-compensations-table__toggle-cell" />
-                              <th>Laskunsaaja</th>
-                              <th>Laskutuserä</th>
-                              <th>Eräpäivä</th>
-                              <th>Laskunumero</th>
-                              <th>Tyyppi</th>
-                              <th>Laskun tila</th>
-                              <th>Laskutettu</th>
-                              <th>Maksamatta</th>
+                              <td colSpan={9}>Ei laskuja.</td>
                             </tr>
-                          </thead>
-                          <tbody>
-                            {fields.length > 0 ? (
-                              fields.map((fieldName, index) => (
-                                <InvoiceTableRow
-                                  key={fieldName}
-                                  fieldName={fieldName}
-                                  index={index}
-
-                                  isOpen={openInvoiceIndex === index}
-
-                                  onToggle={handleToggleInvoice}
-                                />
-                              ))
-                            ) : (
-                              <tr>
-                                <td colSpan={9}>Ei laskuja.</td>
-                              </tr>
-                            )}
-                          </tbody>
-                        </table>
-                      </>
+                          )}
+                        </tbody>
+                      </table>
                     )}
                   </FieldArray>
                 </div>
