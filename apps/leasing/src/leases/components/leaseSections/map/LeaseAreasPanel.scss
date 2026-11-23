@@ -1,8 +1,15 @@
-.map:has(.archived-lease-panel) {
+@use "@/styles/variables";
+
+.map:has(.lease-areas-panel) {
   position: relative;
+  isolation: isolate;
+
+  > .leaflet-container {
+    z-index: auto;
+  }
 }
-//TODO: rename this file to a more generic one.
-.archived-lease-panel {
+
+.lease-areas-panel {
   position: absolute;
   bottom: 12px;
   left: 12px;
@@ -52,12 +59,15 @@
   li {
     padding: 8px 12px;
     border-top: 1px solid #ddd;
+
     &.is-highlighted {
       background: #e4f3f2;
     }
+
     > details {
       margin-left: 26px;
     }
+
     summary {
       cursor: pointer;
     }
@@ -65,12 +75,18 @@
 
   button {
     cursor: pointer;
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: default;
+    }
   }
 
   &__actions {
     display: flex;
     gap: 16px;
     padding: 0 12px 10px;
+
     button {
       color: #006d77;
       text-decoration: underline;
@@ -81,6 +97,7 @@
     display: flex;
     align-items: flex-start;
     gap: 10px;
+
     input {
       margin: 4px 0 0;
       flex-shrink: 0;
@@ -127,6 +144,10 @@
     flex-wrap: wrap;
     align-items: baseline;
     column-gap: 6px;
+
+    > a {
+      font-weight: 600;
+    }
   }
 
   &__state {
@@ -142,9 +163,44 @@
     flex: 1;
     min-width: 0;
     overflow-wrap: anywhere;
+  }
 
-    > a {
-      font-weight: 600;
+  &--related {
+    right: 12px;
+    left: auto;
+    width: min(330px, calc(100% - 80px));
+
+    h4 {
+      margin: 8px 12px;
+      font-size: 14px;
     }
+
+    .is-current {
+      box-shadow: inset 4px 0 variables.$blue;
+      margin-left: -4px;
+    }
+
+    .is-inactive {
+      color: #666;
+
+      a {
+        color: inherit;
+      }
+    }
+  }
+
+  ul.lease-areas-panel__chain {
+    border-left: 4px solid #aaa;
+    margin-left: 4px;
+    margin-bottom: 10px;
+  }
+}
+
+@media (max-width: 700px) {
+  .map:has(.lease-areas-panel:not(.lease-areas-panel--related))
+    .lease-areas-panel--related {
+    top: 64px;
+    bottom: auto;
+    max-height: 35%;
   }
 }

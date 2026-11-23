@@ -1,5 +1,6 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
-import { IconDrag, IconMap } from "hds-react";
+import React, { useContext, useEffect, useState } from "react";
+import LeaseAreasPanel from "@/leases/components/leaseSections/map/LeaseAreasPanel";
+import { IconLocate } from "hds-react";
 import {
   dismissNotification,
   enqueueNotification,
@@ -13,7 +14,6 @@ import { formatDate } from "@/util/helpers";
 import ExternalLink from "@/components/links/ExternalLink";
 import { getRouteById, Routes } from "@/root/routes";
 import type { LeafletGeoJson } from "types";
-import "./ArchivedLeaseAreasLayer.scss";
 
 const getPopupContent = (feature: GeoJSON.Feature) => {
   const { identifier, lease } = feature.properties ?? {};
@@ -28,17 +28,6 @@ const ArchivedLeaseAreasLayer = ({ leaseId }: { leaseId: number }) => {
   const [hiddenLeases, setHiddenLeases] = useState<number[]>([]);
   const [highlightedLease, setHighlightedLease] = useState<number | null>(null);
   const [selectedLease, setSelectedLease] = useState<number | null>(null);
-  const panelRef = useRef<HTMLDetailsElement>(null);
-  const dragRef = useRef<{
-    pointerId: number;
-    startX: number;
-    startY: number;
-    left: number;
-    top: number;
-    maxLeft: number;
-    maxTop: number;
-    moved: boolean;
-  } | null>(null);
   const isActive = useContext(OverlayLayerActiveContext);
   const onEachFeature = useGeoJsonFeatureInteractions({ getPopupContent });
   const groups = Array.from(
@@ -123,78 +112,10 @@ const ArchivedLeaseAreasLayer = ({ leaseId }: { leaseId: number }) => {
               style={{ color: "#006D77", weight: 4, fillOpacity: 0.5 }}
             />
           )}
-          <details ref={panelRef} className="archived-lease-panel" open>
-            <summary
-              onPointerDown={(event) => {
-                if (
-                  !(event.target as Element).closest(
-                    ".archived-lease-panel__drag-handle",
-                  )
-                )
-                  return;
-                if (event.button !== 0 || !panelRef.current) return;
-                const panel = panelRef.current;
-                const container = panel.offsetParent as HTMLElement | null;
-                if (!container) return;
-                dragRef.current = {
-                  pointerId: event.pointerId,
-                  startX: event.clientX,
-                  startY: event.clientY,
-                  left: panel.offsetLeft,
-                  top: panel.offsetTop,
-                  maxLeft: Math.max(
-                    0,
-                    container.clientWidth - panel.offsetWidth,
-                  ),
-                  maxTop: Math.max(
-                    0,
-                    container.clientHeight - panel.offsetHeight,
-                  ),
-                  moved: false,
-                };
-                event.currentTarget.setPointerCapture(event.pointerId);
-                event.stopPropagation();
-              }}
-              onPointerMove={(event) => {
-                const drag = dragRef.current;
-                if (
-                  !drag ||
-                  drag.pointerId !== event.pointerId ||
-                  !event.currentTarget.hasPointerCapture(event.pointerId)
-                )
-                  return;
-                const deltaX = event.clientX - drag.startX;
-                const deltaY = event.clientY - drag.startY;
-                if (!drag.moved && Math.hypot(deltaX, deltaY) < 4) return;
-                drag.moved = true;
-                const panel = panelRef.current;
-                if (!panel) return;
-                panel.style.left = `${Math.max(0, Math.min(drag.maxLeft, drag.left + deltaX))}px`;
-                panel.style.top = `${Math.max(0, Math.min(drag.maxTop, drag.top + deltaY))}px`;
-                panel.style.bottom = "auto";
-              }}
-              onPointerUp={(event) => {
-                if (event.currentTarget.hasPointerCapture(event.pointerId))
-                  event.currentTarget.releasePointerCapture(event.pointerId);
-              }}
-              onPointerCancel={() => {
-                dragRef.current = null;
-              }}
-              onClick={(event) => {
-                if (dragRef.current?.moved) event.preventDefault();
-                dragRef.current = null;
-              }}
-            >
-              Päättyneet vuokraukset ({groups.length})
-              <span
-                className="archived-lease-panel__drag-handle"
-                title="Siirrä paneelia"
-                aria-hidden="true"
-              >
-                <IconDrag />
-              </span>
-            </summary>
-            <div className="archived-lease-panel__actions">
+          <LeaseAreasPanel
+            title={`Päättyneet vuokraukset (${groups.length} kpl)`}
+          >
+            <div className="lease-areas-panel__actions">
               <button type="button" onClick={() => setHiddenLeases([])}>
                 Näytä kaikki
               </button>
@@ -220,7 +141,7 @@ const ArchivedLeaseAreasLayer = ({ leaseId }: { leaseId: number }) => {
                       setHighlightedLease(null);
                   }}
                 >
-                  <div className="archived-lease-panel__row">
+                  <div className="lease-areas-panel__row">
                     <input
                       type="checkbox"
                       aria-label={`Näytä vuokrauksen ${group.identifier} alueet`}
@@ -233,15 +154,15 @@ const ArchivedLeaseAreasLayer = ({ leaseId }: { leaseId: number }) => {
                         )
                       }
                     />
-                    <div className="archived-lease-panel__lease">
-                      <div className="archived-lease-panel__title">
+                    <div className="lease-areas-panel__lease">
+                      <div className="lease-areas-panel__title">
                         <ExternalLink
                           className="no-margin"
                           href={`${getRouteById(Routes.LEASE)}/${group.identifier}`}
                           text={group.identifier}
                         />
                         {group.state && (
-                          <span className="archived-lease-panel__state">
+                          <span className="lease-areas-panel__state">
                             {group.state}
                           </span>
                         )}
@@ -251,14 +172,14 @@ const ArchivedLeaseAreasLayer = ({ leaseId }: { leaseId: number }) => {
                           <span>{group.intended_use}</span>
                         )}
                         <time
-                          className="archived-lease-panel__end-date"
+                          className="lease-areas-panel__end-date"
                           dateTime={group.end_date}
                         >
                           Päättynyt {formatDate(group.end_date)}
                         </time>
                       </div>
                       <button
-                        className="archived-lease-panel__highlight"
+                        className="lease-areas-panel__highlight"
                         type="button"
                         aria-label={`Korosta vuokrauksen ${group.identifier} alueet kartalla`}
                         aria-pressed={selectedLease === group.id}
@@ -273,14 +194,14 @@ const ArchivedLeaseAreasLayer = ({ leaseId }: { leaseId: number }) => {
                           )
                         }
                       >
-                        <IconMap aria-hidden="true" />
+                        <IconLocate aria-hidden="true" />
                       </button>
                     </div>
                   </div>
                 </li>
               ))}
             </ul>
-          </details>
+          </LeaseAreasPanel>
         </>
       ) : null}
     </>
