@@ -81,7 +81,7 @@ describe("ArchivedLeaseAreasLayer", () => {
       ],
     });
     renderLayer(42);
-    await screen.findByText("Päättyneet vuokraukset (2)");
+    await screen.findByText("Päättyneet vuokraukset (2 kpl)");
     const endDate = screen.getByText(`Päättynyt ${formatDate("2024-01-01")}`);
     expect(endDate.tagName).toBe("TIME");
     expect(endDate.getAttribute("datetime")).toBe("2024-01-01");
@@ -89,9 +89,7 @@ describe("ArchivedLeaseAreasLayer", () => {
     const leaseLink = screen.getByRole("link", { name: "A1100-2" });
     expect(leaseLink.getAttribute("href")).toBe("/vuokraus/A1100-2");
     expect(leaseLink.getAttribute("target")).toBe("_blank");
-    const panel = leaseLink.closest(
-      ".archived-lease-panel",
-    ) as HTMLDetailsElement;
+    const panel = leaseLink.closest(".lease-areas-panel") as HTMLDetailsElement;
     const header = panel.querySelector(":scope > summary") as HTMLElement;
     const dragHandle = screen.getByTitle("Siirrä paneelia");
     const mapContainer = document.createElement("div");

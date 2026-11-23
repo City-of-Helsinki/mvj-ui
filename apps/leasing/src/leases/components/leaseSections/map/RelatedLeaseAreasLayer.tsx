@@ -1,5 +1,6 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
-import { IconDrag, IconLocate } from "hds-react";
+import React, { useContext, useEffect, useState } from "react";
+import LeaseAreasPanel from "@/leases/components/leaseSections/map/LeaseAreasPanel";
+import { IconLocate } from "hds-react";
 import {
   ARCHIVED_LEASE_AREA_COLOR,
   MAP_LAYER_COLORS,
@@ -22,8 +23,6 @@ import {
 import { html } from "@/util/html";
 import type { Lease } from "@/leases/types";
 import type { LeafletGeoJson } from "types";
-import "./ArchivedLeaseAreasLayer.scss";
-import "./RelatedLeaseAreasLayer.scss";
 import {
   dismissNotification,
   enqueueNotification,
@@ -46,17 +45,6 @@ const RelatedLeaseAreasLayer = ({ lease }: { lease: Lease }) => {
   const [hiddenLeases, setHiddenLeases] = useState<number[]>([]);
   const [highlightedLease, setHighlightedLease] = useState<number | null>(null);
   const [selectedLease, setSelectedLease] = useState<number | null>(null);
-  const panelRef = useRef<HTMLDetailsElement>(null);
-  const dragRef = useRef<{
-    pointerId: number;
-    startX: number;
-    startY: number;
-    left: number;
-    top: number;
-    maxLeft: number;
-    maxTop: number;
-    moved: boolean;
-  } | null>(null);
   const groups = buildLeaseHistory(lease);
   const nodes = groups.flatMap((group) =>
     group.chains.flatMap((chain) => chain.nodes),
@@ -138,77 +126,11 @@ const RelatedLeaseAreasLayer = ({ lease }: { lease: Lease }) => {
           style={{ color: colorFor(activeLease), weight: 5, fillOpacity: 0.5 }}
         />
       )}
-      <details
-        ref={panelRef}
-        className="archived-lease-panel related-lease-panel"
-        open
+      <LeaseAreasPanel
+        className="lease-areas-panel--related"
+        title={`Liittyvät vuokraukset (${nodes.filter((node) => !node.active).length} kpl)`}
       >
-        <summary
-          onPointerDown={(event) => {
-            if (
-              !(event.target as Element).closest(
-                ".archived-lease-panel__drag-handle",
-              )
-            )
-              return;
-            if (event.button !== 0 || !panelRef.current) return;
-            const panel = panelRef.current;
-            const container = panel.offsetParent as HTMLElement | null;
-            if (!container) return;
-            dragRef.current = {
-              pointerId: event.pointerId,
-              startX: event.clientX,
-              startY: event.clientY,
-              left: panel.offsetLeft,
-              top: panel.offsetTop,
-              maxLeft: Math.max(0, container.clientWidth - panel.offsetWidth),
-              maxTop: Math.max(0, container.clientHeight - panel.offsetHeight),
-              moved: false,
-            };
-            event.currentTarget.setPointerCapture(event.pointerId);
-            event.stopPropagation();
-          }}
-          onPointerMove={(event) => {
-            const drag = dragRef.current;
-            if (
-              !drag ||
-              drag.pointerId !== event.pointerId ||
-              !event.currentTarget.hasPointerCapture(event.pointerId)
-            )
-              return;
-            const deltaX = event.clientX - drag.startX;
-            const deltaY = event.clientY - drag.startY;
-            if (!drag.moved && Math.hypot(deltaX, deltaY) < 4) return;
-            drag.moved = true;
-            const panel = panelRef.current;
-            if (!panel) return;
-            panel.style.left = `${Math.max(0, Math.min(drag.maxLeft, drag.left + deltaX))}px`;
-            panel.style.top = `${Math.max(0, Math.min(drag.maxTop, drag.top + deltaY))}px`;
-            panel.style.right = "auto";
-            panel.style.bottom = "auto";
-          }}
-          onPointerUp={(event) => {
-            if (event.currentTarget.hasPointerCapture(event.pointerId))
-              event.currentTarget.releasePointerCapture(event.pointerId);
-          }}
-          onPointerCancel={() => {
-            dragRef.current = null;
-          }}
-          onClick={(event) => {
-            if (dragRef.current?.moved) event.preventDefault();
-            dragRef.current = null;
-          }}
-        >
-          Liittyvät vuokraukset ({nodes.filter((node) => !node.active).length})
-          <span
-            className="archived-lease-panel__drag-handle"
-            title="Siirrä paneelia"
-            aria-hidden="true"
-          >
-            <IconDrag />
-          </span>
-        </summary>
-        <div className="archived-lease-panel__actions">
+        <div className="lease-areas-panel__actions">
           <button type="button" onClick={() => setHiddenLeases([])}>
             Näytä kaikki
           </button>
@@ -223,14 +145,16 @@ const RelatedLeaseAreasLayer = ({ lease }: { lease: Lease }) => {
           <section key={group.serviceUnitId ?? "unknown"}>
             {groups.length > 1 && <h4>{group.serviceUnitName}</h4>}
             {group.chains.map((chain) => (
-              <ul key={chain.key} className="related-lease-panel__chain">
+              <ul key={chain.key} className="lease-areas-panel__chain">
                 {chain.nodes.map((node) => {
                   const id = node.lease.id;
                   const identifier = getContentLeaseIdentifier(
                     node.lease as Lease,
                   );
                   const hasGeometry = data?.features.some(
-                    (feature) => feature.properties.lease.id === id,
+                    (feature) =>
+                      feature.properties.lease.id === id &&
+                      feature.geometry !== null,
                   );
                   return (
                     <li
@@ -244,7 +168,7 @@ const RelatedLeaseAreasLayer = ({ lease }: { lease: Lease }) => {
                           setHighlightedLease(null);
                       }}
                     >
-                      <div className="archived-lease-panel__row">
+                      <div className="lease-areas-panel__row">
                         {!node.active && (
                           <input
                             type="checkbox"
@@ -262,48 +186,58 @@ const RelatedLeaseAreasLayer = ({ lease }: { lease: Lease }) => {
                             }
                           />
                         )}
-                        <div className="related-lease-panel__lease">
-                          {node.active ? (
-                            <strong>{identifier} (nykyinen)</strong>
-                          ) : (
-                            <ExternalLink
-                              className="no-margin"
-                              href={`${getRouteById(Routes.LEASES)}/${identifier}`}
-                              text={identifier}
-                            />
-                          )}
-                          {node.lease.state && (
-                            <span className="archived-lease-panel__state">
-                              {getLabelOfOption(stateOptions, node.lease.state)}
-                            </span>
-                          )}
-                          <div>
-                            {formatDate(node.startDate)} -{" "}
-                            {formatDate(node.endDate)}
+                        <div className="lease-areas-panel__lease">
+                          <div className="lease-areas-panel__title">
+                            {node.active ? (
+                              <strong>{identifier} (nykyinen)</strong>
+                            ) : (
+                              <ExternalLink
+                                className="no-margin"
+                                href={`${getRouteById(Routes.LEASE)}/${identifier}`}
+                                text={identifier}
+                              />
+                            )}
+                            {node.lease.state && (
+                              <span className="lease-areas-panel__state">
+                                {getLabelOfOption(
+                                  stateOptions,
+                                  node.lease.state,
+                                )}
+                              </span>
+                            )}
                           </div>
-                          {data && !hasGeometry && !node.active && (
-                            <span>Ei kartalla näytettäviä alueita</span>
+                          <div>
+                            {`${formatDate(
+                              node.startDate,
+                            )} - ${formatDate(node.endDate)}`}
+                            {data && !hasGeometry && !node.active && (
+                              <div>Ei kartalla näytettäviä alueita</div>
+                            )}
+                          </div>
+                          {!node.active && (
+                            <button
+                              className="lease-areas-panel__highlight"
+                              type="button"
+                              disabled={
+                                !hasGeometry || hiddenLeases.includes(id)
+                              }
+                              aria-label={`Korosta vuokrauksen ${identifier} alueet kartalla`}
+                              aria-pressed={selectedLease === id}
+                              title={
+                                selectedLease === id
+                                  ? "Poista korostus kartalta"
+                                  : "Korosta alueet kartalla"
+                              }
+                              onClick={() =>
+                                setSelectedLease(
+                                  selectedLease === id ? null : id,
+                                )
+                              }
+                            >
+                              <IconLocate aria-hidden="true" />
+                            </button>
                           )}
                         </div>
-                        {!node.active && (
-                          <button
-                            className="archived-lease-panel__highlight"
-                            type="button"
-                            disabled={!hasGeometry || hiddenLeases.includes(id)}
-                            aria-label={`Korosta vuokrauksen ${identifier} alueet kartalla`}
-                            aria-pressed={selectedLease === id}
-                            title={
-                              selectedLease === id
-                                ? "Poista korostus kartalta"
-                                : "Korosta alueet kartalla"
-                            }
-                            onClick={() =>
-                              setSelectedLease(selectedLease === id ? null : id)
-                            }
-                          >
-                            <IconLocate aria-hidden="true" />
-                          </button>
-                        )}
                       </div>
                     </li>
                   );
@@ -312,7 +246,7 @@ const RelatedLeaseAreasLayer = ({ lease }: { lease: Lease }) => {
             ))}
           </section>
         ))}
-      </details>
+      </LeaseAreasPanel>
     </>
   );
 };

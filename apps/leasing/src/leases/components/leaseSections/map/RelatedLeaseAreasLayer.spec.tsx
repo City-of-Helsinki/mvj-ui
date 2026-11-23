@@ -7,8 +7,13 @@ import type { Lease } from "@/leases/types";
 import { OverlayLayerActiveContext } from "@/areaNote/components/MapContainer";
 
 vi.mock("@/leases/requestsAsync", () => ({ fetchRelatedAreas: vi.fn() }));
+vi.mock("react-redux", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("react-redux")>()),
+  useSelector: () => ({}),
+}));
 vi.mock("@/components/notification/notificationService", () => ({
   enqueueNotification: vi.fn(),
+  dismissNotification: vi.fn(),
 }));
 vi.mock("@/components/map/LeafletGeoJSONLayer", () => ({
   default: ({ data, style }) => (
@@ -44,7 +49,7 @@ it("renders the history reference and missing geometry, greys inactive areas and
     type: "FeatureCollection",
     features: leases.slice(0, 2).map((lease) => ({
       type: "Feature",
-      geometry: null,
+      geometry: lease.id === 2 ? { type: "Point", coordinates: [0, 0] } : null,
       properties: { lease },
     })),
   });
@@ -69,7 +74,7 @@ it("renders the history reference and missing geometry, greys inactive areas and
   await screen.findByText("Ei kartalla näytettäviä alueita");
   expect(screen.getByText("A1100-1 (nykyinen)")).toBeTruthy();
   expect(screen.getByTestId("areas-#777777-2").textContent).toBe("1");
-  expect(screen.getByText("Liittyvät vuokraukset (2)")).toBeTruthy();
+  expect(screen.getByText("Liittyvät vuokraukset (2 kpl)")).toBeTruthy();
   expect(screen.getByTestId("areas-#0078C0-2").textContent).toBe("0");
   expect(
     screen.queryByRole("checkbox", {
