@@ -34,7 +34,21 @@ afterEach(() => {
 it("renders the history reference and missing geometry, greys inactive areas and controls visibility", async () => {
   const leases = [
     { id: 1, start_date: "2024-01-01", end_date: null },
-    { id: 2, start_date: "2020-01-01", end_date: "2021-01-01" },
+    {
+      id: 2,
+      start_date: "2020-01-01",
+      end_date: "2021-01-01",
+      tenants: [
+        {
+          tenantcontact_set: [
+            {
+              type: "tenant",
+              contact: { type: "company", name: "Example Oy" },
+            },
+          ],
+        },
+      ],
+    },
     { id: 3, start_date: "2010-01-01", end_date: "2019-01-01" },
   ].map((lease) => ({
     ...lease,
@@ -73,6 +87,7 @@ it("renders the history reference and missing geometry, greys inactive areas and
   );
   await screen.findByText("Ei kartalla näytettäviä alueita");
   expect(screen.getByText("A1100-1 (nykyinen)")).toBeTruthy();
+  expect(screen.getByText("Example Oy")).toBeTruthy();
   expect(screen.getByTestId("areas-#777777-2").textContent).toBe("1");
   expect(screen.getByText("Liittyvät vuokraukset (2 kpl)")).toBeTruthy();
   expect(screen.getByTestId("areas-#0078C0-2").textContent).toBe("0");

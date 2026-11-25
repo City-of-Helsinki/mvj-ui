@@ -10,11 +10,11 @@ import LeafletGeoJSONLayer from "@/components/map/LeafletGeoJSONLayer";
 import useGeoJsonFeatureInteractions from "@/components/map/useGeoJsonFeatureInteractions";
 import ExternalLink from "@/components/links/ExternalLink";
 import { buildLeaseHistory } from "@/leaseHistory/helpers";
+import { getContactFullName } from "@/contacts/helpers";
 import { getContentLeaseIdentifier } from "@/leases/helpers";
 import { fetchRelatedAreas } from "@/leases/requestsAsync";
 import { getRouteById, Routes } from "@/root/routes";
 import {
-  displayUIMessage,
   formatDate,
   getFieldOptions,
   getLabelOfOption,
@@ -27,7 +27,7 @@ import {
   dismissNotification,
   enqueueNotification,
 } from "@/components/notification/notificationService";
-import { LeaseFieldPaths } from "@/leases/enums";
+import { LeaseFieldPaths, TenantContactType } from "@/leases/enums";
 import { getAttributes as getLeaseAttributes } from "@/leases/selectors";
 import { useSelector } from "react-redux";
 
@@ -210,6 +210,15 @@ const RelatedLeaseAreasLayer = ({ lease }: { lease: Lease }) => {
                             {`${formatDate(
                               node.startDate,
                             )} - ${formatDate(node.endDate)}`}
+                            <CollapsibleList
+                              values={getLeaseAreaIdentifiers(
+                                id,
+                                data?.features ?? [],
+                              )}
+                            />
+                            <CollapsibleList
+                              values={getTenantNames(node.lease)}
+                            />
                             {data && !hasGeometry && !node.active && (
                               <div>Ei kartalla näytettäviä alueita</div>
                             )}
@@ -249,6 +258,45 @@ const RelatedLeaseAreasLayer = ({ lease }: { lease: Lease }) => {
       </LeaseAreasPanel>
     </>
   );
+};
+
+const getTenantNames = (lease: Partial<Lease>): string[] =>
+  lease.tenants
+    ?.flatMap((tenant) => tenant.tenantcontact_set ?? [])
+    .filter((tenant) => !isArchived(tenant))
+    .filter((tenantContact) => tenantContact.type === TenantContactType.TENANT)
+    .map((tenantContact) => getContactFullName(tenantContact.contact))
+    .filter(Boolean) ?? [];
+
+const getLeaseAreaIdentifiers = (
+  leaseId: number,
+  features: LeafletGeoJson["features"],
+): string[] =>
+  features
+    .filter((feature) => feature.properties.lease.id === leaseId)
+    .map((feature) => feature.properties.identifier)
+    .filter(Boolean);
+
+const CollapsibleList = ({ values }: { values: string[] }) => {
+  if (values.length > 1)
+    return (
+      <details className="lease-areas-panel__value-list">
+        <summary>
+          {values[0]}
+          <span className="lease-areas-panel__value-count">
+            {` +${values.length - 1}`}
+          </span>
+        </summary>
+        <ul>
+          {values.slice(1).map((value, index) => (
+            <li key={`${value}-${index}`}>{value}</li>
+          ))}
+        </ul>
+      </details>
+    );
+  return values[0] ? (
+    <div className="lease-areas-panel__value-list">{values[0]}</div>
+  ) : null;
 };
 
 export default RelatedLeaseAreasLayer;
