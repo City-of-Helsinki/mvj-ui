@@ -68,6 +68,21 @@
       margin-left: 26px;
     }
 
+    .lease-areas-panel__value-list[open] .lease-areas-panel__value-count {
+      display: none;
+    }
+
+    .lease-areas-panel__value-list ul {
+      margin: 0 0 0 1em;
+      padding: 0;
+      list-style: disc;
+    }
+
+    .lease-areas-panel__value-list li {
+      padding: 0;
+      border: 0;
+    }
+
     summary {
       cursor: pointer;
     }
@@ -193,14 +208,5 @@
     border-left: 4px solid #aaa;
     margin-left: 4px;
     margin-bottom: 10px;
-  }
-}
-
-@media (max-width: 700px) {
-  .map:has(.lease-areas-panel:not(.lease-areas-panel--related))
-    .lease-areas-panel--related {
-    top: 64px;
-    bottom: auto;
-    max-height: 35%;
   }
 }
