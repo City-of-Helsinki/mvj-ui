@@ -80,7 +80,7 @@ const LandUseHeader: React.FC = () => {
           <li>
             <div className="landuse-header__user-info">
               <IconUser aria-hidden="true" style={{ flexShrink: 0 }} />
-              <span>{authenticatedUser.profile?.name || "?"}</span>
+              <span>{authenticatedUser?.profile?.name || "?"}</span>
             </div>
             <section
               className="landuse-header__user-groups"
