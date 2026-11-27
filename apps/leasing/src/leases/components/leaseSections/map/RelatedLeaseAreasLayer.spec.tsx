@@ -38,16 +38,7 @@ it("renders the history reference and missing geometry, greys inactive areas and
       id: 2,
       start_date: "2020-01-01",
       end_date: "2021-01-01",
-      tenants: [
-        {
-          tenantcontact_set: [
-            {
-              type: "tenant",
-              contact: { type: "company", name: "Example Oy" },
-            },
-          ],
-        },
-      ],
+      tenant_names: ["Example Oy"],
     },
     { id: 3, start_date: "2010-01-01", end_date: "2019-01-01" },
   ].map((lease) => ({

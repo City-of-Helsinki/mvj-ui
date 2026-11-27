@@ -10,7 +10,6 @@ import LeafletGeoJSONLayer from "@/components/map/LeafletGeoJSONLayer";
 import useGeoJsonFeatureInteractions from "@/components/map/useGeoJsonFeatureInteractions";
 import ExternalLink from "@/components/links/ExternalLink";
 import { buildLeaseHistory } from "@/leaseHistory/helpers";
-import { getContactFullName } from "@/contacts/helpers";
 import { getContentLeaseIdentifier } from "@/leases/helpers";
 import { fetchRelatedAreas } from "@/leases/requestsAsync";
 import { getRouteById, Routes } from "@/root/routes";
@@ -21,13 +20,13 @@ import {
   isArchived,
 } from "@/util/helpers";
 import { html } from "@/util/html";
-import type { Lease } from "@/leases/types";
+import type { Lease, RelatedLease } from "@/leases/types";
 import type { LeafletGeoJson } from "types";
 import {
   dismissNotification,
   enqueueNotification,
 } from "@/components/notification/notificationService";
-import { LeaseFieldPaths, TenantContactType } from "@/leases/enums";
+import { LeaseFieldPaths } from "@/leases/enums";
 import { getAttributes as getLeaseAttributes } from "@/leases/selectors";
 import { useSelector } from "react-redux";
 
@@ -148,9 +147,7 @@ const RelatedLeaseAreasLayer = ({ lease }: { lease: Lease }) => {
               <ul key={chain.key} className="lease-areas-panel__chain">
                 {chain.nodes.map((node) => {
                   const id = node.lease.id;
-                  const identifier = getContentLeaseIdentifier(
-                    node.lease as Lease,
-                  );
+                  const identifier = getContentLeaseIdentifier(node.lease);
                   const hasGeometry = data?.features.some(
                     (feature) =>
                       feature.properties.lease.id === id &&
@@ -260,13 +257,8 @@ const RelatedLeaseAreasLayer = ({ lease }: { lease: Lease }) => {
   );
 };
 
-const getTenantNames = (lease: Partial<Lease>): string[] =>
-  lease.tenants
-    ?.flatMap((tenant) => tenant.tenantcontact_set ?? [])
-    .filter((tenant) => !isArchived(tenant))
-    .filter((tenantContact) => tenantContact.type === TenantContactType.TENANT)
-    .map((tenantContact) => getContactFullName(tenantContact.contact))
-    .filter(Boolean) ?? [];
+const getTenantNames = (lease: RelatedLease): string[] =>
+  lease.tenant_names ?? [];
 
 const getLeaseAreaIdentifiers = (
   leaseId: number,

@@ -195,7 +195,7 @@ export const getTitleText = (
  * @returns {string}
  */
 export const getContentLeaseIdentifier = (
-  lease: Lease,
+  lease: Pick<Lease, "identifier">,
 ): string | null | undefined =>
   !isEmpty(lease)
     ? `${get(lease, "identifier.type.identifier")}${get(lease, "identifier.municipality.identifier")}${fixedLengthNumber(get(lease, "identifier.district.identifier"), 2)}-${get(lease, "identifier.sequence")}`

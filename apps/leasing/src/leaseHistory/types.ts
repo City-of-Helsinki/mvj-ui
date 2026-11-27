@@ -1,4 +1,4 @@
-import type { Lease } from "@/leases/types";
+import type { RelatedLease } from "@/leases/types";
 import type {
   LeaseHistoryItemTypes,
   LeaseHistoryStates,
@@ -21,7 +21,7 @@ export type HistoryAttachment = {
 
 export type HistoryLeaseNode = {
   key: string;
-  lease: Partial<Lease>;
+  lease: RelatedLease;
   relatedLeaseId?: number;
   serviceUnitId: number | null;
   serviceUnitName: string;
