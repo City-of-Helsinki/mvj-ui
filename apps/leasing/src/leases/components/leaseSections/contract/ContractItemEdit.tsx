@@ -1,8 +1,8 @@
-import React, { ReactElement, useEffect } from "react";
+import React, { ReactElement, useEffect, useMemo } from "react";
 import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { FieldArray } from "react-final-form-arrays";
 import { Row, Column } from "@/components/grid/Grid";
-import { get, isEmpty } from "lodash-es";
+import { debounce, get, isEmpty } from "lodash-es";
 import { ActionTypes, ModalConsumer } from "@/app/ModalContext";
 import ActionButtonWrapper from "@/components/form/ActionButtonWrapper";
 import AddButtonSecondary from "@/components/form/AddButtonSecondary";
@@ -61,6 +61,7 @@ import {
 import { getUsersPermissions } from "@/usersPermissions/selectors";
 import WarningContainer from "@/components/content/WarningContainer";
 import WarningField from "@/components/form/WarningField";
+import { useFieldValue } from "@/components/helpers";
 import type { Attributes } from "types";
 import type { Lease } from "@/leases/types";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
@@ -75,6 +76,7 @@ type ContractChangesProps = {
   onCollapseToggle: (...args: Array<any>) => any;
   title: string;
   usersPermissions: UsersPermissionsType;
+  contractNumberReadOnlyRenderer: (value: any) => ReactElement;
 };
 
 const ContractChanges: React.FC<ContractChangesProps> = ({
@@ -89,6 +91,7 @@ const ContractChanges: React.FC<ContractChangesProps> = ({
   onCollapseToggle,
   title,
   usersPermissions,
+  contractNumberReadOnlyRenderer,
 }: ContractChangesProps): ReactElement => {
   const handleCollapseToggle = (val) => {
     onCollapseToggle(val);
@@ -351,7 +354,35 @@ const ContractChanges: React.FC<ContractChangesProps> = ({
                                 />
                               </Authorization>
                             </Column>
-                            <Column small={6} medium={8} large={10}>
+                            <Column small={6} medium={4} large={2}>
+                              <Authorization
+                                allow={isFieldAllowedToRead(
+                                  attributes,
+                                  LeaseContractChangesFieldPaths.CONTRACT_NUMBER,
+                                )}
+                              >
+                                <FormField
+                                  disableTouched={isSaveClicked}
+                                  fieldAttributes={getFieldAttributes(
+                                    attributes,
+                                    LeaseContractChangesFieldPaths.CONTRACT_NUMBER,
+                                  )}
+                                  name={`${change}.contract_number`}
+                                  readOnlyValueRenderer={
+                                    contractNumberReadOnlyRenderer
+                                  }
+                                  overrideValues={{
+                                    label:
+                                      LeaseContractChangesFieldTitles.CONTRACT_NUMBER,
+                                  }}
+                                  enableUiDataEdit
+                                  uiDataKey={getUiDataLeaseKey(
+                                    LeaseContractChangesFieldPaths.CONTRACT_NUMBER,
+                                  )}
+                                />
+                              </Authorization>
+                            </Column>
+                            <Column small={6} medium={8} large={8}>
                               <Authorization
                                 allow={isFieldAllowedToRead(
                                   attributes,
@@ -548,9 +579,18 @@ const ContractItemEdit: React.FC<Props> = ({
   const isSaveClicked = useAppSelector(getIsSaveClicked);
   const usersPermissions = useAppSelector(getUsersPermissions);
   const contractId = contract?.id;
-  const contractNumber = contract?.contract_number;
+  const contractNumber = useFieldValue(`${field}.contract_number`);
 
   const dispatch = useAppDispatch();
+  const debouncedFetchLeasesForContractNumbers = useMemo(
+    () =>
+      debounce((contractNumber: string) => {
+        dispatch(
+          fetchLeasesForContractNumbers({ contract_number: contractNumber }),
+        );
+      }, 500),
+    [dispatch],
+  );
 
   const collateralsCollapseState = useAppSelector(
     (state) =>
@@ -584,13 +624,12 @@ const ContractItemEdit: React.FC<Props> = ({
       contractNumber &&
       (!contract || contractNumber !== contract.contract_number)
     ) {
-      dispatch(
-        fetchLeasesForContractNumbers({
-          contract_number: contractNumber,
-        }),
-      );
+      debouncedFetchLeasesForContractNumbers(contractNumber);
     }
-  }, [contractNumber, contract, dispatch]);
+    return () => {
+      debouncedFetchLeasesForContractNumbers.cancel();
+    };
+  }, [contractNumber, contract, debouncedFetchLeasesForContractNumbers]);
 
   const getContractById = (id: number) =>
     id ? savedContracts.find((decision) => decision.id === id) : {};
@@ -647,6 +686,8 @@ const ContractItemEdit: React.FC<Props> = ({
       <FormText>
         {value ? (
           <a
+            role="button"
+            tabIndex={0}
             onClick={handleShowContractFileModal}
             onKeyDown={(e: React.KeyboardEvent) => {
               if (e.key === "Enter" || e.key === " ") {
@@ -1116,6 +1157,7 @@ const ContractItemEdit: React.FC<Props> = ({
               onCollapseToggle: handleContractChangesCollapseToggle,
               title: LeaseContractChangesFieldTitles.CONTRACT_CHANGES,
               usersPermissions: usersPermissions,
+              contractNumberReadOnlyRenderer: contractNumberReadOnlyRenderer,
             })
           }
         </FieldArray>

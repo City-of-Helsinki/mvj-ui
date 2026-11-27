@@ -1678,6 +1678,8 @@ export const LeaseContractChangesFieldPaths = {
   THIRD_CALL_SENT:
     "contracts.child.children.contract_changes.child.children.third_call_sent",
   EXECUTOR: "contracts.child.children.contract_changes.child.children.executor",
+  CONTRACT_NUMBER:
+    "contracts.child.children.contract_changes.child.children.contract_number",
 };
 
 /**
@@ -1695,6 +1697,7 @@ export const LeaseContractChangesFieldTitles = {
   SIGNING_DATE: "Allekirjoituspvm",
   THIRD_CALL_SENT: "3. kutsu lähetetty",
   EXECUTOR: "Toimeenpanija",
+  CONTRACT_NUMBER: "Sopimusnumero",
 };
 
 /**

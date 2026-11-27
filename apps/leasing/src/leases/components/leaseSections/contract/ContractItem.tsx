@@ -44,6 +44,7 @@ type ContractChangesProps = {
   currentLease: Lease;
   attributes: Attributes;
   decisionOptions: Array<Record<string, any>>;
+  handleShowContractFileModal: (contractNumber: string) => void;
 };
 
 const ContractChanges: React.FC<ContractChangesProps> = ({
@@ -53,6 +54,7 @@ const ContractChanges: React.FC<ContractChangesProps> = ({
   currentLease,
   attributes,
   decisionOptions,
+  handleShowContractFileModal,
 }: ContractChangesProps) => {
   return (
     <Collapse
@@ -228,7 +230,50 @@ const ContractChanges: React.FC<ContractChangesProps> = ({
                       </>
                     </Authorization>
                   </Column>
-                  <Column small={6} medium={8} large={10}>
+                  <Column small={6} medium={4} large={2}>
+                    <Authorization
+                      allow={isFieldAllowedToRead(
+                        attributes,
+                        LeaseContractChangesFieldPaths.CONTRACT_NUMBER,
+                      )}
+                    >
+                      <>
+                        <FormTextTitle
+                          uiDataKey={getUiDataLeaseKey(
+                            LeaseContractChangesFieldPaths.CONTRACT_NUMBER,
+                          )}
+                        >
+                          {LeaseContractChangesFieldTitles.CONTRACT_NUMBER}
+                        </FormTextTitle>
+                        <FormText>
+                          {change.contract_number ? (
+                            <a
+                              role="button"
+                              tabIndex={0}
+                              onClick={() =>
+                                handleShowContractFileModal(
+                                  change.contract_number,
+                                )
+                              }
+                              onKeyDown={(e: React.KeyboardEvent) => {
+                                if (e.key === "Enter" || e.key === " ") {
+                                  e.preventDefault();
+                                  handleShowContractFileModal(
+                                    change.contract_number,
+                                  );
+                                }
+                              }}
+                            >
+                              {change.contract_number}
+                            </a>
+                          ) : (
+                            "-"
+                          )}
+                        </FormText>
+                      </>
+                    </Authorization>
+                  </Column>
+                  <Column small={6} medium={8} large={8}>
                     <Authorization
                       allow={isFieldAllowedToRead(
                         attributes,
@@ -321,8 +366,8 @@ const ContractItem: React.FC<Props> = ({
     handleCollapseToggle(val, "collaterals");
   };
 
-  const handleShowContractFileModal = () => {
-    onShowContractFileModal(contract.contract_number);
+  const handleShowContractFileModal = (contractNumber: string) => {
+    onShowContractFileModal(contractNumber);
   };
 
   const decisionOptions = getDecisionOptions(currentLease);
@@ -407,11 +452,13 @@ const ContractItem: React.FC<Props> = ({
                   <a
                     role="button"
                     tabIndex={0}
-                    onClick={handleShowContractFileModal}
+                    onClick={() =>
+                      handleShowContractFileModal(contract.contract_number)
+                    }
                     onKeyDown={(e: React.KeyboardEvent) => {
                       if (e.key === "Enter" || e.key === " ") {
                         e.preventDefault();
-                        handleShowContractFileModal();
+                        handleShowContractFileModal(contract.contract_number);
                       }
                     }}
                   >
@@ -684,6 +731,7 @@ const ContractItem: React.FC<Props> = ({
           currentLease={currentLease}
           attributes={attributes}
           decisionOptions={decisionOptions}
+          handleShowContractFileModal={handleShowContractFileModal}
         />
       </Authorization>
 

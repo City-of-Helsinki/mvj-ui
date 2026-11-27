@@ -718,6 +718,7 @@ export const getContentContractChanges = (
       description: change.description,
       decision: get(change, "decision.id") || change.decision,
       executor: getContentUser(change.executor),
+      contract_number: change.contract_number,
     };
   });
 
@@ -2967,6 +2968,7 @@ const getPayloadContractChanges = (
       description: change.description,
       decision: change.decision,
       executor: change.executor?.value,
+      contract_number: change.contract_number,
     };
   });
 };
