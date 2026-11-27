@@ -35,6 +35,228 @@ import {
   getCurrentLease,
 } from "@/leases/selectors";
 import type { Attributes } from "types";
+import type { Lease } from "@/leases/types";
+
+type ContractChangesProps = {
+  collapseState: boolean;
+  onCollapseToggle: (value: boolean) => void;
+  contractChanges: Array<Record<string, any>>;
+  currentLease: Lease;
+  attributes: Attributes;
+  decisionOptions: Array<Record<string, any>>;
+};
+
+const ContractChanges: React.FC<ContractChangesProps> = ({
+  collapseState,
+  onCollapseToggle,
+  contractChanges,
+  currentLease,
+  attributes,
+  decisionOptions,
+}: ContractChangesProps) => {
+  return (
+    <Collapse
+      className="collapse__secondary"
+      defaultOpen={collapseState !== undefined ? collapseState : true}
+      headerTitle={LeaseContractChangesFieldTitles.CONTRACT_CHANGES}
+      onToggle={onCollapseToggle}
+      uiDataKey={LeaseContractChangesFieldPaths.CONTRACT_CHANGES}
+    >
+      {!contractChanges ||
+        (!contractChanges.length && (
+          <FormText>Ei sopimuksen muutoksia</FormText>
+        ))}
+      {contractChanges && !!contractChanges.length && (
+        <BoxItemContainer>
+          {contractChanges.map((change) => {
+            const decision = getDecisionById(currentLease, change.decision);
+            const contractChangeExecutorName =
+              change.executor?.last_name && change.executor?.first_name
+                ? `${change.executor.last_name} ${change.executor.first_name}`
+                : "-";
+            return (
+              <BoxItem
+                key={change.id}
+                className="no-border-on-first-child no-border-on-last-child"
+              >
+                <Row>
+                  <Column small={6} medium={4} large={2}>
+                    <Authorization
+                      allow={isFieldAllowedToRead(
+                        attributes,
+                        LeaseContractChangesFieldPaths.SIGNING_DATE,
+                      )}
+                    >
+                      <>
+                        <FormTextTitle
+                          uiDataKey={getUiDataLeaseKey(
+                            LeaseContractChangesFieldPaths.SIGNING_DATE,
+                          )}
+                        >
+                          {LeaseContractChangesFieldTitles.SIGNING_DATE}
+                        </FormTextTitle>
+                        <FormText>
+                          {formatDate(change.signing_date) || "–"}
+                        </FormText>
+                      </>
+                    </Authorization>
+                  </Column>
+                  <Column small={6} medium={4} large={2}>
+                    <Authorization
+                      allow={isFieldAllowedToRead(
+                        attributes,
+                        LeaseContractChangesFieldPaths.SIGN_BY_DATE,
+                      )}
+                    >
+                      <>
+                        <FormTextTitle
+                          uiDataKey={getUiDataLeaseKey(
+                            LeaseContractChangesFieldPaths.SIGN_BY_DATE,
+                          )}
+                        >
+                          {LeaseContractChangesFieldTitles.SIGN_BY_DATE}
+                        </FormTextTitle>
+                        <FormText>
+                          {formatDate(change.sign_by_date) || "–"}
+                        </FormText>
+                      </>
+                    </Authorization>
+                  </Column>
+                  <Column small={6} medium={4} large={2}>
+                    <Authorization
+                      allow={isFieldAllowedToRead(
+                        attributes,
+                        LeaseContractChangesFieldPaths.FIRST_CALL_SENT,
+                      )}
+                    >
+                      <>
+                        <FormTextTitle
+                          uiDataKey={getUiDataLeaseKey(
+                            LeaseContractChangesFieldPaths.FIRST_CALL_SENT,
+                          )}
+                        >
+                          {LeaseContractChangesFieldTitles.FIRST_CALL_SENT}
+                        </FormTextTitle>
+                        <FormText>
+                          {formatDate(change.first_call_sent) || "–"}
+                        </FormText>
+                      </>
+                    </Authorization>
+                  </Column>
+                  <Column small={6} medium={4} large={2}>
+                    <Authorization
+                      allow={isFieldAllowedToRead(
+                        attributes,
+                        LeaseContractChangesFieldPaths.SECOND_CALL_SENT,
+                      )}
+                    >
+                      <>
+                        <FormTextTitle
+                          uiDataKey={getUiDataLeaseKey(
+                            LeaseContractChangesFieldPaths.SECOND_CALL_SENT,
+                          )}
+                        >
+                          {LeaseContractChangesFieldTitles.SECOND_CALL_SENT}
+                        </FormTextTitle>
+                        <FormText>
+                          {formatDate(change.second_call_sent) || "–"}
+                        </FormText>
+                      </>
+                    </Authorization>
+                  </Column>
+                  <Column small={6} medium={4} large={2}>
+                    <Authorization
+                      allow={isFieldAllowedToRead(
+                        attributes,
+                        LeaseContractChangesFieldPaths.THIRD_CALL_SENT,
+                      )}
+                    >
+                      <>
+                        <FormTextTitle
+                          uiDataKey={getUiDataLeaseKey(
+                            LeaseContractChangesFieldPaths.THIRD_CALL_SENT,
+                          )}
+                        >
+                          {LeaseContractChangesFieldTitles.THIRD_CALL_SENT}
+                        </FormTextTitle>
+                        <FormText>
+                          {formatDate(change.third_call_sent) || "–"}
+                        </FormText>
+                      </>
+                    </Authorization>
+                  </Column>
+                  <Column small={6} medium={4} large={2}>
+                    <Authorization
+                      allow={isFieldAllowedToRead(
+                        attributes,
+                        LeaseContractChangesFieldPaths.EXECUTOR,
+                      )}
+                    >
+                      <>
+                        <FormTextTitle
+                          uiDataKey={getUiDataLeaseKey(
+                            LeaseContractChangesFieldPaths.EXECUTOR,
+                          )}
+                        >
+                          {LeaseContractChangesFieldTitles.EXECUTOR}
+                        </FormTextTitle>
+                        <FormText>{contractChangeExecutorName}</FormText>
+                      </>
+                    </Authorization>
+                  </Column>
+                </Row>
+                <Row>
+                  <Column small={6} medium={4} large={2}>
+                    <Authorization
+                      allow={isFieldAllowedToRead(
+                        attributes,
+                        LeaseContractChangesFieldPaths.DECISION,
+                      )}
+                    >
+                      <>
+                        <FormTextTitle
+                          uiDataKey={getUiDataLeaseKey(
+                            LeaseContractChangesFieldPaths.DECISION,
+                          )}
+                        >
+                          {LeaseContractChangesFieldTitles.DECISION}
+                        </FormTextTitle>
+                        <DecisionLink
+                          decision={decision}
+                          decisionOptions={decisionOptions}
+                        />
+                      </>
+                    </Authorization>
+                  </Column>
+                  <Column small={6} medium={8} large={10}>
+                    <Authorization
+                      allow={isFieldAllowedToRead(
+                        attributes,
+                        LeaseContractChangesFieldPaths.DESCRIPTION,
+                      )}
+                    >
+                      <>
+                        <FormTextTitle
+                          uiDataKey={getUiDataLeaseKey(
+                            LeaseContractChangesFieldPaths.DESCRIPTION,
+                          )}
+                        >
+                          {LeaseContractChangesFieldTitles.DESCRIPTION}
+                        </FormTextTitle>
+                        <FormText>{change.description || "–"}</FormText>
+                      </>
+                    </Authorization>
+                  </Column>
+                </Row>
+              </BoxItem>
+            );
+          })}
+        </BoxItemContainer>
+      )}
+    </Collapse>
+  );
+};
+
 const formName = FormNames.LEASE_CONTRACTS;
 type Props = {
   contract: Record<string, any>;
@@ -455,209 +677,14 @@ const ContractItem: React.FC<Props> = ({
           LeaseContractChangesFieldPaths.CONTRACT_CHANGES,
         )}
       >
-        <Collapse
-          className="collapse__secondary"
-          defaultOpen={
-            contractChangesCollapseState !== undefined
-              ? contractChangesCollapseState
-              : true
-          }
-          headerTitle={LeaseContractChangesFieldTitles.CONTRACT_CHANGES}
-          onToggle={handleContractChangesCollapseToggle}
-          uiDataKey={LeaseContractChangesFieldPaths.CONTRACT_CHANGES}
-        >
-          {!contract.contract_changes ||
-            (!contract.contract_changes.length && (
-              <FormText>Ei sopimuksen muutoksia</FormText>
-            ))}
-          {contract.contract_changes && !!contract.contract_changes.length && (
-            <BoxItemContainer>
-              {contract.contract_changes.map((change) => {
-                const decision = getDecisionById(currentLease, change.decision);
-                const contractChangeExecutorName =
-                  change.executor?.last_name && change.executor?.first_name
-                    ? `${change.executor.last_name} ${change.executor.first_name}`
-                    : "-";
-                return (
-                  <BoxItem
-                    key={change.id}
-                    className="no-border-on-first-child no-border-on-last-child"
-                  >
-                    <Row>
-                      <Column small={6} medium={4} large={2}>
-                        <Authorization
-                          allow={isFieldAllowedToRead(
-                            attributes,
-                            LeaseContractChangesFieldPaths.SIGNING_DATE,
-                          )}
-                        >
-                          <>
-                            <FormTextTitle
-                              uiDataKey={getUiDataLeaseKey(
-                                LeaseContractChangesFieldPaths.SIGNING_DATE,
-                              )}
-                            >
-                              {LeaseContractChangesFieldTitles.SIGNING_DATE}
-                            </FormTextTitle>
-                            <FormText>
-                              {formatDate(change.signing_date) || "–"}
-                            </FormText>
-                          </>
-                        </Authorization>
-                      </Column>
-                      <Column small={6} medium={4} large={2}>
-                        <Authorization
-                          allow={isFieldAllowedToRead(
-                            attributes,
-                            LeaseContractChangesFieldPaths.SIGN_BY_DATE,
-                          )}
-                        >
-                          <>
-                            <FormTextTitle
-                              uiDataKey={getUiDataLeaseKey(
-                                LeaseContractChangesFieldPaths.SIGN_BY_DATE,
-                              )}
-                            >
-                              {LeaseContractChangesFieldTitles.SIGN_BY_DATE}
-                            </FormTextTitle>
-                            <FormText>
-                              {formatDate(change.sign_by_date) || "–"}
-                            </FormText>
-                          </>
-                        </Authorization>
-                      </Column>
-                      <Column small={6} medium={4} large={2}>
-                        <Authorization
-                          allow={isFieldAllowedToRead(
-                            attributes,
-                            LeaseContractChangesFieldPaths.FIRST_CALL_SENT,
-                          )}
-                        >
-                          <>
-                            <FormTextTitle
-                              uiDataKey={getUiDataLeaseKey(
-                                LeaseContractChangesFieldPaths.FIRST_CALL_SENT,
-                              )}
-                            >
-                              {LeaseContractChangesFieldTitles.FIRST_CALL_SENT}
-                            </FormTextTitle>
-                            <FormText>
-                              {formatDate(change.first_call_sent) || "–"}
-                            </FormText>
-                          </>
-                        </Authorization>
-                      </Column>
-                      <Column small={6} medium={4} large={2}>
-                        <Authorization
-                          allow={isFieldAllowedToRead(
-                            attributes,
-                            LeaseContractChangesFieldPaths.SECOND_CALL_SENT,
-                          )}
-                        >
-                          <>
-                            <FormTextTitle
-                              uiDataKey={getUiDataLeaseKey(
-                                LeaseContractChangesFieldPaths.SECOND_CALL_SENT,
-                              )}
-                            >
-                              {LeaseContractChangesFieldTitles.SECOND_CALL_SENT}
-                            </FormTextTitle>
-                            <FormText>
-                              {formatDate(change.second_call_sent) || "–"}
-                            </FormText>
-                          </>
-                        </Authorization>
-                      </Column>
-                      <Column small={6} medium={4} large={2}>
-                        <Authorization
-                          allow={isFieldAllowedToRead(
-                            attributes,
-                            LeaseContractChangesFieldPaths.THIRD_CALL_SENT,
-                          )}
-                        >
-                          <>
-                            <FormTextTitle
-                              uiDataKey={getUiDataLeaseKey(
-                                LeaseContractChangesFieldPaths.THIRD_CALL_SENT,
-                              )}
-                            >
-                              {LeaseContractChangesFieldTitles.THIRD_CALL_SENT}
-                            </FormTextTitle>
-                            <FormText>
-                              {formatDate(change.third_call_sent) || "–"}
-                            </FormText>
-                          </>
-                        </Authorization>
-                      </Column>
-                      <Column small={6} medium={4} large={2}>
-                        <Authorization
-                          allow={isFieldAllowedToRead(
-                            attributes,
-                            LeaseContractChangesFieldPaths.EXECUTOR,
-                          )}
-                        >
-                          <>
-                            <FormTextTitle
-                              uiDataKey={getUiDataLeaseKey(
-                                LeaseContractChangesFieldPaths.EXECUTOR,
-                              )}
-                            >
-                              {LeaseContractChangesFieldTitles.EXECUTOR}
-                            </FormTextTitle>
-                            <FormText>{contractChangeExecutorName}</FormText>
-                          </>
-                        </Authorization>
-                      </Column>
-                    </Row>
-                    <Row>
-                      <Column small={6} medium={4} large={2}>
-                        <Authorization
-                          allow={isFieldAllowedToRead(
-                            attributes,
-                            LeaseContractChangesFieldPaths.DECISION,
-                          )}
-                        >
-                          <>
-                            <FormTextTitle
-                              uiDataKey={getUiDataLeaseKey(
-                                LeaseContractChangesFieldPaths.DECISION,
-                              )}
-                            >
-                              {LeaseContractChangesFieldTitles.DECISION}
-                            </FormTextTitle>
-                            <DecisionLink
-                              decision={decision}
-                              decisionOptions={decisionOptions}
-                            />
-                          </>
-                        </Authorization>
-                      </Column>
-                      <Column small={6} medium={8} large={10}>
-                        <Authorization
-                          allow={isFieldAllowedToRead(
-                            attributes,
-                            LeaseContractChangesFieldPaths.DESCRIPTION,
-                          )}
-                        >
-                          <>
-                            <FormTextTitle
-                              uiDataKey={getUiDataLeaseKey(
-                                LeaseContractChangesFieldPaths.DESCRIPTION,
-                              )}
-                            >
-                              {LeaseContractChangesFieldTitles.DESCRIPTION}
-                            </FormTextTitle>
-                            <FormText>{change.description || "–"}</FormText>
-                          </>
-                        </Authorization>
-                      </Column>
-                    </Row>
-                  </BoxItem>
-                );
-              })}
-            </BoxItemContainer>
-          )}
-        </Collapse>
+        <ContractChanges
+          collapseState={contractChangesCollapseState}
+          onCollapseToggle={handleContractChangesCollapseToggle}
+          contractChanges={contract?.contract_changes}
+          currentLease={currentLease}
+          attributes={attributes}
+          decisionOptions={decisionOptions}
+        />
       </Authorization>
 
       <Authorization
