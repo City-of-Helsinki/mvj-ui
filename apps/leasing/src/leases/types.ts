@@ -122,8 +122,33 @@ export type RelatedLeaseEdge = {
   successor: number;
   related_lease_id: number;
 };
+export type RelatedLease = {
+  id: number;
+  deleted: string | null;
+  created_at: string;
+  modified_at: string | null;
+  type: Record<string, any>;
+  municipality: Record<string, any>;
+  district: Record<string, any>;
+  identifier: LeaseIdentifier;
+  start_date: string | null;
+  end_date: string | null;
+  state: (typeof LeaseState)[keyof typeof LeaseState];
+  rent_info_completed_at: string | null;
+  invoicing_enabled_at: string | null;
+  reference_number: string | null;
+  note: string | null;
+  preparer: number | null;
+  is_subject_to_vat: boolean;
+  service_unit: ServiceUnit;
+  target_statuses: Array<Record<string, any>>;
+  tenant_names: string[];
+  plot_searches: Array<PlotSearch>;
+  area_searches: Array<AreaSearch>;
+  related_plot_applications: Array<Record<string, any>>;
+};
 export type RelatedLeases = {
-  leases: Record<string, Lease>;
+  leases: Record<string, RelatedLease>;
   edges: Array<RelatedLeaseEdge>;
 };
 export type RelatedPlotApplicationFormValues = {

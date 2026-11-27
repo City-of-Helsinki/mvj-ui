@@ -12,10 +12,10 @@ import type {
   HistoryState,
   HistoryServiceUnitGroup,
 } from "@/leaseHistory/types";
-import type { Lease, RelatedLeaseEdge } from "@/leases/types";
+import type { Lease, RelatedLease, RelatedLeaseEdge } from "@/leases/types";
 
 export const getHistoryNodeState = (
-  lease: Partial<Lease>,
+  lease: RelatedLease,
   continues: boolean,
 ): HistoryState => {
   if (!isArchived(lease)) return LeaseHistoryStates.ACTIVE;
@@ -24,7 +24,7 @@ export const getHistoryNodeState = (
 
 /** Build the attachment list (plot searches / applications / area searches). */
 const buildAttachments = (
-  lease: Partial<Lease>,
+  lease: RelatedLease,
   onDeleteRelatedPlotApplication: (id: number) => void,
 ): HistoryAttachment[] => {
   const attachments: HistoryAttachment[] = [];
@@ -124,7 +124,7 @@ const compareNodesDesc = (a: HistoryLeaseNode, b: HistoryLeaseNode): number =>
 type LeaseRelations = { successorIds: number[]; predecessorIds: number[] };
 
 const buildNode = (
-  lease: Partial<Lease>,
+  lease: RelatedLease,
   active: boolean,
   relatedLeaseId: number | undefined,
   onDeleteRelatedPlotApplication: (id: number) => void,
